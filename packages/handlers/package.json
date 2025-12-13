@@ -1,0 +1,26 @@
+{
+  "name": "@repo/handlers",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@repo/constants": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@mantine/form": "^8.3.6",
+    "@mantine/notifications": "^8.3.6",
+    "react": "^19.2.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19",
+    "typescript": "5.9.2"
+  }
+}

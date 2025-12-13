@@ -1,0 +1,64 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "generate": {
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build", "@repo/db#generate"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "env": [
+        "TURBO_TELEMETRY_DISABLED=1",
+
+        "NODE_ENV",
+
+        "DATABASE_URL",
+        "DIRECT_URL",
+
+        "NEXT_PUBLIC_HOST_CLIENT_WEB_DEV",
+        "NEXT_PUBLIC_HOST_CLIENT_WEB_PROD",
+        "NEXT_PUBLIC_HOST_SERVER_DEV",
+        "NEXT_PUBLIC_HOST_SERVER_PROD",
+        "NEXT_PUBLIC_USE_REMOTE_SERVER",
+
+        "NEXT_PUBLIC_EMAIL_DEV",
+        "NEXT_PUBLIC_EMAIL_DELIVERY",
+        "NEXT_PUBLIC_EMAIL_INFO",
+        "NEXT_PUBLIC_EMAIL_NOREPLY",
+
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+
+        "NEXT_PUBLIC_MAILERLITE_API_URL",
+        "NEXT_MAILERLITE_GROUP_GENERAL",
+        "NEXT_MAILERLITE_KEY_GENERAL",
+
+        "NEXT_RESEND_AUDIENCE_ID_GENERAL",
+        "NEXT_RESEND_KEY_GENERAL",
+        "NEXT_RESEND_EMAIL",
+
+        "NEXT_PUBLIC_REST_COUNTRIES_API_URL"
+      ],
+      "outputs": [
+        "src/generated/prisma/**",
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
+    },
+    "apps/client-web#build": {
+      "dependsOn": ["apps/server#build"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

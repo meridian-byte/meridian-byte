@@ -1,0 +1,23 @@
+{
+  "name": "@repo/types",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "@mantine/form": "^8.3.6",
+    "react": "^19.2.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "5.9.2",
+    "@types/react": "^19"
+  }
+}

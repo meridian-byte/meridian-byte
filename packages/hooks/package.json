@@ -1,0 +1,32 @@
+{
+  "name": "@repo/hooks",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@repo/constants": "workspace:*",
+    "@repo/handlers": "workspace:*",
+    "@repo/libraries": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/utilities": "workspace:*",
+    "@repo/services": "workspace:*",
+    "@mantine/core": "^8.3.6",
+    "@mantine/form": "^8.3.6",
+    "@mantine/hooks": "^8.3.6",
+    "@mantine/notifications": "^8.3.6",
+    "react": "^19.2.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19",
+    "typescript": "5.9.2"
+  }
+}
