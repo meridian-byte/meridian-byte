@@ -1,0 +1,20 @@
+{
+  "name": "@repo/db",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "generate": "prisma generate",
+    "build": "pnpm run generate",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "6.17.1"
+  },
+  "devDependencies": {
+    "prisma": "6.17.1"
+  }
+}

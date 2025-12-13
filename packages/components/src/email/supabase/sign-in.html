@@ -1,0 +1,75 @@
+<table
+  style="
+    width: 100%;
+    max-width: 560px;
+    border: 1px solid #e4e6ed;
+    border-radius: 0.25rem;
+    padding: 3rem;
+    margin: 0 auto;
+    font-family: 'Calibri', Arial, sans-serif;
+  "
+>
+  <tr>
+    <td style="text-align: center">
+      <a href="https://example.com">
+        <img
+          src="https://spewyluxhudgxpuhjjam.supabase.co/storage/v1/object/public/avatars/brand/icon/icon-light.png"
+          alt="Next Template"
+          style="width: 40px; height: auto"
+        />
+      </a>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center; padding-top: 2rem">
+      <h1 style="margin: 0">Magic Link</h1>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="padding-top: 2rem">
+      <p>Hello,</p>
+      <p style="margin: 0">
+        This is an email containing a magic link to sign you in. We're just
+        making sure it's really you. Click the link below to access your
+        personalized experience.
+      </p>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center; padding-top: 2rem">
+      <a
+        href="{{ .SiteURL }}/auth/confirm/sign-in?token_hash={{ .TokenHash }}&type=magiclink"
+        style="
+          background-color: #e4e6ed;
+          color: black;
+          padding: 0.5rem;
+          border-radius: 0.25rem;
+          text-decoration: none;
+          font-weight: bold;
+          display: inline-block;
+          width: 100%;
+        "
+      >
+        Sign In
+      </a>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="padding-top: 2rem">
+      <hr style="border: none; height: 1px; background-color: #e4e6ed" />
+    </td>
+  </tr>
+
+  <tr>
+    <td style="font-size: small; color: dimgray; margin: 0; padding-top: 2rem">
+      If you didn't request this magic link, you can safely ignore this email.
+      If you are concerned about the security of your account, please
+      <a href="mailto:info@example.com" style="color: black">contact support</a
+      >.
+    </td>
+  </tr>
+</table>

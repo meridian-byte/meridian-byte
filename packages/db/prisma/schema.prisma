@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// npx prisma migrate dev --name init -> sync database
+// npx prisma db push -> sync database
+// npx prisma studio -> view database
+// npx prisma generate -> generate prisma client
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // uses connection pooling
+  directUrl = env("DIRECT_URL") // uses a direct connection
+}
+
+// enums
+
+enum Role {
+  USER
+  ADMIN
+  DEV
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  DRAFT
+  PUBLISHED
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCED
+  SAVED
+  ERROR
+  DELETED
+}
+
+// models
+
+model Profile {
+  id         String  @id
+  user_name  String?
+  first_name String?
+  last_name  String?
+  bio        String?
+  avatar     String?
+  phone      String?
+  role       Role    @default(USER)
+
+  posts    Post[]
+  comments Comment[]
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@map("profiles")
+}
+
+model Post {
+  id             String  @id @default(uuid())
+  image          String
+  title          String
+  excerpt        String
+  content        String
+  allow_comments Boolean @default(true)
+  view_count     Int     @default(0)
+
+  status Status @default(DRAFT)
+
+  profile     Profile?  @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id  String?
+  category    Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  category_id String?
+
+  comments Comment[]
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@unique([profile_id, title])
+  @@map(name: "posts")
+}
+
+model Category {
+  id    String @id @default(uuid())
+  title String
+
+  status Status @default(ACTIVE)
+
+  posts Post[]
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@unique([title])
+  @@map(name: "categories")
+}
+
+model Comment {
+  id         String  @id @default(uuid())
+  name       String?
+  content    String
+  comment_id String?
+
+  status Status @default(ACTIVE)
+
+  post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  post_id    String
+  profile    Profile? @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String?
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@unique([name, content, post_id, profile_id])
+  @@map(name: "comments")
+}

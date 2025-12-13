@@ -1,0 +1,48 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack --port $PORT",
+    "build": "prisma generate --schema ../../packages/db/prisma/schema.prisma && next build",
+    "start": "next start --port $PORT",
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mantine/core": "^8.3.6",
+    "@mantine/notifications": "^8.3.6",
+    "@react-email/render": "^1.1.2",
+    "@repo/components": "workspace:*",
+    "@repo/constants": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/handlers": "workspace:*",
+    "@repo/libraries": "workspace:*",
+    "@repo/services": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/utilities": "workspace:*",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.8",
+    "next": "16.0.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-redux": "^9.2.0",
+    "resend": "^4.5.1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-plugin-prettier": "^5.4.0",
+    "postcss": "^8.5.3",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
+    "prisma": "6.17.1",
+    "sass-embedded": "^1.89.0",
+    "typescript": "^5"
+  }
+}

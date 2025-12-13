@@ -1,0 +1,24 @@
+.rootInput {
+  max-width: 80px;
+}
+
+.inputInput {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.dropdown {
+  min-width: 320px;
+
+  @include mantine.larger-than(mantine.$mantine-breakpoint-xs) {
+    min-width: 480px;
+  }
+}
+
+.option {
+  font-size: var(--mantine-font-size-xs);
+
+  @include mantine.larger-than(mantine.$mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-sm);
+  }
+}
