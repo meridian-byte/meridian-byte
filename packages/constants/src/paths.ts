@@ -8,10 +8,15 @@
 const isProduction = process.env.NODE_ENV === 'production';
 const useRemoteServer = process.env.NEXT_PUBLIC_USE_REMOTE_SERVER === 'true';
 
-// Select client host
+// Select web client host
 export const HOSTNAME_CLIENT_WEB = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_WEB_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_WEB_DEV;
+
+// Select frakt client host
+export const HOSTNAME_CLIENT_FRAKT = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_DEV;
 
 // Select server host
 const HOSTNAME_SERVER = isProduction

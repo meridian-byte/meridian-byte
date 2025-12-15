@@ -11,9 +11,15 @@ import {
   Anchor,
   Container,
   createTheme,
+  Drawer,
   Loader,
   MantineThemeOverride,
+  Modal,
   Notification,
+  NumberFormatter,
+  ScrollArea,
+  ScrollAreaAutosize,
+  Tooltip,
 } from '@mantine/core';
 import cx from 'clsx';
 
@@ -59,22 +65,22 @@ export const getAppTheme = (params?: AppThemeProps) => {
   const baseTheme: MantineThemeOverride = {
     colors: {
       pri: [
-        '#e1f8ff',
-        '#cbedff',
-        '#9ad7ff',
-        '#64c1ff',
-        '#3aaefe',
-        '#20a2fe',
-        '#099cff',
-        '#0088e4',
-        '#0079cd',
-        '#0068b6',
+        '#fef4e8',
+        '#f2e7dc',
+        '#decebc',
+        '#cbb399',
+        '#ba9c7b',
+        '#b08e67', // src (5)
+        '#ac865c',
+        '#97734b',
+        '#876640',
+        '#775732',
       ],
     },
 
     primaryColor: 'pri',
-    defaultRadius: 'sm',
-    primaryShade: { light: 6, dark: 6 },
+    defaultRadius: 'md',
+    primaryShade: { light: 5, dark: 5 },
     cursorType: 'pointer',
 
     headings: {
@@ -98,6 +104,61 @@ export const getAppTheme = (params?: AppThemeProps) => {
         defaultProps: {
           type: 'bars',
           size: 'sm',
+        },
+      }),
+
+      ScrollArea: ScrollArea.extend({
+        defaultProps: {
+          type: 'auto',
+          scrollbarSize: 8,
+        },
+      }),
+
+      ScrollAreaAutosize: ScrollAreaAutosize.extend({
+        defaultProps: {
+          type: 'auto',
+          scrollbarSize: 8,
+        },
+      }),
+
+      NumberFormatter: NumberFormatter.extend({
+        defaultProps: {
+          thousandSeparator: true,
+        },
+      }),
+
+      Drawer: Drawer.extend({
+        defaultProps: {
+          transitionProps: {
+            duration: 100,
+          },
+        },
+      }),
+
+      Tooltip: Tooltip.extend({
+        defaultProps: {
+          withArrow: true,
+          transitionProps: {
+            duration: 100,
+            transition: 'fade',
+            enterDelay: 500,
+          },
+        },
+      }),
+
+      Modal: Modal.extend({
+        defaultProps: {
+          centered: true,
+          withCloseButton: false,
+          padding: 0,
+          transitionProps: {
+            duration: 100,
+            transition: 'fade',
+          },
+          overlayProps: {
+            backgroundOpacity: 0.33,
+            blur: 3,
+          },
         },
       }),
 
