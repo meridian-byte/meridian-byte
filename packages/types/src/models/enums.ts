@@ -18,3 +18,29 @@ export enum SyncStatus {
   ERROR = 'ERROR',
   DELETED = 'DELETED',
 }
+
+export enum TransactionType {
+  CREDIT = 'CREDIT',
+  DEBIT = 'DEBIT',
+  TRANSFER = 'TRANSFER',
+}
+
+export enum AccountType {
+  ASSET = 'ASSET',
+  LIABILITY = 'LIABILITY',
+}
+
+export enum CategoryType {
+  BLOG = 'BLOG',
+  CREDIT = 'CREDIT',
+  DEBIT = 'DEBIT',
+}
+
+export enum RecurringFrequency {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  QUARTERLY = 'QUARTERLY',
+  SEMI_ANNUALLY = 'SEMI_ANNUALLY',
+  ANNUALLY = 'ANNUALLY',
+}

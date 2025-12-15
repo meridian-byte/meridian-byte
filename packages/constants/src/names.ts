@@ -39,4 +39,8 @@ export const STORE_NAME = {
   SETTINGS: 'settings',
   POSTS: 'posts',
   CATEGORIES: 'categories',
+  ACCOUNTS: 'accounts',
+  ACCOUNT_GROUPS: 'account-groups',
+  BUDGETS: 'budgets',
+  TRANSACTIONS: 'transactions',
 };

@@ -1,0 +1,75 @@
+'use client';
+
+import React from 'react';
+import LayoutSection from '@repo/components/layout/section';
+import { Group, NumberFormatter, Stack, Text } from '@mantine/core';
+import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+import { TransactionType } from '@repo/types/models/enums';
+
+export default function Transactions() {
+  const { transactions } = useStoreTransaction();
+
+  const assetTransactions =
+    (transactions || []).filter((acc) => acc.type === TransactionType.CREDIT) ||
+    [];
+  const liabilityTransactions =
+    (transactions || []).filter((acc) => acc.type === TransactionType.DEBIT) ||
+    [];
+
+  const assetValue = assetTransactions.reduce(
+    (sum, acc) => sum + Number(acc.amount),
+    0
+  );
+  const liabilityValue = liabilityTransactions.reduce(
+    (sum, acc) => sum + Number(acc.amount),
+    0
+  );
+
+  const overview = [
+    {
+      value: assetValue.toFixed(2),
+      label: 'Income',
+      color: 'blue',
+    },
+    {
+      value: liabilityValue.toFixed(2),
+      label: 'Expenses',
+      color: 'red',
+    },
+    {
+      value: (assetValue - liabilityValue).toFixed(2),
+      label: 'Total',
+    },
+  ];
+
+  return (
+    <LayoutSection
+      id="partial-overview-transactions"
+      containerized={'xs'}
+      padded={'xs'}
+      bg={
+        'light-dark(var(--mantine-color-dark-4), var(--mantine-color-dark-8))'
+      }
+    >
+      <Group justify="center" grow>
+        {overview.map((oi, i) => (
+          <Stack key={i} gap={0} align="center">
+            <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
+              {oi.label}
+            </Text>
+
+            <Text
+              component="span"
+              inherit
+              c={`${oi.color}.6`}
+              ta={'center'}
+              fw={500}
+            >
+              <NumberFormatter value={oi.value} decimalScale={2} />
+            </Text>
+          </Stack>
+        ))}
+      </Group>
+    </LayoutSection>
+  );
+}
