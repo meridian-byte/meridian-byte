@@ -5,12 +5,12 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { appName } from '@repo/constants/app';
+import { companyName } from '@repo/constants/app';
 import { STORE_NAME } from '@repo/constants/names';
 import { DBConfig } from '@repo/types/indexed-db';
 
 export const config: DBConfig = {
-  name: appName.toLowerCase(),
+  name: companyName.toLowerCase(),
   version: 1,
   stores: [
     {
@@ -20,7 +20,7 @@ export const config: DBConfig = {
     {
       name: STORE_NAME.POSTS,
       keyPath: 'id',
-      indexes: [{ name: 'by_categoryId', keyPath: 'category_id' }],
+      // indexes: [{ name: 'by_categoryId', keyPath: 'category_id' }],
     },
     {
       name: STORE_NAME.CATEGORIES,

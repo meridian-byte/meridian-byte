@@ -12,6 +12,7 @@ import { handleInquiry } from '@repo/handlers/requests/email/inquiry';
 import { contactAdd } from '@repo/handlers/requests/contact';
 import { formValuesInitialInquiry, FormValuesInquiry } from '@repo/types/form';
 import { useFormBase } from '../form';
+import { companyName } from '@repo/constants/app';
 
 type UseFormEmailInquiryOptions = {
   saveEmailContact?: boolean;
@@ -26,6 +27,7 @@ export const useFormEmailInquiry = (
     useFormBase<FormValuesInquiry>(
       {
         ...formValuesInitialInquiry,
+        appName: companyName,
         ...initialValues,
       },
       {

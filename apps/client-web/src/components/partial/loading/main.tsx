@@ -3,7 +3,7 @@ import LayoutSection from '@repo/components/layout/section';
 import LoaderMain from '@repo/components/common/loaders/main';
 import ImageDefault from '@repo/components/common/images/default';
 import { images } from '@/assets/images';
-import { appName } from '@repo/constants/app';
+import { companyName } from '@repo/constants/app';
 
 export default function Main() {
   return (
@@ -12,7 +12,7 @@ export default function Main() {
         <Stack align="center">
           <ImageDefault
             src={images.brand.logo.light}
-            alt={appName}
+            alt={companyName}
             height={56}
             width={104}
             fit="contain"

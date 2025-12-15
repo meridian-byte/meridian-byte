@@ -12,7 +12,6 @@ import EmailOnboardWelcome from '@repo/components/email/onboard/welcome';
 import { isProduction } from '@repo/utilities/misc';
 import { render } from '@react-email/render';
 import { FormValuesInquiry } from '@repo/types/form';
-import { appName } from '@repo/constants/app';
 
 type SendEmailOptions = {
   to: string;
@@ -21,6 +20,7 @@ type SendEmailOptions = {
   fromName?: string;
   fromType?: 'delivery' | 'noreply';
   html: string;
+  appName: string;
 };
 
 const emailSendBase = async (options: SendEmailOptions) => {
@@ -36,7 +36,7 @@ const emailSendBase = async (options: SendEmailOptions) => {
     options.fromType === 'delivery' ? deliveryEmail : noReplyEmail;
 
   const { data, error } = await resend.emails.send({
-    from: `${options.fromName ?? appName} <${fromEmail}>`,
+    from: `${options.fromName ?? options.appName} <${fromEmail}>`,
     to: [isProduction() ? options.to : devEmail],
     subject: options.subject,
     replyTo: options.replyTo ?? noReplyEmail,
@@ -60,31 +60,44 @@ export const emailSendInquiry = async (params: FormValuesInquiry) => {
     replyTo: params.email,
     fromName: params.name,
     fromType: 'delivery',
+    appName: params.appName,
     html: await render(
       EmailInquiry({
         userName: params.name,
         userMessage: params.message,
         userPhone: params.phone,
+        appName: params.appName,
       })
     ),
   });
 };
 
-export const emailSendOnboardNewsletter = async (params: { to: string }) =>
+export const emailSendOnboardNewsletter = async (params: {
+  to: string;
+  appName: string;
+}) =>
   emailSendBase({
     to: params.to,
-    subject: `Welcome To ${appName} Newsletter`,
+    subject: `Welcome To ${params.appName} Newsletter`,
     fromType: 'noreply',
-    html: await render(EmailOnboardNewsletter()),
+    html: await render(EmailOnboardNewsletter({ appName: params.appName })),
+    appName: params.appName,
   });
 
 export const emailSendOnboardSignUp = async (params: {
   to: string;
   userName: string;
+  appName: string;
 }) =>
   emailSendBase({
     to: params.to,
-    subject: `Welcome To ${appName}`,
+    subject: `Welcome To ${params.appName}`,
     fromType: 'noreply',
-    html: await render(EmailOnboardWelcome({ userName: params.userName })),
+    html: await render(
+      EmailOnboardWelcome({
+        userName: params.userName,
+        appName: params.appName,
+      })
+    ),
+    appName: params.appName,
   });
