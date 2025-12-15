@@ -12,14 +12,13 @@ import {
   Link,
   Heading,
 } from '@react-email/components';
-import { appName } from '@repo/constants/app';
 
 export const Email = ({
   props,
   options = { withHeader: true, withFooter: true },
   children,
 }: {
-  props: { preview: string; title?: string };
+  props: { preview: string; title?: string; appName: string };
   options?: { withHeader?: boolean; withFooter?: boolean };
   children: React.ReactNode;
 }) => {
@@ -41,7 +40,7 @@ export const Email = ({
                     }
                     width={40}
                     height={'auto'}
-                    alt={appName}
+                    alt={props.appName}
                   />
                 </a>
 
@@ -67,7 +66,7 @@ export const Email = ({
                         textDecorationLine: 'underline',
                       }}
                     >
-                      {appName}
+                      {props.appName}
                     </Link>
                     . All rights reserved.
                   </Text>

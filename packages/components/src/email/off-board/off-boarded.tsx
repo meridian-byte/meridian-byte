@@ -1,19 +1,25 @@
 import * as React from 'react';
 import { Hr, Link, Section, Text } from '@react-email/components';
-import { appName, emails } from '@repo/constants/app';
+import { emails } from '@repo/constants/app';
 import { dimmedText, Email as LayoutEmail, text } from '../layout';
 
-export const Offboarded = (props: { userName: string }) => {
-  const message = `${appName} is sorry to see you go.`;
+export const Offboarded = (props: { userName: string; appName: string }) => {
+  const message = `${props.appName} is sorry to see you go.`;
 
   return (
-    <LayoutEmail props={{ preview: message, title: 'Account Deleted' }}>
+    <LayoutEmail
+      props={{
+        preview: message,
+        title: 'Account Deleted',
+        appName: props.appName,
+      }}
+    >
       <Section>
         <Text style={{ marginTop: 0 }}>Hi {props.userName || 'John'},</Text>
 
         <Text style={text}>
-          We&apos;re sorry to see you go, but your account with {appName} has
-          been successfully deleted. All your data has been securely removed
+          We&apos;re sorry to see you go, but your account with {props.appName}{' '}
+          has been successfully deleted. All your data has been securely removed
           from our system in accordance with our privacy policy. If you ever
           decide to return, we&apos;d be delighted to welcome you back and help
           you get started again. In the meantime, if you have any questions,
@@ -28,7 +34,7 @@ export const Offboarded = (props: { userName: string }) => {
           >
             {emails.info}
           </Link>
-          . Thank you for being a part of {appName}.
+          . Thank you for being a part of {props.appName}.
         </Text>
       </Section>
 
@@ -38,11 +44,12 @@ export const Offboarded = (props: { userName: string }) => {
 
       <Section style={{ marginTop: '2rem' }}>
         <Text style={dimmedText}>
-          {appName} will never email you and ask you to disclose any sensitive
-          personal information.
+          {props.appName} will never email you and ask you to disclose any
+          sensitive personal information.
         </Text>
       </Section>
     </LayoutEmail>
   );
 };
+
 export default Offboarded;

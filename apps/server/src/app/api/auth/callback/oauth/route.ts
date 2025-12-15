@@ -12,6 +12,7 @@ import { segmentFullName } from '@repo/utilities/string';
 import { AUTH_URLS } from '@/data/constants';
 import { emailSendOnboardSignUp } from '@/libraries/wrappers/email';
 import { emailContactAdd } from '@/services/api/email/contacts';
+import { companyName } from '@repo/constants/app';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,6 +67,7 @@ export async function GET(request: Request) {
         to: userData.email,
         userName:
           segmentFullName(userData?.user_metadata.name).first || userData.email,
+        appName: companyName,
       });
 
       await emailContactAdd(

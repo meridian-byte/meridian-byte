@@ -5,8 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-export const companyName = 'template-compnay-next';
-export const appName = 'template-next';
+export const companyName = 'MetidianByte';
 
 export const phones = {
   main: '(254) 123 456-789',

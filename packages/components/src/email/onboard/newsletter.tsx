@@ -1,27 +1,28 @@
 import * as React from 'react';
 import { Hr, Link, Section, Text } from '@react-email/components';
-import { appName, emails } from '@repo/constants/app';
+import { emails } from '@repo/constants/app';
 import { dimmedText, Email as LayoutEmail, text } from '../layout';
 
-export const Newsletter = () => {
-  const message = `You have successfully subscribed to the ${appName} newsletter. You will be recieving occational marketing and news emails.`;
+export const Newsletter = (props: { appName: string }) => {
+  const message = `You have successfully subscribed to the ${props.appName} newsletter. You will be recieving occational marketing and news emails.`;
 
   return (
     <LayoutEmail
       props={{
         preview: message,
-        title: `${appName} Newsletter`,
+        title: `${props.appName} Newsletter`,
+        appName: props.appName,
       }}
     >
       <Section>
         <Text style={text}>
-          Thank you for subscribing to the {appName} newsletter! We&apos;re
-          excited to have you join our community. By signing up or subscribing,
-          you&apos;ll receive the latest updates, exclusive insights, and
-          helpful tips delivered straight to your inbox. We promise to keep our
-          content relevant, engaging, and tailored to your interests. If you
-          ever have questions, feedback, or suggestions for what you&apos;d like
-          to see, feel free to contact us at{' '}
+          Thank you for subscribing to the {props.appName} newsletter!
+          We&apos;re excited to have you join our community. By signing up or
+          subscribing, you&apos;ll receive the latest updates, exclusive
+          insights, and helpful tips delivered straight to your inbox. We
+          promise to keep our content relevant, engaging, and tailored to your
+          interests. If you ever have questions, feedback, or suggestions for
+          what you&apos;d like to see, feel free to contact us at{' '}
           <Link
             href={`mailto:${emails.info}`}
             style={{
@@ -41,8 +42,8 @@ export const Newsletter = () => {
 
       <Section style={{ marginTop: '2rem' }}>
         <Text style={dimmedText}>
-          {appName} will never email you and ask you to disclose any sensitive
-          personal information.
+          {props.appName} will never email you and ask you to disclose any
+          sensitive personal information.
         </Text>
       </Section>
     </LayoutEmail>

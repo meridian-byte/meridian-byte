@@ -7,10 +7,11 @@ export const Inquiry = (props: {
   userName: string;
   userMessage: string;
   userPhone?: string;
+  appName: string;
 }) => {
   return (
     <LayoutEmail
-      props={{ preview: props.userMessage }}
+      props={{ preview: props.userMessage, appName: props.appName }}
       options={{ withHeader: true, withFooter: false }}
     >
       <Section style={{ marginTop: '2rem' }}>

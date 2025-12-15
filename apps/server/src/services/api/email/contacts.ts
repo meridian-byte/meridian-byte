@@ -53,7 +53,10 @@ export const emailContactAdd = async (
 
     if (notify && response.status == 201) {
       // send welcome email if new user
-      await emailSendOnboardNewsletter({ to: formData.email });
+      await emailSendOnboardNewsletter({
+        to: formData.email,
+        appName: formData.appName || '',
+      });
     }
 
     return response;
