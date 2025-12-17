@@ -61,6 +61,11 @@ export async function PUT(request: NextRequest) {
         create: {
           id: category.id,
           title: category.title,
+          budgets: undefined,
+          posts: undefined,
+          transactions: undefined,
+          profile: undefined,
+          profile_id: '',
           status: category.status,
           created_at: new Date(category.created_at),
           updated_at: new Date(category.updated_at),
