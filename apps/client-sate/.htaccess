@@ -1,0 +1,27 @@
+<IfModule mod_rewrite.c>
+
+  # 1. Essential settings
+  Options -Indexes +FollowSymLinks -MultiViews
+
+  RewriteEngine On
+
+  # 2. STOP if the requested path is a real file (like /_next/static/...)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # --- Universal Rewrite for Clean URLs (Replaces old rules 3, 4, and 5) ---
+
+  # 3. UNIVERSAL INTERNALLY REWRITE /path/to/page[/] to /path/to/page.html
+  # This rule works for single pages, two levels, and deeper nesting.
+  # It only processes requests that do NOT end in .html (or any other extension).
+  RewriteCond %{REQUEST_URI} !(\.html|\.php|\.css|\.js|\.ico|\.jpg|\.png|\.gif)$
+
+  # Check if the .html file corresponding to the clean URL exists.
+  # The trailing slash is made optional.
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+
+  # 6. Fallback for 404
+  ErrorDocument 404 /404.html
+
+</IfModule>
