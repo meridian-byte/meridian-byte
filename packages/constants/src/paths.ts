@@ -18,6 +18,11 @@ export const HOSTNAME_CLIENT_FRAKT = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_DEV;
 
+// Select sate client host
+export const HOSTNAME_CLIENT_SATE = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_DEV;
+
 // Select server host
 const HOSTNAME_SERVER = isProduction
   ? process.env.NEXT_PUBLIC_HOST_SERVER_PROD
