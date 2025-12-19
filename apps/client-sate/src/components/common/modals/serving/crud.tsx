@@ -17,12 +17,17 @@ import { IconTrash } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { useServingActions } from '@/hooks/actions/serving';
 import ModalConfirm from '@repo/components/common/modals/confirm';
+import { FormEat } from '@/hooks/form/eat';
 
 export default function Crud({
   props,
+  options,
+  formEat,
   children,
 }: {
   props?: Partial<ServingGet>;
+  options?: { meal?: boolean };
+  formEat?: FormEat;
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -39,7 +44,9 @@ export default function Crud({
         >
           <ScrollAreaAutosize mah={400} scrollbars={'y'}>
             <Box p={'sm'}>
-              <FormServing props={{ defaultValues: props, close }} />
+              <FormServing
+                props={{ defaultValues: props, options, close, formEat }}
+              />
             </Box>
           </ScrollAreaAutosize>
 

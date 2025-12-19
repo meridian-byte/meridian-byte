@@ -9,30 +9,30 @@ import {
   Group,
   NativeSelect,
   NumberInput,
-  TextInput,
+  Tooltip,
 } from '@mantine/core';
-import {
-  IconCoins,
-  IconLabel,
-  IconLetterCase,
-  IconSettingsQuestion,
-} from '@tabler/icons-react';
+import { IconCarrot, IconRuler2, IconWeight } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { capitalizeWords } from '@repo/utilities/string';
 import { ServingGet } from '@repo/types/models/serving';
 import { useMediaQuery } from '@mantine/hooks';
 import { WeightUnitType } from '@repo/types/models/enums';
+import { FormEat } from '@/hooks/form/eat';
 
 export default function Serving({
   props,
 }: {
   props?: {
     defaultValues?: Partial<ServingGet>;
+    options?: { meal?: boolean };
+    formEat?: FormEat;
     close?: () => void;
   };
 }) {
   const { form, submitted, handleSubmit, foods } = useFormServing({
     defaultValues: props?.defaultValues,
+    options: props?.options,
+    formEat: props?.formEat,
   });
 
   const mobile = useMediaQuery('(max-width: 36em)');
@@ -59,7 +59,7 @@ export default function Serving({
             label={mobile ? 'Food' : undefined}
             aria-label="Food"
             leftSection={
-              <IconLabel size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <IconCarrot size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
             disabled={!foods || foods.length === 0}
             data={[
@@ -79,7 +79,11 @@ export default function Serving({
             aria-label="Serving Size"
             placeholder="Serving Size"
             leftSection={
-              <IconCoins size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Serving quantity (eg. 300g)">
+                <Group>
+                  <IconWeight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             {...form.getInputProps('serving_size')}
           />
@@ -91,10 +95,11 @@ export default function Serving({
             label={mobile ? 'Serving Unit' : undefined}
             aria-label="Serving Unit"
             leftSection={
-              <IconSettingsQuestion
-                size={ICON_SIZE}
-                stroke={ICON_STROKE_WIDTH}
-              />
+              <Tooltip label="Serving unit (eg. grams)">
+                <Group>
+                  <IconRuler2 size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             data={[
               {

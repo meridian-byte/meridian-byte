@@ -3,31 +3,53 @@ import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { ServingGet } from '@repo/types/models/serving';
 import { Status, SyncStatus, WeightUnitType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
+import { FormEat } from '../form/eat';
 
-export const useServingActions = () => {
+export const useServingActions = (params?: { formEat?: FormEat }) => {
   const { session } = useStoreSession();
-  const { addServing, updateServing, deleteServing } = useStoreServing();
+  const { servings, setServings, updateServing, deleteServing } =
+    useStoreServing();
 
-  const servingCreate = (params: Partial<ServingGet>) => {
+  const servingCreate = (paramsCreate: Partial<ServingGet> | ServingGet[]) => {
     if (!session) return;
 
-    const id = generateUUID();
+    // if not array, convert to array
+    const paramsCreateArray = Array.isArray(paramsCreate)
+      ? paramsCreate
+      : [paramsCreate];
+
+    let newServings: ServingGet[] = [];
+
     const now = new Date();
 
-    const newServing: ServingGet = {
-      id: params.id || id,
-      serving_size: params.serving_size || 0,
-      serving_unit: params.serving_unit || WeightUnitType.GRAMS,
-      profile_id: session.id || params.profile_id || '',
-      food_id: params.food_id || '',
-      meal_id: params.meal_id || '',
-      status: params.status || Status.ACTIVE,
-      sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
-      updated_at: now.toISOString() as any,
-    };
+    paramsCreateArray.forEach((item) => {
+      const id = generateUUID();
 
-    addServing(newServing);
+      const newServing: ServingGet = {
+        id: item.id || id,
+        serving_size: item.serving_size || 0,
+        serving_unit: item.serving_unit || WeightUnitType.GRAMS,
+        profile_id: session.id || item.profile_id || '',
+        food_id: item.food_id || '',
+        meal_id: item.meal_id || '',
+        eat_id: item.eat_id || '',
+        status: item.status || Status.ACTIVE,
+        sync_status: SyncStatus.PENDING,
+        created_at: now.toISOString() as any,
+        updated_at: now.toISOString() as any,
+      };
+
+      newServings.push(newServing);
+    });
+
+    if (params?.formEat) {
+      params.formEat.setFieldValue('servings', [
+        ...(params.formEat.values.servings || []),
+        ...newServings,
+      ]);
+    } else {
+      setServings([...(servings || []), ...newServings]);
+    }
   };
 
   const servingUpdate = (params: ServingGet) => {
