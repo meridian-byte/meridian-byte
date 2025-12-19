@@ -111,6 +111,7 @@ export const useFormTransaction = (params?: {
         form.setFieldValue('category_id', '');
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, form.values.type]);
 
   return {

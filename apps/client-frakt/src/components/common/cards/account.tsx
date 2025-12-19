@@ -13,7 +13,6 @@ import {
 } from '@mantine/core';
 import { AccountGet } from '@repo/types/models/account';
 import { capitalizeWords } from '@repo/utilities/string';
-import { AccountType } from '@repo/types/models/enums';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
