@@ -37,16 +37,14 @@ import {
   AppShellValue,
   useStoreAppShell,
 } from '@/libraries/zustand/stores/shell';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreBudget } from '@/libraries/zustand/stores/budget';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
-import { categoriesGet } from '@repo/handlers/requests/database/category';
-import { budgetsGet } from '@repo/handlers/requests/database/budgets';
-import { accountsGet } from '@repo/handlers/requests/database/accounts';
-import { accountGroupsGet } from '@repo/handlers/requests/database/account-groups';
-import { transactionsGet } from '@repo/handlers/requests/database/transactions';
+import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { useStoreMeal } from '@/libraries/zustand/stores/meal';
+import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreEat } from '@/libraries/zustand/stores/eat';
+import { foodsGet } from '@repo/handlers/requests/database/foods';
+import { mealsGet } from '@repo/handlers/requests/database/meals';
+import { servingsGet } from '@repo/handlers/requests/database/servings';
+import { eatsGet } from '@repo/handlers/requests/database/eats';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -193,123 +191,97 @@ export const useStoreData = (params?: {
   const prevItemsRef = useRef<any[]>([]);
 
   const { session } = useStoreSession();
-  const { setCategories } = useStoreCategory();
-  const { setBudgets } = useStoreBudget();
-  const { setAccounts } = useStoreAccount();
-  const { setAccountGroups } = useStoreAccountGroup();
-  const { setTransactions } = useStoreTransaction();
+  const { setFoods } = useStoreFood();
+  const { setMeals } = useStoreMeal();
+  const { setServings } = useStoreServing();
+  const { setEats } = useStoreEat();
 
   useEffect(() => {
     if (prevItemsRef.current.length) return;
 
-    const loadCategories = async () => {
+    const loadFoods = async () => {
       await loadInitialData({
         prevItemsRef,
-        dataStore: STORE_NAME.CATEGORIES,
+        dataStore: STORE_NAME.FOODS,
         session,
         dataFetchFunction: async () => {
           if (clientOnly) {
             return { items: [] };
           } else {
-            return await categoriesGet();
+            return await foodsGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) => setFoods(stateUpdateItems),
+      });
+    };
+
+    loadFoods();
+  }, [setFoods, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadMeals = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.MEALS,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return { items: [] };
+          } else {
+            return await mealsGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) => setMeals(stateUpdateItems),
+      });
+    };
+
+    loadMeals();
+  }, [setMeals, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadServings = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.SERVINGS,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return { items: [] };
+          } else {
+            return await servingsGet();
           }
         },
         stateUpdateFunction: (stateUpdateItems) =>
-          setCategories(stateUpdateItems),
+          setServings(stateUpdateItems),
       });
     };
 
-    loadCategories();
-  }, [setCategories, session, clientOnly]);
+    loadServings();
+  }, [setServings, session, clientOnly]);
 
   useEffect(() => {
     if (prevItemsRef.current.length) return;
 
-    const loadBudgets = async () => {
+    const loadEats = async () => {
       await loadInitialData({
         prevItemsRef,
-        dataStore: STORE_NAME.BUDGETS,
+        dataStore: STORE_NAME.EATS,
         session,
         dataFetchFunction: async () => {
           if (clientOnly) {
             return { items: [] };
           } else {
-            return await budgetsGet();
+            return await eatsGet();
           }
         },
-        stateUpdateFunction: (stateUpdateItems) => setBudgets(stateUpdateItems),
+        stateUpdateFunction: (stateUpdateItems) => setEats(stateUpdateItems),
       });
     };
 
-    loadBudgets();
-  }, [setBudgets, session, clientOnly]);
-
-  useEffect(() => {
-    if (prevItemsRef.current.length) return;
-
-    const loadAccounts = async () => {
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: STORE_NAME.ACCOUNTS,
-        session,
-        dataFetchFunction: async () => {
-          if (clientOnly) {
-            return { items: [] };
-          } else {
-            return await accountsGet();
-          }
-        },
-        stateUpdateFunction: (stateUpdateItems) =>
-          setAccounts(stateUpdateItems),
-      });
-    };
-
-    loadAccounts();
-  }, [setAccounts, session, clientOnly]);
-
-  useEffect(() => {
-    if (prevItemsRef.current.length) return;
-
-    const loadAccountGroups = async () => {
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: STORE_NAME.ACCOUNT_GROUPS,
-        session,
-        dataFetchFunction: async () => {
-          if (clientOnly) {
-            return { items: [] };
-          } else {
-            return await accountGroupsGet();
-          }
-        },
-        stateUpdateFunction: (stateUpdateItems) =>
-          setAccountGroups(stateUpdateItems),
-      });
-    };
-
-    loadAccountGroups();
-  }, [setAccountGroups, session, clientOnly]);
-
-  useEffect(() => {
-    if (prevItemsRef.current.length) return;
-
-    const loadTransactions = async () => {
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: STORE_NAME.TRANSACTIONS,
-        session,
-        dataFetchFunction: async () => {
-          if (clientOnly) {
-            return { items: [] };
-          } else {
-            return await transactionsGet();
-          }
-        },
-        stateUpdateFunction: (stateUpdateItems) =>
-          setTransactions(stateUpdateItems),
-      });
-    };
-
-    loadTransactions();
-  }, [setTransactions, session, clientOnly]);
+    loadEats();
+  }, [setEats, session, clientOnly]);
 };

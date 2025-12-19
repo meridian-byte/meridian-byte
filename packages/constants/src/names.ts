@@ -43,4 +43,8 @@ export const STORE_NAME = {
   ACCOUNT_GROUPS: 'account-groups',
   BUDGETS: 'budgets',
   TRANSACTIONS: 'transactions',
+  FOODS: 'foods',
+  MEALS: 'meals',
+  SERVINGS: 'servings',
+  EATS: 'eats',
 };
