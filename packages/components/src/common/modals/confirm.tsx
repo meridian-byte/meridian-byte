@@ -32,11 +32,25 @@ export default function Confirm({
           </div>
 
           <Group justify="end" mt={'md'}>
-            <Button color="red.6" variant="outline" onClick={props?.onCancel}>
+            <Button
+              color="red.6"
+              variant="outline"
+              onClick={() => {
+                if (props?.onCancel) props.onCancel();
+                close();
+              }}
+            >
               Cancel
             </Button>
 
-            <Button onClick={props?.onConfirm}>Confirm</Button>
+            <Button
+              onClick={() => {
+                if (props?.onConfirm) props.onConfirm();
+                close();
+              }}
+            >
+              Confirm
+            </Button>
           </Group>
         </LayoutModal>
       </Modal>
