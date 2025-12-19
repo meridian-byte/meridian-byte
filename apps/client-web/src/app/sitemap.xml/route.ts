@@ -7,9 +7,9 @@ export const dynamic = 'force-static';
 
 export async function GET() {
   const today = new Date().toISOString().split('T')[0];
-  const beginningOfYear = new Date(new Date().getFullYear(), 0, 1)
-    .toISOString()
-    .split('T')[0];
+  // const beginningOfYear = new Date(new Date().getFullYear(), 0, 1)
+  //   .toISOString()
+  //   .split('T')[0];
 
   const staticRoutes = [
     '', // homepage

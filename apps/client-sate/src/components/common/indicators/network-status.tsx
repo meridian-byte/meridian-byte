@@ -49,7 +49,7 @@ export default function NetworkStatus({
     } else {
       debouncedCallback();
     }
-  }, [networkStatus.online]);
+  }, [networkStatus.online, cancel, debouncedCallback]);
 
   const syncStatusProps = getSycnStatusProps({ syncStatus });
 

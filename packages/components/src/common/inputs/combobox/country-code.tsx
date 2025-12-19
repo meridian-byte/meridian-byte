@@ -54,7 +54,7 @@ export default function CountryCode({
       onChange(val);
       combobox.closeDropdown();
     },
-    [combobox]
+    [combobox, onChange, setValue]
   );
 
   return (

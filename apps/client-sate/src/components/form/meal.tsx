@@ -25,7 +25,6 @@ import {
 import { MealGet } from '@repo/types/models/meal';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconAlignJustified, IconLetterCase } from '@tabler/icons-react';
-import LayoutSection from '@repo/components/layout/section';
 import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';

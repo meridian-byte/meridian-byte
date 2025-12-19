@@ -7,7 +7,6 @@
 
 import { useCallback, useEffect } from 'react';
 import { STORE_NAME } from '@repo/constants/names';
-import { postsUpdate } from '@repo/handlers/requests/database/posts';
 import { budgetsUpdate } from '@repo/handlers/requests/database/budgets';
 import { accountsUpdate } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsUpdate } from '@repo/handlers/requests/database/account-groups';
