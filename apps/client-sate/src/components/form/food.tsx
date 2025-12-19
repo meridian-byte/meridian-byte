@@ -3,6 +3,7 @@
 import React from 'react';
 import { useFormFood } from '@/hooks/form/food';
 import {
+  Box,
   Button,
   Divider,
   Grid,
@@ -12,6 +13,7 @@ import {
   NumberInput,
   Textarea,
   TextInput,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconAlignJustified,
@@ -20,11 +22,16 @@ import {
   IconBolt,
   IconCoins,
   IconDropCircle,
+  IconDroplet,
+  IconEggCracked,
+  IconEggs,
+  IconFlame,
   IconLetterCase,
   IconRuler2,
   IconSettingsQuestion,
   IconToolsKitchen,
   IconWeight,
+  IconWheat,
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { capitalizeWords } from '@repo/utilities/string';
@@ -91,7 +98,11 @@ export default function Food({
             aria-label="Per"
             placeholder="Per"
             leftSection={
-              <IconWeight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Quantity mass (eg. per 100g)">
+                <Group>
+                  <IconWeight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             {...form.getInputProps('per')}
           />
@@ -103,7 +114,11 @@ export default function Food({
             label={mobile ? 'Unit' : undefined}
             aria-label="Unit"
             leftSection={
-              <IconRuler2 size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Mass unit (eg. grams)">
+                <Group>
+                  <IconRuler2 size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             data={[
               {
@@ -134,7 +149,11 @@ export default function Food({
             aria-label="Carbs"
             placeholder="Carbs"
             leftSection={
-              <IconAtom2Filled size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Carbs">
+                <Group c="blue.6">
+                  <IconWheat size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             {...form.getInputProps('carbs')}
           />
@@ -147,7 +166,11 @@ export default function Food({
             aria-label="Protein"
             placeholder="Protein"
             leftSection={
-              <IconAtom2 size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Protein">
+                <Group c="green.6">
+                  <IconEggs size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             {...form.getInputProps('protein')}
           />
@@ -160,7 +183,11 @@ export default function Food({
             aria-label="Fat"
             placeholder="Fat"
             leftSection={
-              <IconDropCircle size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Fat">
+                <Group c="yellow.6">
+                  <IconDroplet size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             {...form.getInputProps('fat')}
           />
@@ -173,7 +200,11 @@ export default function Food({
             aria-label="Kcal"
             placeholder="Kcal"
             leftSection={
-              <IconBolt size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <Tooltip label="Calories (Kcal)">
+                <Group c={'red.6'}>
+                  <IconFlame size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </Group>
+              </Tooltip>
             }
             {...form.getInputProps('kcal')}
           />
