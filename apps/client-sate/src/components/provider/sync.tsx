@@ -17,11 +17,10 @@ import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
 import {
-  useSyncAccountGroups,
-  useSyncBudgets,
-  useSyncCategories,
-  useSyncAccounts,
-  useSyncTransactions,
+  useSyncFoods,
+  useSyncMeals,
+  useSyncServings,
+  useSyncEats,
 } from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
 
@@ -55,27 +54,22 @@ export default function Sync({
     clientOnly,
   };
 
-  const { syncCategories } = useSyncCategories({
+  const { syncFoods } = useSyncFoods({
     syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
-  const { syncBudgets } = useSyncBudgets({
+  const { syncMeals } = useSyncMeals({
     syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
-  const { syncAccounts } = useSyncAccounts({
+  const { syncServings } = useSyncServings({
     syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
-  const { syncAccountGroups } = useSyncAccountGroups({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  const { syncTransactions } = useSyncTransactions({
+  const { syncEats } = useSyncEats({
     syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
@@ -83,19 +77,11 @@ export default function Sync({
   useEffect(() => {
     if (!networkStatus.online) return;
 
-    syncCategories();
-    syncBudgets();
-    syncAccounts();
-    syncAccountGroups();
-    syncTransactions();
-  }, [
-    networkStatus.online,
-    syncCategories,
-    syncBudgets,
-    syncAccounts,
-    syncAccountGroups,
-    syncTransactions,
-  ]);
+    syncFoods();
+    syncMeals();
+    syncServings();
+    syncEats();
+  }, [networkStatus.online, syncFoods, syncMeals, syncServings, syncEats]);
 
   return <div>{children}</div>;
 }

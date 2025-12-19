@@ -4,6 +4,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Divider, Drawer, NavLink } from '@mantine/core';
 import { navLinkApp } from '@/data/links';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
+import NextLink from '@repo/components/common/anchor/next-link';
 // import ModalAccountGroupList from '../modals/account-group/list';
 // import ModalCategoryList from '../modals/category/list';
 
@@ -22,37 +23,39 @@ export default function Nav({ children }: { children: React.ReactNode }) {
 }
 
 export function NavComponent({ props }: { props?: { close?: () => void } }) {
-  const accountGroupProps = {
+  const foodsProps = {
+    link: navLinkApp[0].link,
     label: navLinkApp[0].label,
     icon: navLinkApp[0].icon,
   };
 
-  const categoryProps = {
+  const mealsProps = {
+    link: navLinkApp[1].link,
     label: navLinkApp[1].label,
     icon: navLinkApp[1].icon,
   };
 
   return (
     <div>
-      {/* <ModalAccountGroupList> */}
-      <NavLink
-        label={accountGroupProps.label}
-        onClick={props?.close}
-        leftSection={
-          <accountGroupProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-        }
-      />
-      {/* </ModalAccountGroupList> */}
+      <NextLink href={foodsProps.link || ''} underline="never">
+        <NavLink
+          label={foodsProps.label}
+          onClick={props?.close}
+          leftSection={
+            <foodsProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+        />
+      </NextLink>
 
-      {/* <ModalCategoryList> */}
-      <NavLink
-        label={categoryProps.label}
-        onClick={props?.close}
-        leftSection={
-          <categoryProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-        }
-      />
-      {/* </ModalCategoryList> */}
+      <NextLink href={mealsProps.link || ''} underline="never">
+        <NavLink
+          label={mealsProps.label}
+          onClick={props?.close}
+          leftSection={
+            <mealsProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+        />
+      </NextLink>
 
       <Divider />
 
