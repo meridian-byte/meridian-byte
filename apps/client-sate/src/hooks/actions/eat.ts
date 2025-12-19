@@ -1,0 +1,57 @@
+import { useStoreEat } from '@/libraries/zustand/stores/eat';
+import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { EatGet, EatRelations } from '@repo/types/models/eat';
+import { Status, SyncStatus } from '@repo/types/models/enums';
+import { generateUUID } from '@repo/utilities/generators';
+
+export const useEatActions = () => {
+  const { session } = useStoreSession();
+  const { addEat, updateEat, deleteEat } = useStoreEat();
+
+  const eatCreate = (params: Partial<EatRelations>) => {
+    if (!session) return;
+
+    const id = generateUUID();
+    const now = new Date();
+
+    const newEat: EatRelations = {
+      id: params.id || id,
+      profile_id: session.id || params.profile_id || '',
+      servings: params.servings || [],
+      status: params.status || Status.ACTIVE,
+      sync_status: SyncStatus.PENDING,
+      created_at: now.toISOString() as any,
+      updated_at: now.toISOString() as any,
+    };
+
+    addEat(newEat);
+  };
+
+  const eatUpdate = (params: EatRelations) => {
+    if (!session) return;
+
+    const now = new Date();
+
+    const newEat: EatRelations = {
+      ...params,
+      sync_status: SyncStatus.PENDING,
+      updated_at: now.toISOString() as any,
+    };
+
+    updateEat(newEat);
+  };
+
+  const eatDelete = (params: EatGet) => {
+    if (!session) return;
+
+    const now = new Date();
+
+    deleteEat({
+      ...params,
+      sync_status: SyncStatus.DELETED,
+      updated_at: now.toISOString() as any,
+    });
+  };
+
+  return { eatCreate, eatUpdate, eatDelete };
+};

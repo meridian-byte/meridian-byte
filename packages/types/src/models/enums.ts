@@ -44,3 +44,8 @@ export enum RecurringFrequency {
   SEMI_ANNUALLY = 'SEMI_ANNUALLY',
   ANNUALLY = 'ANNUALLY',
 }
+
+export enum WeightUnitType {
+  MILLIGRAMS = 'MILLIGRAMS',
+  GRAMS = 'GRAMS',
+}

@@ -1,23 +1,29 @@
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
+import { useStoreFood } from '@/libraries/zustand/stores/food';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
-import { AccountGroupGet } from '@repo/types/models/account-group';
-import { Status, SyncStatus } from '@repo/types/models/enums';
+import { FoodGet } from '@repo/types/models/food';
+import { Status, SyncStatus, WeightUnitType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
-export const useAccountGroupActions = () => {
+export const useFoodActions = () => {
   const { session } = useStoreSession();
-  const { addAccountGroup, updateAccountGroup, deleteAccountGroup } =
-    useStoreAccountGroup();
+  const { addFood, updateFood, deleteFood } = useStoreFood();
 
-  const accountGroupCreate = (params: Partial<AccountGroupGet>) => {
+  const foodCreate = (params: Partial<FoodGet>) => {
     if (!session) return;
 
     const id = generateUUID();
     const now = new Date();
 
-    const newAccountGroup: AccountGroupGet = {
+    const newFood: FoodGet = {
       id: params.id || id,
       name: params.name || '',
+      description: params.description || '',
+      per: params.per || 100,
+      per_unit: params.per_unit || WeightUnitType.GRAMS,
+      carbs: params.carbs || 0,
+      protein: params.protein || 0,
+      fat: params.fat || 0,
+      kcal: params.kcal || 0,
       profile_id: session.id || params.profile_id || '',
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
@@ -25,34 +31,34 @@ export const useAccountGroupActions = () => {
       updated_at: now.toISOString() as any,
     };
 
-    addAccountGroup(newAccountGroup);
+    addFood(newFood);
   };
 
-  const accountGroupUpdate = (params: AccountGroupGet) => {
+  const foodUpdate = (params: FoodGet) => {
     if (!session) return;
 
     const now = new Date();
 
-    const newAccountGroup: AccountGroupGet = {
+    const newFood: FoodGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
       updated_at: now.toISOString() as any,
     };
 
-    updateAccountGroup(newAccountGroup);
+    updateFood(newFood);
   };
 
-  const accountGroupDelete = (params: AccountGroupGet) => {
+  const foodDelete = (params: FoodGet) => {
     if (!session) return;
 
     const now = new Date();
 
-    deleteAccountGroup({
+    deleteFood({
       ...params,
       sync_status: SyncStatus.DELETED,
       updated_at: now.toISOString() as any,
     });
   };
 
-  return { accountGroupCreate, accountGroupUpdate, accountGroupDelete };
+  return { foodCreate, foodUpdate, foodDelete };
 };

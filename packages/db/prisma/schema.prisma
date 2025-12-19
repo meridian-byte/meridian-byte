@@ -61,6 +61,11 @@ enum CategoryType {
   DEBIT
 }
 
+enum WeightUnitType {
+  MILLIGRAMS
+  GRAMS
+}
+
 enum RecurringFrequency {
   DAILY
   WEEKLY
@@ -89,6 +94,10 @@ model Profile {
   accounts      Account[]
   transactions  Transaction[]
   budgets       Budget[]
+  food          Food[]
+  meals         Meal[]
+  servings      Serving[]
+  eats          Eat[]
 
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
@@ -170,16 +179,16 @@ model AccountGroup {
   id   String @id @default(cuid())
   name String // e.g., 'Bank Accounts', 'Savings', 'Credit Cards'
 
-  status Status @default(DRAFT)
-
   profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id String
 
   accounts Account[]
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@unique([profile_id, name])
   @@map(name: "account_groups")
@@ -194,8 +203,6 @@ model Account {
   currency_code String? // eg. USD, EUR, KES
   description   String?
 
-  status Status @default(DRAFT)
-
   profile    Profile      @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id String
   group      AccountGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
@@ -203,9 +210,11 @@ model Account {
 
   transactions Transaction[]
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@unique([profile_id, name, group_id])
   @@map(name: "accounts")
@@ -219,8 +228,6 @@ model Transaction {
   fees        Decimal         @default("0.00") @db.Decimal(8, 2)
   description String?
 
-  status Status @default(DRAFT)
-
   profile           Profile        @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id        String
   account           Account        @relation(fields: [account_id], references: [id], onDelete: Cascade)
@@ -230,9 +237,11 @@ model Transaction {
   recurring_rule    RecurringRule? @relation(fields: [recurring_rule_id], references: [id], onDelete: Cascade)
   recurring_rule_id String?
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map(name: "transactions")
 }
@@ -245,13 +254,13 @@ model RecurringRule {
   interval  Int                 @default(1)
   end       DateTime?
 
-  status Status @default(DRAFT)
-
   transactions Transaction[]
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map(name: "recurring_rules")
 }
@@ -262,16 +271,100 @@ model Budget {
   start DateTime // Start of the budget period (e.g., 2025-11-01)
   end   DateTime // End of the budget period (e.g., 2025-11-30)
 
-  status Status @default(DRAFT)
-
   profile     Profile  @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id  String
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
   category_id String
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
   @@map(name: "budgets")
+}
+
+model Food {
+  id          String         @id @default(cuid())
+  name        String // eg. brand name
+  description String? // eg. food type (whole brown bread)
+  per         Int // eg. (100)
+  per_unit    WeightUnitType // eg. (grams)
+  carbs       Int
+  protein     Int
+  fat         Int
+  kcal        Int
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  servings Serving[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "foods")
+}
+
+model Meal {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  servings Serving[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "meals")
+}
+
+model Serving {
+  id           String         @id @default(cuid())
+  serving_size Int // eg. (100)
+  serving_unit WeightUnitType // eg. (grams)
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+  food       Food    @relation(fields: [food_id], references: [id], onDelete: Cascade)
+  food_id    String
+  meal       Meal?   @relation(fields: [meal_id], references: [id], onDelete: Cascade)
+  meal_id    String?
+
+  eats Eat[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "servings")
+}
+
+model Eat {
+  id String @id @default(cuid())
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  servings Serving[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "eats")
 }

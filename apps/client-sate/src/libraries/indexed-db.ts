@@ -18,27 +18,19 @@ export const config: DBConfig = {
       keyPath: 'id',
     },
     {
-      name: STORE_NAME.ACCOUNTS,
+      name: STORE_NAME.FOODS,
       keyPath: 'id',
     },
     {
-      name: STORE_NAME.ACCOUNT_GROUPS,
+      name: STORE_NAME.MEALS,
       keyPath: 'id',
     },
     {
-      name: STORE_NAME.BUDGETS,
+      name: STORE_NAME.SERVINGS,
       keyPath: 'id',
     },
     {
-      name: STORE_NAME.CATEGORIES,
-      keyPath: 'id',
-    },
-    {
-      name: STORE_NAME.TRANSACTIONS,
-      keyPath: 'id',
-    },
-    {
-      name: STORE_NAME.CATEGORIES,
+      name: STORE_NAME.EATS,
       keyPath: 'id',
     },
   ],
