@@ -49,3 +49,9 @@ export enum WeightUnitType {
   MILLIGRAMS = 'MILLIGRAMS',
   GRAMS = 'GRAMS',
 }
+
+export enum EatTime {
+  BREAKFAST = 'BREAKFAST',
+  LUNCH = 'LUNCH',
+  DINNER = 'DINNER',
+}
