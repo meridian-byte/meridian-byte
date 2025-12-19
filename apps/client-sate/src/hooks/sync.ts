@@ -156,7 +156,7 @@ export const useSyncEats = (params: {
     syncFunction({
       items: eats || [],
       deletedItems: deletedEats,
-      dataStore: STORE_NAME.SERVINGS,
+      dataStore: STORE_NAME.EATS,
       stateUpdateFunctionDeleted: () => clearDeletedEats(),
       stateUpdateFunction: (i) => setEats(i),
       serverUpdateFunction: async (i, di) => await eatsUpdate(i, di),
