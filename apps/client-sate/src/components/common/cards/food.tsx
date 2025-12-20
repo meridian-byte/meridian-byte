@@ -3,6 +3,8 @@
 import React from 'react';
 import {
   Card,
+  Grid,
+  GridCol,
   Group,
   NumberFormatter,
   Stack,
@@ -10,7 +12,6 @@ import {
   Title,
 } from '@mantine/core';
 import { FoodGet } from '@repo/types/models/food';
-import { capitalizeWords } from '@repo/utilities/string';
 import { getFoodServingTotals, getUnitShorts } from '@/utilities/string';
 
 export default function Food({ props }: { props: FoodGet }) {
@@ -20,7 +21,7 @@ export default function Food({ props }: { props: FoodGet }) {
 
   return (
     <Card radius={0} bg={'transparent'} padding={0} py={5}>
-      <Group justify="space-between">
+      <Group justify="space-between" wrap="nowrap">
         <Stack gap={2}>
           <Title order={3} fz={'md'} fw={'normal'} lineClamp={1}>
             {props.description},{' '}
@@ -29,7 +30,7 @@ export default function Food({ props }: { props: FoodGet }) {
             </Text>
           </Title>
 
-          <Group fz={'sm'} c={'dimmed'}>
+          <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
             <Text inherit lineClamp={1}>
               <Text component="span" inherit>
                 <Text component="span" inherit c={'blue.6'}>
@@ -56,12 +57,17 @@ export default function Food({ props }: { props: FoodGet }) {
         </Stack>
 
         <Stack gap={0} align="end" ta={'end'}>
-          <Text inherit>
-            <NumberFormatter value={props.kcal} /> Kcal
+          <Text inherit fz={{ base: 'sm', xs: 'md' }}>
+            <NumberFormatter value={totalNutrients.totalKcal} /> Kcal
           </Text>
 
-          <Text inherit fz={'sm'} c={'dimmed'}>
-            per/{props.per} {capitalizeWords(props.per_unit)}
+          <Text
+            inherit
+            fz={{ base: 'xs', xs: 'sm' }}
+            c={'dimmed'}
+            lineClamp={1}
+          >
+            per/{props.per} {props.per_unit.toLowerCase().slice(0, 2)}
           </Text>
         </Stack>
       </Group>
