@@ -21,6 +21,7 @@ import {
   useSyncMeals,
   useSyncServings,
   useSyncEats,
+  useSyncMasses,
 } from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
 
@@ -74,6 +75,11 @@ export default function Sync({
     online: networkStatus.online,
   });
 
+  const { syncMasses } = useSyncMasses({
+    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    online: networkStatus.online,
+  });
+
   useEffect(() => {
     if (!networkStatus.online) return;
 
@@ -81,7 +87,15 @@ export default function Sync({
     syncMeals();
     syncServings();
     syncEats();
-  }, [networkStatus.online, syncFoods, syncMeals, syncServings, syncEats]);
+    syncMasses();
+  }, [
+    networkStatus.online,
+    syncFoods,
+    syncMeals,
+    syncServings,
+    syncEats,
+    syncMasses,
+  ]);
 
   return <div>{children}</div>;
 }

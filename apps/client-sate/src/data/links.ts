@@ -15,6 +15,7 @@ import {
   IconLock,
   IconLogout,
   IconPackage,
+  IconScaleOutline,
   IconSettings,
   IconSoup,
   IconStar,
@@ -120,6 +121,11 @@ export const navLinkApp = [
     link: '/app/meals',
     label: 'Meals',
     icon: IconSoup,
+  },
+  {
+    link: '/app/masses',
+    label: 'Weight Entries',
+    icon: IconScaleOutline,
   },
   {
     label: 'Settings',

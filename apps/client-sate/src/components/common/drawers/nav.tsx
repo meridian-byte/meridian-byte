@@ -35,6 +35,12 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
     icon: navLinkApp[1].icon,
   };
 
+  const weightsProps = {
+    link: navLinkApp[2].link,
+    label: navLinkApp[2].label,
+    icon: navLinkApp[2].icon,
+  };
+
   return (
     <div>
       <NextLink href={foodsProps.link || ''} underline="never">
@@ -58,16 +64,30 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
         />
       </NextLink>
 
+      <NextLink href={weightsProps.link || ''} underline="never">
+        <NavLink
+          label={weightsProps.label}
+          onClick={props?.close}
+          leftSection={
+            <weightsProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+        />
+      </NextLink>
+
       <Divider />
 
-      {navLinkApp.slice(2, navLinkApp.length).map((nl, i) => (
-        <NavLink
-          key={i}
-          label={nl.label}
-          onClick={props?.close}
-          leftSection={<nl.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-        />
-      ))}
+      {navLinkApp
+        .slice(navLinkApp.length - 1, navLinkApp.length)
+        .map((nl, i) => (
+          <NavLink
+            key={i}
+            label={nl.label}
+            onClick={props?.close}
+            leftSection={
+              <nl.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+          />
+        ))}
     </div>
   );
 }
