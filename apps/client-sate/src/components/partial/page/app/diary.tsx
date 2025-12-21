@@ -11,6 +11,7 @@ import {
   Loader,
   NumberFormatter,
   Progress,
+  RingProgress,
   Skeleton,
   Stack,
   Text,
@@ -41,7 +42,9 @@ import { DateInput } from '@mantine/dates';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 import { COLOR_CODES } from '@repo/constants/other';
-import { formatNumber } from '@/utilities/string';
+import { useStoreMass } from '@/libraries/zustand/stores/mass';
+import { calculateMacros } from '@/utilities/weight';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Diary() {
   const { servings } = useStoreServing();
@@ -129,6 +132,8 @@ export function DiaryOverview({
 }: {
   props?: { entryDate?: EntryDateReturnType };
 }) {
+  const mobile = useMediaQuery('(max-width: 36em)');
+
   const { eats } = useStoreEat();
 
   const dayEats = eats?.filter((e) => {
@@ -140,47 +145,52 @@ export function DiaryOverview({
 
   const { totalEatenNutrients } = useEatTotals({ eats: dayEats || [] });
 
+  const { masses } = useStoreMass();
+
+  const latestMass = masses?.reduce((a, b) =>
+    new Date(a.created_at) > new Date(b.created_at) ? a : b
+  );
+
+  const dailyMacros = calculateMacros({
+    weightKg: latestMass?.weight || 0,
+    leanMassKg: latestMass?.lean_weight || 0,
+  });
+
   const overview = [
     {
       value: totalEatenNutrients.totalCarbs,
       color: `${COLOR_CODES.FOOD.CARBS}.6`,
       label: 'Carbs',
-      percentage: formatNumber(
-        (Number(totalEatenNutrients.totalCarbs) /
-          (Number(totalEatenNutrients.totalCarbs) +
-            Number(totalEatenNutrients.totalProtein) +
-            Number(totalEatenNutrients.totalFat))) *
-          100
-      ),
+      goal: dailyMacros.carbs,
+      unit: 'grams',
+      progress:
+        (Number(totalEatenNutrients.totalCarbs) / dailyMacros.carbs) * 100,
     },
     {
       value: totalEatenNutrients.totalProtein,
       color: `${COLOR_CODES.FOOD.PROTEINS}.6`,
       label: 'Protein',
-      percentage: formatNumber(
-        (Number(totalEatenNutrients.totalProtein) /
-          (Number(totalEatenNutrients.totalCarbs) +
-            Number(totalEatenNutrients.totalProtein) +
-            Number(totalEatenNutrients.totalFat))) *
-          100
-      ),
+      goal: dailyMacros.protein,
+      unit: 'grams',
+      progress:
+        (Number(totalEatenNutrients.totalProtein) / dailyMacros.protein) * 100,
     },
     {
       value: totalEatenNutrients.totalFat,
       color: `${COLOR_CODES.FOOD.FATS}.6`,
       label: 'Fat',
-      percentage: formatNumber(
-        (Number(totalEatenNutrients.totalFat) /
-          (Number(totalEatenNutrients.totalCarbs) +
-            Number(totalEatenNutrients.totalProtein) +
-            Number(totalEatenNutrients.totalFat))) *
-          100
-      ),
+      goal: dailyMacros.fat,
+      unit: 'grams',
+      progress: (Number(totalEatenNutrients.totalFat) / dailyMacros.fat) * 100,
     },
     {
       value: totalEatenNutrients.totalKcal,
       label: 'Calories',
       color: `${COLOR_CODES.FOOD.KCAL}.6`,
+      goal: dailyMacros.kcal,
+      unit: 'Kcal',
+      progress:
+        (Number(totalEatenNutrients.totalKcal) / dailyMacros.kcal) * 100,
     },
   ];
 
@@ -199,57 +209,79 @@ export function DiaryOverview({
         </>
       )}
 
-      <Group
-        justify="center"
-        grow
-        pb={'md'}
-        pt={!props?.entryDate ? 'sm' : undefined}
-      >
+      <Group justify="center" grow py={'md'}>
         {overview.map((oi, i) => {
-          const totalsValid = oi.percentage && Number(oi.percentage);
-
           return (
             <Stack key={i} gap={0} align="center">
-              {eats === undefined ? (
-                <Skeleton h={24} w={24} />
-              ) : (
-                <Text
-                  component="span"
-                  inherit
-                  c={`${oi.color}.6`}
-                  ta={'center'}
-                  fw={500}
-                >
-                  <NumberFormatter value={oi.value} decimalScale={2} />
-                </Text>
+              <RingProgress
+                size={mobile ? 64 : 96}
+                thickness={ICON_STROKE_WIDTH}
+                roundCaps
+                transitionDuration={500}
+                label={
+                  <Stack align="center" gap={0}>
+                    {eats === undefined ? (
+                      <Skeleton h={24} w={24} />
+                    ) : (
+                      <Text
+                        component="span"
+                        inherit
+                        c={`${oi.color}.6`}
+                        ta={'center'}
+                        fw={500}
+                        fz={{ base: 'sm', xs: 'md' }}
+                      >
+                        <NumberFormatter value={oi.value} decimalScale={2} />{' '}
+                        {i == overview.length - 1 ? '' : oi.unit[0]}
+                      </Text>
+                    )}
+
+                    <Text
+                      inherit
+                      ta={'center'}
+                      fz={'sm'}
+                      c={'dimmed'}
+                      visibleFrom="xs"
+                    >
+                      {oi.label}
+                    </Text>
+                  </Stack>
+                }
+                sections={[{ value: oi.progress || 0, color: oi.color }]}
+              />
+
+              {!props?.entryDate && (
+                <>
+                  <Group
+                    justify="center"
+                    w={64}
+                    mt={5}
+                    mb={!props?.entryDate ? 5 : 0}
+                  >
+                    <Divider
+                      color={oi.color}
+                      size={ICON_STROKE_WIDTH}
+                      w={'100%'}
+                    />
+                  </Group>
+
+                  {dayEats === undefined ? (
+                    <Skeleton h={22} w={44} />
+                  ) : (
+                    oi.goal && (
+                      <Text
+                        inherit
+                        fz={{ base: 'xs', xs: 'sm' }}
+                        c={'dimmed'}
+                        ta={'center'}
+                        mih={21.7}
+                      >
+                        {oi.goal} {oi.unit[0]}
+                      </Text>
+                    )
+                  )}
+                </>
               )}
-
-              <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
-                {oi.label}
-              </Text>
-
-              <Group
-                justify="center"
-                w={64}
-                mt={5}
-                mb={!props?.entryDate ? 5 : 0}
-              >
-                <Progress
-                  value={100}
-                  color={oi.color}
-                  size={ICON_STROKE_WIDTH}
-                  w={'100%'}
-                />
-              </Group>
-
-              {!props?.entryDate &&
-                (dayEats === undefined ? (
-                  <Skeleton h={22} w={44} />
-                ) : (
-                  <Text inherit fz={'sm'} c={'dimmed'} ta={'center'} mih={21.7}>
-                    {totalsValid ? `${oi.percentage} %` : ''}
-                  </Text>
-                ))}
             </Stack>
           );
         })}
