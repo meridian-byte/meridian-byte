@@ -27,6 +27,12 @@ export default function Nav({ children }: { children: React.ReactNode }) {
     icon: navLinkApp[1].icon,
   };
 
+  const weightsProps = {
+    link: navLinkApp[2].link,
+    label: navLinkApp[2].label,
+    icon: navLinkApp[2].icon,
+  };
+
   return (
     <Menu shadow="md" width={240} keepMounted>
       <MenuTarget>
@@ -54,18 +60,30 @@ export default function Nav({ children }: { children: React.ReactNode }) {
           </MenuItem>
         </NextLink>
 
-        <MenuDivider />
-
-        {navLinkApp.slice(2, navLinkApp.length).map((nl) => (
+        <NextLink href={weightsProps.link || ''} underline="never">
           <MenuItem
-            key={nl.label}
             leftSection={
-              <nl.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <weightsProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
           >
-            {nl.label}
+            {weightsProps.label}
           </MenuItem>
-        ))}
+        </NextLink>
+
+        <MenuDivider />
+
+        {navLinkApp
+          .slice(navLinkApp.length - 1, navLinkApp.length)
+          .map((nl) => (
+            <MenuItem
+              key={nl.label}
+              leftSection={
+                <nl.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+            >
+              {nl.label}
+            </MenuItem>
+          ))}
       </MenuDropdown>
     </Menu>
   );
