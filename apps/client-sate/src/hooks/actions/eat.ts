@@ -23,7 +23,7 @@ export const useEatActions = () => {
       servings: [],
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
+      created_at: (params.created_at || now.toISOString()) as any,
       updated_at: now.toISOString() as any,
     };
 
