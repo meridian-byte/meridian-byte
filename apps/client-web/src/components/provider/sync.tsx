@@ -8,16 +8,13 @@
  */
 
 import React, { useEffect } from 'react';
-import {
-  useDebouncedCallback,
-  useNetwork,
-  useThrottledCallback,
-} from '@mantine/hooks';
+import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
 import { useSyncCategories, useSyncPosts } from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
+import { useSyncQueue } from '@repo/utilities/sync';
 
 export default function Sync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
@@ -25,7 +22,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   const { session } = useStoreSession();
   const { syncStatus, setSyncStatus } = useStoreSyncStatus();
 
-  const debounceSync = useThrottledCallback(handleSync, 1000);
+  const enqueueSync = useSyncQueue({ syncFunction: handleSync });
 
   const debounceSyncToServer = useDebouncedCallback(
     syncToServerAfterDelay,
@@ -41,12 +38,12 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   };
 
   const { syncPosts } = useSyncPosts({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncCategories } = useSyncCategories({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
