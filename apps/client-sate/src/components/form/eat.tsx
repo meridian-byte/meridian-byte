@@ -14,6 +14,7 @@ export default function Eat({
     submitted: boolean;
     handleSubmit: () => void;
     close?: () => void;
+    diaryDate?: string;
   };
 }) {
   const mobile = useMediaQuery('(max-width: 36em)');
@@ -28,7 +29,7 @@ export default function Eat({
     >
       <Grid gutter={mobile ? 'xs' : undefined}>
         <GridCol span={12}>
-          <TabsEat props={{ form: props.form }} />
+          <TabsEat props={{ form: props.form, diaryDate: props.diaryDate }} />
         </GridCol>
 
         <GridCol span={12}>
