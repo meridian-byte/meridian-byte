@@ -1,20 +1,24 @@
 'use client';
 
-import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+} from '@repo/constants/sizes';
 import { useDebouncedCallback } from '@repo/hooks/utility';
-import { Badge, Group, ThemeIcon, Tooltip, Transition } from '@mantine/core';
-import { useNetwork } from '@mantine/hooks';
+import { Group, ThemeIcon, Tooltip, Transition } from '@mantine/core';
+import { useMediaQuery, useNetwork } from '@mantine/hooks';
 import { SyncStatus } from '@repo/types/models/enums';
 import {
   IconCheck,
   IconCloudX,
   IconDeviceDesktopCheck,
+  IconDeviceMobileCheck,
   IconWifi,
   IconWifiOff,
 } from '@tabler/icons-react';
 import React, { useEffect, useState } from 'react';
 import SpinnerApp from '@repo/components/common/spinners/app';
-import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 
 enum Context {
   NETWORK = 'network',
@@ -24,13 +28,11 @@ enum Context {
 export default function NetworkStatus({
   props,
 }: {
-  props?: { itemSyncStatus?: SyncStatus };
+  props: { itemSyncStatus?: SyncStatus; syncStatus: SyncStatus };
 }) {
   const networkStatus = useNetwork();
   const [offline, setOffline] = useState(!networkStatus.online);
   useEffect(() => setOffline(!networkStatus.online), [networkStatus.online]);
-
-  const { syncStatus } = useStoreSyncStatus();
 
   const [context, setContext] = useState<Context>(
     !networkStatus.online ? Context.NETWORK : Context.SYNC
@@ -51,7 +53,11 @@ export default function NetworkStatus({
     }
   }, [networkStatus.online, cancel, debouncedCallback]);
 
-  const syncStatusProps = getSycnStatusProps({ syncStatus });
+  const mobile = useMediaQuery('(max-width: 36em)');
+  const syncStatusProps = getSycnStatusProps({
+    syncStatus: props.syncStatus,
+    mobile,
+  });
 
   return context == Context.NETWORK ? (
     <Transition
@@ -65,25 +71,29 @@ export default function NetworkStatus({
     >
       {(styles) => (
         <div style={styles}>
-          <Badge
-            variant="light"
-            color={!networkStatus.online ? 'yellow' : 'green'}
-            leftSection={
-              !networkStatus.online ? (
-                <IconWifiOff size={10} />
-              ) : (
-                <IconWifi size={10} />
-              )
-            }
+          <Tooltip
+            label={!networkStatus.online ? 'Working Offline' : 'Back Online'}
           >
-            {!networkStatus.online ? 'Working Offline' : 'Back Online'}
-          </Badge>
+            <Group>
+              <ThemeIcon
+                size={ICON_WRAPPER_SIZE}
+                variant="light"
+                color={!networkStatus.online ? 'yellow.6' : 'green.6'}
+              >
+                {!networkStatus.online ? (
+                  <IconWifiOff size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                ) : (
+                  <IconWifi size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                )}
+              </ThemeIcon>
+            </Group>
+          </Tooltip>
         </div>
       )}
     </Transition>
   ) : (
     <Transition
-      mounted={(props?.itemSyncStatus || syncStatus) != SyncStatus.SYNCED}
+      mounted={(props?.itemSyncStatus || props.syncStatus) != SyncStatus.SYNCED}
       transition="fade"
       duration={250}
       enterDelay={2000}
@@ -96,7 +106,7 @@ export default function NetworkStatus({
           <Tooltip label={syncStatusProps.label}>
             <Group>
               <ThemeIcon
-                size={ICON_WRAPPER_SIZE / 1.25}
+                size={ICON_WRAPPER_SIZE}
                 variant="transparent"
                 c={syncStatusProps.color}
               >
@@ -110,20 +120,22 @@ export default function NetworkStatus({
   );
 }
 
-const getSycnStatusProps = (params: { syncStatus: SyncStatus }) => {
+const getSycnStatusProps = (params: {
+  syncStatus: SyncStatus;
+  mobile: boolean;
+}) => {
   const spinner = <SpinnerApp props={{ size: ICON_WRAPPER_SIZE / 1.5 }} />;
+
+  const iconProp = {
+    icon: params.mobile ? IconDeviceMobileCheck : IconDeviceDesktopCheck,
+  };
 
   switch (params.syncStatus) {
     case SyncStatus.ERROR:
       return {
         label: 'Sync Error',
         color: 'var(--mantine-color-red-6)',
-        icon: (
-          <IconCloudX
-            size={ICON_WRAPPER_SIZE / 1.25}
-            stroke={ICON_STROKE_WIDTH}
-          />
-        ),
+        icon: <IconCloudX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       };
     case SyncStatus.PENDING:
       return {
@@ -135,23 +147,13 @@ const getSycnStatusProps = (params: { syncStatus: SyncStatus }) => {
       return {
         label: 'Saved to Device',
         color: 'var(--mantine-color-yellow-6)',
-        icon: (
-          <IconDeviceDesktopCheck
-            size={ICON_WRAPPER_SIZE / 1.25}
-            stroke={ICON_STROKE_WIDTH}
-          />
-        ),
+        icon: <iconProp.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       };
     case SyncStatus.SYNCED:
       return {
         label: 'Saved to Cloud',
         color: 'var(--mantine-color-green-6)',
-        icon: (
-          <IconCheck
-            size={ICON_WRAPPER_SIZE / 1.25}
-            stroke={ICON_STROKE_WIDTH}
-          />
-        ),
+        icon: <IconCheck size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       };
     default:
       return {
