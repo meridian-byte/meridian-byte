@@ -13,6 +13,7 @@ import { MealGet } from '@repo/types/models/meal';
 import { getUnitShorts } from '@/utilities/string';
 import { WeightUnitType } from '@repo/types/models/enums';
 import { useMealTotals } from '@/hooks/nutrients';
+import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Meal({ props }: { props: MealGet }) {
   const { totalMealNutrients } = useMealTotals({ meal: props });
@@ -33,21 +34,29 @@ export default function Meal({ props }: { props: MealGet }) {
           <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
             <Text inherit lineClamp={1}>
               <Text component="span" inherit>
-                <Text component="span" inherit c={'blue.6'}>
+                <Text
+                  component="span"
+                  inherit
+                  c={`${COLOR_CODES.FOOD.CARBS}.6`}
+                >
                   <NumberFormatter value={totalMealNutrients.totalCarbs} />
                 </Text>{' '}
                 {getUnitShorts(WeightUnitType.GRAMS)}
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                <Text component="span" inherit c={'green.6'}>
+                <Text
+                  component="span"
+                  inherit
+                  c={`${COLOR_CODES.FOOD.PROTEINS}.6`}
+                >
                   <NumberFormatter value={totalMealNutrients.totalProtein} />
                 </Text>{' '}
                 {getUnitShorts(WeightUnitType.GRAMS)}
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                <Text component="span" inherit c={'yellow.6'}>
+                <Text component="span" inherit c={`${COLOR_CODES.FOOD.FATS}.6`}>
                   <NumberFormatter value={totalMealNutrients.totalFat} />
                 </Text>{' '}
                 {getUnitShorts(WeightUnitType.GRAMS)}

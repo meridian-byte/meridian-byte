@@ -29,27 +29,31 @@ export default function Mass({ props }: { props: MassGet }) {
           <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
             <Text inherit lineClamp={1}>
               <Text component="span" inherit>
-                Fat:{' '}
-                <Text component="span" inherit c={'blue.6'}>
+                <Text
+                  component="span"
+                  inherit
+                  c={`${COLOR_CODES.MASSES.FAT}.6`}
+                >
                   <NumberFormatter value={props.fat} />
                 </Text>{' '}
-                Kg
+                Kg{' '}
+                <Text component="span" inherit fz={'xs'}>
+                  ({massPercentages.fat}%)
+                </Text>
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                Muscle:{' '}
-                <Text component="span" inherit c={'green.6'}>
+                <Text
+                  component="span"
+                  inherit
+                  c={`${COLOR_CODES.MASSES.MUSCLE}.6`}
+                >
                   <NumberFormatter value={props.muscle} />
                 </Text>{' '}
-                Kg
-              </Text>
-              ,{' '}
-              <Text component="span" inherit>
-                Water:{' '}
-                <Text component="span" inherit c={'yellow.6'}>
-                  <NumberFormatter value={props.water} />
-                </Text>{' '}
-                Kg
+                Kg{' '}
+                <Text component="span" inherit fz={'xs'}>
+                  ({massPercentages.muscle}%)
+                </Text>
               </Text>
             </Text>
           </Group>
@@ -59,7 +63,19 @@ export default function Mass({ props }: { props: MassGet }) {
           <Text inherit fz={{ base: 'sm', xs: 'md' }}>
             <NumberFormatter value={props.weight} /> Kg
           </Text>
-        </Group>
+
+          <Text component="span" inherit fz={'xs'} c={'dimmed'}>
+            BMI:{' '}
+            <Text
+              component="span"
+              inherit
+              c={`${COLOR_CODES.MASSES.BMI}.6`}
+              fz={'sm'}
+            >
+              <NumberFormatter value={props.bmi} />
+            </Text>
+          </Text>
+        </Stack>
       </Group>
     </Card>
   );
