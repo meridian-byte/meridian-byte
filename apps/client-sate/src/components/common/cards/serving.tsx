@@ -13,6 +13,7 @@ import { ServingGet } from '@repo/types/models/serving';
 import { useStoreFood } from '@/libraries/zustand/stores/food';
 import { capitalizeWords } from '@repo/utilities/string';
 import { getFoodServingTotals, getUnitShorts } from '@/utilities/string';
+import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Serving({ props }: { props: ServingGet }) {
   const { foods } = useStoreFood();
@@ -48,32 +49,35 @@ export default function Serving({ props }: { props: ServingGet }) {
         >
           <Text inherit lineClamp={1}>
             <Text component="span" inherit>
-              <Text component="span" inherit c={'blue.6'}>
+              <Text component="span" inherit c={`${COLOR_CODES.FOOD.CARBS}.6`}>
                 <NumberFormatter value={totalNutrients.totalCarbs} />
               </Text>{' '}
               {getUnitShorts(props.serving_unit)}
             </Text>
             ,{' '}
             <Text component="span" inherit>
-              <Text component="span" inherit c={'green.6'}>
+              <Text
+                component="span"
+                inherit
+                c={`${COLOR_CODES.FOOD.PROTEINS}.6`}
+              >
                 <NumberFormatter value={totalNutrients.totalProtein} />
               </Text>{' '}
               {getUnitShorts(props.serving_unit)}
             </Text>
             ,{' '}
             <Text component="span" inherit>
-              <Text component="span" inherit c={'yellow.6'}>
+              <Text component="span" inherit c={`${COLOR_CODES.FOOD.FATS}.6`}>
                 <NumberFormatter value={totalNutrients.totalFat} />
               </Text>{' '}
               {getUnitShorts(props.serving_unit)}
             </Text>{' '}
-            <Text
-              component="span"
-              inherit
-              hiddenFrom="xs"
-              c={'var(--mantine-color-text)'}
-            >
-              - <NumberFormatter value={totalNutrients.totalKcal} /> Kcal
+            -{' '}
+            <Text component="span" inherit>
+              <Text component="span" inherit c={`${COLOR_CODES.FOOD.KCAL}.6`}>
+                <NumberFormatter value={totalNutrients.totalKcal} />
+              </Text>{' '}
+              Kcal
             </Text>
           </Text>
 

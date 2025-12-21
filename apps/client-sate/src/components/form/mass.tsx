@@ -11,24 +11,21 @@ import {
   Tooltip,
 } from '@mantine/core';
 import {
-  IconAlignJustified,
   IconAtom,
   IconBarbell,
   IconBone,
   IconCalendar,
   IconDroplet,
-  IconDropletHalf2,
   IconDropletHeart,
   IconGauge,
-  IconLetterCase,
   IconMan,
   IconScaleOutline,
-  IconWeight,
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { MassGet } from '@repo/types/models/mass';
 import { useMediaQuery } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
+import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Mass({
   props,
@@ -53,7 +50,7 @@ export default function Mass({
       noValidate
     >
       <Grid gutter={mobile ? 'xs' : undefined}>
-        <GridCol span={6}>
+        <GridCol span={12}>
           <DateInput
             required
             label={mobile ? 'Day Measured' : undefined}
@@ -106,7 +103,7 @@ export default function Mass({
                 maw={240}
                 label="Total weight of all fat in the body (including visceral fat)."
               >
-                <Group>
+                <Group c={`${COLOR_CODES.MASSES.FAT}.6`}>
                   <IconDroplet size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>
@@ -127,7 +124,7 @@ export default function Mass({
                 maw={240}
                 label="Fat found in the abdominal cavity surrounding the organs."
               >
-                <Group>
+                <Group c={`${COLOR_CODES.MASSES.FAT}.6`}>
                   <IconDropletHeart
                     size={ICON_SIZE}
                     stroke={ICON_STROKE_WIDTH}
@@ -172,7 +169,7 @@ export default function Mass({
                 maw={240}
                 label="Total weight of soft muscle tissue."
               >
-                <Group>
+                <Group c={`${COLOR_CODES.MASSES.MUSCLE}.6`}>
                   <IconBarbell size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>
@@ -202,7 +199,7 @@ export default function Mass({
           />
         </GridCol>
 
-        <GridCol span={6}>
+        {/* <GridCol span={6}>
           <NumberInput
             required
             label={mobile ? 'Water' : undefined}
@@ -224,7 +221,7 @@ export default function Mass({
             }
             {...form.getInputProps('water')}
           />
-        </GridCol>
+        </GridCol> */}
 
         <GridCol span={6}>
           <NumberInput
@@ -238,7 +235,7 @@ export default function Mass({
                 maw={240}
                 label="Body Mass Index (BMI) measures weight compared to height."
               >
-                <Group>
+                <Group c={`${COLOR_CODES.MASSES.BMI}.6`}>
                   <IconGauge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>
