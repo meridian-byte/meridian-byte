@@ -21,9 +21,10 @@ export const useFormFood = (params?: { defaultValues?: Partial<FoodGet> }) => {
     },
     {
       name: hasLength(
-        { min: 2, max: 24 },
-        'Between 2 and 24 characters required'
+        { min: 2, max: 48 },
+        'Between 2 and 48 characters required'
       ),
+      description: hasLength({ max: 255 }, 'Max 255 characters required'),
       per: (value) => ((value || 0) < 1 ? 'Unit value required' : undefined),
       carbs: (value) => ((value || 0) < 1 ? 'Carb count required' : undefined),
       protein: (value) =>
