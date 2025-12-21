@@ -50,7 +50,7 @@ export default function Crud({
             </Box>
           </ScrollAreaAutosize>
 
-          {props?.created_at && (
+          {props?.updated_at && (
             <Box px={'sm'} pb={'sm'}>
               <Divider mb={'md'} />
 
@@ -62,7 +62,7 @@ export default function Crud({
                 <ModalConfirm
                   props={{
                     onConfirm: () => {
-                      if (props.created_at) {
+                      if (props.updated_at) {
                         servingDelete(props as ServingGet);
                         close();
                       }
