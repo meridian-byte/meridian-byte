@@ -2,7 +2,7 @@
 
 import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
-import { ActionIcon, Group, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Divider, Group, Title, Tooltip } from '@mantine/core';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
@@ -17,31 +17,39 @@ export default function Masses() {
   const { syncStatus } = useStoreSyncStatus();
 
   return (
-    <LayoutSection
-      id="layout-header-masses"
-      containerized={'xs'}
-      padded={'xs'}
-      bordered
+    <Box
+      bg={'var(--mantine-color-body)'}
+      pos={'sticky'}
+      top={0}
+      style={{ zIndex: 1 }}
     >
-      <Group justify="space-between">
-        <Title order={1} fz={'md'} fw={500}>
-          Weight Entries
-        </Title>
+      <LayoutSection
+        id="layout-header-masses"
+        containerized={'xs'}
+        padded={'xs'}
+      >
+        <Group justify="space-between">
+          <Title order={1} fz={'md'} fw={500}>
+            Weight Entries
+          </Title>
 
-        <Group justify="end" wrap="nowrap" gap={5}>
-          <IndicatorNetworkStatus props={{ syncStatus }} />
+          <Group justify="end" wrap="nowrap" gap={5}>
+            <IndicatorNetworkStatus props={{ syncStatus }} />
 
-          <ModalMassCrud>
-            <Group>
-              <Tooltip label={'Add Weight Entry'}>
-                <ActionIcon size={ICON_WRAPPER_SIZE} variant="light">
-                  <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </ModalMassCrud>
+            <ModalMassCrud>
+              <Group>
+                <Tooltip label={'Add Weight Entry'}>
+                  <ActionIcon size={ICON_WRAPPER_SIZE} variant="light">
+                    <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </ModalMassCrud>
+          </Group>
         </Group>
-      </Group>
-    </LayoutSection>
+      </LayoutSection>
+
+      <Divider />
+    </Box>
   );
 }

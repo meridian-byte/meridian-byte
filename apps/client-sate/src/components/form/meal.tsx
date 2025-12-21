@@ -96,7 +96,7 @@ export default function Meal({
         {props?.defaultValues && (
           <GridCol span={12}>
             <ScrollAreaAutosize h={120}>
-              <Box px={'xs'}>
+              <Box>
                 {servings === undefined ? (
                   <Center py={SECTION_SPACING / 2}>
                     <Loader />
