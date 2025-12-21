@@ -69,7 +69,7 @@ export default function Crud({
           options={{ padding: 'xs' }}
         >
           <ScrollAreaAutosize h={160} scrollbars={'y'}>
-            <Box px={'xs'}>
+            <Box>
               {servings === undefined ? (
                 <Center py={SECTION_SPACING / 2}>
                   <Loader />
