@@ -39,6 +39,7 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
     <div>
       <NextLink href={foodsProps.link || ''} underline="never">
         <NavLink
+          component="span"
           label={foodsProps.label}
           onClick={props?.close}
           leftSection={
