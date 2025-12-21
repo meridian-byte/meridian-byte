@@ -10,7 +10,6 @@ import {
   Group,
   Loader,
   NumberFormatter,
-  Progress,
   RingProgress,
   Skeleton,
   Stack,
