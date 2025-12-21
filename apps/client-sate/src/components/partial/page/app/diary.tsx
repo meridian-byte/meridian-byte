@@ -11,6 +11,7 @@ import {
   Loader,
   NumberFormatter,
   Progress,
+  Skeleton,
   Stack,
   Text,
   Title,
@@ -209,15 +210,19 @@ export function DiaryOverview({
 
           return (
             <Stack key={i} gap={0} align="center">
-              <Text
-                component="span"
-                inherit
-                c={`${oi.color}.6`}
-                ta={'center'}
-                fw={500}
-              >
-                <NumberFormatter value={oi.value} decimalScale={2} />
-              </Text>
+              {eats === undefined ? (
+                <Skeleton h={24} w={24} />
+              ) : (
+                <Text
+                  component="span"
+                  inherit
+                  c={`${oi.color}.6`}
+                  ta={'center'}
+                  fw={500}
+                >
+                  <NumberFormatter value={oi.value} decimalScale={2} />
+                </Text>
+              )}
 
               <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
                 {oi.label}
@@ -227,7 +232,7 @@ export function DiaryOverview({
                 justify="center"
                 w={64}
                 mt={5}
-                mb={!props?.entryDate && dayEats?.length ? 5 : 0}
+                mb={!props?.entryDate ? 5 : 0}
               >
                 <Progress
                   value={100}
@@ -237,11 +242,14 @@ export function DiaryOverview({
                 />
               </Group>
 
-              {!props?.entryDate && dayEats && dayEats.length > 0 && (
-                <Text inherit fz={'sm'} c={'dimmed'} ta={'center'} mih={21.7}>
-                  {totalsValid ? `${oi.percentage} %` : ''}
-                </Text>
-              )}
+              {!props?.entryDate &&
+                (dayEats === undefined ? (
+                  <Skeleton h={22} w={44} />
+                ) : (
+                  <Text inherit fz={'sm'} c={'dimmed'} ta={'center'} mih={21.7}>
+                    {totalsValid ? `${oi.percentage} %` : ''}
+                  </Text>
+                ))}
             </Stack>
           );
         })}
