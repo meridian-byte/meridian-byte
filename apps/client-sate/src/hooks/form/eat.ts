@@ -39,8 +39,8 @@ export const useFormEat = (params?: {
 
         if (!params?.defaultValues?.updated_at) {
           eatCreate({
-            ...submitObject,
             ...params?.defaultValues,
+            ...submitObject,
           });
         } else {
           eatUpdate({
