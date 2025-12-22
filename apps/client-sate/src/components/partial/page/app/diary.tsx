@@ -73,7 +73,7 @@ export default function Diary() {
             </Text>
           </Center>
         ) : (
-          <Stack gap={0} mih={'200vh'}>
+          <Stack gap={0}>
             {sortArray(
               eatenServings,
               (i) => new Date(i.updated_at),
