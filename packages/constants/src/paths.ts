@@ -23,6 +23,11 @@ export const HOSTNAME_CLIENT_SATE = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_DEV;
 
+// Select noteline client host
+export const HOSTNAME_CLIENT_NOTELINE = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_NOTELINE_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_NOTELINE_DEV;
+
 // Select server host
 const HOSTNAME_SERVER = isProduction
   ? process.env.NEXT_PUBLIC_HOST_SERVER_PROD
