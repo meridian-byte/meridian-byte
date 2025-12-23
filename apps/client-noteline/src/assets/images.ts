@@ -1,15 +1,11 @@
-// const imageUrl = `/images`;
+const imageUrl = `/images`;
 const iconUrl = `https://img.icons8.com`;
 
 export const images = {
   brand: {
-    logo: {
-      light: `${iconUrl}/fluency/48/nextjs.png`,
-      dark: `${iconUrl}/fluency/48/nextjs.png`,
-    },
     icon: {
-      light: `${iconUrl}/fluency/48/nextjs.png`,
-      dark: `${iconUrl}/fluency/48/nextjs.png`,
+      default: `${imageUrl}/brand/icon/default.png`,
+      meta: `${imageUrl}/brand/icon/meta.png`,
     },
   },
 

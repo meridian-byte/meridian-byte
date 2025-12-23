@@ -33,13 +33,24 @@ import { WEEK } from '@repo/constants/sizes';
 import { ProfileGet } from '@repo/types/models/profile';
 import { profileGet } from '@repo/handlers/requests/database/profiles';
 import { RoleValue, useStoreRole } from '@/libraries/zustand/stores/role';
-import { useMediaQuery } from '@mantine/hooks';
 import {
   AppShellValue,
   useStoreAppShell,
 } from '@/libraries/zustand/stores/shell';
 import { samplePosts } from '@/data/sample/posts';
 import { postsGet } from '@repo/handlers/requests/database/posts';
+import { categoriesGet } from '@repo/handlers/requests/database/category';
+import { notesGet } from '@repo/handlers/requests/database/notes';
+import { notebooksGet } from '@repo/handlers/requests/database/notebooks';
+import { linksGet } from '@repo/handlers/requests/database/links';
+import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { useStoreLink } from '@/libraries/zustand/stores/link';
+import { useStoreCategory } from '@/libraries/zustand/stores/category';
+import { ThemeValue, useStoreTheme } from '@/libraries/zustand/stores/theme';
+import { ColorScheme } from '@repo/types/enums';
+import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
+import { useStoreUserStates } from '@/libraries/zustand/stores/user-states';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -154,27 +165,71 @@ export const useUserRoleStore = () => {
 };
 
 export const useAppshellStore = () => {
-  const desktop = useMediaQuery('(min-width: 62em)');
   const { setAppShell } = useStoreAppShell();
 
   useEffect(() => {
-    if (!desktop) return;
-
     const initializeAppShell = () => {
+      let defaultValue: AppShellValue = {
+        navbar: true,
+        aside: false,
+        child: { navbar: false, aside: false },
+      };
+
       const appShellCookie = getCookieClient<AppShellValue>(
         COOKIE_NAME.APP_SHELL
       );
 
-      setAppShell(appShellCookie);
-
-      if (appShellCookie)
-        setCookieClient(COOKIE_NAME.APP_SHELL, appShellCookie, {
+      if (!appShellCookie) {
+        setCookieClient(COOKIE_NAME.APP_SHELL, defaultValue, {
           expiryInSeconds: WEEK,
         });
+      } else {
+        defaultValue = appShellCookie;
+      }
+
+      setAppShell(defaultValue);
     };
 
     initializeAppShell();
-  }, [setAppShell, desktop]);
+  }, [setAppShell]);
+};
+
+export const useThemeStore = () => {
+  const { setTheme } = useStoreTheme();
+
+  useEffect(() => {
+    const initializeTheme = () => {
+      let defaultValue: ColorScheme = DEFAULT_COLOR_SCHEME;
+
+      const themeCookie = getCookieClient<ThemeValue>(
+        COOKIE_NAME.COLOR_SCHEME_STATE
+      );
+
+      if (!themeCookie) {
+        setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, defaultValue, {
+          expiryInSeconds: WEEK,
+        });
+      } else {
+        defaultValue = themeCookie;
+      }
+
+      setTheme(defaultValue);
+    };
+
+    initializeTheme();
+  }, [setTheme]);
+};
+
+export const useUserStatesStore = () => {
+  const { setUserStates } = useStoreUserStates();
+
+  useEffect(() => {
+    const initializeUserState = () => {
+      setUserStates({ editing: true });
+    };
+
+    initializeUserState();
+  }, [setUserStates]);
 };
 
 export const useStoreData = (params?: {
@@ -187,6 +242,10 @@ export const useStoreData = (params?: {
 
   const { session } = useStoreSession();
   const { setPosts } = useStorePost();
+  const { setCategories } = useStoreCategory();
+  const { setNotes } = useStoreNote();
+  const { setNotebooks } = useStoreNotebook();
+  const { setLinks } = useStoreLink();
 
   useEffect(() => {
     if (prevItemsRef.current.length) return;
@@ -211,4 +270,102 @@ export const useStoreData = (params?: {
 
     loadPosts();
   }, [setPosts, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadCategories = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.CATEGORIES,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return {
+              items: [],
+            };
+          } else {
+            return await categoriesGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) =>
+          setCategories(stateUpdateItems),
+      });
+    };
+
+    loadCategories();
+  }, [setCategories, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadNotes = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.NOTES,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return {
+              items: [],
+            };
+          } else {
+            return await notesGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) => setNotes(stateUpdateItems),
+      });
+    };
+
+    loadNotes();
+  }, [setNotes, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadNotebooks = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.NOTEBOOKS,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return {
+              items: [],
+            };
+          } else {
+            return await notebooksGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) =>
+          setNotebooks(stateUpdateItems),
+      });
+    };
+
+    loadNotebooks();
+  }, [setNotebooks, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadLinks = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.LINKS,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return {
+              items: [],
+            };
+          } else {
+            return await linksGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) => setLinks(stateUpdateItems),
+      });
+    };
+
+    loadLinks();
+  }, [setLinks, session, clientOnly]);
 };

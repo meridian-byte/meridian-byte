@@ -46,7 +46,7 @@ export default function LayoutDefault({
             <Stack gap={'xl'}>
               <AnchorNextLink href={'/'}>
                 <ImageDefault
-                  src={images.brand.logo.light}
+                  src={images.brand.icon.default}
                   alt={companyName}
                   height={{ base: 28 }}
                   fit="contain"

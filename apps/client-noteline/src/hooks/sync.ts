@@ -12,6 +12,12 @@ import { categoriesUpdate } from '@repo/handlers/requests/database/category';
 import { useStorePost } from '@/libraries/zustand/stores/post';
 import { useStoreCategory } from '@/libraries/zustand/stores/category';
 import { SyncParams } from '@repo/types/sync';
+import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { notesUpdate } from '@repo/handlers/requests/database/notes';
+import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { notebooksUpdate } from '@repo/handlers/requests/database/notebooks';
+import { useStoreLink } from '@/libraries/zustand/stores/link';
+import { linksUpdate } from '@repo/handlers/requests/database/links';
 
 export const useSyncPosts = (params: {
   syncFunction: (input: SyncParams) => void;
@@ -71,4 +77,94 @@ export const useSyncCategories = (params: {
   useEffect(() => syncCategories(), [categories, syncCategories, online]);
 
   return { syncCategories };
+};
+
+export const useSyncNotes = (params: {
+  syncFunction: (input: SyncParams) => void;
+  online: boolean;
+}) => {
+  const { syncFunction, online } = params;
+
+  const {
+    notes,
+    deleted: deletedNotes,
+    setNotes,
+    clearDeletedNotes,
+  } = useStoreNote();
+
+  const syncNotes = useCallback(() => {
+    syncFunction({
+      items: notes || [],
+      deletedItems: deletedNotes,
+      dataStore: STORE_NAME.NOTES,
+      stateUpdateFunctionDeleted: () => clearDeletedNotes(),
+      stateUpdateFunction: (i) => setNotes(i),
+      serverUpdateFunction: async (i, di) => await notesUpdate(i, di),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes, deletedNotes, setNotes, clearDeletedNotes]);
+
+  useEffect(() => syncNotes(), [notes, syncNotes, online]);
+
+  return { syncNotes };
+};
+
+export const useSyncNotebooks = (params: {
+  syncFunction: (input: SyncParams) => void;
+  online: boolean;
+}) => {
+  const { syncFunction, online } = params;
+
+  const {
+    notebooks,
+    deleted: deletedNotebooks,
+    setNotebooks,
+    clearDeletedNotebooks,
+  } = useStoreNotebook();
+
+  const syncNotebooks = useCallback(() => {
+    syncFunction({
+      items: notebooks || [],
+      deletedItems: deletedNotebooks,
+      dataStore: STORE_NAME.NOTEBOOKS,
+      stateUpdateFunctionDeleted: () => clearDeletedNotebooks(),
+      stateUpdateFunction: (i) => setNotebooks(i),
+      serverUpdateFunction: async (i, di) => await notebooksUpdate(i, di),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notebooks, deletedNotebooks, setNotebooks, clearDeletedNotebooks]);
+
+  useEffect(() => syncNotebooks(), [notebooks, syncNotebooks, online]);
+
+  return { syncNotebooks };
+};
+
+export const useSyncLinks = (params: {
+  syncFunction: (input: SyncParams) => void;
+  online: boolean;
+}) => {
+  const { syncFunction, online } = params;
+
+  const {
+    links,
+    deleted: deletedLinks,
+    setLinks,
+    clearDeletedLinks,
+  } = useStoreLink();
+
+  const syncLinks = useCallback(() => {
+    syncFunction({
+      items: links || [],
+      deletedItems: deletedLinks,
+      dataStore: STORE_NAME.LINKS,
+      stateUpdateFunctionDeleted: () => clearDeletedLinks(),
+      stateUpdateFunction: (i) => setLinks(i),
+      serverUpdateFunction: async (i, di) => await linksUpdate(i, di),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [links, deletedLinks, setLinks, clearDeletedLinks]);
+
+  useEffect(() => syncLinks(), [links, syncLinks, online]);
+
+  return { syncLinks };
 };
