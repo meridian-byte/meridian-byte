@@ -47,6 +47,9 @@ import { budgetsGet } from '@repo/handlers/requests/database/budgets';
 import { accountsGet } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsGet } from '@repo/handlers/requests/database/account-groups';
 import { transactionsGet } from '@repo/handlers/requests/database/transactions';
+import { ThemeValue, useStoreTheme } from '@/libraries/zustand/stores/theme';
+import { ColorScheme } from '@repo/types/enums';
+import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -161,27 +164,59 @@ export const useUserRoleStore = () => {
 };
 
 export const useAppshellStore = () => {
-  const desktop = useMediaQuery('(min-width: 62em)');
   const { setAppShell } = useStoreAppShell();
 
   useEffect(() => {
-    if (!desktop) return;
-
     const initializeAppShell = () => {
+      let defaultValue: AppShellValue = {
+        navbar: true,
+        aside: false,
+        child: { navbar: false, aside: false },
+      };
+
       const appShellCookie = getCookieClient<AppShellValue>(
         COOKIE_NAME.APP_SHELL
       );
 
-      setAppShell(appShellCookie);
-
-      if (appShellCookie)
-        setCookieClient(COOKIE_NAME.APP_SHELL, appShellCookie, {
+      if (!appShellCookie) {
+        setCookieClient(COOKIE_NAME.APP_SHELL, defaultValue, {
           expiryInSeconds: WEEK,
         });
+      } else {
+        defaultValue = appShellCookie;
+      }
+
+      setAppShell(defaultValue);
     };
 
     initializeAppShell();
-  }, [setAppShell, desktop]);
+  }, [setAppShell]);
+};
+
+export const useThemeStore = () => {
+  const { setTheme } = useStoreTheme();
+
+  useEffect(() => {
+    const initializeTheme = () => {
+      let defaultValue: ColorScheme = DEFAULT_COLOR_SCHEME;
+
+      const themeCookie = getCookieClient<ThemeValue>(
+        COOKIE_NAME.COLOR_SCHEME_STATE
+      );
+
+      if (!themeCookie) {
+        setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, defaultValue, {
+          expiryInSeconds: WEEK,
+        });
+      } else {
+        defaultValue = themeCookie;
+      }
+
+      setTheme(defaultValue);
+    };
+
+    initializeTheme();
+  }, [setTheme]);
 };
 
 export const useStoreData = (params?: {

@@ -20,7 +20,7 @@ export default function Main({ size }: { size?: number }) {
     <Group w={size} h={size}>
       {!mounted || session === undefined ? (
         <Skeleton h={size} w={size} radius={999} />
-      ) : session === null ? (
+      ) : !session?.email ? (
         <WrapperAuth options={{ action: AuthAction.SIGN_IN }}>
           <ActionIcon
             size={size}

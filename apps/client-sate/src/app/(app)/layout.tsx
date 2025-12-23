@@ -25,7 +25,7 @@ export default async function LayoutApp({
   return (
     <LayoutBody>
       <ProviderStore>
-        <ProviderSync options={{ clientOnly: true }}>
+        <ProviderSync>
           <LayoutShellApp>{children}</LayoutShellApp>
         </ProviderSync>
       </ProviderStore>
