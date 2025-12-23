@@ -5,12 +5,12 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { companyName } from '@repo/constants/app';
+import { APP_NAME } from '@/data/constants';
 import { STORE_NAME } from '@repo/constants/names';
 import { DBConfig } from '@repo/types/indexed-db';
 
 export const config: DBConfig = {
-  name: companyName.toLowerCase(),
+  name: APP_NAME.toLowerCase(),
   version: 1,
   stores: [
     {
@@ -24,6 +24,18 @@ export const config: DBConfig = {
     },
     {
       name: STORE_NAME.CATEGORIES,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.NOTEBOOKS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.NOTES,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.LINKS,
       keyPath: 'id',
     },
   ],
