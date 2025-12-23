@@ -47,8 +47,8 @@ export default function Modal({
   }
 
   return (
-    <Stack pos={'relative'} gap={'xl'}>
-      <Group justify="space-between" align="start">
+    <Stack pos={'relative'} gap={!variant ? 'md' : 'xl'} p={'md'}>
+      <Group justify={!options.icon ? 'end' : 'space-between'} align="start">
         {options.icon && (
           <Group>
             <ThemeIcon
@@ -72,9 +72,16 @@ export default function Modal({
       </Group>
 
       <Stack>
-        <Title order={1} fz={'xl'} lh={1} ta={{ base: 'center', xs: 'start' }}>
-          {props.title}
-        </Title>
+        <Group>
+          <Title
+            order={1}
+            fz={'xl'}
+            lh={1}
+            ta={{ base: 'center', xs: 'start' }}
+          >
+            {props.title}
+          </Title>
+        </Group>
 
         {children}
       </Stack>
