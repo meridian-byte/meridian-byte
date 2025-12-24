@@ -32,10 +32,10 @@ export const useServingTotals = (params?: {
       serving: s,
     });
 
-    totals.carbs += Number(nutrientTotals.totalCarbs);
-    totals.protein += Number(nutrientTotals.totalProtein);
-    totals.fat += Number(nutrientTotals.totalFat);
-    totals.kcal += Number(nutrientTotals.totalKcal);
+    totals.carbs += nutrientTotals.totalCarbs;
+    totals.protein += nutrientTotals.totalProtein;
+    totals.fat += nutrientTotals.totalFat;
+    totals.kcal += nutrientTotals.totalKcal;
   });
 
   return {
@@ -66,18 +66,10 @@ export const useMealTotals = (params: { meal: MealGet }) => {
   };
 };
 
-export const useEatTotals = (params: { eats: EatGet[] }) => {
+export const useEatTotals = (params: { eat?: EatGet }) => {
+  const { eat } = params;
   const { servings } = useStoreServing();
-
-  const { eats } = params;
-  let eatServings: ServingGet[] = [];
-
-  eats.forEach((e) => {
-    eatServings = [
-      ...eatServings,
-      ...(servings?.filter((s) => s.eat_id == e.id) || []),
-    ];
-  });
+  const eatServings = servings?.filter((s) => s.eat_id == eat?.id);
 
   const servingTotals = useServingTotals({
     servings: eatServings,
@@ -125,10 +117,10 @@ export const getFoodServingTotals = (params: {
 
   if (params.options?.round) {
     return {
-      totalCarbs: Math.round(Number(totalCarbs)),
-      totalProtein: Math.round(Number(totalProtein)),
-      totalFat: Math.round(Number(totalFat)),
-      totalKcal: Math.round(Number(totalKcal)),
+      totalCarbs: Math.round(totalCarbs),
+      totalProtein: Math.round(totalProtein),
+      totalFat: Math.round(totalFat),
+      totalKcal: Math.round(totalKcal),
     };
   }
 
