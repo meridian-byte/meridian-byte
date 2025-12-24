@@ -66,10 +66,20 @@ export const useMealTotals = (params: { meal: MealGet }) => {
   };
 };
 
-export const useEatTotals = (params: { eat?: EatGet }) => {
-  const { eat } = params;
+export const useEatTotals = (params: { eats: EatGet[] }) => {
+  const { eats } = params;
+  const dedupedEats = Array.from(new Map(eats.map((e) => [e.id, e])).values());
+
   const { servings } = useStoreServing();
-  const eatServings = servings?.filter((s) => s.eat_id == eat?.id);
+
+  let eatServings: ServingGet[] = [];
+
+  dedupedEats.forEach((e) => {
+    eatServings = [
+      ...eatServings,
+      ...(servings?.filter((s) => s.eat_id == e.id) || []),
+    ];
+  });
 
   const servingTotals = useServingTotals({
     servings: eatServings,
