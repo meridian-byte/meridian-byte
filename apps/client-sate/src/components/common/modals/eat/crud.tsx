@@ -63,7 +63,6 @@ export default function Crud({
   return (
     <>
       <Modal opened={opened} onClose={handleClose}>
-        {JSON.stringify(eatId)}
         <LayoutModal
           title={`${!props?.created_at ? 'Create' : 'Edit'} Entry`}
           close={handleClose}
