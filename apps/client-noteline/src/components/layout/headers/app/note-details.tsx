@@ -28,7 +28,7 @@ import { useRouter } from 'next/navigation';
 import MenuNoteMain from '@/components/common/menu/note/main';
 import { useStoreUserStates } from '@/libraries/zustand/stores/user-states';
 
-export default function NoteDetails({ item }: { item: NoteGet }) {
+export default function NoteDetails({ props }: { props?: NoteGet }) {
   const { userStates, setUserStates } = useStoreUserStates();
   const router = useRouter();
 
@@ -76,26 +76,28 @@ export default function NoteDetails({ item }: { item: NoteGet }) {
         </Group>
 
         <Group gap={5}>
-          <Title order={1} fz={'sm'} fw={'normal'} ta={'center'}>
-            {item.title}
-          </Title>
+          {props && (
+            <Title order={1} fz={'sm'} fw={'normal'} ta={'center'}>
+              {props.title}
+            </Title>
+          )}
         </Group>
 
-        <Group gap={5}>
-          {userStates === undefined ? (
-            <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
-          ) : (
-            <Tooltip
-              label={
-                <Stack ta={'center'} gap={0}>
-                  <Text inherit>Current View: {toogleProperties.view}</Text>
-                  <Text inherit>Click to {toogleProperties.label}</Text>
-                </Stack>
-              }
-              multiline
-              w={160}
-            >
-              <Group>
+        {props && (
+          <Group gap={5}>
+            {userStates === undefined ? (
+              <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
+            ) : (
+              <Tooltip
+                label={
+                  <Stack ta={'center'} gap={0}>
+                    <Text inherit>Current View: {toogleProperties.view}</Text>
+                    <Text inherit>Click to {toogleProperties.label}</Text>
+                  </Stack>
+                }
+                multiline
+                w={160}
+              >
                 <ActionIcon
                   size={ICON_WRAPPER_SIZE}
                   variant={'subtle'}
@@ -111,23 +113,23 @@ export default function NoteDetails({ item }: { item: NoteGet }) {
                     stroke={ICON_STROKE_WIDTH}
                   />
                 </ActionIcon>
-              </Group>
-            </Tooltip>
-          )}
+              </Tooltip>
+            )}
 
-          <MenuNoteMain item={item}>
-            <Tooltip label={'More options'}>
+            <MenuNoteMain item={props}>
               <Group>
-                <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
-                  <IconDotsVertical
-                    size={ICON_SIZE}
-                    stroke={ICON_STROKE_WIDTH}
-                  />
-                </ActionIcon>
+                <Tooltip label={'More options'}>
+                  <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
+                    <IconDotsVertical
+                      size={ICON_SIZE}
+                      stroke={ICON_STROKE_WIDTH}
+                    />
+                  </ActionIcon>
+                </Tooltip>
               </Group>
-            </Tooltip>
-          </MenuNoteMain>
-        </Group>
+            </MenuNoteMain>
+          </Group>
+        )}
       </Group>
     </LayoutSection>
   );
