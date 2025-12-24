@@ -5,7 +5,7 @@ import {
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
-import { ActionIcon, Stack, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Flex, Group, Stack, Tooltip } from '@mantine/core';
 import {
   IconCalendarEvent,
   IconFileSearch,
@@ -19,7 +19,11 @@ import { getRegionalDate } from '@repo/utilities/date-time';
 import { useRouter } from 'next/navigation';
 import { useStoreNote } from '@/libraries/zustand/stores/note';
 
-export default function Main() {
+export default function Main({
+  props,
+}: {
+  props?: { options?: { mobile: boolean } };
+}) {
   const router = useRouter();
   const { notes } = useStoreNote();
   const { noteCreate } = useNoteActions();
@@ -35,8 +39,6 @@ export default function Main() {
 
     const exists = notes.find((n) => n.title == regionalDate);
 
-    console.log('exists');
-
     if (exists) {
       router.push(`/app?noteId=${exists.id}`);
       return;
@@ -46,13 +48,20 @@ export default function Main() {
   };
 
   return (
-    <Stack p={`xs`} gap={5}>
+    <Flex
+      direction={props?.options?.mobile ? 'row' : 'column'}
+      p={props?.options?.mobile ? undefined : `xs`}
+      align={'center'}
+      gap={5}
+    >
       <ModalSearch>
-        <Tooltip label={'Open quick switcher'} position={'right'}>
-          <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
-            <IconFileSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </Tooltip>
+        <Group>
+          <Tooltip label={'Open quick switcher'} position={'right'}>
+            <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+              <IconFileSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
       </ModalSearch>
 
       <Tooltip
@@ -66,12 +75,14 @@ export default function Main() {
       </Tooltip>
 
       <ModalCommands>
-        <Tooltip label={'Open command palette'} position={'right'}>
-          <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
-            <IconTerminal size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </Tooltip>
+        <Group>
+          <Tooltip label={'Open command palette'} position={'right'}>
+            <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+              <IconTerminal size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
       </ModalCommands>
-    </Stack>
+    </Flex>
   );
 }

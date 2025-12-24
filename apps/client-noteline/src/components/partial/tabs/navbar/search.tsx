@@ -6,11 +6,15 @@ import InputTextSearch from '@/components/common/inputs/text/search';
 import Link from 'next/link';
 import { useStoreNote } from '@/libraries/zustand/stores/note';
 import { useStoreCategory } from '@/libraries/zustand/stores/category';
+import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Search() {
   const { notes } = useStoreNote();
   const { categories } = useStoreCategory();
   const [value, setValue] = useState('');
+  const { appshell, setAppShell } = useStoreAppShell();
+  const desktop = useMediaQuery('(min-width: 62em)');
 
   return (
     <div>
@@ -49,6 +53,15 @@ export default function Search() {
                   key={i}
                   component={Link}
                   href={`/app/${n.id}`}
+                  onClick={() => {
+                    if (desktop) return;
+                    if (!appshell) return;
+
+                    setAppShell({
+                      ...appshell,
+                      child: { ...appshell.child, navbar: false },
+                    });
+                  }}
                   label={
                     <Stack mih={30} gap={0} justify="center">
                       <Text component="span" inherit lineClamp={1}>

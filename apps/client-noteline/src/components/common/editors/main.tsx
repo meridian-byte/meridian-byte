@@ -51,7 +51,7 @@ export default function Main({ item }: { item: NoteGet }) {
   useEffect(() => {
     if (!editor) return;
     editor.commands.setContent(item.content || '');
-  }, [item, editor]);
+  }, [item.id, editor]);
 
   return (
     <RichTextEditor
