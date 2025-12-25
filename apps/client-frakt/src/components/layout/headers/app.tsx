@@ -12,7 +12,7 @@ export default function App() {
       <Group h={'100%'} justify="center" gap={'xl'}>
         <NextLink href="/">
           <ImageDefault
-            src={images.brand.icon.dark}
+            src={images.brand.icon.default}
             alt={`${APP_NAME} Icon`}
             width={40}
             height={40}
