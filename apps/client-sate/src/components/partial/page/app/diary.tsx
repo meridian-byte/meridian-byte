@@ -221,11 +221,11 @@ export function DiaryOverview({
       {props?.entryDate && (
         <>
           <PartialDate props={props.entryDate} />
-          <Divider mt={'xs'} mb={'md'} variant="dashed" />
+          <Divider mt={'xs'} variant="dashed" />
         </>
       )}
 
-      <Group justify="center" grow py={'md'}>
+      <Group justify="center" grow py={'xs'}>
         {overview.map((oi, i) => {
           return (
             <Stack key={i} gap={0} align="center">
@@ -272,7 +272,7 @@ export function DiaryOverview({
                 ]}
               />
 
-              {!props?.entryDate && (
+              {props?.entryDate && (
                 <>
                   <Group
                     justify="center"
