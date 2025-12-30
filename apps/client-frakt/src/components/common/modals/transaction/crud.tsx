@@ -24,7 +24,7 @@ export default function Crud({
   props,
   children,
 }: {
-  props?: TransactionGet;
+  props?: Partial<TransactionGet>;
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -55,7 +55,7 @@ export default function Crud({
     <>
       <Modal opened={opened} onClose={close}>
         <LayoutModal
-          title={`${!props ? 'Create' : 'Edit'} Transaction`}
+          title={`${!props?.updated_at ? 'Create' : 'Edit'} Transaction`}
           close={close}
           options={{ padding: null }}
         >
@@ -65,7 +65,7 @@ export default function Crud({
             </Box>
           </ScrollAreaAutosize>
 
-          {props && (
+          {props?.updated_at && (
             <Box px={'sm'} pb={'sm'}>
               <Divider mb={'md'} />
 
@@ -77,8 +77,10 @@ export default function Crud({
                 <ModalConfirm
                   props={{
                     onConfirm: () => {
-                      transactionDelete(props);
-                      close();
+                      if (props.updated_at) {
+                        transactionDelete(props as TransactionGet);
+                        close();
+                      }
                     },
                   }}
                 >
@@ -108,7 +110,7 @@ export default function Crud({
                     }}
                     onClick={() => {
                       copyTransaction({
-                        transaction: props,
+                        transaction: props as TransactionGet,
                         currentDate: true,
                       });
                       close();
@@ -119,7 +121,7 @@ export default function Crud({
 
                   <MenuCopy
                     props={{
-                      transaction: props,
+                      transaction: props as TransactionGet,
                       copyFunction: copyTransaction,
                       close,
                     }}
