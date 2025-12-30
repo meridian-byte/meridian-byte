@@ -151,7 +151,7 @@ export function OverviewTransactions({
     0
   );
   const liabilityValue = liabilityTransactions.reduce(
-    (sum, tran) => sum + Number(tran.amount),
+    (sum, tran) => sum + (Number(tran.amount) + Number(tran.fees)),
     0
   );
   const transferFeesValue = transferTransactions.reduce(
