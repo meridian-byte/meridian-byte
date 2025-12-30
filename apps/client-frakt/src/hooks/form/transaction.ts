@@ -21,7 +21,6 @@ export const useFormTransaction = (params?: {
   >(
     {
       type: (params?.defaultValues?.type || TransactionType.DEBIT) as any,
-      date: (params?.defaultValues?.date || new Date().toISOString()) as any,
       amount: (params?.defaultValues?.amount || '') as any,
       fees: (params?.defaultValues?.fees || '') as any,
       category_id: params?.defaultValues?.category_id || '',
@@ -31,7 +30,6 @@ export const useFormTransaction = (params?: {
     },
     {
       type: hasLength({ min: 1 }, 'Transaction Type is Required'),
-      date: hasLength({ min: 1 }, 'Date is Required'),
       amount: (value) =>
         Number(value) > 0 ? undefined : 'Transaction amount required',
       category_id: accountId2
@@ -52,25 +50,30 @@ export const useFormTransaction = (params?: {
           currency_code: currencies[0]?.currency_code || '',
         };
 
-        if (!params?.defaultValues) {
-          const now = new Date();
+        if (!params?.defaultValues?.updated_at) {
+          const now = params?.defaultValues?.created_at
+            ? new Date(params?.defaultValues?.created_at)
+            : new Date();
           const oneSecondOlder = new Date(now.getTime() - 1000);
+          const transfer = !!accountId2;
 
           transactionCreate({
             ...submitObject,
             type: TransactionType.DEBIT,
             date: now,
+            transfer,
             fees: Number(submitObject.fees || 0).toFixed(2) as any,
             amount: Number(submitObject.amount).toFixed(2) as any,
             created_at: oneSecondOlder,
             updated_at: oneSecondOlder,
           });
 
-          if (accountId2) {
+          if (transfer) {
             transactionCreate({
               ...submitObject,
               type: TransactionType.CREDIT,
               date: now,
+              transfer,
               amount: Number(submitObject.amount).toFixed(2) as any,
               fees: Number(0).toFixed(2) as any,
               account_id: accountId2,

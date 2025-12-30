@@ -233,6 +233,7 @@ model Account {
 model Transaction {
   id          String          @id @default(cuid())
   type        TransactionType @default(DEBIT)
+  transfer    Boolean         @default(false)
   date        DateTime        @default(now())
   amount      Decimal         @default("0.00") @db.Decimal(8, 2)
   fees        Decimal         @default("0.00") @db.Decimal(8, 2)

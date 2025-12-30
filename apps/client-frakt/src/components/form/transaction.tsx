@@ -58,7 +58,7 @@ export default function Transaction({
       noValidate
     >
       <Grid gutter={mobile ? 5 : undefined}>
-        <GridCol span={{ base: 12, sm: 6 }}>
+        <GridCol span={{ base: 12 }}>
           <NativeSelect
             required
             label={mobile ? 'Type' : undefined}
@@ -82,25 +82,12 @@ export default function Transaction({
                 label: capitalizeWords(TransactionType.DEBIT),
                 value: TransactionType.DEBIT,
               },
-              {
-                label: capitalizeWords(TransactionType.TRANSFER),
-                value: TransactionType.TRANSFER,
-              },
+              // {
+              //   label: capitalizeWords(TransactionType.TRANSFER),
+              //   value: TransactionType.TRANSFER,
+              // },
             ]}
             {...form.getInputProps('type')}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12, sm: 6 }}>
-          <DateTimePicker
-            required
-            label={mobile ? 'Date' : undefined}
-            aria-label="Date"
-            placeholder="Date"
-            leftSection={
-              <IconCalendarClock size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            {...form.getInputProps('date')}
           />
         </GridCol>
 
@@ -139,60 +126,63 @@ export default function Transaction({
           </GridCol>
         )}
 
-        {form.values.type == TransactionType.DEBIT && (
-          <GridCol span={12}>
+        {form.values.type == TransactionType.DEBIT &&
+          !props?.defaultValues?.transfer && (
+            <GridCol span={12}>
+              <NativeSelect
+                required
+                label={mobile ? 'Category' : undefined}
+                aria-label="Category"
+                leftSection={
+                  <IconLabel size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                }
+                disabled={!categories || categories.length === 0}
+                data={[
+                  { label: 'Select Category', value: '' },
+                  ...(categories || []).map((c) => {
+                    return { label: c.title, value: c.id };
+                  }),
+                ]}
+                {...form.getInputProps('category_id')}
+              />
+            </GridCol>
+          )}
+
+        {!props?.defaultValues?.updated_at && (
+          <GridCol
+            span={{
+              base: 12,
+              xs: form.values.type === TransactionType.TRANSFER ? 6 : 12,
+            }}
+          >
             <NativeSelect
               required
-              label={mobile ? 'Category' : undefined}
-              aria-label="Category"
-              leftSection={
-                <IconLabel size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              label={
+                mobile
+                  ? `${form.values.type === TransactionType.TRANSFER ? 'From' : 'Account'}`
+                  : undefined
               }
-              disabled={!categories || categories.length === 0}
+              aria-label={`${form.values.type === TransactionType.TRANSFER ? 'From' : 'Account'}`}
+              leftSection={
+                <IconCashBanknote size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              disabled={!accounts || accounts.length === 0}
               data={[
-                { label: 'Select Category', value: '' },
-                ...(categories || []).map((c) => {
-                  return { label: c.title, value: c.id };
+                {
+                  label:
+                    form.values.type === TransactionType.TRANSFER
+                      ? 'From'
+                      : 'Select Account',
+                  value: '',
+                },
+                ...(accounts || []).map((c) => {
+                  return { label: c.name, value: c.id };
                 }),
               ]}
-              {...form.getInputProps('category_id')}
+              {...form.getInputProps('account_id')}
             />
           </GridCol>
         )}
-
-        <GridCol
-          span={{
-            base: 12,
-            xs: form.values.type === TransactionType.TRANSFER ? 6 : 12,
-          }}
-        >
-          <NativeSelect
-            required
-            label={
-              mobile
-                ? `${form.values.type === TransactionType.TRANSFER ? 'From' : 'Account'}`
-                : undefined
-            }
-            aria-label={`${form.values.type === TransactionType.TRANSFER ? 'From' : 'Account'}`}
-            leftSection={
-              <IconCashBanknote size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            disabled={!accounts || accounts.length === 0}
-            data={[
-              {
-                label:
-                  form.values.type === TransactionType.TRANSFER
-                    ? 'From'
-                    : 'Select Account',
-                value: '',
-              },
-              ...(accounts || []).map((c) => {
-                return { label: c.name, value: c.id };
-              }),
-            ]}
-            {...form.getInputProps('account_id')}
-          />
-        </GridCol>
 
         {form.values.type === TransactionType.TRANSFER && (
           <GridCol span={{ base: 12, xs: 6 }}>
