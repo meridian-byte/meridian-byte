@@ -171,7 +171,7 @@ export function OverviewTransactions({
       color: 'red',
     },
     {
-      value: (assetValue - liabilityValue).toFixed(2),
+      value: (assetValue - (liabilityValue + transferFeesValue)).toFixed(2),
       label: 'Total',
     },
   ];
