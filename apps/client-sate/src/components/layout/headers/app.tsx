@@ -14,8 +14,9 @@ export default function App() {
           <ImageDefault
             src={images.brand.icon.default}
             alt={`${APP_NAME} Icon`}
-            width={40}
             height={40}
+            width={40}
+            fit="contain"
           />
         </NextLink>
       </Group>
