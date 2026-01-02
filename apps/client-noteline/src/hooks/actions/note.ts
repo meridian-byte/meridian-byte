@@ -3,15 +3,17 @@ import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { NoteGet } from '@repo/types/models/note';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { NotebookGet } from '@repo/types/models/notebook';
 import { useItemEditContext } from '@/components/contexts/item-edit';
 
 export const useNoteActions = () => {
   const { session } = useStoreSession();
   const { notes, addNote, updateNote, deleteNote } = useStoreNote();
-  const pathname = usePathname();
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const noteId = searchParams.get('noteId');
 
   const { editing, editingId, setEditingState, startRename, inputRefs } =
     useItemEditContext();
@@ -115,7 +117,7 @@ export const useNoteActions = () => {
     });
 
     // check if current note is in view
-    if (!params.options?.noRedirect && pathname.includes(params.values.id)) {
+    if (!params.options?.noRedirect && noteId) {
       router.replace(`/app`);
     }
   };
