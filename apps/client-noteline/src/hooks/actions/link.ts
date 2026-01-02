@@ -21,8 +21,8 @@ export const useLinkActions = () => {
       to_id: params.to_id || '',
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at || now).toISOString() as any,
+      updated_at: new Date(params.updated_at || now).toISOString() as any,
     };
 
     addLink(newLink);
@@ -36,7 +36,8 @@ export const useLinkActions = () => {
     const newLink: LinkGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateLink(newLink);
@@ -50,7 +51,8 @@ export const useLinkActions = () => {
     deleteLink({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 
