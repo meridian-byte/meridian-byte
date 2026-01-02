@@ -14,7 +14,7 @@ export default function Eat({
     submitted: boolean;
     handleSubmit: () => void;
     close?: () => void;
-    diaryDate?: string;
+    diaryDate?: Date;
   };
 }) {
   const mobile = useMediaQuery('(max-width: 36em)');
