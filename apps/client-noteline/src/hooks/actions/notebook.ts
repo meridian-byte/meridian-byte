@@ -27,8 +27,8 @@ export const useNotebookActions = () => {
       profile_id: session.id || params?.profile_id || '',
       status: params?.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params?.created_at || now).toISOString() as any,
+      updated_at: new Date(params?.updated_at || now).toISOString() as any,
     };
 
     addNotebook(newNotebook);
@@ -42,7 +42,8 @@ export const useNotebookActions = () => {
     const newNotebook: NotebookGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateNotebook(newNotebook);
@@ -89,7 +90,8 @@ export const useNotebookActions = () => {
       id: notebookCopyId,
       title: `${baseTitle} ${nextNumber}`,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.values.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     // add copy to state
@@ -106,7 +108,8 @@ export const useNotebookActions = () => {
           id: generateUUID(),
           notebook_id: notebookCopyId,
           sync_status: SyncStatus.PENDING,
-          updated_at: now.toISOString() as any,
+          created_at: new Date(n.created_at).toISOString() as any,
+          updated_at: new Date(now).toISOString() as any,
         };
       });
 
@@ -125,7 +128,8 @@ export const useNotebookActions = () => {
     deleteNotebook({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 

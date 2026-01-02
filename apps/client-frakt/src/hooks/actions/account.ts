@@ -26,8 +26,8 @@ export const useAccountActions = () => {
       type: (params.type || '') as any,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at || now).toISOString() as any,
+      updated_at: new Date(params.updated_at || now).toISOString() as any,
     };
 
     addAccount(newAccount);
@@ -42,7 +42,8 @@ export const useAccountActions = () => {
       ...params,
       balance: Number(params.balance).toFixed(2) as any,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateAccount(newAccount);
@@ -56,7 +57,8 @@ export const useAccountActions = () => {
     deleteAccount({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 
