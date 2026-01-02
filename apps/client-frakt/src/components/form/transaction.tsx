@@ -97,6 +97,11 @@ export default function Transaction({
             label={mobile ? 'Entry date' : undefined}
             aria-label="Entry date"
             placeholder="Entry date"
+            valueFormat="DD MMM YYYY hh:mm A"
+            timePickerProps={{ format: '12h' }}
+            dropdownType="modal"
+            modalProps={{ padding: 'md' }}
+            maxDate={new Date()}
             leftSection={
               <IconCalendar size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
