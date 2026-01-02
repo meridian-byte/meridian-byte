@@ -43,11 +43,7 @@ export default function Transaction({ props }: { props: TransactionGet }) {
             <Grid gutter={0}>
               <GridCol span={4}>
                 <Text lineClamp={1} fz={'sm'}>
-                  {transactionCategory
-                    ? transactionCategory.title
-                    : `Transfer ${
-                        props.type == TransactionType.CREDIT ? 'In' : 'Out'
-                      }`}
+                  {transactionAccount?.name}
                 </Text>
               </GridCol>
 
@@ -60,16 +56,30 @@ export default function Transaction({ props }: { props: TransactionGet }) {
               <GridCol span={7}>
                 <Stack gap={0}>
                   <Text lineClamp={1} fz={'sm'}>
-                    {transactionAccount?.name}
+                    {transactionCategory
+                      ? transactionCategory.title
+                      : `Transfer ${
+                          props.type == TransactionType.CREDIT ? 'In' : 'Out'
+                        }`}
                   </Text>
 
-                  {Number(props.fees) > 0 && (
-                    <Text lineClamp={1} c="dimmed" fz="xs">
-                      Fees:{' '}
-                      <Text component="span" inherit fw={500} c={'red.6'}>
-                        <NumberFormatter value={props.fees.toString()} />
-                      </Text>
+                  {props.description && (
+                    <Text lineClamp={2} c="dimmed" fz="xs">
+                      {props.description}
                     </Text>
+                  )}
+
+                  {Number(props.fees) > 0 && (
+                    <>
+                      {props.description && <Divider my={5} />}
+
+                      <Text lineClamp={1} c="dimmed" fz="xs">
+                        Fees:{' '}
+                        <Text component="span" inherit fw={500} c={'red.6'}>
+                          <NumberFormatter value={props.fees.toString()} />
+                        </Text>
+                      </Text>
+                    </>
                   )}
                 </Stack>
               </GridCol>

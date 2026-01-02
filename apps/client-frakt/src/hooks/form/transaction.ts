@@ -71,8 +71,8 @@ export const useFormTransaction = (params?: {
 
           if (isTransfer && !!accountId2) {
             transactionCreate({
-              type: TransactionType.CREDIT,
               ...submitObject,
+              type: TransactionType.CREDIT,
               account_id: accountId2,
               transfer: isTransfer,
               created_at: now,
