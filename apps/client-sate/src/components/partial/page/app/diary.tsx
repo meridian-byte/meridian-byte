@@ -76,7 +76,7 @@ export default function Diary() {
           <Stack gap={0}>
             {sortArray(
               eatenServings,
-              (i) => new Date(i.updated_at),
+              (i) => new Date(i.created_at),
               Order.DESCENDING
             ).map((s, i) => (
               <Stack gap={0} key={s.id}>

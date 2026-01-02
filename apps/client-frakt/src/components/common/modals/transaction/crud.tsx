@@ -41,7 +41,6 @@ export default function Crud({
     transactionCreate({
       ...params?.transaction,
       id: null as any,
-      date: currentDate ? now.toISOString() : (params.transaction.date as any),
       created_at: currentDate
         ? now.toISOString()
         : (params.transaction.created_at as any),
@@ -50,6 +49,19 @@ export default function Crud({
         : (params.transaction.updated_at as any),
     });
   };
+
+  const now = new Date();
+  const inputDate = new Date(props?.created_at || now);
+
+  // retain day and date but update to current time
+  const computedDate = new Date(
+    inputDate.getFullYear(),
+    inputDate.getMonth(),
+    inputDate.getDate(),
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds()
+  );
 
   return (
     <>
@@ -61,7 +73,17 @@ export default function Crud({
         >
           <ScrollAreaAutosize mah={400} scrollbars={'y'}>
             <Box p={'sm'}>
-              <FormTransaction props={{ defaultValues: props, close }} />
+              <FormTransaction
+                props={{
+                  defaultValues: {
+                    ...props,
+                    created_at: props?.updated_at
+                      ? props?.created_at
+                      : computedDate,
+                  },
+                  close,
+                }}
+              />
             </Box>
           </ScrollAreaAutosize>
 

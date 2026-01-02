@@ -29,7 +29,7 @@ export default function Meals() {
         <Stack gap={0}>
           {sortArray(
             meals,
-            (i) => new Date(i.updated_at),
+            (i) => new Date(i.created_at),
             Order.DESCENDING
           ).map((m, i) => (
             <Stack gap={0} key={m.id}>
