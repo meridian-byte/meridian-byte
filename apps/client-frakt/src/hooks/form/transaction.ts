@@ -23,6 +23,7 @@ export const useFormTransaction = (params?: {
       type: (params?.defaultValues?.type || TransactionType.DEBIT) as any,
       amount: (params?.defaultValues?.amount || '') as any,
       fees: (params?.defaultValues?.fees || '') as any,
+      created_at: (params?.defaultValues?.created_at || '') as any,
       category_id: params?.defaultValues?.category_id || '',
       account_id: params?.defaultValues?.account_id || '',
       recurring_rule_id: params?.defaultValues?.recurring_rule_id || '',
@@ -32,9 +33,12 @@ export const useFormTransaction = (params?: {
       type: hasLength({ min: 1 }, 'Transaction Type is Required'),
       amount: (value) =>
         Number(value) > 0 ? undefined : 'Transaction amount required',
-      category_id: accountId2
-        ? undefined
-        : hasLength({ min: 1 }, 'Category is Required'),
+      category_id: (value, values) =>
+        values.type != TransactionType.DEBIT
+          ? undefined
+          : value && value.length < 1
+            ? 'Category is Required'
+            : undefined,
       account_id: hasLength({ min: 1 }, 'Account is Required'),
       description: hasLength({ max: 255 }, 'Maximum 255 characters allowed'),
     },
@@ -51,32 +55,26 @@ export const useFormTransaction = (params?: {
         };
 
         if (!params?.defaultValues?.updated_at) {
-          const now = params?.defaultValues?.created_at
-            ? new Date(params?.defaultValues?.created_at)
-            : new Date();
+          const now = new Date(rawValues.created_at || '');
+          const isTransfer =
+            rawValues.type == TransactionType.TRANSFER && !!accountId2;
           const oneSecondOlder = new Date(now.getTime() - 1000);
-          const transfer = !!accountId2;
+          const firstTransactionDate = isTransfer ? oneSecondOlder : now;
 
           transactionCreate({
-            ...submitObject,
             type: TransactionType.DEBIT,
-            date: now,
-            transfer,
-            fees: Number(submitObject.fees || 0).toFixed(2) as any,
-            amount: Number(submitObject.amount).toFixed(2) as any,
-            created_at: oneSecondOlder,
-            updated_at: oneSecondOlder,
+            ...submitObject,
+            transfer: isTransfer,
+            created_at: firstTransactionDate,
+            updated_at: firstTransactionDate,
           });
 
-          if (transfer) {
+          if (isTransfer && !!accountId2) {
             transactionCreate({
-              ...submitObject,
               type: TransactionType.CREDIT,
-              date: now,
-              transfer,
-              amount: Number(submitObject.amount).toFixed(2) as any,
-              fees: Number(0).toFixed(2) as any,
+              ...submitObject,
               account_id: accountId2,
+              transfer: isTransfer,
               created_at: now,
               updated_at: now,
             });

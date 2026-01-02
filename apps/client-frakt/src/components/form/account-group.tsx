@@ -37,7 +37,6 @@ export default function AccountGroup({
             label={mobile ? 'Name' : undefined}
             aria-label="Name"
             placeholder="Name"
-            data-autofocus
             leftSection={
               <IconLetterCase size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
