@@ -8,9 +8,10 @@
 import { companyName } from '@repo/constants/app';
 import { STORE_NAME } from '@repo/constants/names';
 import { DBConfig } from '@repo/types/indexed-db';
+import { linkify } from '@repo/utilities/url';
 
 export const config: DBConfig = {
-  name: companyName.toLowerCase(),
+  name: linkify(companyName),
   version: 1,
   stores: [
     {

@@ -28,6 +28,11 @@ export const HOSTNAME_CLIENT_NOTELINE = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_NOTELINE_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_NOTELINE_DEV;
 
+// Select kairo client host
+export const HOSTNAME_CLIENT_KAIRO = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_KAIRO_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_KAIRO_DEV;
+
 // Select server host
 const HOSTNAME_SERVER = isProduction
   ? process.env.NEXT_PUBLIC_HOST_SERVER_PROD

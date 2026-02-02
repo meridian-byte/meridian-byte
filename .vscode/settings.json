@@ -4,10 +4,11 @@
   "eslint.workingDirectories": [
     { "mode": "auto" },
 
-    { "directory": "packages/client-web", "changeProcessCWD": true },
     { "directory": "packages/client-frakt", "changeProcessCWD": true },
-    { "directory": "packages/client-sate", "changeProcessCWD": true },
+    { "directory": "packages/client-kairo", "changeProcessCWD": true },
     { "directory": "packages/client-noteline", "changeProcessCWD": true },
+    { "directory": "packages/client-sate", "changeProcessCWD": true },
+    { "directory": "packages/client-web", "changeProcessCWD": true },
 
     { "directory": "packages/components", "changeProcessCWD": true },
     { "directory": "packages/constants", "changeProcessCWD": true },

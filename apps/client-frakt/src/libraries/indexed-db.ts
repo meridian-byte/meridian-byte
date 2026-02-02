@@ -8,9 +8,10 @@
 import { APP_NAME } from '@/data/constants';
 import { STORE_NAME } from '@repo/constants/names';
 import { DBConfig } from '@repo/types/indexed-db';
+import { linkify } from '@repo/utilities/url';
 
 export const config: DBConfig = {
-  name: APP_NAME.toLowerCase(),
+  name: linkify(APP_NAME),
   version: 1,
   stores: [
     {
