@@ -1,16 +1,22 @@
 'use client';
 
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+} from '@repo/constants/sizes';
 import {
   Accordion,
   AccordionControl,
   AccordionItem,
   AccordionPanel,
+  Center,
   NavLink,
   Stack,
+  ThemeIcon,
 } from '@mantine/core';
-import { IconFolder } from '@tabler/icons-react';
-import { usePathname } from 'next/navigation';
+import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useNoteActions } from '@/hooks/actions/note';
 import { useNotebookActions } from '@/hooks/actions/notebook';
@@ -19,17 +25,18 @@ import { NotebookGet } from '@repo/types/models/notebook';
 import MenuNotebookSide from '@/components/common/menu/notebook/side';
 import { useStoreNote } from '@/libraries/zustand/stores/note';
 import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { getUrlParam } from '@repo/utilities/url';
 
 export default function Notebooks({
   props,
 }: {
   props: {
+    editing: boolean;
     inputComponent: (input: NotebookGet) => React.ReactNode;
     noteComponent: (input: NoteGet) => React.ReactNode;
   };
 }) {
-  const pathname = usePathname();
-
+  const searchParams = useSearchParams();
   const { notes } = useStoreNote();
   const { notebooks } = useStoreNotebook();
   const { noteCreate } = useNoteActions();
@@ -37,19 +44,25 @@ export default function Notebooks({
     useNotebookActions();
 
   const [value, setValue] = useState<string[]>([]);
+  const [paramNoteId, setParamNoteId] = useState('');
 
   useEffect(() => {
     if (!notebooks || !notes) return;
 
+    const paramNoteId = getUrlParam('noteId');
+    if (!paramNoteId) return;
+
+    setParamNoteId(paramNoteId as string);
+
     const currentNoteNotebook = notebooks.find(
-      (c) => c.id == notes.find((n) => pathname.includes(n.id))?.notebook_id
+      (c) => c.id == notes.find((n) => n.id == paramNoteId)?.notebook_id
     )?.id;
 
     if (!currentNoteNotebook) return;
     if (value.includes(currentNoteNotebook)) return;
 
     setValue([...value, currentNoteNotebook]);
-  }, [notebooks, notes, pathname]);
+  }, [notebooks, notes, searchParams]);
 
   return (
     <Accordion
@@ -68,12 +81,15 @@ export default function Notebooks({
       value={value}
       onChange={setValue}
     >
-      {notebooks?.map((c) => {
+      {notebooks?.map((c, i) => {
         const notebookNotes = notes?.filter((n) => n.notebook_id == c.id);
+        const active = !paramNoteId
+          ? false
+          : notebookNotes?.map((nn) => nn.id).includes(paramNoteId as string);
 
         return (
           <div key={c.id}>
-            <AccordionItem value={c.id}>
+            <AccordionItem value={c.id} mt={i > 0 ? 5 : undefined}>
               <AccordionControl>
                 <MenuNotebookSide
                   item={c}
@@ -100,8 +116,19 @@ export default function Notebooks({
                 >
                   <NavLink
                     label={props.inputComponent(c)}
+                    onClick={(e) => {
+                      if (props.editing) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
                     leftSection={
-                      <IconFolder size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                      <Center c={active ? 'pri.5' : undefined}>
+                        <IconFolder
+                          size={ICON_SIZE}
+                          stroke={ICON_STROKE_WIDTH}
+                        />
+                      </Center>
                     }
                     styles={{
                       root: {
@@ -111,7 +138,7 @@ export default function Notebooks({
                       },
                       label: {
                         fontSize: 'var(--mantine-font-size-sm)',
-                        fontWeight: 'normal',
+                        fontWeight: active ? 500 : 'normal',
                       },
                     }}
                   />
