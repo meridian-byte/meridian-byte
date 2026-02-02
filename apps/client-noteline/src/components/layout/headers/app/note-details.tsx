@@ -52,8 +52,9 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
         bg={
           'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
         }
+        wrap="nowrap"
       >
-        <Group gap={5}>
+        <Group gap={5} wrap="nowrap">
           <Tooltip label={'Navigate Back'}>
             <ActionIcon
               size={ICON_WRAPPER_SIZE}
@@ -75,16 +76,22 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
           </Tooltip>
         </Group>
 
-        <Group gap={5}>
+        <Group gap={5} wrap="nowrap">
           {props && (
-            <Title order={1} fz={'sm'} fw={'normal'} ta={'center'}>
+            <Title
+              order={1}
+              fz={'sm'}
+              fw={'normal'}
+              ta={'center'}
+              lineClamp={1}
+            >
               {props.title}
             </Title>
           )}
         </Group>
 
         {props && (
-          <Group gap={5}>
+          <Group gap={5} wrap="nowrap">
             {userStates === undefined ? (
               <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
             ) : (

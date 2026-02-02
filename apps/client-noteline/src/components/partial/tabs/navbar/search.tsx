@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Divider, NavLink, Skeleton, Stack, Text } from '@mantine/core';
 import InputTextSearch from '@/components/common/inputs/text/search';
 import Link from 'next/link';
@@ -8,13 +8,27 @@ import { useStoreNote } from '@/libraries/zustand/stores/note';
 import { useStoreCategory } from '@/libraries/zustand/stores/category';
 import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
+import { getUrlParam } from '@repo/utilities/url';
+import { useSearchParams } from 'next/navigation';
 
 export default function Search() {
+  const searchParams = useSearchParams();
   const { notes } = useStoreNote();
   const { categories } = useStoreCategory();
   const [value, setValue] = useState('');
   const { appshell, setAppShell } = useStoreAppShell();
   const desktop = useMediaQuery('(min-width: 62em)');
+
+  const [paramNoteId, setParamNoteId] = useState('');
+
+  useEffect(() => {
+    if (!notes) return;
+
+    const paramNoteId = getUrlParam('noteId');
+    if (!paramNoteId) return;
+
+    setParamNoteId(paramNoteId as string);
+  }, [notes, searchParams]);
 
   return (
     <div>
@@ -47,12 +61,14 @@ export default function Search() {
             )
             ?.map((n, i) => {
               const category = categories?.find((c) => c.id == n.notebook_id);
+              const active = paramNoteId == n.id;
 
               return (
                 <NavLink
                   key={i}
                   component={Link}
-                  href={`/app/${n.id}`}
+                  href={`/app?noteId=${n.id}`}
+                  active={active}
                   onClick={() => {
                     if (desktop) return;
                     if (!appshell) return;
@@ -63,7 +79,7 @@ export default function Search() {
                     });
                   }}
                   label={
-                    <Stack mih={30} gap={0} justify="center">
+                    <Stack mih={30} gap={0} justify="center" fw={500}>
                       <Text component="span" inherit lineClamp={1}>
                         {n.title}
                       </Text>
