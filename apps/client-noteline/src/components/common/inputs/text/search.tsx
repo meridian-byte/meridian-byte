@@ -17,7 +17,8 @@ export default function Search({
       variant="filled"
       styles={{
         input: {
-          backgroundColor: 'var(--mantine-color-dark-9)',
+          backgroundColor:
+            'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-9))',
           fontWeight: 500,
         },
       }}
