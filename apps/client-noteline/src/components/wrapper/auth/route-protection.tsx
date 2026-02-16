@@ -22,7 +22,10 @@ export default function RouteProtection({
   const pathIsAuthRoute = authRoutes.some((ar) => pathname.includes(ar));
 
   useEffect(() => {
-    if (!session?.email) {
+    if (session === undefined) return;
+    if (!session) return;
+
+    if (!session.email) {
       if (pathIsProtectedRoute) {
         router.replace(`auth/sign-in?${PARAM_NAME.REDIRECT}=${pathname}`);
       }
@@ -32,11 +35,6 @@ export default function RouteProtection({
       }
     }
   }, [session, pathname, router]);
-
-  if (!session?.email && pathIsProtectedRoute) {
-    // Optionally prevent rendering while redirecting
-    return null; // or a loader/spinner
-  }
 
   return <div>{children}</div>;
 }

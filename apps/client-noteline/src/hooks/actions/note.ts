@@ -29,7 +29,7 @@ export const useNoteActions = () => {
       title: params?.title || 'New Note',
       content: params?.content || '<p></p>',
       profile_id: session.id || params?.profile_id || '',
-      notebook_id: params?.notebook_id || '',
+      notebook_id: params?.notebook_id || null,
       status: params?.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params?.created_at || now).toISOString() as any,
