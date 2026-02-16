@@ -23,6 +23,8 @@ import NextLink from '@repo/components/common/anchor/next-link';
 import { AUTH_URLS } from '@/data/constants';
 import { IconExclamationCircle, IconInfoCircle } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
+import { setCookieClient } from '@repo/utilities/cookie-client';
+import { COOKIE_NAME } from '@repo/constants/names';
 
 export default function Auth({
   action,
@@ -131,14 +133,34 @@ export default function Auth({
       {action == AuthAction.SIGN_IN ? (
         <Text fz={'xs'} ta={'center'}>
           Don&apos;t have an account?{' '}
-          <NextLink inherit fw={500} href={AUTH_URLS.SIGN_UP} underline="hover">
+          <NextLink
+            inherit
+            fw={500}
+            href={AUTH_URLS.SIGN_UP}
+            underline="hover"
+            onClick={() => {
+              setCookieClient(COOKIE_NAME.AUTH.EMAIL, '', {
+                expiryInSeconds: 10,
+              });
+            }}
+          >
             Sign Up
           </NextLink>
         </Text>
       ) : (
         <Text fz={'xs'} ta={'center'}>
           Already have an account?{' '}
-          <NextLink inherit fw={500} href={AUTH_URLS.SIGN_IN} underline="hover">
+          <NextLink
+            inherit
+            fw={500}
+            href={AUTH_URLS.SIGN_IN}
+            underline="hover"
+            onClick={() => {
+              setCookieClient(COOKIE_NAME.AUTH.EMAIL, '', {
+                expiryInSeconds: 10,
+              });
+            }}
+          >
             Sign In
           </NextLink>
         </Text>
