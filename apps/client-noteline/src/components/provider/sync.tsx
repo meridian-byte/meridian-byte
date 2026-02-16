@@ -35,7 +35,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     networkStatus,
     syncStatus,
     debounceSyncToServer,
-    clientOnly: true,
+    clientOnly: false,
   };
 
   // const { syncPosts } = useSyncPosts({
