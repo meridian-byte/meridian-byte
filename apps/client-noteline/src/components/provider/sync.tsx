@@ -12,13 +12,7 @@ import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
-import {
-  useSyncCategories,
-  useSyncLinks,
-  useSyncNotebooks,
-  useSyncNotes,
-  useSyncPosts,
-} from '@/hooks/sync';
+import { useSyncLinks, useSyncNotebooks, useSyncNotes } from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
 import { useSyncQueue } from '@repo/utilities/sync';
 
@@ -44,22 +38,22 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     clientOnly: true,
   };
 
-  const { syncPosts } = useSyncPosts({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
+  // const { syncPosts } = useSyncPosts({
+  //   syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+  //   online: networkStatus.online,
+  // });
 
-  const { syncCategories } = useSyncCategories({
+  // const { syncCategories } = useSyncCategories({
+  //   syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+  //   online: networkStatus.online,
+  // });
+
+  const { syncNotebooks } = useSyncNotebooks({
     syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncNotes } = useSyncNotes({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  const { syncNotebooks } = useSyncNotebooks({
     syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
@@ -72,15 +66,15 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!networkStatus.online) return;
 
-    syncPosts();
-    syncCategories();
+    // syncPosts();
+    // syncCategories();
     syncNotes();
     syncNotebooks();
     syncLinks();
   }, [
     networkStatus.online,
-    syncPosts,
-    syncCategories,
+    // syncPosts,
+    // syncCategories,
     syncNotes,
     syncNotebooks,
     syncLinks,
