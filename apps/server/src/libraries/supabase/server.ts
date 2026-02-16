@@ -1,5 +1,6 @@
 'use server';
 
+import { isProduction } from '@repo/utilities/misc';
 /**
  * @template-source next-template
  * @template-sync auto
@@ -8,7 +9,7 @@
  */
 
 import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 export const createClient = async () => {
   const cookieStore = await cookies();
@@ -21,10 +22,20 @@ export const createClient = async () => {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        async setAll(cookiesToSet) {
+          const host = (await headers()).get('host') ?? '';
+          const isLocalhost = host.includes('localhost');
+          const isProdDomain = host.endsWith('meridianbyte.com');
+
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, {
+                ...options,
+                domain: isProdDomain ? '.meridianbyte.com' : undefined,
+                secure: !isLocalhost,
+                sameSite: isProdDomain ? 'none' : 'lax',
+                path: '/',
+              })
             );
           } catch {
             // The `setAll` method was called from a Server Component.
