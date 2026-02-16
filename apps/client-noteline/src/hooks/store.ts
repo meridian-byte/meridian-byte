@@ -241,84 +241,60 @@ export const useStoreData = (params?: {
   const prevItemsRef = useRef<any[]>([]);
 
   const { session } = useStoreSession();
-  const { setPosts } = useStorePost();
-  const { setCategories } = useStoreCategory();
-  const { setNotes } = useStoreNote();
+  // const { setPosts } = useStorePost();
+  // const { setCategories } = useStoreCategory();
   const { setNotebooks } = useStoreNotebook();
+  const { setNotes } = useStoreNote();
   const { setLinks } = useStoreLink();
 
-  useEffect(() => {
-    if (prevItemsRef.current.length) return;
+  // useEffect(() => {
+  //   if (prevItemsRef.current.length) return;
 
-    const loadPosts = async () => {
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: STORE_NAME.POSTS,
-        session,
-        dataFetchFunction: async () => {
-          if (clientOnly) {
-            return {
-              items: samplePosts, // TODO: remove this after testing
-            };
-          } else {
-            return await postsGet();
-          }
-        },
-        stateUpdateFunction: (stateUpdateItems) => setPosts(stateUpdateItems),
-      });
-    };
+  //   const loadPosts = async () => {
+  //     await loadInitialData({
+  //       prevItemsRef,
+  //       dataStore: STORE_NAME.POSTS,
+  //       session,
+  //       dataFetchFunction: async () => {
+  //         if (clientOnly) {
+  //           return {
+  //             items: samplePosts, // TODO: remove this after testing
+  //           };
+  //         } else {
+  //           return await postsGet();
+  //         }
+  //       },
+  //       stateUpdateFunction: (stateUpdateItems) => setPosts(stateUpdateItems),
+  //     });
+  //   };
 
-    loadPosts();
-  }, [setPosts, session, clientOnly]);
+  //   loadPosts();
+  // }, [setPosts, session, clientOnly]);
 
-  useEffect(() => {
-    if (prevItemsRef.current.length) return;
+  // useEffect(() => {
+  //   if (prevItemsRef.current.length) return;
 
-    const loadCategories = async () => {
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: STORE_NAME.CATEGORIES,
-        session,
-        dataFetchFunction: async () => {
-          if (clientOnly) {
-            return {
-              items: [],
-            };
-          } else {
-            return await categoriesGet();
-          }
-        },
-        stateUpdateFunction: (stateUpdateItems) =>
-          setCategories(stateUpdateItems),
-      });
-    };
+  //   const loadCategories = async () => {
+  //     await loadInitialData({
+  //       prevItemsRef,
+  //       dataStore: STORE_NAME.CATEGORIES,
+  //       session,
+  //       dataFetchFunction: async () => {
+  //         if (clientOnly) {
+  //           return {
+  //             items: [],
+  //           };
+  //         } else {
+  //           return await categoriesGet();
+  //         }
+  //       },
+  //       stateUpdateFunction: (stateUpdateItems) =>
+  //         setCategories(stateUpdateItems),
+  //     });
+  //   };
 
-    loadCategories();
-  }, [setCategories, session, clientOnly]);
-
-  useEffect(() => {
-    if (prevItemsRef.current.length) return;
-
-    const loadNotes = async () => {
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: STORE_NAME.NOTES,
-        session,
-        dataFetchFunction: async () => {
-          if (clientOnly) {
-            return {
-              items: [],
-            };
-          } else {
-            return await notesGet();
-          }
-        },
-        stateUpdateFunction: (stateUpdateItems) => setNotes(stateUpdateItems),
-      });
-    };
-
-    loadNotes();
-  }, [setNotes, session, clientOnly]);
+  //   loadCategories();
+  // }, [setCategories, session, clientOnly]);
 
   useEffect(() => {
     if (prevItemsRef.current.length) return;
@@ -344,6 +320,30 @@ export const useStoreData = (params?: {
 
     loadNotebooks();
   }, [setNotebooks, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadNotes = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.NOTES,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return {
+              items: [],
+            };
+          } else {
+            return await notesGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) => setNotes(stateUpdateItems),
+      });
+    };
+
+    loadNotes();
+  }, [setNotes, session, clientOnly]);
 
   useEffect(() => {
     if (prevItemsRef.current.length) return;

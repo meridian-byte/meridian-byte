@@ -7,30 +7,23 @@
 
 import prisma from '@/libraries/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { PostGet } from '@repo/types/models/post';
+import { LinkGet } from '@repo/types/models/link';
 
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
 
 export async function GET() {
   try {
-    const postRecords = await prisma.post.findMany({
-      include: {
-        _count: { select: { comments: true } },
-
-        category: true,
-        profile: true,
-      },
-
+    const linkRecords = await prisma.link.findMany({
       orderBy: { created_at: 'desc' },
     });
 
     return NextResponse.json(
-      { items: postRecords },
-      { status: 200, statusText: 'Posts Retrieved' }
+      { items: linkRecords },
+      { status: 200, statusText: 'Links Retrieved' }
     );
   } catch (error) {
-    console.error('---> route handler error (get posts):', error);
+    console.error('---> route handler error (get links):', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -41,45 +34,45 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const {
-      posts,
+      links,
       deletedIds,
     }: {
-      posts: PostGet[];
+      links: LinkGet[];
       deletedIds?: string[];
     } = await request.json();
 
     // First handle explicit deletions if any exist
     if (deletedIds?.length) {
-      await prisma.post.deleteMany({
+      await prisma.link.deleteMany({
         where: { id: { in: deletedIds } },
       });
     }
 
     // Prepare upsert operations
-    const operations = posts.map((post) =>
-      prisma.post.upsert({
-        where: { id: post.id },
+    const operations = links.map((link) =>
+      prisma.link.upsert({
+        where: { id: link.id },
         update: {
-          ...post,
-          updated_at: new Date(post.updated_at),
+          ...link,
+          updated_at: new Date(link.updated_at),
         },
         create: {
-          ...post,
-          created_at: new Date(post.created_at),
-          updated_at: new Date(post.updated_at),
+          ...link,
+          created_at: new Date(link.created_at),
+          updated_at: new Date(link.updated_at),
         },
       })
     );
 
     // Run all operations in one transaction
-    const updatePosts = await prisma.$transaction(operations);
+    const updateLinks = await prisma.$transaction(operations);
 
     return NextResponse.json(
-      { items: updatePosts },
-      { status: 200, statusText: 'Posts Updated' }
+      { items: updateLinks },
+      { status: 200, statusText: 'Links Updated' }
     );
   } catch (error) {
-    console.error('---> route handler error (update posts):', error);
+    console.error('---> route handler error (update links):', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
