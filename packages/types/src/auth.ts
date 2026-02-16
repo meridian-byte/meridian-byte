@@ -1,8 +1,10 @@
 import { AuthAction } from './enums';
 
 export type SignIn = {
-  formData: { email: string };
-  options?: { action?: AuthAction; redirectUrl?: string };
+  formData: { email: string; otp?: string };
+  options: { action?: AuthAction; redirectUrl?: string; baseUrl?: string };
 };
 
-export type SignUp = { email: string; password: string };
+export type SignOut = {
+  options: { baseUrl: string };
+};
