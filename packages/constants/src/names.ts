@@ -12,6 +12,7 @@ export const COOKIE_NAME = {
   LOCAL: { COUNTRY: 'local.country', COUNTRIES: 'local.countries' },
   COLOR_SCHEME: 'theme.color-scheme',
   COLOR_SCHEME_STATE: 'theme.color-scheme-state',
+  AUTH: { EMAIL: 'auth.email' },
 };
 
 export const LOCAL_STORAGE_NAME = {

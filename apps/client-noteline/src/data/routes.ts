@@ -17,9 +17,7 @@ export const authRoutes = [
 ];
 
 export const protectedRoutes = [
-  '/account',
-  '/dashboard',
-  '/cms',
+  '/app',
   // Add other protected routes
 ];
 

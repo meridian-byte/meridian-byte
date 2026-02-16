@@ -27,8 +27,12 @@ export const openDatabase = async (config: DBConfig): Promise<Database> => {
 
       db.onversionchange = () => {
         console.warn('⚠️ Database version changed. Closing...');
+
         db.close();
-        window.location.reload();
+
+        if (!isIntentionalDelete) {
+          window.location.reload();
+        }
       };
 
       resolve(new Database(db));
@@ -68,10 +72,13 @@ export const openDatabase = async (config: DBConfig): Promise<Database> => {
  * Delete a database completely.
  */
 export const deleteDatabase = async (dbName: string): Promise<void> => {
+  isIntentionalDelete = true;
+
   return new Promise((resolve, reject) => {
     const request = indexedDB.deleteDatabase(dbName);
 
     request.onsuccess = () => {
+      isIntentionalDelete = false;
       console.log(`🗑️ Deleted IndexedDB "${dbName}" successfully.`);
       resolve();
     };
@@ -88,3 +95,5 @@ export const deleteDatabase = async (dbName: string): Promise<void> => {
     };
   });
 };
+
+let isIntentionalDelete = false;
