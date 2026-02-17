@@ -53,15 +53,6 @@
         "!.next/cache/**"
       ]
     },
-    "apps/client-web#build": {
-      "dependsOn": ["apps/server#build"]
-    },
-    "apps/client-frakt#build": {
-      "dependsOn": ["apps/client-web#build"]
-    },
-    "apps/client-sate#build": {
-      "dependsOn": ["apps/client-frakt#build"]
-    },
     "lint": {
       "dependsOn": ["^lint"]
     },
