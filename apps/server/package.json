@@ -13,7 +13,6 @@
   "dependencies": {
     "@mantine/core": "^8.3.6",
     "@mantine/notifications": "^8.3.6",
-    "@react-email/render": "^1.1.2",
     "@repo/components": "workspace:*",
     "@repo/constants": "workspace:*",
     "@repo/db": "workspace:*",
@@ -29,7 +28,7 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-redux": "^9.2.0",
-    "resend": "^4.5.1"
+    "resend": "^6.9.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
