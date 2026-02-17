@@ -13,17 +13,17 @@ import '@mantine/notifications/styles.css';
 import '../styles/globals.scss';
 
 import type { Metadata } from 'next';
-import { Kanit, Tomorrow } from 'next/font/google';
+import { Space_Grotesk, Tomorrow } from 'next/font/google';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
 import { companyName } from '@repo/constants/app';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { mantine } from '@/assets/styles';
 
-const kanitSans = Kanit({
-  variable: '--font-kanit-sans',
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-space-grotesk-sans-serif',
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 const tomorrowSans = Tomorrow({
@@ -58,7 +58,7 @@ export default async function RootLayout({
         <ColorSchemeScript defaultColorScheme={DEFAULT_COLOR_SCHEME} />
       </head>
 
-      <body className={`${kanitSans.variable} ${tomorrowSans.variable}`}>
+      <body className={`${spaceGrotesk.variable} ${tomorrowSans.variable}`}>
         <ProviderMantine
           appThemeProps={{ styleSheets: { ...mantine } }}
           options={{ withNotifications: true }}
