@@ -2,7 +2,7 @@
 
 import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
 import {
   Center,
   Divider,
@@ -28,7 +28,7 @@ import {
 } from '@tabler/icons-react';
 import ModalTransactionCrud from '@/components/common/modals/transaction/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
-import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
+import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 import { TransactionType } from '@repo/types/models/enums';
 import { useEntryDate, EntryDateReturnType } from '@repo/hooks/entries';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';

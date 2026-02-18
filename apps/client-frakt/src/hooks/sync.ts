@@ -12,11 +12,11 @@ import { accountsUpdate } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsUpdate } from '@repo/handlers/requests/database/account-groups';
 import { transactionsUpdate } from '@repo/handlers/requests/database/transactions';
 import { categoriesUpdate } from '@repo/handlers/requests/database/category';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreBudget } from '@/libraries/zustand/stores/budget';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
+import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
+import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
 import { SyncParams } from '@repo/types/sync';
 
 export const useSyncCategories = (params: {

@@ -1,9 +1,9 @@
-import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { NotebookGet } from '@repo/types/models/notebook';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useItemEditContext } from '@/components/contexts/item-edit';
 
 export const useNotebookActions = () => {

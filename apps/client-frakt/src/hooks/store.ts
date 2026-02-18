@@ -19,7 +19,7 @@ import {
   getFromLocalStorage,
   saveToLocalStorage,
 } from '@repo/utilities/storage';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { generateUUID } from '@repo/utilities/generators';
 import { createClient } from '@/libraries/supabase/client';
 import { usePathname, useRouter } from 'next/navigation';
@@ -31,23 +31,26 @@ import { Role } from '@repo/types/models/enums';
 import { WEEK } from '@repo/constants/sizes';
 import { ProfileGet } from '@repo/types/models/profile';
 import { profileGet } from '@repo/handlers/requests/database/profiles';
-import { RoleValue, useStoreRole } from '@/libraries/zustand/stores/role';
+import { RoleValue, useStoreRole } from '@repo/libraries/zustand/stores/role';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   AppShellValue,
   useStoreAppShell,
-} from '@/libraries/zustand/stores/shell';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreBudget } from '@/libraries/zustand/stores/budget';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+} from '@repo/libraries/zustand/stores/shell';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
+import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
+import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
+import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
 import { categoriesGet } from '@repo/handlers/requests/database/category';
 import { budgetsGet } from '@repo/handlers/requests/database/budgets';
 import { accountsGet } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsGet } from '@repo/handlers/requests/database/account-groups';
 import { transactionsGet } from '@repo/handlers/requests/database/transactions';
-import { ThemeValue, useStoreTheme } from '@/libraries/zustand/stores/theme';
+import {
+  ThemeValue,
+  useStoreTheme,
+} from '@repo/libraries/zustand/stores/theme';
 import { ColorScheme } from '@repo/types/enums';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 

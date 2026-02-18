@@ -1,10 +1,10 @@
 import { defaultBackupConfig } from '@/libraries/fsa';
 import { config } from '@/libraries/indexed-db';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreBudget } from '@/libraries/zustand/stores/budget';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
+import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
+import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { createFileSyncAdapter } from '@repo/libraries/fsa/handler';
 import { openDatabase } from '@repo/libraries/indexed-db/actions';

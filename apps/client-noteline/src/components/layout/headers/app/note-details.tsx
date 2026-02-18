@@ -26,7 +26,7 @@ import {
 import { NoteGet } from '@repo/types/models/note';
 import { useRouter } from 'next/navigation';
 import MenuNoteMain from '@/components/common/menu/note/main';
-import { useStoreUserStates } from '@/libraries/zustand/stores/user-states';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 
 export default function NoteDetails({ props }: { props?: NoteGet }) {
   const { userStates, setUserStates } = useStoreUserStates();

@@ -17,7 +17,7 @@ import ModalCommands from '@/components/common/modals/commands';
 import { useNoteActions } from '@/hooks/actions/note';
 import { getRegionalDate } from '@repo/utilities/date-time';
 import { useRouter } from 'next/navigation';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Main({
   props,

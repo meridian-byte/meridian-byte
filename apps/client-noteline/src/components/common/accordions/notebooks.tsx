@@ -23,8 +23,8 @@ import { useNotebookActions } from '@/hooks/actions/notebook';
 import { NoteGet } from '@repo/types/models/note';
 import { NotebookGet } from '@repo/types/models/notebook';
 import MenuNotebookSide from '@/components/common/menu/notebook/side';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
-import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { getUrlParam } from '@repo/utilities/url';
 
 export default function Notebooks({

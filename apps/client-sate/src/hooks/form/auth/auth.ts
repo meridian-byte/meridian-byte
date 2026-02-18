@@ -12,7 +12,7 @@ import { signIn } from '@repo/handlers/requests/auth';
 import { AuthAction } from '@repo/types/enums';
 import { getUrlParam } from '@repo/utilities/url';
 import { useRouter } from 'next/navigation';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { PARAM_NAME } from '@repo/constants/names';
 import { useFormBase } from '@/hooks/form';
 

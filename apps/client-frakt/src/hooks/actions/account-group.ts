@@ -1,5 +1,5 @@
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { AccountGroupGet } from '@repo/types/models/account-group';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

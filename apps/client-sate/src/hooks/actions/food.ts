@@ -1,5 +1,5 @@
-import { useStoreFood } from '@/libraries/zustand/stores/food';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { FoodGet } from '@repo/types/models/food';
 import { Status, SyncStatus, WeightUnitType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

@@ -21,7 +21,7 @@ import { IconEdit, IconTrash } from '@tabler/icons-react';
 import ModalCategoryCrud from '../modals/category/crud';
 import ModalConfirm from '@repo/components/common/modals/confirm';
 import { useCategoryActions } from '@/hooks/actions/category';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
 
 export default function Category({ props }: { props: CategoryGet }) {
   const { categoryDelete } = useCategoryActions();

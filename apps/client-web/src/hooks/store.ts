@@ -14,13 +14,13 @@ import {
   PARAM_NAME,
   STORE_NAME,
 } from '@repo/constants/names';
-import { useStorePost } from '@/libraries/zustand/stores/post';
+import { useStorePost } from '@repo/libraries/zustand/stores/post';
 import { loadInitialData } from '@/utilities/store';
 import {
   getFromLocalStorage,
   saveToLocalStorage,
 } from '@repo/utilities/storage';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { generateUUID } from '@repo/utilities/generators';
 import { createClient } from '@/libraries/supabase/client';
 import { usePathname, useRouter } from 'next/navigation';
@@ -32,14 +32,17 @@ import { Role } from '@repo/types/models/enums';
 import { WEEK } from '@repo/constants/sizes';
 import { ProfileGet } from '@repo/types/models/profile';
 import { profileGet } from '@repo/handlers/requests/database/profiles';
-import { RoleValue, useStoreRole } from '@/libraries/zustand/stores/role';
+import { RoleValue, useStoreRole } from '@repo/libraries/zustand/stores/role';
 import {
   AppShellValue,
   useStoreAppShell,
-} from '@/libraries/zustand/stores/shell';
+} from '@repo/libraries/zustand/stores/shell';
 import { samplePosts } from '@/data/sample/posts';
 import { postsGet } from '@repo/handlers/requests/database/posts';
-import { ThemeValue, useStoreTheme } from '@/libraries/zustand/stores/theme';
+import {
+  ThemeValue,
+  useStoreTheme,
+} from '@repo/libraries/zustand/stores/theme';
 import { ColorScheme } from '@repo/types/enums';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 

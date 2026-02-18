@@ -1,5 +1,5 @@
-import { useStoreMass } from '@/libraries/zustand/stores/mass';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { MassGet } from '@repo/types/models/mass';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

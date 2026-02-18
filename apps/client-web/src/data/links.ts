@@ -17,7 +17,7 @@ import {
   IconStar,
   IconUser,
 } from '@tabler/icons-react';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 
 export type Link = { link: string; label: string };
 

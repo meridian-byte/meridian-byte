@@ -3,7 +3,7 @@
 import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import { Group, NumberFormatter, Stack, Text } from '@mantine/core';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { AccountType } from '@repo/types/models/enums';
 
 export default function Accounts() {

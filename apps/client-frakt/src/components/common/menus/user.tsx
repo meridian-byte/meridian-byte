@@ -16,7 +16,7 @@ import { navLinkItems } from '@/data/links';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import PartialUser from '@/components/partial/user';
 import classes from './user.module.scss';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export default function User({ children }: { children: React.ReactNode }) {
   const { session } = useStoreSession();

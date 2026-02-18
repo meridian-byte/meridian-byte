@@ -56,3 +56,14 @@ export const API_URL = `${BASE_URL_SERVER}/api`;
 export const GEO_DATA_URL = {
   COUNTRIES: `${process.env.NEXT_PUBLIC_REST_COUNTRIES_API_URL}`,
 };
+
+export const AUTH_URLS = {
+  SIGN_IN: `/auth/sign-in`,
+  SIGN_UP: `/auth/sign-up`,
+  CHECK_EMAIL: `/auth/check-email`,
+  ERROR: `/auth/error`,
+  SIGN_OUT: `/auth/sign-out`,
+  REDIRECT: {
+    DEFAULT: '/app',
+  },
+};

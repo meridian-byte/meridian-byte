@@ -5,7 +5,7 @@ import React from 'react';
 import { APPSHELL } from '@/data/constants';
 import TabNavbarLeft from '@/components/common/tabs/navbar/left';
 import TabNavbarRight from '@/components/common/tabs/navbar/right';
-import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
+import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 
 export default function Child({ children }: { children: React.ReactNode }) {

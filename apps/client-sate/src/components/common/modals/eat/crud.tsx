@@ -25,7 +25,7 @@ import {
 } from '@repo/constants/sizes';
 import { useEatActions } from '@/hooks/actions/eat';
 import ModalConfirm from '@repo/components/common/modals/confirm';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
 import { Order } from '@repo/types/enums';
 import { sortArray } from '@repo/utilities/array';
 import CardServing from '../../cards/serving';

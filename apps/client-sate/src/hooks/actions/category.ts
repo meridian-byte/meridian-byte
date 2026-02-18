@@ -1,5 +1,5 @@
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { CategoryGet } from '@repo/types/models/category';
 import { CategoryType, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

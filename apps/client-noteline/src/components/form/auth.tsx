@@ -20,7 +20,7 @@ import AuthProviders from '@/components/common/buttons/auth-providers';
 import { useFormAuth } from '@/hooks/form/auth/auth';
 import { AuthAction } from '@repo/types/enums';
 import NextLink from '@repo/components/common/anchor/next-link';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { IconExclamationCircle, IconInfoCircle } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { setCookieClient } from '@repo/utilities/cookie-client';

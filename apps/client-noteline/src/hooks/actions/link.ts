@@ -1,5 +1,5 @@
-import { useStoreLink } from '@/libraries/zustand/stores/link';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreLink } from '@repo/libraries/zustand/stores/link';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { LinkGet } from '@repo/types/models/link';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

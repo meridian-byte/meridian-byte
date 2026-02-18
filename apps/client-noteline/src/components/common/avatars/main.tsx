@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 import classes from './main.module.scss';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { IconUser } from '@tabler/icons-react';
-import { Auth as WrapperAuth } from '@/components/wrapper/auth';
+import { SignIn as WrapperSignIn } from '@repo/components/wrappers/auth/actions';
 import { AuthAction } from '@repo/types/enums';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export default function Main({ size }: { size?: number }) {
   const [mounted, setMounted] = useState(false);
@@ -21,7 +21,7 @@ export default function Main({ size }: { size?: number }) {
       {!mounted || session === undefined ? (
         <Skeleton h={size} w={size} radius={999} />
       ) : !session?.email ? (
-        <WrapperAuth options={{ action: AuthAction.SIGN_IN }}>
+        <WrapperSignIn options={{ action: AuthAction.SIGN_IN }}>
           <ActionIcon
             size={size}
             variant="subtle"
@@ -31,7 +31,7 @@ export default function Main({ size }: { size?: number }) {
               <IconUser size={ICON_SIZE * 1.2} stroke={ICON_STROKE_WIDTH} />
             </Group>
           </ActionIcon>
-        </WrapperAuth>
+        </WrapperSignIn>
       ) : (
         <Avatar
           className={

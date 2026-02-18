@@ -3,7 +3,7 @@
 import React from 'react';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { Stack } from '@mantine/core';
-import { useStoreUserStates } from '@/libraries/zustand/stores/user-states';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import LayoutSection from '@repo/components/layout/section';
 import EditorMain from '@/components/common/editors/main';
 import ParserHtml from '@/components/parsers/html';

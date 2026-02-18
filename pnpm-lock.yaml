@@ -637,9 +637,15 @@ importers:
       '@repo/constants':
         specifier: workspace:*
         version: link:../constants
+      '@repo/handlers':
+        specifier: workspace:*
+        version: link:../handlers
       '@repo/hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@repo/libraries':
+        specifier: workspace:*
+        version: link:../libraries
       '@repo/types':
         specifier: workspace:*
         version: link:../types
@@ -843,6 +849,12 @@ importers:
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      '@supabase/supabase-js':
+        specifier: ^2.89.0
+        version: 2.89.0
+      zustand:
+        specifier: ^5.0.8
+        version: 5.0.9(@types/react@19.2.7)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
