@@ -1,0 +1,107 @@
+'use client';
+
+import React from 'react';
+import {
+  Card,
+  Group,
+  NumberFormatter,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { MealGet } from '@repo/types/models/meal';
+import { getUnitShorts } from '@repo/hooks/nutrients';
+import { useMealTotals } from '@repo/hooks/nutrients';
+import { WeightUnitType } from '@repo/types/models/enums';
+import { COLOR_CODES } from '@repo/constants/other';
+
+export default function Meal({ props }: { props: MealGet }) {
+  const { totalMealNutrients } = useMealTotals({ meal: props });
+
+  return (
+    <Card radius={0} bg={'transparent'} padding={0} py={5}>
+      <Group justify="space-between" wrap="nowrap">
+        <Stack gap={2}>
+          <div>
+            <Title order={3} fz={'md'} fw={'normal'} lineClamp={1}>
+              {props.name}
+            </Title>
+            <Text component="span" inherit c={'dimmed'} lineClamp={1}>
+              {props.description}
+            </Text>
+          </div>
+
+          <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
+            <Text inherit lineClamp={1}>
+              {totalMealNutrients.totalCarbs > 0 && (
+                <>
+                  <Text component="span" inherit>
+                    <Text
+                      component="span"
+                      inherit
+                      c={`${COLOR_CODES.FOOD.CARBS}.6`}
+                    >
+                      <NumberFormatter value={totalMealNutrients.totalCarbs} />
+                    </Text>{' '}
+                    {getUnitShorts(WeightUnitType.GRAMS)}
+                  </Text>
+                </>
+              )}
+
+              {totalMealNutrients.totalProtein > 0 && (
+                <>
+                  {totalMealNutrients.totalCarbs > 0 && ', '}
+                  <Text component="span" inherit>
+                    <Text
+                      component="span"
+                      inherit
+                      c={`${COLOR_CODES.FOOD.PROTEINS}.6`}
+                    >
+                      <NumberFormatter
+                        value={totalMealNutrients.totalProtein}
+                      />
+                    </Text>{' '}
+                    {getUnitShorts(WeightUnitType.GRAMS)}
+                  </Text>
+                </>
+              )}
+
+              {totalMealNutrients.totalFat > 0 && (
+                <>
+                  {(totalMealNutrients.totalCarbs > 0 ||
+                    totalMealNutrients.totalProtein > 0) &&
+                    ', '}
+                  <Text component="span" inherit>
+                    <Text
+                      component="span"
+                      inherit
+                      c={`${COLOR_CODES.FOOD.FATS}.6`}
+                    >
+                      <NumberFormatter value={totalMealNutrients.totalFat} />
+                    </Text>{' '}
+                    {getUnitShorts(WeightUnitType.GRAMS)}
+                  </Text>
+                </>
+              )}
+            </Text>
+          </Group>
+        </Stack>
+
+        <Stack gap={0} align="end" ta={'end'}>
+          <Text inherit fz={{ base: 'sm', xs: 'md' }}>
+            <NumberFormatter value={totalMealNutrients.totalKcal} />
+          </Text>
+
+          <Text
+            inherit
+            fz={{ base: 'xs', xs: 'sm' }}
+            c={'dimmed'}
+            lineClamp={1}
+          >
+            Kcal
+          </Text>
+        </Stack>
+      </Group>
+    </Card>
+  );
+}

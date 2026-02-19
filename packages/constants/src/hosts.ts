@@ -5,7 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-export const crossOrigins = [
+export const CROSS_ORIGINS = [
   'localhost',
   '127.0.0.1',
 

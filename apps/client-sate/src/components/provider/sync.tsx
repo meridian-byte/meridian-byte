@@ -7,20 +7,14 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
-import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
-import {
-  useSyncFoods,
-  useSyncMeals,
-  useSyncServings,
-  useSyncEats,
-  useSyncMasses,
-} from '@/hooks/sync';
+import { handleSync, syncToServerAfterDelay } from '@repo/libraries/sync';
+import { useSyncStores } from '@repo/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
-import { useSyncQueue } from '@repo/utilities/sync';
+import { useSyncQueue } from '@repo/libraries/sync';
 
 export default function Sync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
@@ -44,47 +38,17 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     clientOnly: true,
   };
 
-  const { syncFoods } = useSyncFoods({
+  useSyncStores({
     syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
+    storesToSync: {
+      syncFoods: true,
+      syncMeals: true,
+      syncServings: true,
+      syncEats: true,
+      syncMasses: true,
+    },
   });
-
-  const { syncMeals } = useSyncMeals({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  const { syncServings } = useSyncServings({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  const { syncEats } = useSyncEats({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  const { syncMasses } = useSyncMasses({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  useEffect(() => {
-    if (!networkStatus.online) return;
-
-    syncFoods();
-    syncMeals();
-    syncServings();
-    syncEats();
-    syncMasses();
-  }, [
-    networkStatus.online,
-    syncFoods,
-    syncMeals,
-    syncServings,
-    syncEats,
-    syncMasses,
-  ]);
 
   return <div>{children}</div>;
 }

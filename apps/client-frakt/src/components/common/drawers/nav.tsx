@@ -2,7 +2,7 @@
 
 import { useDisclosure } from '@mantine/hooks';
 import { Divider, Drawer, NavLink } from '@mantine/core';
-import { navLinkApp } from '@/data/links';
+import { navLinks } from '@/data/links';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import ModalAccountGroupList from '../modals/account-group/list';
 import ModalCategoryList from '../modals/category/list';
@@ -23,13 +23,13 @@ export default function Nav({ children }: { children: React.ReactNode }) {
 
 export function NavComponent({ props }: { props?: { close?: () => void } }) {
   const accountGroupProps = {
-    label: navLinkApp[0].label,
-    icon: navLinkApp[0].icon,
+    label: navLinks.app[0].label,
+    icon: navLinks.app[0].icon,
   };
 
   const categoryProps = {
-    label: navLinkApp[1].label,
-    icon: navLinkApp[1].icon,
+    label: navLinks.app[1].label,
+    icon: navLinks.app[1].icon,
   };
 
   return (
@@ -59,7 +59,7 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
 
       <Divider />
 
-      {navLinkApp.slice(2, navLinkApp.length).map((nl, i) => (
+      {navLinks.app.slice(2, navLinks.app.length).map((nl, i) => (
         <NavLink
           key={i}
           label={nl.label}
