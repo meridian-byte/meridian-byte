@@ -18,7 +18,7 @@ import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
 import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
-import { mantine } from '@repo/constants/styles';
+import { mantine } from '@/data/styles';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk-sans-serif',
