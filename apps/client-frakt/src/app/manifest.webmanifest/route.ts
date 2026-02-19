@@ -1,5 +1,5 @@
 import { AUTH_URLS } from '@repo/constants/paths';
-import { APP_DESC, APP_NAME } from '@/data/constants';
+import { APP_DESC, APP_NAME } from '@repo/constants/app';
 import { linkify } from '@repo/utilities/url';
 
 export const dynamic = 'force-static';
@@ -7,9 +7,9 @@ export const revalidate = false;
 
 export async function GET() {
   const manifest = {
-    id: linkify(APP_NAME),
-    name: APP_NAME,
-    short_name: APP_NAME,
+    id: linkify(APP_NAME.FRAKT),
+    name: APP_NAME.FRAKT,
+    short_name: APP_NAME.FRAKT,
     description: APP_DESC,
     lang: 'en',
     dir: 'ltr',

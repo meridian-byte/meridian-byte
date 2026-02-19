@@ -1,7 +1,6 @@
 // app/sitemap.xml/route.ts
 import { NextResponse } from 'next/server';
 import { HOSTED_BASE_URL } from '@repo/constants/paths';
-import { sitemapRoutes } from '@/data/routes';
 
 export const dynamic = 'force-static';
 
@@ -10,7 +9,6 @@ export async function GET() {
 
   const staticRoutes = [
     '', // homepage
-    ...sitemapRoutes,
   ]
     .map(
       (route) => `

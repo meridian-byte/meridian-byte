@@ -631,6 +631,9 @@ importers:
       '@mantine/core':
         specifier: ^8.3.6
         version: 8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@mantine/dates':
+        specifier: ^8.3.6
+        version: 8.3.10(@mantine/core@8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mantine/hooks@8.3.10(react@19.2.0))(dayjs@1.11.19)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@mantine/form':
         specifier: ^8.3.6
         version: 8.3.10(react@19.2.0)
