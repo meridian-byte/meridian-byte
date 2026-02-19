@@ -25,7 +25,7 @@ import {
 } from '@tabler/icons-react';
 import { NoteGet } from '@repo/types/models/note';
 import { useRouter } from 'next/navigation';
-import MenuNoteMain from '@/components/common/menu/note/main';
+import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 
 export default function NoteDetails({ props }: { props?: NoteGet }) {

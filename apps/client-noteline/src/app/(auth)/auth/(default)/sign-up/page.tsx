@@ -8,7 +8,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import LayoutPage from '@repo/components/layout/page';
-import FormAuth from '@/components/form/auth';
+import FormAuth from '@repo/components/form/auth';
 import { AuthAction } from '@repo/types/enums';
 
 export const metadata: Metadata = { title: 'Sign Up' };

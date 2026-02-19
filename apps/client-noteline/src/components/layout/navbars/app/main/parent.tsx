@@ -5,16 +5,16 @@ import {
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
-import { ActionIcon, Box, Flex, Group, Stack, Tooltip } from '@mantine/core';
+import { ActionIcon, Flex, Group, Tooltip } from '@mantine/core';
 import {
   IconCalendarEvent,
   IconFileSearch,
   IconTerminal,
 } from '@tabler/icons-react';
 import React from 'react';
-import ModalSearch from '@/components/common/modals/search';
-import ModalCommands from '@/components/common/modals/commands';
-import { useNoteActions } from '@/hooks/actions/note';
+import ModalSearch from '@repo/components/common/modals/search';
+import ModalCommands from '@repo/components/common/modals/commands';
+import { useNoteActions } from '@repo/hooks/actions/note';
 import { getRegionalDate } from '@repo/utilities/date-time';
 import { useRouter } from 'next/navigation';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
