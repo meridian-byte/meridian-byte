@@ -6,13 +6,13 @@
  */
 
 import { NextResponse, type NextRequest } from 'next/server';
-import { createClient } from '@/libraries/supabase/server';
+import { createClient } from '@repo/libraries/supabase/server';
 import { AUTH_URLS } from '@repo/constants/paths';
-import { profileCreate } from '@/services/database/profile';
+import { profileCreate } from '@repo/services/database/profile';
 import { getEmailLocalPart } from '@repo/utilities/string';
-import { emailSendOnboarding } from '@/libraries/wrappers/email';
+import { emailSendOnboarding } from '@repo/libraries/wrappers/email';
 import { segmentFullName } from '@repo/utilities/string';
-import { emailContactAdd } from '@/services/api/email/contacts';
+import { emailContactAdd } from '@repo/services/api/email/contacts';
 import { COMPANY_NAME } from '@repo/constants/app';
 
 export const dynamic = 'force-dynamic';

@@ -5,7 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import prisma from '@/libraries/prisma';
+import prisma from '@repo/libraries/prisma';
 import { ProfileGet } from '@repo/types/models/profile';
 import { NextRequest, NextResponse } from 'next/server';
 
