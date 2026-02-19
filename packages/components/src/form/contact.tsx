@@ -32,7 +32,11 @@ export default function Contact({
   );
 
   return (
-    <Box component="form" onSubmit={form.onSubmit(handleSubmit)} noValidate>
+    <Box
+      component="form"
+      onSubmit={form.onSubmit(() => handleSubmit())}
+      noValidate
+    >
       <Grid>
         <GridCol span={{ base: 12, md: options?.modal ? 6 : undefined }}>
           <Grid>
