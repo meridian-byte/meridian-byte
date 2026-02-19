@@ -25,7 +25,11 @@ export default function Profile() {
   const { form, submitted, handleSubmit, session } = useFormUserProfile();
 
   return (
-    <Box component="form" onSubmit={form.onSubmit(handleSubmit)} noValidate>
+    <Box
+      component="form"
+      onSubmit={form.onSubmit(() => handleSubmit())}
+      noValidate
+    >
       <Grid>
         <GridCol span={{ base: 12, sm: 6 }}>
           <TextInput
