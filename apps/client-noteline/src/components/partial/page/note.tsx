@@ -23,7 +23,11 @@ export default function Note({ props }: { props: { note: NoteGet } }) {
           <EditorMain item={props.note} />
         ) : (
           <ParserHtml
-            props={{ html: props.note.content || '', item: props.note }}
+            props={{
+              html: props.note.content || '',
+              item: props.note,
+              options: { withTitle: true },
+            }}
           />
         )}
       </Stack>
