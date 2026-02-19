@@ -35,10 +35,8 @@ import { generateUUID } from '@repo/utilities/generators';
 export default function Crud({
   props,
   children,
-  tabsEat,
 }: {
   props?: Partial<EatGet>;
-  tabsEat: React.ReactNode;
   children: React.ReactNode;
 }) {
   const { servings } = useStoreServing();
