@@ -22,7 +22,7 @@ import ProviderStore from '@/components/provider/store';
 import ProviderSync from '@/components/provider/sync';
 import { mantine } from '@repo/constants/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
-import { COMPANY_NAME } from '@repo/constants/app';
+import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 import { AUTH_URLS } from '@repo/constants/paths';
 import { APP_NAME } from '@repo/constants/app';
 import RouteProtection from '@repo/components/wrappers/auth/route-protection';
@@ -40,7 +40,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: COMPANY_NAME,
-  description: '',
+  description: APP_DESC.NOTELINE,
 };
 
 export default async function RootLayout({

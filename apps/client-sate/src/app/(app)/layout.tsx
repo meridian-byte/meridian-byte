@@ -8,13 +8,13 @@
 import React from 'react';
 import { Metadata } from 'next';
 import LayoutBody from '@repo/components/layout/body';
-import { APP_NAME } from '@/data/constants';
+import { APP_NAME } from '@repo/constants/app';
 import LayoutShellApp from '@/components/layout/shells/app';
 import ProviderStore from '@/components/provider/store';
 import ProviderSync from '@/components/provider/sync';
 
 export const metadata: Metadata = {
-  title: { default: APP_NAME, template: `%s - App - ${APP_NAME}` },
+  title: { default: APP_NAME.SATE, template: `%s - App - ${APP_NAME.SATE}` },
 };
 
 export default async function LayoutApp({

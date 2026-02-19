@@ -7,8 +7,8 @@ import { SECTION_SPACING } from '@repo/constants/sizes';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
 import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
-import CardMass from '@/components/common/cards/mass';
-import ModalMassCrud from '@/components/common/modals/mass/crud';
+import CardMass from '@repo/components/common/cards/mass';
+import ModalMassCrud from '@repo/components/common/modals/mass/crud';
 
 export default function Mass() {
   const { masses } = useStoreMass();

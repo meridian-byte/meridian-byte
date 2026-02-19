@@ -8,7 +8,7 @@
 import React from 'react';
 import Error404 from '@repo/components/partial/errors/404';
 import ProviderMantine from '@repo/components/provider/mantine';
-import { mantine } from '@/assets/styles';
+import { mantine } from '@repo/constants/styles';
 
 export default function NotFound() {
   return (

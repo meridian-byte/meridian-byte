@@ -18,7 +18,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import CardServing from '@/components/common/cards/serving';
+import CardServing from '@repo/components/common/cards/serving';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
@@ -27,23 +27,23 @@ import {
 } from '@repo/constants/sizes';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
-import ModalServingCrud from '@/components/common/modals/serving/crud';
+import ModalServingCrud from '@repo/components/common/modals/serving/crud';
 import {
   IconChevronLeft,
   IconChevronRight,
   IconPlus,
 } from '@tabler/icons-react';
-import ModalEatCrud from '@/components/common/modals/eat/crud';
+import ModalEatCrud from '@repo/components/common/modals/eat/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
-import { useEatTotals } from '@/hooks/nutrients';
+import { useEatTotals } from '@repo/hooks/nutrients';
 import { useEntryDate, EntryDateReturnType } from '@repo/hooks/entries';
 import { DateInput } from '@mantine/dates';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 import { COLOR_CODES } from '@repo/constants/other';
 import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
-import { calculateMacros } from '@/utilities/weight';
+import { calculateMacros } from '@repo/utilities/weight';
 import { useMediaQuery } from '@mantine/hooks';
 
 export default function Diary() {

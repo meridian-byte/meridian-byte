@@ -4,11 +4,11 @@ import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { Center, Divider, Loader, Stack, Text } from '@mantine/core';
-import CardFood from '@/components/common/cards/food';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
-import ModalFoodCrud from '@/components/common/modals/food/crud';
+import CardFood from '@repo/components/common/cards/food';
+import ModalFoodCrud from '@repo/components/common/modals/food/crud';
 
 export default function Foods() {
   const { foods } = useStoreFood();
