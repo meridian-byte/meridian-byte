@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import {
   ICON_SIZE,
@@ -29,14 +29,28 @@ import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 
 export default function NoteDetails({ props }: { props?: NoteGet }) {
-  const { userStates, setUserStates } = useStoreUserStates();
   const router = useRouter();
+  const { userStates, setUserStates } = useStoreUserStates();
 
   const toogleProperties = {
     view: userStates?.editing == true ? 'Editing' : 'Reading',
     label: userStates?.editing == true ? 'read' : 'edit',
     icon: userStates?.editing == true ? IconBook : IconWriting,
   };
+
+  useEffect(() => {
+    if (!userStates) return;
+    if (!props) return;
+    if (!props.content) return;
+
+    const emptyNote = !(props.content.trim().length > 7);
+
+    if (emptyNote) {
+      if (!userStates.editing) setUserStates({ ...userStates, editing: true });
+    } else {
+      if (userStates.editing) setUserStates({ ...userStates, editing: false });
+    }
+  }, [props]);
 
   return (
     <LayoutSection

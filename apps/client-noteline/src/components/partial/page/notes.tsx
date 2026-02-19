@@ -22,7 +22,7 @@ export default function Home() {
 
     const note = notes.find((n) => n.id == noteId);
     if (note) setActiveNote(note);
-  }, [notes, noteId]);
+  }, [notes, noteId, searchParams]);
 
   return (
     <>
