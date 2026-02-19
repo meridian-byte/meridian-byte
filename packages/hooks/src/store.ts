@@ -72,6 +72,7 @@ import { mealsGet } from '@repo/handlers/requests/database/meals';
 import { servingsGet } from '@repo/handlers/requests/database/servings';
 import { eatsGet } from '@repo/handlers/requests/database/eats';
 import { massesGet } from '@repo/handlers/requests/database/masses';
+import { useMediaQuery } from '@mantine/hooks';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -186,6 +187,8 @@ export const useUserRoleStore = () => {
 };
 
 export const useAppshellStore = () => {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { setAppShell } = useStoreAppShell();
 
   useEffect(() => {
@@ -193,7 +196,7 @@ export const useAppshellStore = () => {
       let defaultValue: AppShellValue = {
         navbar: true,
         aside: false,
-        child: { navbar: false, aside: false },
+        child: { navbar: desktop ? true : false, aside: false },
       };
 
       const appShellCookie = getCookieClient<AppShellValue>(
@@ -205,14 +208,17 @@ export const useAppshellStore = () => {
           expiryInSeconds: WEEK,
         });
       } else {
-        defaultValue = appShellCookie;
+        defaultValue = {
+          ...appShellCookie,
+          child: { ...appShellCookie.child, navbar: desktop ? true : false },
+        };
       }
 
       setAppShell(defaultValue);
     };
 
     initializeAppShell();
-  }, [setAppShell]);
+  }, [setAppShell, desktop]);
 };
 
 export const useThemeStore = () => {
