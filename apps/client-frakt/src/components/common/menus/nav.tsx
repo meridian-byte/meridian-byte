@@ -11,17 +11,17 @@ import {
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import ModalAccountGroupList from '../modals/account-group/list';
 import ModalCategoryList from '../modals/category/list';
-import { navLinkApp } from '@/data/links';
+import { navLinks } from '@/data/links';
 
 export default function Nav({ children }: { children: React.ReactNode }) {
   const accountGroupProps = {
-    label: navLinkApp[0].label,
-    icon: navLinkApp[0].icon,
+    label: navLinks.app[0].label,
+    icon: navLinks.app[0].icon,
   };
 
   const categoryProps = {
-    label: navLinkApp[1].label,
-    icon: navLinkApp[1].icon,
+    label: navLinks.app[1].label,
+    icon: navLinks.app[1].icon,
   };
 
   return (
@@ -56,7 +56,7 @@ export default function Nav({ children }: { children: React.ReactNode }) {
 
         <MenuDivider />
 
-        {navLinkApp.slice(2, navLinkApp.length).map((nl) => (
+        {navLinks.app.slice(2, navLinks.app.length).map((nl) => (
           <MenuItem
             key={nl.label}
             leftSection={

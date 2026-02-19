@@ -6,129 +6,34 @@
  */
 
 import {
-  IconBellRinging,
   IconCarrot,
-  IconHeart,
-  IconHelpCircle,
-  IconInfoCircle,
-  IconLicense,
-  IconLock,
-  IconLogout,
-  IconPackage,
   IconScaleOutline,
   IconSettings,
   IconSoup,
-  IconStar,
-  IconUser,
 } from '@tabler/icons-react';
-import { AUTH_URLS } from '@repo/constants/paths';
+import { NavLink } from '@repo/types/link';
 
-export type Link = { link: string; label: string };
-
-export type NavLink = Link & { subLinks: Link[] | null };
-
-export const links: NavLink[] = [
-  {
-    link: '/',
-    label: 'Home',
-    subLinks: null,
-  },
-  {
-    link: '/about',
-    label: 'About',
-    subLinks: null,
-  },
-];
-
-export const navLinkItems = {
-  activity: [
+export const navLinks = {
+  app: [
     {
-      icon: IconHeart,
-      link: `/account/wishlist`,
-      label: 'My Wishlist',
+      link: '/app/foods',
+      label: 'Foods',
+      icon: IconCarrot,
     },
     {
-      icon: IconPackage,
-      link: `/account/orders`,
-      label: 'My Orders',
+      link: '/app/meals',
+      label: 'Meals',
+      icon: IconSoup,
     },
     {
-      icon: IconStar,
-      link: `/account/reviews`,
-      label: 'My Reviews',
-    },
-  ],
-  account: [
-    {
-      icon: IconUser,
-      link: `/account/profile`,
-      label: 'Profile Settings',
+      link: '/app/masses',
+      label: 'Weight Entries',
+      icon: IconScaleOutline,
     },
     {
-      icon: IconLock,
-      link: `/account/security`,
-      label: 'Account Security',
+      link: '#settings',
+      label: 'Settings',
+      icon: IconSettings,
     },
-    // {
-    // 	icon: IconCoins,
-    // 	link: `/account/payment`,
-    // 	label: "Payment Details",
-    // },
-    // {
-    // 	icon: IconMapPin,
-    // 	link: `/account/addresses`,
-    // 	label: "Addresses",
-    // },
-    {
-      icon: IconBellRinging,
-      link: `/account/notifications`,
-      label: 'Notifications',
-    },
-  ],
-  support: [
-    {
-      icon: IconHelpCircle,
-      link: `/help`,
-      label: 'Help Center',
-    },
-    {
-      icon: IconLicense,
-      link: `/legal/terms-and-conditions`,
-      label: 'Terms and Conditions',
-    },
-    {
-      icon: IconInfoCircle,
-      link: `/legal/privacy-policy`,
-      label: 'Privacy Policy',
-    },
-  ],
-  danger: [
-    {
-      icon: IconLogout,
-      link: AUTH_URLS.SIGN_OUT,
-      label: 'Sign Out',
-    },
-  ],
+  ] satisfies NavLink[],
 };
-
-export const navLinkApp = [
-  {
-    link: '/app/foods',
-    label: 'Foods',
-    icon: IconCarrot,
-  },
-  {
-    link: '/app/meals',
-    label: 'Meals',
-    icon: IconSoup,
-  },
-  {
-    link: '/app/masses',
-    label: 'Weight Entries',
-    icon: IconScaleOutline,
-  },
-  {
-    label: 'Settings',
-    icon: IconSettings,
-  },
-];

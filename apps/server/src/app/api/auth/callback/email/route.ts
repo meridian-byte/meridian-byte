@@ -13,7 +13,7 @@ import { getEmailLocalPart } from '@repo/utilities/string';
 import { emailSendOnboarding } from '@/libraries/wrappers/email';
 import { segmentFullName } from '@repo/utilities/string';
 import { emailContactAdd } from '@/services/api/email/contacts';
-import { companyName } from '@repo/constants/app';
+import { COMPANY_NAME } from '@repo/constants/app';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
         to: userData.email,
         userName:
           segmentFullName(userData?.user_metadata.name).first || userData.email,
-        appName: companyName,
+        appName: COMPANY_NAME,
       });
 
       await emailContactAdd(

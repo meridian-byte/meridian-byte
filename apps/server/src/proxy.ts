@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateSession } from './libraries/supabase/middleware';
+import { updateSession } from '@repo/libraries/supabase/middleware';
 import { setCorsHeaders } from '@repo/utilities/middeware';
-import { crossOrigins } from '@repo/constants/hosts';
+import { CROSS_ORIGINS } from '@repo/constants/hosts';
 
 export async function proxy(request: NextRequest) {
   // Handle preflight
   if (request.method === 'OPTIONS') {
     const response = NextResponse.json({}, { status: 200 });
-    setCorsHeaders({ crossOrigins, request, response });
+    setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
     return response;
   }
 
   let response = NextResponse.next({ request });
 
   // Set CORS headers for the response
-  setCorsHeaders({ crossOrigins, request, response });
+  setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
 
   // Update the session in the response
   response = await updateSession(request, response);

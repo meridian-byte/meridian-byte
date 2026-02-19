@@ -625,15 +625,27 @@ importers:
 
   packages/components:
     dependencies:
+      '@mantine/carousel':
+        specifier: ^8.3.6
+        version: 8.3.10(@mantine/core@8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mantine/hooks@8.3.10(react@19.2.0))(embla-carousel-react@8.5.2(react@19.2.0))(embla-carousel@8.5.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@mantine/core':
         specifier: ^8.3.6
         version: 8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@mantine/form':
+        specifier: ^8.3.6
+        version: 8.3.10(react@19.2.0)
       '@mantine/hooks':
         specifier: ^8.3.6
         version: 8.3.10(react@19.2.0)
+      '@mantine/modals':
+        specifier: ^8.3.6
+        version: 8.3.10(@mantine/core@8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mantine/hooks@8.3.10(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@mantine/notifications':
         specifier: ^8.3.6
         version: 8.3.10(@mantine/core@8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mantine/hooks@8.3.10(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@mantine/tiptap':
+        specifier: ^8.3.6
+        version: 8.3.10(@mantine/core@8.3.10(@mantine/hooks@8.3.10(react@19.2.0))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mantine/hooks@8.3.10(react@19.2.0))(@tiptap/extension-link@3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0))(@tiptap/react@3.14.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@repo/constants':
         specifier: workspace:*
         version: link:../constants
@@ -655,6 +667,33 @@ importers:
       '@tabler/icons-react':
         specifier: ^3.35.0
         version: 3.36.0(react@19.2.0)
+      '@tiptap/extension-highlight':
+        specifier: ^3.4.2
+        version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))
+      '@tiptap/extension-link':
+        specifier: ^3.4.2
+        version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)
+      '@tiptap/extension-placeholder':
+        specifier: ^3.4.2
+        version: 3.14.0(@tiptap/extensions@3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0))
+      '@tiptap/extension-subscript':
+        specifier: ^3.4.2
+        version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)
+      '@tiptap/extension-superscript':
+        specifier: ^3.4.2
+        version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)
+      '@tiptap/extension-text-align':
+        specifier: ^3.4.2
+        version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))
+      '@tiptap/pm':
+        specifier: ^3.4.2
+        version: 3.14.0
+      '@tiptap/react':
+        specifier: ^3.4.2
+        version: 3.14.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@tiptap/starter-kit':
+        specifier: ^3.4.2
+        version: 3.14.0
       next:
         specifier: 16.0.10
         version: 16.0.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.97.1)
@@ -695,6 +734,9 @@ importers:
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      '@tabler/icons-react':
+        specifier: ^3.35.0
+        version: 3.36.0(react@19.2.0)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -824,6 +866,9 @@ importers:
       '@repo/utilities':
         specifier: workspace:*
         version: link:../utilities
+      next:
+        specifier: 16.0.10
+        version: 16.0.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.97.1)
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -846,12 +891,36 @@ importers:
 
   packages/libraries:
     dependencies:
+      '@mantine/hooks':
+        specifier: ^8.3.6
+        version: 8.3.10(react@19.2.0)
+      '@repo/constants':
+        specifier: workspace:*
+        version: link:../constants
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../db
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      '@repo/utilities':
+        specifier: workspace:*
+        version: link:../utilities
+      '@supabase/ssr':
+        specifier: ^0.8.0
+        version: 0.8.0(@supabase/supabase-js@2.89.0)
       '@supabase/supabase-js':
         specifier: ^2.89.0
         version: 2.89.0
+      next:
+        specifier: 16.0.10
+        version: 16.0.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.97.1)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+      resend:
+        specifier: ^6.9.2
+        version: 6.9.2(@react-email/render@1.4.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       zustand:
         specifier: ^5.0.8
         version: 5.0.9(@types/react@19.2.7)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
@@ -862,9 +931,18 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
       '@types/wicg-file-system-access':
         specifier: ^2023.10.7
         version: 2023.10.7
+      prisma:
+        specifier: 6.17.1
+        version: 6.17.1(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -874,9 +952,15 @@ importers:
       '@repo/constants':
         specifier: workspace:*
         version: link:../constants
+      '@repo/libraries':
+        specifier: workspace:*
+        version: link:../libraries
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      '@repo/utilities':
+        specifier: workspace:*
+        version: link:../utilities
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -899,6 +983,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../db
+      '@tabler/icons-react':
+        specifier: ^3.35.0
+        version: 3.36.0(react@19.2.0)
       react:
         specifier: ^19.2.0
         version: 19.2.0

@@ -9,10 +9,10 @@ import React from 'react';
 import { Metadata } from 'next';
 import LayoutBody from '@repo/components/layout/body';
 import AffixNavbar from '@repo/components/common/affixi/navbar';
-import { companyName } from '@repo/constants/app';
+import { COMPANY_NAME } from '@repo/constants/app';
 
 export const metadata: Metadata = {
-  title: { default: companyName, template: `%s - ${companyName}` },
+  title: { default: COMPANY_NAME, template: `%s - ${COMPANY_NAME}` },
 };
 
 export default async function LayoutMarketing({
