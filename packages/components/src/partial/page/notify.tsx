@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { IconArrowRight } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { SignOut as WrapperSignOut } from '@repo/components/wrappers/auth/actions';
+import { getUrlParam } from '@repo/utilities/url';
 import { config } from '@repo/libraries/indexed-db/config';
 
 type NotifySectionProps = {
@@ -28,61 +29,18 @@ type NotifySectionProps = {
   titleBold?: boolean;
 };
 
-export function NotifySection({
-  id,
-  title,
-  message,
-  subtitle,
-  actions,
-  padded,
-  containerized = false,
-  margined,
-  titleBold = false,
-}: NotifySectionProps) {
-  return (
-    <LayoutSection
-      id={id}
-      containerized={containerized}
-      margined={margined}
-      padded={padded}
-    >
-      <Flex direction="column" align={{ base: 'center', md: 'start' }} gap="xl">
-        <Stack gap="xs">
-          <Title
-            ta={{ base: 'center', md: 'start' }}
-            order={1}
-            fw={titleBold ? 'bold' : undefined}
-          >
-            {title}
-          </Title>
+export const NotifyError = () => {
+  const error = getUrlParam('error');
+  const errorMessage = getUrlParam('message');
 
-          <Stack gap={0}>
-            {subtitle && (
-              <Text ta={{ base: 'center', md: 'start' }}>{subtitle}</Text>
-            )}
-            {message && (
-              <Text ta={{ base: 'center', md: 'start' }}>{message}</Text>
-            )}
-          </Stack>
-        </Stack>
-
-        {actions && <Group>{actions}</Group>}
-      </Flex>
-    </LayoutSection>
-  );
-}
-
-export const NotifyError = ({ props }: { props?: { message?: string } }) => {
   return (
     <NotifySection
       id="page-notify-error"
       containerized={false}
       margined
-      title="Authentication Error"
-      subtitle="Seems we can’t sign you in."
-      message={
-        props?.message ?? 'Perhaps it’s a temporary issue... Try again later.'
-      }
+      title={(error as string) ?? 'Authentication Error'}
+      subtitle="An authentication error has occured."
+      message={(errorMessage as string) ?? ''}
     />
   );
 };
@@ -118,19 +76,46 @@ export const NotifySignOut = ({ props }: { props: { baseUrl: string } }) => {
   );
 };
 
-export const NotifyCheckEmail = ({
-  props,
-}: {
-  props?: { message?: string };
-}) => {
+export function NotifySection({
+  id,
+  title,
+  message,
+  subtitle,
+  actions,
+  padded,
+  containerized = false,
+  margined,
+  titleBold = false,
+}: NotifySectionProps) {
   return (
-    <NotifySection
-      id={'page-notify-verify-request'}
-      containerized={false}
-      padded
-      title="Check Your Email"
-      titleBold
-      message={`${props?.message || ''} Remember to check the spam/junk folder(s).`}
-    />
+    <LayoutSection
+      id={id}
+      containerized={containerized}
+      margined={margined}
+      padded={padded}
+    >
+      <Flex direction="column" align={{ base: 'center', md: 'start' }} gap="xl">
+        <Stack gap="xs">
+          <Title
+            ta={{ base: 'center', md: 'start' }}
+            order={1}
+            fw={titleBold ? 'bold' : undefined}
+          >
+            {title}
+          </Title>
+
+          <Stack gap={0} mih={24.8 * 2}>
+            {subtitle && (
+              <Text ta={{ base: 'center', md: 'start' }}>{subtitle}</Text>
+            )}
+            {message && (
+              <Text ta={{ base: 'center', md: 'start' }}>{message}</Text>
+            )}
+          </Stack>
+        </Stack>
+
+        {actions && <Group>{actions}</Group>}
+      </Flex>
+    </LayoutSection>
   );
-};
+}
