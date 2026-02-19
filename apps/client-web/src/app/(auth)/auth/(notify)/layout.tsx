@@ -10,7 +10,7 @@ import { Center, Grid, GridCol, Stack } from '@mantine/core';
 import LayoutBody from '@repo/components/layout/body';
 import LayoutSection from '@repo/components/layout/section';
 import ImageDefault from '@repo/components/common/images/default';
-import { images } from '@/assets/images';
+import { images } from '@repo/constants/images';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { COMPANY_NAME } from '@repo/constants/app';
 import { Metadata } from 'next';

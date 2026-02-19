@@ -1,7 +1,7 @@
 // app/sitemap.xml/route.ts
 import { NextResponse } from 'next/server';
 import { PRODUCTION_BASE_URL_CLIENT_WEB } from '@repo/constants/paths';
-import { sitemapRoutes } from '@/data/routes';
+import { sitemapRoutes } from '@/data/links';
 
 export const dynamic = 'force-static';
 
