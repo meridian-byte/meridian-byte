@@ -10,7 +10,7 @@ export async function GET() {
     id: linkify(APP_NAME.FRAKT),
     name: APP_NAME.FRAKT,
     short_name: APP_NAME.FRAKT,
-    description: APP_DESC,
+    description: APP_DESC.FRAKT,
     lang: 'en',
     dir: 'ltr',
     scope: '/',

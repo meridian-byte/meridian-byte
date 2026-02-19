@@ -1,7 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import LayoutBody from '@repo/components/layout/body';
-import { APP_NAME } from '@/data/constants';
+import { APP_NAME } from '@repo/constants/app';
 
 export interface typeParams {
   'noteTitle-noteId': string;
@@ -10,7 +10,7 @@ export interface typeParams {
 }
 
 export const metadata: Metadata = {
-  title: { default: 'Notes', template: `%s - ${APP_NAME}` },
+  title: { default: 'Notes', template: `%s - ${APP_NAME.NOTELINE}` },
 };
 
 export default function LayoutNotes({
