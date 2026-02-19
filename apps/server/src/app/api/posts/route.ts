@@ -15,13 +15,6 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const postRecords = await prisma.post.findMany({
-      include: {
-        _count: { select: { comments: true } },
-
-        category: true,
-        profile: true,
-      },
-
       orderBy: { created_at: 'desc' },
     });
 
