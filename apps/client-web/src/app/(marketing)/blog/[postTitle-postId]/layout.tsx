@@ -4,7 +4,6 @@ import { typeParams } from '../layout';
 import { Metadata } from 'next';
 import { PostRelations } from '@repo/types/models/post';
 // import { postsGet } from '@repo/handlers/requests/database/posts';
-import { samplePosts as posts } from '@/data/sample/posts';
 import { extractUuidFromParam } from '@repo/utilities/url';
 
 export const generateMetadata = async ({
@@ -15,7 +14,7 @@ export const generateMetadata = async ({
   const postId = extractUuidFromParam((await params)['postTitle-postId']);
 
   // const { items: posts }: { items: PostRelations[] } = await postsGet();
-  const post = ((posts || []) as PostRelations[]).find((p) => p.id == postId);
+  const post = ([] as PostRelations[]).find((p) => p.id == postId);
 
   return {
     title: post?.title || '',

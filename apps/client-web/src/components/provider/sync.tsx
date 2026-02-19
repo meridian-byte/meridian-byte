@@ -7,21 +7,19 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
-import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
-import { useSyncCategories, useSyncPosts } from '@/hooks/sync';
+import { handleSync, syncToServerAfterDelay } from '@repo/libraries/sync';
+import { useSyncStores } from '@repo/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
-import { useSyncQueue } from '@repo/utilities/sync';
+import { useSyncQueue } from '@repo/libraries/sync';
 
 export default function Sync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
-
   const { session } = useStoreSession();
   const { syncStatus, setSyncStatus } = useStoreSyncStatus();
-
   const enqueueSync = useSyncQueue({ syncFunction: handleSync });
 
   const debounceSyncToServer = useDebouncedCallback(
@@ -38,22 +36,11 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     clientOnly: true,
   };
 
-  const { syncPosts } = useSyncPosts({
+  useSyncStores({
     syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
+    storesToSync: {},
   });
-
-  const { syncCategories } = useSyncCategories({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  useEffect(() => {
-    if (!networkStatus.online) return;
-
-    syncPosts();
-    syncCategories();
-  }, [networkStatus.online, syncPosts, syncCategories]);
 
   return <div>{children}</div>;
 }
