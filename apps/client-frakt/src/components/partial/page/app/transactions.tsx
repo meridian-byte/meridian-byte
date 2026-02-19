@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import CardTransaction from '@/components/common/cards/transaction';
+import CardTransaction from '@repo/components/common/cards/transaction';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
@@ -26,7 +26,7 @@ import {
   IconChevronRight,
   IconPlus,
 } from '@tabler/icons-react';
-import ModalTransactionCrud from '@/components/common/modals/transaction/crud';
+import ModalTransactionCrud from '@repo/components/common/modals/transaction/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 import { TransactionType } from '@repo/types/models/enums';
