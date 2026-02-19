@@ -35,7 +35,7 @@ export default function Parent() {
       {session && (
         <Group>
           <MenuUser>
-            <AvatarMain />
+            <AvatarMain size={ICON_WRAPPER_SIZE} />
           </MenuUser>
         </Group>
       )}

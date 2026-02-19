@@ -15,8 +15,8 @@ export default function User({
     <Flex
       direction={{ base: 'column', lg: 'row' }}
       align={'center'}
-      justify={'center'}
-      gap={'md'}
+      // justify={'center'}
+      gap={'xs'}
       w={'100%'}
     >
       {!options?.withoutAvatar && <AvatarMain />}
