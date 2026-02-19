@@ -47,6 +47,7 @@ export default function Aside({ children }: { children: React.ReactNode }) {
       {mobile && (
         <Drawer
           hiddenFrom="xs"
+          keepMounted
           opened={appshell?.child.aside ?? false}
           padding={0}
           position="right"

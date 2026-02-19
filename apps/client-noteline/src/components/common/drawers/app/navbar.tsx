@@ -47,6 +47,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
       {mobile && (
         <Drawer
           hiddenFrom="xs"
+          keepMounted
           opened={appshell?.child.navbar ?? false}
           padding={0}
           withCloseButton={false}
