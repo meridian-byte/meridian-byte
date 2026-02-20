@@ -7,20 +7,19 @@
 
 import { API_URL } from '@repo/constants/paths';
 import { HEADERS } from '@repo/constants/other';
-import {
-  FoodCreate,
-  FoodRelations,
-  FoodUpdate,
-} from '@repo/types/models/food';
+import { FoodCreate, FoodRelations, FoodUpdate } from '@repo/types/models/food';
 
 const baseRequestUrl = `${API_URL}/foods`;
 
-export const foodsGet = async () => {
+export const foodsGet = async (params?: { userId?: string }) => {
   try {
-    const request = new Request(baseRequestUrl, {
-      method: 'GET',
-      headers: HEADERS.WITHOUT_BODY,
-    });
+    const request = new Request(
+      `${baseRequestUrl}?userId=${params?.userId || ''}`,
+      {
+        method: 'GET',
+        headers: HEADERS.WITHOUT_BODY,
+      }
+    );
 
     const response = await fetch(request);
 

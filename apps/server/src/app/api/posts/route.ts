@@ -12,9 +12,12 @@ import { PostGet } from '@repo/types/models/post';
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const userId = request.nextUrl.searchParams.get('userId');
+
     const postRecords = await prisma.post.findMany({
+      where: !userId ? undefined : { profile_id: userId },
       orderBy: { created_at: 'desc' },
     });
 
