@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Group, Skeleton, Stack } from '@mantine/core';
+import { Group, Skeleton, Stack, ThemeIcon } from '@mantine/core';
 import MenuUser from '@repo/components/common/menus/user';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
@@ -19,19 +19,21 @@ export default function Parent() {
 
   return (
     <Stack p={'xs'} align="center">
-      <IndicatorNetworkStatus props={{ syncStatus }} />
+      <Stack gap={0}>
+        <IndicatorNetworkStatus props={{ syncStatus }} />
 
-      {/* <IconNotificationPermission /> */}
+        {/* <IconNotificationPermission /> */}
 
-      {theme === undefined ? (
-        <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
-      ) : !theme ? (
-        <></>
-      ) : (
-        <IndicatorTheme
-          props={{ colorScheme: theme, setColorScheme: setTheme }}
-        />
-      )}
+        {theme === undefined ? (
+          <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
+        ) : !theme ? (
+          <></>
+        ) : (
+          <IndicatorTheme
+            props={{ colorScheme: theme, setColorScheme: setTheme }}
+          />
+        )}
+      </Stack>
 
       {session && (
         <Group>

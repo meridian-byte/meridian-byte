@@ -77,7 +77,7 @@ export default function NetworkStatus({
             <Group>
               <ThemeIcon
                 size={ICON_WRAPPER_SIZE}
-                variant="light"
+                variant="transparent"
                 color={!networkStatus.online ? 'yellow.6' : 'green.6'}
               >
                 {!networkStatus.online ? (
@@ -108,7 +108,8 @@ export default function NetworkStatus({
               <ThemeIcon
                 size={ICON_WRAPPER_SIZE}
                 variant="transparent"
-                c={syncStatusProps.color}
+                color={`${syncStatusProps.color}.6`}
+                c={`${syncStatusProps.color}.6`}
               >
                 {syncStatusProps.icon}
               </ThemeIcon>
@@ -134,25 +135,25 @@ const getSycnStatusProps = (params: {
     case SyncStatus.ERROR:
       return {
         label: 'Sync Error',
-        color: 'var(--mantine-color-red-6)',
+        color: 'red',
         icon: <IconCloudX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       };
     case SyncStatus.PENDING:
       return {
         label: 'Syncing',
-        color: 'var(--mantine-color-gray-6)',
+        color: 'gray',
         icon: spinner,
       };
     case SyncStatus.SAVED:
       return {
         label: 'Saved to Device',
-        color: 'var(--mantine-color-yellow-6)',
+        color: 'yellow',
         icon: <iconProp.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       };
     case SyncStatus.SYNCED:
       return {
         label: 'Saved to Cloud',
-        color: 'var(--mantine-color-green-6)',
+        color: 'green',
         icon: <IconCheck size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       };
     default:
