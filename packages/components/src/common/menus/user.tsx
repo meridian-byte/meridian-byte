@@ -10,6 +10,7 @@ import {
   MenuTarget,
   MenuLabel,
   Stack,
+  Group,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
@@ -40,7 +41,9 @@ export default function User({ children }: { children: React.ReactNode }) {
       styles={{ dropdown: { overflow: 'hidden' } }}
     >
       <MenuTarget>
-        <div className={classes.target}>{children}</div>
+        <Group component={'span'} className={classes.target}>
+          {children}
+        </Group>
       </MenuTarget>
 
       <MenuDropdown>
