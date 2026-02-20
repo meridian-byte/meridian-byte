@@ -11,7 +11,6 @@ import { useMediaQuery } from '@mantine/hooks';
 export default function Child({ children }: { children: React.ReactNode }) {
   const mobile = useMediaQuery('(max-width: 36em)');
   const appshell = useStoreAppShell((s) => s.appshell);
-  if (!appshell) return null;
 
   const widths = {
     navbarLeft: 22.5,
@@ -20,11 +19,11 @@ export default function Child({ children }: { children: React.ReactNode }) {
 
   const widthPercentage = mobile
     ? 100
-    : appshell.child.navbar && appshell.child.aside
+    : appshell?.child.navbar && appshell?.child.aside
       ? 100 - (widths.navbarLeft + widths.navbarRight)
-      : appshell.child.navbar
+      : appshell?.child.navbar
         ? 100 - widths.navbarLeft
-        : appshell.child.aside
+        : appshell?.child.aside
           ? 100 - widths.navbarRight
           : 100;
 
@@ -32,7 +31,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
     <Group wrap="nowrap" align="stretch" gap={0}>
       <Box
         style={{
-          display: appshell.child.navbar ? undefined : 'none',
+          display: appshell?.child.navbar ? undefined : 'none',
           width: `${widths.navbarLeft}%`,
           borderRight: '1px solid var(--mantine-color-default-border)',
           backgroundColor:
@@ -64,7 +63,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
 
       <Box
         style={{
-          display: appshell.child.aside ? undefined : 'none',
+          display: appshell?.child.aside ? undefined : 'none',
           width: `${widths.navbarRight}%`,
           borderLeft: '1px solid var(--mantine-color-default-border)',
           backgroundColor:
