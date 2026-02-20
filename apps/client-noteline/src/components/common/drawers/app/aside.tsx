@@ -13,7 +13,7 @@ import {
 } from '@repo/constants/sizes';
 import { setCookieClient } from '@repo/utilities/cookie-client';
 import TabNavbarRight from '../../tabs/navbar/right';
-import { IconX } from '@tabler/icons-react';
+import { IconLayoutSidebarRightCollapse, IconX } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 
 export default function Aside({ children }: { children: React.ReactNode }) {
@@ -72,7 +72,10 @@ export default function Aside({ children }: { children: React.ReactNode }) {
               variant={'transparent'}
               onClick={handleClose}
             >
-              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <IconLayoutSidebarRightCollapse
+                size={ICON_SIZE}
+                stroke={ICON_STROKE_WIDTH}
+              />
             </ActionIcon>
           </Group>
 
