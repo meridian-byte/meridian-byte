@@ -26,7 +26,7 @@ export default function Move({
 }) {
   const [opened, { open, close }] = useDisclosure(false);
   const [search, setSearch] = useState('');
-  const { notebooks } = useStoreNotebook();
+  const notebooks = useStoreNotebook((s) => s.notebooks);
 
   const { noteMove } = useNoteActions();
 

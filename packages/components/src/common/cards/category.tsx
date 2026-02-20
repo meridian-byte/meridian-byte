@@ -26,7 +26,7 @@ import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction'
 export default function Category({ props }: { props: CategoryGet }) {
   const { categoryDelete } = useCategoryActions();
 
-  const { transactions } = useStoreTransaction();
+  const transactions = useStoreTransaction((s) => s.transactions);
 
   const groupAccounts = transactions?.filter((t) => t.category_id == props.id);
 

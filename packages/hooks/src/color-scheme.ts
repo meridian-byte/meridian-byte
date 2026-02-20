@@ -24,7 +24,8 @@
 // export const useColorSchemeHandler = () => {
 //   const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });
 
-//   const { theme, setTheme } = useStoreTheme();
+//   const theme = useStoreTheme((s) => s.theme);
+//   const setTheme = useStoreTheme((s) => s.setTheme);
 
 //   const persistCookies = useCallback(
 //     (stateValue: ColorScheme, schemeValue: MantineColorScheme) => {

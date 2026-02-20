@@ -13,10 +13,11 @@ import { useSearchParams } from 'next/navigation';
 
 export default function Search() {
   const searchParams = useSearchParams();
-  const { notes } = useStoreNote();
-  const { categories } = useStoreCategory();
+  const notes = useStoreNote((s) => s.notes);
+  const categories = useStoreCategory((s) => s.categories);
   const [value, setValue] = useState('');
-  const { appshell, setAppShell } = useStoreAppShell();
+  const appshell = useStoreAppShell((s) => s.appshell);
+  const setAppShell = useStoreAppShell((s) => s.setAppShell);
   const desktop = useMediaQuery('(min-width: 62em)');
 
   const [paramNoteId, setParamNoteId] = useState('');

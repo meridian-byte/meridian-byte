@@ -39,7 +39,7 @@ export default function Meal({
     close?: () => void;
   };
 }) {
-  const { servings } = useStoreServing();
+  const servings = useStoreServing((s) => s.servings);
   const mealServings = servings?.filter(
     (s) => s.meal_id == props?.defaultValues?.id
   );

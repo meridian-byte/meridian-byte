@@ -19,7 +19,7 @@ import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { navLinkItems } from '@repo/constants/links';
 
 export default function User({ children }: { children: React.ReactNode }) {
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
 
   const mobile = useMediaQuery('(max-width: 48em)');
   const desktop = useMediaQuery('(min-width: 62em)');

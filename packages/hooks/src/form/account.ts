@@ -9,7 +9,7 @@ export const useFormAccount = (params?: {
   defaultValues?: Partial<AccountGet>;
 }) => {
   const { accountCreate, accountUpdate } = useAccountActions();
-  const { accountGroups } = useStoreAccountGroup();
+  const accountGroups = useStoreAccountGroup((s) => s.accountGroups);
 
   const { form, submitted, handleSubmit } = useFormBase<Partial<AccountGet>>(
     {

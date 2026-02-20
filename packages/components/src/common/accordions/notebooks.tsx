@@ -33,7 +33,7 @@ export default function Notebooks({
 }) {
   const searchParams = useSearchParams();
   const notes = useStoreNote((s) => s.notes);
-  const { notebooks } = useStoreNotebook();
+  const notebooks = useStoreNotebook((s) => s.notebooks);
   const { noteCreate } = useNoteActions();
   const { notebookCopy, notebookDelete, startNotebookRename } =
     useNotebookActions();

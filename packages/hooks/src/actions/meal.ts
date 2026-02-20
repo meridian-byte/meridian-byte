@@ -5,8 +5,10 @@ import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useMealActions = () => {
-  const { session } = useStoreSession();
-  const { addMeal, updateMeal, deleteMeal } = useStoreMeal();
+  const session = useStoreSession((s) => s.session);
+  const addMeal = useStoreMeal((s) => s.addMeal);
+  const updateMeal = useStoreMeal((s) => s.updateMeal);
+  const deleteMeal = useStoreMeal((s) => s.deleteMeal);
 
   const mealCreate = (params: Partial<MealRelations>) => {
     if (!session) return;

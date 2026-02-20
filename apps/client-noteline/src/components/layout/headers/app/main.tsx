@@ -27,9 +27,11 @@ import IndicatorTheme from '@repo/components/common/indicators/theme';
 import NavbarAppMainParent from '../../navbars/app/main/parent';
 
 export default function Main() {
-  const { appshell, setAppShell } = useStoreAppShell();
-  const { syncStatus } = useStoreSyncStatus();
-  const { theme, setTheme } = useStoreTheme();
+  const appshell = useStoreAppShell((s) => s.appshell);
+  const setAppShell = useStoreAppShell((s) => s.setAppShell);
+  const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
+  const theme = useStoreTheme((s) => s.theme);
+  const setTheme = useStoreTheme((s) => s.setTheme);
 
   const states = {
     iconLeft: !appshell?.child.navbar

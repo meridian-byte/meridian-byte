@@ -8,8 +8,8 @@ import { AccountGet } from '@repo/types/models/account';
 import { useAccountActions } from './account';
 
 export const useTransactionActions = () => {
-  const { session } = useStoreSession();
-  const { accounts } = useStoreAccount();
+  const session = useStoreSession((s) => s.session);
+  const accounts = useStoreAccount((s) => s.accounts);
   const { accountUpdate } = useAccountActions();
 
   const { addTransaction, updateTransaction, deleteTransaction } =

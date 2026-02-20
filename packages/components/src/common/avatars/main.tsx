@@ -14,7 +14,7 @@ export default function Main({ size }: { size?: number }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
 
   return (
     <Group w={size} h={size}>

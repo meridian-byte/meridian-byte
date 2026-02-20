@@ -5,8 +5,10 @@ import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useMassActions = () => {
-  const { session } = useStoreSession();
-  const { addMass, updateMass, deleteMass } = useStoreMass();
+  const session = useStoreSession((s) => s.session);
+  const addMass = useStoreMass((s) => s.addMass);
+  const updateMass = useStoreMass((s) => s.updateMass);
+  const deleteMass = useStoreMass((s) => s.deleteMass);
 
   const massCreate = (params: Partial<MassGet>) => {
     if (!session) return;
