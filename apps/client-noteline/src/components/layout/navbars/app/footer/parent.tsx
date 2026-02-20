@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Group, Skeleton, Stack } from '@mantine/core';
-import MenuUser from '@repo/components/common/menus/user';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
+import MenuUser from '@repo/components/common/menus/user';
 import AvatarMain from '@repo/components/common/avatars/main';
 import { ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 

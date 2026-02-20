@@ -28,17 +28,19 @@ import NavbarAppMainParent from '../../navbars/app/main/parent';
 import { useMediaQuery } from '@mantine/hooks';
 import { useAppshellNavbar } from '@repo/hooks/app-shell';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
+import MenuUser from '@repo/components/common/menus/user';
+import AvatarMain from '@repo/components/common/avatars/main';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export default function Main() {
   const appshell = useStoreAppShell((s) => s.appshell);
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
-  const theme = useStoreTheme((s) => s.theme);
-  const setTheme = useStoreTheme((s) => s.setTheme);
   const mobile = useMediaQuery('(max-width: 36em)');
+  const session = useStoreSession((s) => s.session);
 
   return (
-    <Group justify="space-between">
-      <Group p={'xs'} gap={5}>
+    <Group justify="space-between" h={'100%'} px={'xs'}>
+      <Group gap={5}>
         {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
         ) : !appshell ? (
@@ -54,18 +56,14 @@ export default function Main() {
         </Group>
       </Group>
 
-      <Group justify="end" p={'xs'} gap={5}>
+      <Group justify="end" gap={5}>
         <Group gap={5} hiddenFrom="xs">
           <IndicatorNetworkStatus props={{ syncStatus }} />
 
-          {theme === undefined ? (
-            <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
-          ) : !theme ? (
-            <></>
-          ) : (
-            <IndicatorTheme
-              props={{ colorScheme: theme, setColorScheme: setTheme }}
-            />
+          {session && (
+            <MenuUser>
+              <AvatarMain size={ICON_WRAPPER_SIZE} />
+            </MenuUser>
           )}
         </Group>
 
