@@ -18,6 +18,8 @@ import { useNoteActions } from '@repo/hooks/actions/note';
 import { getRegionalDate } from '@repo/utilities/date-time';
 import { useRouter } from 'next/navigation';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Main({
   props,
@@ -27,6 +29,7 @@ export default function Main({
   const router = useRouter();
   const notes = useStoreNote((s) => s.notes);
   const { noteCreate } = useNoteActions();
+  const mobile = useMediaQuery('(max-width: 36em)');
 
   const handleCreate = () => {
     if (!notes) return;
@@ -54,6 +57,8 @@ export default function Main({
       align={'center'}
       gap={5}
     >
+      <ButtonAppshellNavbar props={{ options: { mobile: !mobile } }} />
+
       <ModalSearch>
         <Group>
           <Tooltip label={'Open quick switcher'} position={'right'}>
