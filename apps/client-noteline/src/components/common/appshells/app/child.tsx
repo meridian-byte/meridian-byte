@@ -50,7 +50,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
         </ScrollArea>
       </Box>
 
-      <Box style={{ width: `${widthPercentage}%` }}>
+      <Box style={{ width: `${widthPercentage}%`, zIndex: 1 }}>
         <ScrollArea
           h={`calc(100vh - ${APPSHELL.HEADER_HEIGHT}px)`}
           type="auto"

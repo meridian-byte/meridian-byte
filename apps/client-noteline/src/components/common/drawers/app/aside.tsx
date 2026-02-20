@@ -50,34 +50,35 @@ export default function Aside({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Drawer
-        hiddenFrom="xs"
-        keepMounted
-        opened={appshell?.child.aside ?? false}
-        padding={0}
-        position="right"
-        withCloseButton={false}
-        onClose={handleClose}
-        style={{ display: !mobile ? 'none' : undefined }}
-        styles={{
-          content: {
-            backgroundColor:
-              'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
-          },
-        }}
-      >
-        <Group justify="end" p={'xs'}>
-          <ActionIcon
-            size={ICON_WRAPPER_SIZE}
-            variant={'transparent'}
-            onClick={handleClose}
-          >
-            <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </Group>
+      {mobile && (
+        <Drawer
+          hiddenFrom="xs"
+          keepMounted
+          opened={appshell?.child.aside ?? false}
+          padding={0}
+          position="right"
+          withCloseButton={false}
+          onClose={handleClose}
+          styles={{
+            content: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+            },
+          }}
+        >
+          <Group justify="end" p={'xs'}>
+            <ActionIcon
+              size={ICON_WRAPPER_SIZE}
+              variant={'transparent'}
+              onClick={handleClose}
+            >
+              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Group>
 
-        <TabNavbarRight />
-      </Drawer>
+          <TabNavbarRight />
+        </Drawer>
+      )}
 
       <span
         onClick={() => {

@@ -25,6 +25,7 @@ import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import NavbarAppMainParent from '../../navbars/app/main/parent';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Main() {
   const appshell = useStoreAppShell((s) => s.appshell);
@@ -32,6 +33,7 @@ export default function Main() {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
   const theme = useStoreTheme((s) => s.theme);
   const setTheme = useStoreTheme((s) => s.setTheme);
+  const mobile = useMediaQuery('(max-width: 36em)');
 
   const states = {
     iconLeft: !appshell?.child.navbar
@@ -70,15 +72,18 @@ export default function Main() {
                   variant="subtle"
                   color="pri.5"
                   aria-label={appshell.child.navbar ? 'Collapse' : 'Expand'}
-                  onClick={() =>
+                  onClick={() => {
+                    if (mobile) return;
+                    if (!appshell) return;
+
                     handleAppshellChange({
                       ...appshell,
                       child: {
                         ...appshell.child,
                         navbar: !appshell?.child.navbar,
                       },
-                    })
-                  }
+                    });
+                  }}
                   size={ICON_WRAPPER_SIZE}
                 >
                   <states.iconLeft
@@ -126,15 +131,18 @@ export default function Main() {
                   variant="subtle"
                   color="pri.5"
                   aria-label={appshell.child.aside ? 'Collapse' : 'Expand'}
-                  onClick={() =>
+                  onClick={() => {
+                    if (mobile) return;
+                    if (!appshell) return;
+
                     handleAppshellChange({
                       ...appshell,
                       child: {
                         ...appshell.child,
                         aside: !appshell?.child.aside,
                       },
-                    })
-                  }
+                    });
+                  }}
                   size={ICON_WRAPPER_SIZE}
                 >
                   <states.iconRight
