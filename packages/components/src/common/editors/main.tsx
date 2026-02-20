@@ -14,10 +14,11 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import Placeholder from '@tiptap/extension-placeholder';
 import { BubbleMenu } from '@tiptap/react/menus';
-import { ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
+import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import { useDebouncedCallback } from '@mantine/hooks';
+import { ScrollArea } from '@mantine/core';
 
 export default function Main({ item }: { item: NoteGet }) {
   const { noteUpdate } = useNoteActions();
@@ -77,51 +78,62 @@ export default function Main({ item }: { item: NoteGet }) {
         },
       }}
     >
-      <RichTextEditor.Toolbar sticky stickyOffset={48}>
-        <RichTextEditorControlsGroup>
-          {controlGroups.basic}
-        </RichTextEditorControlsGroup>
+      <ScrollArea
+        pos={'sticky'}
+        top={48}
+        bg={'var(--mantine-color-body)'}
+        w={'100%'}
+        scrollbars={'x'}
+        type="auto"
+        scrollbarSize={ICON_STROKE_WIDTH}
+        style={{ zIndex: 1000 }}
+      >
+        <RichTextEditor.Toolbar style={{ flexWrap: 'nowrap' }} mb={'xs'}>
+          <RichTextEditorControlsGroup>
+            {controlGroups.basic}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.basic2}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.basic2}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.alignment}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.alignment}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.headings}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.headings}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.lists}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.lists}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.blocks}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.blocks}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.links}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.links}
+          </RichTextEditorControlsGroup>
 
-        <RichTextEditorControlsGroup>
-          {controlGroups.actions}
-        </RichTextEditorControlsGroup>
+          <RichTextEditorControlsGroup>
+            {controlGroups.actions}
+          </RichTextEditorControlsGroup>
 
-        {editor && (
-          <BubbleMenu editor={editor}>
-            <RichTextEditorControlsGroup>
-              {controlGroups.basic}
-            </RichTextEditorControlsGroup>
-          </BubbleMenu>
-        )}
+          {editor && (
+            <BubbleMenu editor={editor}>
+              <RichTextEditorControlsGroup>
+                {controlGroups.basic}
+              </RichTextEditorControlsGroup>
+            </BubbleMenu>
+          )}
 
-        <RichTextEditorControlsGroup>
-          <RichTextEditor.ClearFormatting />
-        </RichTextEditorControlsGroup>
-      </RichTextEditor.Toolbar>
+          <RichTextEditorControlsGroup>
+            <RichTextEditor.ClearFormatting />
+          </RichTextEditorControlsGroup>
+        </RichTextEditor.Toolbar>
+      </ScrollArea>
 
       <RichTextEditor.Content />
     </RichTextEditor>

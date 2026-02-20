@@ -26,7 +26,7 @@ export default function Note({ props }: { props: { note: NoteGet } }) {
           {userStates?.editing == true ? (
             <EditorMain item={props.note} />
           ) : (
-            <Box p={'1rem'} mt={48 + 10}>
+            <Box p={'1rem'} mt={48 + 20}>
               <ParserHtml
                 props={{
                   html: props.note.content || '',
