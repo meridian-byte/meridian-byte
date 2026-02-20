@@ -76,7 +76,7 @@ function FoodsPartial({
 }: {
   props: { formEat: FormEat; diaryDate?: Date };
 }) {
-  const { foods } = useStoreFood();
+  const foods = useStoreFood((s) => s.foods);
 
   return (
     <ScrollAreaAutosize h={200} scrollbars={'y'}>
@@ -127,8 +127,8 @@ function MealsPartial({
 }: {
   props: { formEat: FormEat; diaryDate?: Date };
 }) {
-  const { meals } = useStoreMeal();
-  const { servings } = useStoreServing();
+  const meals = useStoreMeal((s) => s.meals);
+  const servings = useStoreServing((s) => s.servings);
   const { servingCreate } = useServingActions({ formEat: props.formEat });
   // let createdServings: ServingGet[] = [];
 

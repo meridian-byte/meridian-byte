@@ -10,7 +10,7 @@ import { useMediaQuery } from '@mantine/hooks';
 
 export default function Child({ children }: { children: React.ReactNode }) {
   const mobile = useMediaQuery('(max-width: 36em)');
-  const { appshell } = useStoreAppShell();
+  const appshell = useStoreAppShell((s) => s.appshell);
   if (!appshell) return null;
 
   const widths = {

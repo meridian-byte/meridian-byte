@@ -35,7 +35,8 @@ export default function Main({
   item: NoteGet;
   children: React.ReactNode;
 }) {
-  const { userStates, setUserStates } = useStoreUserStates();
+  const userStates = useStoreUserStates((s) => s.userStates);
+  const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
   const toogleProperties = {
     label: userStates?.editing == true ? 'Reading' : 'Editing',

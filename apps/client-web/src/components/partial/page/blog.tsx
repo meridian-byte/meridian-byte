@@ -5,7 +5,7 @@ import { useStorePost } from '@repo/libraries/zustand/stores/post';
 import LayoutSection from '@repo/components/layout/section';
 
 export default function Blog() {
-  const { posts } = useStorePost();
+  const posts = useStorePost((s) => s.posts);
 
   return (
     <LayoutSection id={'page-blog-grid'} margined>

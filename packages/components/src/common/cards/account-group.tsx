@@ -26,7 +26,7 @@ import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 export default function AccountGroup({ props }: { props: AccountGroupGet }) {
   const { accountGroupDelete } = useAccountGroupActions();
 
-  const { accounts } = useStoreAccount();
+  const accounts = useStoreAccount((s) => s.accounts);
 
   const groupAccounts = accounts?.filter((acc) => acc.group_id == props.id);
 

@@ -9,7 +9,7 @@ export default function User({
 }: {
   options?: { withoutAvatar?: boolean };
 }) {
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
 
   return (
     <Flex

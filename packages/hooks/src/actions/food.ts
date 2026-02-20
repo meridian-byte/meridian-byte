@@ -5,8 +5,10 @@ import { Status, SyncStatus, WeightUnitType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useFoodActions = () => {
-  const { session } = useStoreSession();
-  const { addFood, updateFood, deleteFood } = useStoreFood();
+  const session = useStoreSession((s) => s.session);
+  const addFood = useStoreFood((s) => s.addFood);
+  const updateFood = useStoreFood((s) => s.updateFood);
+  const deleteFood = useStoreFood((s) => s.deleteFood);
 
   const foodCreate = (params: Partial<FoodGet>) => {
     if (!session) return;

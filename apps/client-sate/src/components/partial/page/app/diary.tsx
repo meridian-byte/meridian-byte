@@ -47,7 +47,7 @@ import { calculateMacros } from '@repo/utilities/weight';
 import { useMediaQuery } from '@mantine/hooks';
 
 export default function Diary() {
-  const { servings } = useStoreServing();
+  const servings = useStoreServing((s) => s.servings);
   const entryDate = useEntryDate();
 
   const eatenServings = servings?.filter((s) => {
@@ -95,7 +95,7 @@ export default function Diary() {
 }
 
 function DiaryHeader({ props }: { props: { entryDate: EntryDateReturnType } }) {
-  const { syncStatus } = useStoreSyncStatus();
+  const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
 
   return (
     <Box
@@ -147,7 +147,7 @@ export function DiaryOverview({
 }) {
   const mobile = useMediaQuery('(max-width: 36em)');
 
-  const { eats } = useStoreEat();
+  const eats = useStoreEat((s) => s.eats);
 
   const dayEats = eats?.filter((e) => {
     return areSameDay(
@@ -158,7 +158,7 @@ export function DiaryOverview({
 
   const { totalEatenNutrients } = useEatTotals({ eats: dayEats || [] });
 
-  const { masses } = useStoreMass();
+  const masses = useStoreMass((s) => s.masses);
 
   const latestMass =
     !masses || masses.length < 1

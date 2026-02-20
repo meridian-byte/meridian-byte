@@ -35,7 +35,7 @@ import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
 import { DateInput } from '@mantine/dates';
 
 export default function Transactions() {
-  const { transactions } = useStoreTransaction();
+  const transactions = useStoreTransaction((s) => s.transactions);
   const entryDate = useEntryDate();
 
   const todaysTransactions = transactions?.filter((t) => {
@@ -85,7 +85,7 @@ export function TransactionsHeader({
 }: {
   props: { entryDate: EntryDateReturnType };
 }) {
-  const { syncStatus } = useStoreSyncStatus();
+  const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
 
   return (
     <LayoutSection
@@ -126,7 +126,7 @@ export function OverviewTransactions({
 }: {
   props?: { entryDate?: EntryDateReturnType };
 }) {
-  const { transactions } = useStoreTransaction();
+  const transactions = useStoreTransaction((s) => s.transactions);
 
   const dayTransactions = transactions?.filter((t) => {
     return areSameDay(

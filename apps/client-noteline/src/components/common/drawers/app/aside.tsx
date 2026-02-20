@@ -18,7 +18,8 @@ import { useMediaQuery } from '@mantine/hooks';
 
 export default function Aside({ children }: { children: React.ReactNode }) {
   const mobile = useMediaQuery('(max-width: 36em)');
-  const { appshell, setAppShell } = useStoreAppShell();
+  const appshell = useStoreAppShell((s) => s.appshell);
+  const setAppShell = useStoreAppShell((s) => s.setAppShell);
 
   const handleAppshellChange = (params: AppShell) => {
     if (!mobile) return;

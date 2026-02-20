@@ -6,7 +6,7 @@ import { generateUUID } from '@repo/utilities/generators';
 import { FormEat } from '../form/eat';
 
 export const useServingActions = (params?: { formEat?: FormEat }) => {
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
   const { servings, setServings, updateServing, deleteServing } =
     useStoreServing();
 

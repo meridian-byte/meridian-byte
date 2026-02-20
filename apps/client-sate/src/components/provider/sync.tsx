@@ -19,8 +19,9 @@ import { useSyncQueue } from '@repo/libraries/sync';
 export default function Sync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
 
-  const { session } = useStoreSession();
-  const { syncStatus, setSyncStatus } = useStoreSyncStatus();
+  const session = useStoreSession((s) => s.session);
+  const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
+  const setSyncStatus = useStoreSyncStatus((s) => s.setSyncStatus);
 
   const enqueueSync = useSyncQueue({ syncFunction: handleSync });
 

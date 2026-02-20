@@ -10,7 +10,7 @@ import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
 
 export default function Accounts() {
-  const { accounts } = useStoreAccount();
+  const accounts = useStoreAccount((s) => s.accounts);
 
   return (
     <LayoutSection id="app-home" containerized={'xs'} padded={'md'}>

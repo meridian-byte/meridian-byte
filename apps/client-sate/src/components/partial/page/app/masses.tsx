@@ -11,7 +11,7 @@ import CardMass from '@repo/components/common/cards/mass';
 import ModalMassCrud from '@repo/components/common/modals/mass/crud';
 
 export default function Mass() {
-  const { masses } = useStoreMass();
+  const masses = useStoreMass((s) => s.masses);
 
   return (
     <LayoutSection id="app-home" containerized={'xs'} padded={'md'}>

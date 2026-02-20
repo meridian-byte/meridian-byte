@@ -5,8 +5,10 @@ import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useLinkActions = () => {
-  const { session } = useStoreSession();
-  const { addLink, updateLink, deleteLink } = useStoreLink();
+  const session = useStoreSession((s) => s.session);
+  const addLink = useStoreLink((s) => s.addLink);
+  const updateLink = useStoreLink((s) => s.updateLink);
+  const deleteLink = useStoreLink((s) => s.deleteLink);
 
   const linkCreate = (params: Partial<LinkGet>) => {
     if (!session) return;
