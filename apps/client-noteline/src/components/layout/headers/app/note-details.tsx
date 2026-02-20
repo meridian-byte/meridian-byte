@@ -64,9 +64,7 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
       <Group
         p={'xs'}
         justify="space-between"
-        bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
-        }
+        bg={'var(--mantine-color-body)'}
         wrap="nowrap"
       >
         <Group gap={5} wrap="nowrap">

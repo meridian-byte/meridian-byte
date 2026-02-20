@@ -41,7 +41,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
         visibleFrom="xs"
       >
         <ScrollArea
-          h={`calc(100vh - ${APPSHELL.HEADER_HEIGHT}px)`}
+          h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
           type="auto"
           scrollbars={'y'}
           scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
@@ -52,7 +52,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
 
       <Box style={{ width: `${widthPercentage}%`, zIndex: 1 }}>
         <ScrollArea
-          h={`calc(100vh - ${APPSHELL.HEADER_HEIGHT}px)`}
+          h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
           type="auto"
           scrollbars={'y'}
           scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
@@ -73,7 +73,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
         visibleFrom="xs"
       >
         <ScrollArea
-          h={`calc(100vh - ${APPSHELL.HEADER_HEIGHT}px)`}
+          h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
           type="auto"
           scrollbars={'y'}
           scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
