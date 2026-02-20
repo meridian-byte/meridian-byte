@@ -1,31 +1,45 @@
 'use client';
 
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
-import { ActionIcon, TextInput, Tooltip } from '@mantine/core';
+import { ActionIcon, TextInput, TextInputProps, Tooltip } from '@mantine/core';
 import { IconSearch, IconX } from '@tabler/icons-react';
-import React from 'react';
+import React, { useState } from 'react';
+import { useDebouncedCallback } from '@mantine/hooks';
+import SpinnerApp from '../../spinners/app';
 
 export default function Search({
   props,
+  ...restProps
 }: {
   props: { value: string; setValue: any };
-}) {
+} & TextInputProps) {
+  const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState(props.value);
+
+  const debounceHandleChange = useDebouncedCallback(async (v: string) => {
+    props.setValue(v);
+    setLoading(false);
+  }, 500);
+
+  const handleChange = (v: string) => {
+    setValue(v);
+    setLoading(true);
+    debounceHandleChange(v);
+  };
+
   return (
     <TextInput
-      value={props.value}
-      onChange={(e) => props.setValue(e.currentTarget.value)}
+      value={value}
+      onChange={(e) => handleChange(e.currentTarget.value)}
       variant="filled"
-      styles={{
-        input: {
-          backgroundColor:
-            'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-9))',
-          fontWeight: 500,
-        },
-      }}
       aria-label="Search notes"
       placeholder="Search notes"
       rightSection={
-        props.value.trim().length > 0 ? (
+        loading ? (
+          <SpinnerApp props={{ size: ICON_SIZE - 4 }} />
+        ) : !props.value.trim().length ? (
+          <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        ) : (
           <Tooltip label={'Clear Search'}>
             <ActionIcon
               size={ICON_SIZE}
@@ -35,10 +49,9 @@ export default function Search({
               <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             </ActionIcon>
           </Tooltip>
-        ) : (
-          <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         )
       }
+      {...restProps}
     />
   );
 }

@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { Divider, Modal, NavLink, ScrollArea } from '@mantine/core';
+import {
+  Center,
+  Divider,
+  Modal,
+  NavLink,
+  ScrollArea,
+  Text,
+} from '@mantine/core';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useRouter } from 'next/navigation';
 import { IconFile } from '@tabler/icons-react';
@@ -34,32 +41,45 @@ export default function Search({ children }: { children: React.ReactNode }) {
     };
   });
 
-  // nothingFound="Nothing found..."
-  //         searchProps={{
-  //           leftSection: <IconSearch size={20} stroke={1.5} />,
-  //           placeholder: 'Search note...',
-  //         }}
-
   return (
     <>
       <Modal opened={opened} onClose={close}>
         <LayoutModal props={{ close, title: 'Search note' }}>
-          <InputTextSearch props={{ value: search, setValue: setSearch }} />
+          <InputTextSearch
+            props={{ value: search, setValue: setSearch }}
+            styles={{
+              input: {
+                backgroundColor:
+                  'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))',
+                fontWeight: 500,
+              },
+            }}
+          />
 
-          <Divider />
+          <div>
+            <Divider />
 
-          <ScrollArea h={280}>
-            {actions.map((a, i) => (
-              <div key={i}>
-                <NavLink
-                  label={a.label}
-                  leftSection={a.leftSection}
-                  onClick={a.onClick}
-                  style={{ borderRadius: 'var(--mantine-radius-md)' }}
-                />
-              </div>
-            ))}
-          </ScrollArea>
+            <ScrollArea h={280}>
+              {!actions.length ? (
+                <Center ta={'center'}>
+                  <Text inherit fz={'sm'} c={'dimmed'}>
+                    Nothing found...
+                  </Text>
+                </Center>
+              ) : (
+                actions.map((a, i) => (
+                  <div key={i}>
+                    <NavLink
+                      label={a.label}
+                      leftSection={a.leftSection}
+                      onClick={a.onClick}
+                      style={{ borderRadius: 'var(--mantine-radius-md)' }}
+                    />
+                  </div>
+                ))
+              )}
+            </ScrollArea>
+          </div>
         </LayoutModal>
       </Modal>
 
