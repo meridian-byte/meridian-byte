@@ -33,7 +33,6 @@ export default function Child({ children }: { children: React.ReactNode }) {
         style={{
           display: appshell?.child.navbar ? undefined : 'none',
           width: `${widths.navbarLeft}%`,
-          borderRight: '1px solid var(--mantine-color-default-border)',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}
@@ -65,7 +64,6 @@ export default function Child({ children }: { children: React.ReactNode }) {
         style={{
           display: appshell?.child.aside ? undefined : 'none',
           width: `${widths.navbarRight}%`,
-          borderLeft: '1px solid var(--mantine-color-default-border)',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}

@@ -14,8 +14,10 @@ import NavbarAppMainParent from '@/components/layout/navbars/app/main/parent';
 import AppshellAppChild from './child';
 import HeaderAppMain from '@/components/layout/headers/app/main';
 import { useMediaQuery } from '@mantine/hooks';
+import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 
 export default function Main({ children }: { children: React.ReactNode }) {
+  const appshell = useStoreAppShell((s) => s.appshell);
   const mobile = useMediaQuery('(max-width: 36em)');
 
   return (
@@ -27,6 +29,7 @@ export default function Main({ children }: { children: React.ReactNode }) {
         breakpoint: 'xs',
         collapsed: { mobile: true, desktop: false },
       }}
+      withBorder={false}
     >
       <AppShellHeader
         display={mobile ? undefined : 'none'}
@@ -39,7 +42,9 @@ export default function Main({ children }: { children: React.ReactNode }) {
 
       <AppShellNavbar
         bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+          !appshell?.child.navbar
+            ? 'var(--mantine-color-body)'
+            : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7))'
         }
       >
         <AppShellSection id="navbar-main" grow>
