@@ -199,9 +199,9 @@ export default function Folders() {
         }
         style={{ zIndex: 1 }}
       >
-        <Divider />
+        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
 
-        <Group gap={5} pos={'sticky'} top={48} py={'xs'}>
+        <Group gap={5} pos={'sticky'} top={48} py={'xs'} mb={8}>
           {notes === undefined ? (
             <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
           ) : (
