@@ -27,6 +27,7 @@ import { NoteGet } from '@repo/types/models/note';
 import { useRouter } from 'next/navigation';
 import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
+import WrapperUnderlayGlass from '@repo/components/wrappers/underlays/glass';
 
 export default function NoteDetails({ props }: { props: NoteGet }) {
   const router = useRouter();
@@ -47,86 +48,89 @@ export default function NoteDetails({ props }: { props: NoteGet }) {
       top={0}
       style={{ zIndex: 1 }}
     >
-      <Group
-        p={'xs'}
-        justify="space-between"
-        bg={'var(--mantine-color-body)'}
-        wrap="nowrap"
-      >
-        <Group gap={5} wrap="nowrap">
-          <Tooltip label={'Navigate Back'}>
-            <ActionIcon
-              size={ICON_WRAPPER_SIZE}
-              variant={'subtle'}
-              onClick={() => router.back()}
-            >
-              <IconArrowLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </Tooltip>
-
-          <Tooltip label={'Navigate Forward'}>
-            <ActionIcon
-              size={ICON_WRAPPER_SIZE}
-              variant={'subtle'}
-              onClick={() => router.forward()}
-            >
-              <IconArrowRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </Tooltip>
-        </Group>
-
-        <Group gap={5} wrap="nowrap">
-          <Title order={1} fz={'sm'} fw={'normal'} ta={'center'} lineClamp={1}>
-            {props.title}
-          </Title>
-        </Group>
-
-        <Group gap={5} wrap="nowrap">
-          {userStates === undefined ? (
-            <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
-          ) : (
-            <Tooltip
-              label={
-                <Stack ta={'center'} gap={0}>
-                  <Text inherit>Current View: {toogleProperties.view}</Text>
-                  <Text inherit>Click to {toogleProperties.label}</Text>
-                </Stack>
-              }
-              multiline
-              w={160}
-            >
+      <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.6 }}>
+        <Group p={'xs'} justify="space-between" wrap="nowrap">
+          <Group gap={5} wrap="nowrap">
+            <Tooltip label={'Navigate Back'}>
               <ActionIcon
                 size={ICON_WRAPPER_SIZE}
                 variant={'subtle'}
-                onClick={() =>
-                  setUserStates({
-                    ...userStates,
-                    editing: !userStates?.editing,
-                  })
-                }
+                onClick={() => router.back()}
               >
-                <toogleProperties.icon
-                  size={ICON_SIZE}
-                  stroke={ICON_STROKE_WIDTH}
-                />
+                <IconArrowLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ActionIcon>
             </Tooltip>
-          )}
 
-          <MenuNoteMain item={props}>
-            <Group>
-              <Tooltip label={'More options'}>
-                <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
-                  <IconDotsVertical
+            <Tooltip label={'Navigate Forward'}>
+              <ActionIcon
+                size={ICON_WRAPPER_SIZE}
+                variant={'subtle'}
+                onClick={() => router.forward()}
+              >
+                <IconArrowRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+
+          <Group gap={5} wrap="nowrap">
+            <Title
+              order={1}
+              fz={'sm'}
+              fw={'normal'}
+              ta={'center'}
+              lineClamp={1}
+            >
+              {props.title}
+            </Title>
+          </Group>
+
+          <Group gap={5} wrap="nowrap">
+            {userStates === undefined ? (
+              <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
+            ) : (
+              <Tooltip
+                label={
+                  <Stack ta={'center'} gap={0}>
+                    <Text inherit>Current View: {toogleProperties.view}</Text>
+                    <Text inherit>Click to {toogleProperties.label}</Text>
+                  </Stack>
+                }
+                multiline
+                w={160}
+              >
+                <ActionIcon
+                  size={ICON_WRAPPER_SIZE}
+                  variant={'subtle'}
+                  onClick={() =>
+                    setUserStates({
+                      ...userStates,
+                      editing: !userStates?.editing,
+                    })
+                  }
+                >
+                  <toogleProperties.icon
                     size={ICON_SIZE}
                     stroke={ICON_STROKE_WIDTH}
                   />
                 </ActionIcon>
               </Tooltip>
-            </Group>
-          </MenuNoteMain>
+            )}
+
+            <MenuNoteMain item={props}>
+              <Group>
+                <Tooltip label={'More options'}>
+                  <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
+                    <IconDotsVertical
+                      size={ICON_SIZE}
+                      stroke={ICON_STROKE_WIDTH}
+                    />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </MenuNoteMain>
+          </Group>
         </Group>
-      </Group>
+      </WrapperUnderlayGlass>
     </LayoutSection>
   );
 }
