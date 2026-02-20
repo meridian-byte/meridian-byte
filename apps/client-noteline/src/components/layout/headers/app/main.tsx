@@ -116,7 +116,7 @@ export default function Main() {
           )}
         </Group>
 
-        {appshell === undefined ? (
+        {/* {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
         ) : !appshell ? (
           <></>
@@ -153,7 +153,7 @@ export default function Main() {
               </Group>
             </DrawerAppAside>
           </Tooltip>
-        )}
+        )} */}
       </Group>
     </Group>
   );
