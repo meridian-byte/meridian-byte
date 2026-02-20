@@ -18,8 +18,6 @@ import { ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import { useDebouncedCallback } from '@mantine/hooks';
-import InputTextEditorTitle from '../inputs/text/editor/title';
-import { Stack } from '@mantine/core';
 
 export default function Main({ item }: { item: NoteGet }) {
   const { noteUpdate } = useNoteActions();
@@ -28,7 +26,7 @@ export default function Main({ item }: { item: NoteGet }) {
     noteUpdate({ ...item, content: parsedContent });
   };
 
-  const handleChangeDebounced = useDebouncedCallback(handleChange, 1000);
+  const handleChangeDebounced = useDebouncedCallback(handleChange, 400);
 
   const editor = useEditor({
     immediatelyRender: false, // ✅ prevents hydration mismatches
@@ -56,81 +54,77 @@ export default function Main({ item }: { item: NoteGet }) {
   }, [item.id, editor]);
 
   return (
-    <Stack gap={'lg'}>
-      <InputTextEditorTitle item={item} />
+    <RichTextEditor
+      id="rich-text-editor-content"
+      editor={editor}
+      styles={{
+        toolbar: {
+          padding: 'var(--mantine-spacing-xs) 0',
+          borderRadius: 0,
+          border: '0px solid transparent',
+        },
+        content: {
+          padding: 0,
+          paddingTop: 'var(--mantine-spacing-xs)',
+          borderRadius: 0,
+        },
+        root: {
+          border: '0px solid transparent',
+        },
+        control: {
+          width: ICON_WRAPPER_SIZE,
+          height: ICON_WRAPPER_SIZE,
+        },
+      }}
+    >
+      <RichTextEditor.Toolbar sticky stickyOffset={48}>
+        <RichTextEditorControlsGroup>
+          {controlGroups.basic}
+        </RichTextEditorControlsGroup>
 
-      <RichTextEditor
-        id="rich-text-editor-content"
-        editor={editor}
-        styles={{
-          toolbar: {
-            padding: 'var(--mantine-spacing-xs) 0',
-            borderRadius: 0,
-            border: '0px solid transparent',
-          },
-          content: {
-            padding: 0,
-            paddingTop: 'var(--mantine-spacing-xs)',
-            borderRadius: 0,
-          },
-          root: {
-            border: '0px solid transparent',
-          },
-          control: {
-            width: ICON_WRAPPER_SIZE,
-            height: ICON_WRAPPER_SIZE,
-          },
-        }}
-      >
-        <RichTextEditor.Toolbar sticky stickyOffset={48}>
-          <RichTextEditorControlsGroup>
-            {controlGroups.basic}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.basic2}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.basic2}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.alignment}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.alignment}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.headings}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.headings}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.lists}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.lists}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.blocks}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.blocks}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.links}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.links}
-          </RichTextEditorControlsGroup>
+        <RichTextEditorControlsGroup>
+          {controlGroups.actions}
+        </RichTextEditorControlsGroup>
 
-          <RichTextEditorControlsGroup>
-            {controlGroups.actions}
-          </RichTextEditorControlsGroup>
+        {editor && (
+          <BubbleMenu editor={editor}>
+            <RichTextEditorControlsGroup>
+              {controlGroups.basic}
+            </RichTextEditorControlsGroup>
+          </BubbleMenu>
+        )}
 
-          {editor && (
-            <BubbleMenu editor={editor}>
-              <RichTextEditorControlsGroup>
-                {controlGroups.basic}
-              </RichTextEditorControlsGroup>
-            </BubbleMenu>
-          )}
+        <RichTextEditorControlsGroup>
+          <RichTextEditor.ClearFormatting />
+        </RichTextEditorControlsGroup>
+      </RichTextEditor.Toolbar>
 
-          <RichTextEditorControlsGroup>
-            <RichTextEditor.ClearFormatting />
-          </RichTextEditorControlsGroup>
-        </RichTextEditor.Toolbar>
-
-        <RichTextEditor.Content />
-      </RichTextEditor>
-    </Stack>
+      <RichTextEditor.Content />
+    </RichTextEditor>
   );
 }
 
