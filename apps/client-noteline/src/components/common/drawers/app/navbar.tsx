@@ -50,7 +50,7 @@ export default function Navbar({
   };
 
   const handleClose = () => {
-    if (!mobile && !options?.hover) return;
+    if (!mobile) return;
     if (!appshell) return;
 
     handleAppshellChange({
@@ -63,74 +63,74 @@ export default function Navbar({
   };
 
   useEffect(() => {
-    if (!appshell?.child.navbar) close();
-  }, [appshell?.child.navbar]);
+    if (options?.hover && appshell?.child.navbar && opened) close();
+  }, [appshell?.child.navbar, opened]);
 
   return (
     <>
-      {(options?.hover || mobile) && !appshell?.child.navbar && (
-        <Drawer
-          size={options?.hover ? 'xs' : undefined}
-          hiddenFrom={!options?.hover ? 'xs' : undefined}
-          keepMounted
-          opened={!mobile ? opened : (appshell?.child.navbar ?? false)}
-          padding={0}
-          transitionProps={{ enterDelay: 1000 }}
-          withCloseButton={false}
-          onClose={handleClose}
-          styles={{
-            content: {
-              backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
-            },
+      <Drawer
+        size={options?.hover ? 'xs' : undefined}
+        hiddenFrom={!options?.hover ? 'xs' : undefined}
+        keepMounted
+        opened={!mobile ? opened : (appshell?.child.navbar ?? false)}
+        padding={0}
+        transitionProps={{ enterDelay: 500 }}
+        withCloseButton={false}
+        onClose={handleClose}
+        styles={{
+          content: {
+            backgroundColor:
+              'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+          },
+        }}
+        display={
+          (options?.hover || mobile) && !appshell?.child.navbar
+            ? undefined
+            : 'none'
+        }
+      >
+        <ScrollArea
+          h="100vh"
+          onMouseLeave={() => {
+            if (mobile) return;
+            close();
           }}
         >
-          <ScrollArea
-            h="100vh"
-            onMouseLeave={() => {
-              if (mobile) return;
-              close();
-            }}
-          >
-            <Group p={'xs'} justify="end">
-              <Tooltip
-                label={
-                  (options?.hover ? opened : appshell?.child.navbar)
-                    ? 'Collapse'
-                    : 'Expand'
-                }
-                position="right"
+          <Group p={'xs'} justify="end">
+            <Tooltip
+              label={
+                (options?.hover ? opened : appshell?.child.navbar)
+                  ? 'Collapse'
+                  : 'Expand'
+              }
+              position="right"
+            >
+              <ActionIcon
+                size={ICON_WRAPPER_SIZE}
+                variant={'subtle'}
+                onClick={options?.hover ? close : handleClose}
               >
-                <ActionIcon
-                  size={ICON_WRAPPER_SIZE}
-                  variant={'subtle'}
-                  onClick={options?.hover ? close : handleClose}
-                >
-                  <IconLayoutSidebarLeftCollapse
-                    size={ICON_SIZE}
-                    stroke={ICON_STROKE_WIDTH}
-                  />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
+                <IconLayoutSidebarLeftCollapse
+                  size={ICON_SIZE}
+                  stroke={ICON_STROKE_WIDTH}
+                />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
 
-            <TabNavbarLeft />
-          </ScrollArea>
-        </Drawer>
-      )}
+          <TabNavbarLeft />
+        </ScrollArea>
+      </Drawer>
 
       <span
         onMouseEnter={() => {
           if (mobile) return;
           if (!appshell) return;
-          if (!appshell.child.navbar) open();
+          if (!appshell.child.navbar && !opened) open();
         }}
         onClick={() => {
           if (!mobile) return;
           if (!appshell) return;
-
-          // close hover drawer if it exists
-          if (options?.hover) close();
 
           handleAppshellChange({
             ...appshell,
