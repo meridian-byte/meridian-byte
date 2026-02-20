@@ -85,6 +85,8 @@ export default function NoteDetails({ props }: { props: NoteGet }) {
           </Group>
 
           <Group gap={5} wrap="nowrap">
+            <ButtonsFullscreen />
+
             {userStates === undefined ? (
               <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
             ) : (
