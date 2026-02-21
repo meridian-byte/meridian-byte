@@ -1,0 +1,35 @@
+.root {
+  border: 0px solid transparent;
+}
+
+.toolbar {
+  padding: var(--mantine-spacing-xs) 0;
+  border: 0px solid transparent;
+  gap: 5;
+}
+
+.content {
+  border: 0px solid transparent;
+}
+
+.controlsGroup {
+  background-color: transparent;
+  border-radius: var(--mantine-radius-md);
+}
+
+.control {
+  transition: 0.25s all ease;
+  background-color: transparent;
+  border: 0px solid transparent;
+
+  &[data-active] {
+    background-color: var(--mantine-color-pri-light);
+  }
+
+  @include mantine.hover {
+    background-color: light-dark(
+      var(--mantine-color-gray-1),
+      var(--mantine-color-dark-8)
+    );
+  }
+}
