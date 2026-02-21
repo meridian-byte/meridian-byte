@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   RichTextEditor,
   Link,
@@ -23,11 +23,16 @@ import { Box, ScrollArea } from '@mantine/core';
 export default function Main({ item }: { item: NoteGet }) {
   const { noteUpdate } = useNoteActions();
 
-  const handleChange = (parsedContent: string) => {
-    noteUpdate({ ...item, content: parsedContent });
-  };
+  const [content, setContent] = useState<string>(item.content || '');
 
-  const handleChangeDebounced = useDebouncedCallback(handleChange, 400);
+  const handleChangeDebounced = useDebouncedCallback((c: string) => {
+    noteUpdate({ ...item, content: c });
+  }, 400);
+
+  const handleChange = (c: string) => {
+    setContent(c);
+    handleChangeDebounced(c);
+  };
 
   const editor = useEditor({
     immediatelyRender: false, // ✅ prevents hydration mismatches
@@ -41,11 +46,11 @@ export default function Main({ item }: { item: NoteGet }) {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({ placeholder: 'Add content here...' }),
     ],
-    content: item.content,
+    content: content,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
+      const html = editor.getHTML().trim();
       if (html == item.content) return;
-      handleChangeDebounced(html);
+      handleChange(html);
     },
   });
 

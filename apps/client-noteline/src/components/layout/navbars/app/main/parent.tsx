@@ -77,11 +77,13 @@ export default function Main({
       )}
 
       <NextLink href="/app">
-        <Tooltip label={'Go to home page'} position={'right'}>
-          <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
-            <IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </Tooltip>
+        <Group>
+          <Tooltip label={'Go to home page'} position={'right'}>
+            <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+              <IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
       </NextLink>
 
       <ModalSearch>
