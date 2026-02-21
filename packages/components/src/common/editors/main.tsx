@@ -13,6 +13,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import Placeholder from '@tiptap/extension-placeholder';
+import { TableKit } from '@tiptap/extension-table';
 import { BubbleMenu } from '@tiptap/react/menus';
 import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 import { useNoteActions } from '@repo/hooks/actions/note';
@@ -56,6 +57,7 @@ export default function Main({ item }: { item: NoteGet }) {
       Highlight,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({ placeholder: 'Add content here...' }),
+      TableKit.configure({ table: { resizable: true } }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
