@@ -74,7 +74,7 @@ export default function Navbar({
         keepMounted
         opened={!mobile ? opened : (appshell?.child.navbar ?? false)}
         padding={0}
-        transitionProps={{ enterDelay: 500 }}
+        transitionProps={{ enterDelay: 400, duration: 250 }}
         withCloseButton={false}
         onClose={handleClose}
         styles={{
@@ -98,6 +98,13 @@ export default function Navbar({
             if (mobile) return;
             close();
           }}
+          display={
+            mobile || (options?.hover && !appshell?.child.navbar)
+              ? !opened
+                ? 'none'
+                : undefined
+              : 'none'
+          }
         >
           <Group p={'xs'} justify="end">
             <Tooltip
