@@ -63,7 +63,7 @@ export default function Navbar({
   };
 
   useEffect(() => {
-    if (options?.hover && appshell?.child.navbar && opened) close();
+    if (options?.hover && appshell?.child.navbar && opened && !mobile) close();
   }, [appshell?.child.navbar, opened]);
 
   return (
@@ -84,7 +84,7 @@ export default function Navbar({
           },
         }}
         display={
-          (options?.hover || mobile) && !appshell?.child.navbar
+          mobile || (options?.hover && !appshell?.child.navbar)
             ? undefined
             : 'none'
         }
@@ -108,7 +108,7 @@ export default function Navbar({
               <ActionIcon
                 size={ICON_WRAPPER_SIZE}
                 variant={'subtle'}
-                onClick={options?.hover ? close : handleClose}
+                onClick={options?.hover && !mobile ? close : handleClose}
               >
                 <IconLayoutSidebarLeftCollapse
                   size={ICON_SIZE}
