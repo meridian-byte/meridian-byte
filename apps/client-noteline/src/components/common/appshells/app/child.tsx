@@ -30,13 +30,21 @@ export default function Child({ children }: { children: React.ReactNode }) {
           : 100;
 
   return (
-    <Group wrap="nowrap" align="stretch" gap={0}>
+    <Group
+      wrap="nowrap"
+      align="stretch"
+      gap={0}
+      bg={'var(--mantine-color-body)'}
+    >
       <Box
         style={{
           display: appshell?.child.navbar ? undefined : 'none',
           width: `${widths.navbarLeft}%`,
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+          borderTopRightRadius: 'var(--mantine-radius-lg)',
+          borderBottomRightRadius: 'var(--mantine-radius-lg)',
+          overflow: 'hidden',
         }}
         visibleFrom="xs"
       >

@@ -30,6 +30,11 @@ export default function Main({ children }: { children: React.ReactNode }) {
         collapsed: { mobile: true, desktop: false },
       }}
       withBorder={false}
+      bg={
+        !appshell?.child.navbar
+          ? 'var(--mantine-color-body)'
+          : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+      }
     >
       <AppShellHeader
         display={mobile ? undefined : 'none'}
@@ -41,11 +46,14 @@ export default function Main({ children }: { children: React.ReactNode }) {
       </AppShellHeader>
 
       <AppShellNavbar
-        bg={
-          !appshell?.child.navbar
+        style={{
+          backgroundColor: !appshell?.child.navbar
             ? 'var(--mantine-color-body)'
-            : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
-        }
+            : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+          borderTopRightRadius: 'var(--mantine-radius-lg)',
+          borderBottomRightRadius: 'var(--mantine-radius-lg)',
+          overflow: 'hidden',
+        }}
       >
         <AppShellSection id="navbar-main" grow>
           <NavbarAppMainParent />
