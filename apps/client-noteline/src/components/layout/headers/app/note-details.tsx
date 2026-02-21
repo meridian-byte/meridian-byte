@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import {
   ICON_SIZE,
@@ -30,8 +30,13 @@ import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import WrapperUnderlayGlass from '@repo/components/wrappers/underlays/glass';
 import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
+import { useScroll } from '@repo/hooks/scroll';
 
 export default function NoteDetails({ props }: { props?: NoteGet }) {
+  const { styles } = useScroll({
+    defaultStyles: useMemo(() => ({ display: 'none' }), []),
+    scrolledStyles: useMemo(() => ({ display: undefined }), []),
+  });
   const searchParams = useSearchParams();
   const router = useRouter();
   const userStates = useStoreUserStates((s) => s.userStates);
@@ -60,7 +65,7 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
       style={{ zIndex: 1 }}
       display={!props ? 'none' : undefined}
     >
-      <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.6 }}>
+      <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
         <Group p={'xs'} justify="space-between" wrap="nowrap">
           <Group gap={5} wrap="nowrap">
             <Tooltip label={'Navigate Back'}>
@@ -91,6 +96,10 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
               fw={'normal'}
               ta={'center'}
               lineClamp={1}
+              style={{
+                ...styles,
+                transition: 'opacity 0.25s',
+              }}
             >
               {props?.title}
             </Title>
