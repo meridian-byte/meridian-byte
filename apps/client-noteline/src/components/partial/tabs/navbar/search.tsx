@@ -31,6 +31,18 @@ export default function Search() {
     setParamNoteId(paramNoteId as string);
   }, [notes, searchParams]);
 
+  const getSearchCriteriaItems = (params: { options: { limit: number } }) => {
+    const searchTerm = value.trim().toLowerCase();
+
+    const notesLimited = notes
+      ?.filter((n) => n.title.toLowerCase().includes(searchTerm))
+      .slice(0, params.options.limit);
+
+    return { notesLimited };
+  };
+
+  const { notesLimited } = getSearchCriteriaItems({ options: { limit: 20 } });
+
   return (
     <div>
       <Box
@@ -65,61 +77,57 @@ export default function Search() {
             <Skeleton h={35} />
           </>
         ) : (
-          notes
-            ?.filter((n) =>
-              n.title.toLowerCase().includes(value.trim().toLowerCase())
-            )
-            ?.map((n, i) => {
-              const category = categories?.find((c) => c.id == n.notebook_id);
-              const active = paramNoteId == n.id;
+          notesLimited?.map((n, i) => {
+            const category = categories?.find((c) => c.id == n.notebook_id);
+            const active = paramNoteId == n.id;
 
-              return (
-                <NavLink
-                  key={i}
-                  component={Link}
-                  href={`/app?noteId=${n.id}`}
-                  active={active}
-                  onClick={() => {
-                    if (desktop) return;
-                    if (!appshell) return;
+            return (
+              <NavLink
+                key={i}
+                component={Link}
+                href={`/app?noteId=${n.id}`}
+                active={active}
+                onClick={() => {
+                  if (desktop) return;
+                  if (!appshell) return;
 
-                    setAppShell({
-                      ...appshell,
-                      child: { ...appshell.child, navbar: false },
-                    });
-                  }}
-                  label={
-                    <Stack mih={30} gap={0} justify="center" fw={500}>
-                      <Text component="span" inherit lineClamp={1}>
-                        {n.title}
+                  setAppShell({
+                    ...appshell,
+                    child: { ...appshell.child, navbar: false },
+                  });
+                }}
+                label={
+                  <Stack mih={30} gap={0} justify="center" fw={500}>
+                    <Text component="span" inherit lineClamp={1}>
+                      {n.title}
+                    </Text>
+
+                    {category && n.notebook_id && (
+                      <Text
+                        component="span"
+                        inherit
+                        lineClamp={1}
+                        fz={'xs'}
+                        c={'dimmed'}
+                      >
+                        {category.title}
                       </Text>
-
-                      {category && n.notebook_id && (
-                        <Text
-                          component="span"
-                          inherit
-                          lineClamp={1}
-                          fz={'xs'}
-                          c={'dimmed'}
-                        >
-                          {category.title}
-                        </Text>
-                      )}
-                    </Stack>
-                  }
-                  styles={{
-                    root: {
-                      borderRadius: 'var(--mantine-radius-md)',
-                      padding:
-                        'calc(var(--mantine-spacing-xs) / 4) var(--mantine-spacing-xs)',
-                    },
-                    label: {
-                      fontSize: 'var(--mantine-font-size-sm)',
-                    },
-                  }}
-                />
-              );
-            })
+                    )}
+                  </Stack>
+                }
+                styles={{
+                  root: {
+                    borderRadius: 'var(--mantine-radius-md)',
+                    padding:
+                      'calc(var(--mantine-spacing-xs) / 4) var(--mantine-spacing-xs)',
+                  },
+                  label: {
+                    fontSize: 'var(--mantine-font-size-sm)',
+                  },
+                }}
+              />
+            );
+          })
         )}
       </Stack>
     </div>
