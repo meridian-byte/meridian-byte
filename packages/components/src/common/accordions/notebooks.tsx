@@ -21,6 +21,8 @@ import MenuNotebookSide from '../menus/notebook/side';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { getUrlParam } from '@repo/utilities/url';
+import { sortArray } from '@repo/utilities/array';
+import { Order } from '@repo/types/enums';
 
 export default function Notebooks({
   props,
@@ -64,11 +66,21 @@ export default function Notebooks({
   const notesByNotebook = useMemo(() => {
     const map = new Map<string, NoteGet[]>();
 
-    for (const note of notes ?? []) {
+    const notesSorted = sortArray(
+      (notes || []).filter((n) => !!n.notebook_id),
+      (i) => i.created_at,
+      Order.DESCENDING
+    );
+
+    // Iterate through all notes (using nullish coalescing to handle null/undefined notes)
+    for (const note of notesSorted ?? []) {
+      // Only process notes that have a notebook_id assigned
       if (note.notebook_id) {
+        // If this is the first note for this notebook, initialize an empty array
         if (!map.has(note.notebook_id)) {
           map.set(note.notebook_id, []);
         }
+        // Add the current note to the array for its notebook
         map.get(note.notebook_id)!.push(note);
       }
     }
@@ -93,87 +105,90 @@ export default function Notebooks({
       value={value}
       onChange={setValue}
     >
-      {notebooks?.map((c, i) => {
-        const notebookNotes = notesByNotebook.get(c.id) ?? [];
-        const active = !paramNoteId
-          ? false
-          : notebookNotes?.map((nn) => nn.id).includes(paramNoteId as string);
+      {sortArray(notebooks || [], (i) => i.created_at, Order.DESCENDING).map(
+        (c, i) => {
+          const notebookNotes = notesByNotebook.get(c.id) ?? [];
+          const active = !paramNoteId
+            ? false
+            : notebookNotes?.map((nn) => nn.id).includes(paramNoteId as string);
 
-        return (
-          <div key={c.id}>
-            <AccordionItem value={c.id} mt={i > 0 ? 5 : undefined}>
-              <AccordionControl>
-                <MenuNotebookSide
-                  item={c}
-                  menuProps={{
-                    createNote: () => {
-                      const newNote = noteCreate({ notebook_id: c.id });
+          return (
+            <div key={c.id}>
+              <AccordionItem value={c.id} mt={i > 0 ? 5 : undefined}>
+                <AccordionControl>
+                  <MenuNotebookSide
+                    item={c}
+                    menuProps={{
+                      createNote: () => {
+                        const newNote = noteCreate({ notebook_id: c.id });
 
-                      const opened = value.find((v) => v == c.id);
+                        const opened = value.find((v) => v == c.id);
 
-                      if (newNote?.id && !opened) {
-                        setValue([...value, c.id]);
-                      }
-                    },
-                    deleteNotebook: notebookDelete,
-                    copyNotebook: () => {
-                      const newNotebook = notebookCopy({ values: c });
-
-                      if (newNotebook?.id) {
-                        setValue([...value, newNotebook.id]);
-                      }
-                    },
-                    startRename: () => startNotebookRename(c.id),
-                  }}
-                >
-                  <NavLink
-                    label={props.inputComponent(c)}
-                    onClick={(e) => {
-                      if (props.editing) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }
-                    }}
-                    leftSection={
-                      <Center c={active ? 'pri.5' : undefined}>
-                        <IconFolder
-                          size={ICON_SIZE}
-                          stroke={ICON_STROKE_WIDTH}
-                        />
-                      </Center>
-                    }
-                    styles={{
-                      root: {
-                        borderRadius: 'var(--mantine-radius-md)',
-                        padding:
-                          'calc(var(--mantine-spacing-xs) / 4) var(--mantine-spacing-xs)',
+                        if (newNote?.id && !opened) {
+                          setValue([...value, c.id]);
+                        }
                       },
-                      label: {
-                        fontSize: 'var(--mantine-font-size-sm)',
-                        fontWeight: active ? 500 : 'normal',
-                      },
-                    }}
-                  />
-                </MenuNotebookSide>
-              </AccordionControl>
+                      deleteNotebook: notebookDelete,
+                      copyNotebook: () => {
+                        const newNotebook = notebookCopy({ values: c });
 
-              <AccordionPanel>
-                <Stack
-                  gap={5}
-                  pl={'xs'}
-                  style={{
-                    borderLeft: '1px solid var(--mantine-color-default-border)',
-                  }}
-                >
-                  {notebookNotes?.map((n) => (
-                    <div key={n.id}>{props.noteComponent(n)}</div>
-                  ))}
-                </Stack>
-              </AccordionPanel>
-            </AccordionItem>
-          </div>
-        );
-      })}
+                        if (newNotebook?.id) {
+                          setValue([...value, newNotebook.id]);
+                        }
+                      },
+                      startRename: () => startNotebookRename(c.id),
+                    }}
+                  >
+                    <NavLink
+                      label={props.inputComponent(c)}
+                      onClick={(e) => {
+                        if (props.editing) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }
+                      }}
+                      leftSection={
+                        <Center c={active ? 'pri.5' : undefined}>
+                          <IconFolder
+                            size={ICON_SIZE}
+                            stroke={ICON_STROKE_WIDTH}
+                          />
+                        </Center>
+                      }
+                      styles={{
+                        root: {
+                          borderRadius: 'var(--mantine-radius-md)',
+                          padding:
+                            'calc(var(--mantine-spacing-xs) / 4) var(--mantine-spacing-xs)',
+                        },
+                        label: {
+                          fontSize: 'var(--mantine-font-size-sm)',
+                          fontWeight: active ? 500 : 'normal',
+                        },
+                      }}
+                    />
+                  </MenuNotebookSide>
+                </AccordionControl>
+
+                <AccordionPanel>
+                  <Stack
+                    gap={5}
+                    pl={'xs'}
+                    style={{
+                      borderLeft:
+                        '1px solid var(--mantine-color-default-border)',
+                    }}
+                  >
+                    {notebookNotes?.map((n) => (
+                      <div key={n.id}>{props.noteComponent(n)}</div>
+                    ))}
+                  </Stack>
+                </AccordionPanel>
+              </AccordionItem>
+            </div>
+          );
+        }
+      )}
     </Accordion>
   );
 }
