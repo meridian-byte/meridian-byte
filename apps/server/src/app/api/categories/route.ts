@@ -8,7 +8,6 @@
 import prisma from '@repo/libraries/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { CategoryRelations } from '@repo/types/models/category';
-import { SyncStatus } from '@repo/types/models/enums';
 
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
@@ -57,22 +56,13 @@ export async function PUT(request: NextRequest) {
       prisma.category.upsert({
         where: { id: category.id },
         update: {
-          title: category.title,
-          status: category.status,
+          ...category,
           updated_at: new Date(category.updated_at),
         },
         create: {
-          id: category.id,
-          title: category.title,
-          budgets: undefined,
-          posts: undefined,
-          transactions: undefined,
-          profile: undefined,
-          profile_id: '',
-          status: category.status,
+          ...category,
           created_at: new Date(category.created_at),
           updated_at: new Date(category.updated_at),
-          sync_status: category.sync_status || SyncStatus.SYNCED,
         },
       })
     );

@@ -1,26 +1,12 @@
 import React from 'react';
-import { Stack, Title, Typography } from '@mantine/core';
-import { NoteGet } from '@repo/types/models/note';
+import { Typography } from '@mantine/core';
 
-export default function Html({
-  props,
-}: {
-  props: { html: string; item: NoteGet; options?: { withTitle?: boolean } };
-}) {
-  const { html, item } = props;
+export default function Html({ props }: { props: { html: string } }) {
+  const { html } = props;
 
-  const parser = (
+  return (
     <Typography>
       <div dangerouslySetInnerHTML={{ __html: html }} />
     </Typography>
-  );
-
-  return props.options?.withTitle ? (
-    <Stack gap={'xl'}>
-      <Title order={2}>{item.title}</Title>
-      {parser}
-    </Stack>
-  ) : (
-    parser
   );
 }

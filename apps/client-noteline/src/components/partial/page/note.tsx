@@ -27,12 +27,7 @@ export default function Note({ props }: { props: { note: NoteGet } }) {
             <EditorMain item={props.note} />
           ) : (
             <Box px={'1rem'} mt={48 + 10 + 16}>
-              <ParserHtml
-                props={{
-                  html: props.note.content || '',
-                  item: props.note,
-                }}
-              />
+              <ParserHtml props={{ html: props.note.content || '' }} />
             </Box>
           )}
         </div>
