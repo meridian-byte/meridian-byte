@@ -100,7 +100,7 @@ export default function Navbar({
           }}
           display={
             mobile || (options?.hover && !appshell?.child.navbar)
-              ? !opened
+              ? !opened && !mobile
                 ? 'none'
                 : undefined
               : 'none'
