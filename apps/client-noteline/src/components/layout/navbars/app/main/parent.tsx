@@ -8,6 +8,7 @@ import {
 import { ActionIcon, Flex, Group, Skeleton, Tooltip } from '@mantine/core';
 import {
   IconCalendarEvent,
+  IconFilePlus,
   IconFileSearch,
   IconHome,
   IconTerminal,
@@ -40,23 +41,30 @@ export default function Main({
   const theme = useStoreTheme((s) => s.theme);
   const setTheme = useStoreTheme((s) => s.setTheme);
 
-  const handleCreate = () => {
-    if (!notes) return;
+  const handleCreate = (params?: { options?: { today?: boolean } }) => {
+    if (notes === undefined) return;
 
-    const now = new Date();
-    const regionalDate = getRegionalDate(now, {
-      locale: 'en-GB',
-      format: 'numeric',
-    }).date;
+    let regionalDate = null;
 
-    const exists = notes.find((n) => n.title == regionalDate);
+    if (params?.options?.today) {
+      const now = new Date();
 
-    if (exists) {
-      router.push(`/app?noteId=${exists.id}`);
-      return;
+      const currentDate = getRegionalDate(now, {
+        locale: 'en-GB',
+        format: 'numeric',
+      }).date;
+
+      regionalDate = currentDate;
+
+      const exists = notes?.find((n) => n.title == currentDate);
+
+      if (exists) {
+        router.push(`/app?noteId=${exists.id}`);
+        return;
+      }
     }
 
-    noteCreate({ title: regionalDate });
+    noteCreate(!regionalDate ? undefined : { title: regionalDate });
   };
 
   return (
@@ -86,6 +94,32 @@ export default function Main({
         </Group>
       </NextLink>
 
+      <Group>
+        <Tooltip label={'Create new note'} position={'right'}>
+          <ActionIcon
+            variant="subtle"
+            size={ICON_WRAPPER_SIZE}
+            onClick={() => handleCreate()}
+          >
+            <IconFilePlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </Tooltip>
+      </Group>
+
+      {notes === undefined ? (
+        <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
+      ) : (
+        <Tooltip label={"Open today's daily note"} position={'right'}>
+          <ActionIcon
+            variant="subtle"
+            size={ICON_WRAPPER_SIZE}
+            onClick={() => handleCreate({ options: { today: true } })}
+          >
+            <IconCalendarEvent size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </Tooltip>
+      )}
+
       <ModalSearch>
         <Group>
           <Tooltip label={'Open quick switcher'} position={'right'}>
@@ -95,20 +129,6 @@ export default function Main({
           </Tooltip>
         </Group>
       </ModalSearch>
-
-      {notes === undefined ? (
-        <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
-      ) : (
-        <Tooltip
-          label={"Open today's daily note"}
-          position={'right'}
-          onClick={handleCreate}
-        >
-          <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
-            <IconCalendarEvent size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </Tooltip>
-      )}
 
       <ModalCommands>
         <Group>
