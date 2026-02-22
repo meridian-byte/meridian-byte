@@ -44,13 +44,23 @@ export default function Search({
             <ActionIcon
               size={ICON_SIZE}
               variant="transparent"
-              onClick={() => props.setValue('')}
+              onClick={() => {
+                setValue('');
+                props.setValue('');
+              }}
             >
               <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             </ActionIcon>
           </Tooltip>
         )
       }
+      styles={{
+        input: {
+          backgroundColor:
+            'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
+          fontWeight: 500,
+        },
+      }}
       {...restProps}
     />
   );
