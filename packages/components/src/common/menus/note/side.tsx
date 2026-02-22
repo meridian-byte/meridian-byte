@@ -52,23 +52,21 @@ export default function Side({
         withinPortal
         width={menuWidth}
         keepMounted
-        styles={{
-          dropdown: {
-            padding: 5,
-          },
-          item: {
-            padding: '2.5px 10px',
-          },
-          itemLabel: {
-            fontSize: 'var(--mantine-font-size-sm)',
-          },
-        }}
       >
         <MenuTarget>
           <div {...anchorProps} />
         </MenuTarget>
 
         <MenuDropdown>
+          <MenuItem
+            leftSection={
+              <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+            onClick={() => menuProps.startRename(item.id)}
+          >
+            Rename
+          </MenuItem>
+
           <MenuItem
             leftSection={
               <IconFiles size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
@@ -79,6 +77,8 @@ export default function Side({
           >
             Make a copy
           </MenuItem>
+
+          <MenuDivider />
 
           <ModalMove item={item}>
             <MenuItem
@@ -134,15 +134,6 @@ export default function Side({
           </MenuItem>
 
           <MenuDivider />
-
-          <MenuItem
-            leftSection={
-              <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => menuProps.startRename(item.id)}
-          >
-            Rename
-          </MenuItem>
 
           <ModalConfirm
             props={{
