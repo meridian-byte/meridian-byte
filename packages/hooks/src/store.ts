@@ -73,6 +73,14 @@ import { servingsGet } from '@repo/handlers/requests/database/servings';
 import { eatsGet } from '@repo/handlers/requests/database/eats';
 import { massesGet } from '@repo/handlers/requests/database/masses';
 import { useMediaQuery } from '@mantine/hooks';
+import { chatsGet } from '@repo/handlers/requests/database/chats';
+import { chatMessagesGet } from '@repo/handlers/requests/database/chat-messages';
+import { useStoreChat } from '@repo/libraries/zustand/stores/chat';
+import { useStoreChatMessage } from '@repo/libraries/zustand/stores/chat-message';
+import { useStoreCustomization } from '@repo/libraries/zustand/stores/customization';
+import { customizationsGet } from '@repo/handlers/requests/database/customizations';
+import { useStoreChatTemporary } from '@repo/libraries/zustand/stores/chat-temporary';
+import { SAMPLE_CHAT } from '@repo/constants/chat';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -261,6 +269,18 @@ export const useThemeStore = () => {
   }, [setTheme]);
 };
 
+export const useChatTemporaryStore = () => {
+  const setChatTemporary = useStoreChatTemporary((s) => s.setChatTemporary);
+
+  useEffect(() => {
+    const initializeChatTemproary = () => {
+      setChatTemporary(null);
+    };
+
+    initializeChatTemproary();
+  }, [setChatTemporary]);
+};
+
 export const useUserStatesStore = () => {
   const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
@@ -358,6 +378,24 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     useStoreHook: useStoreMass,
     fetchItems: (id) => massesGet({ userId: id }),
     setState: (store, items) => store.setMasses(items),
+  },
+  chats: {
+    dataStore: STORE_NAME.CHATS,
+    useStoreHook: useStoreChat,
+    fetchItems: (id) => chatsGet({ userId: id }),
+    setState: (store, items) => store.setChats(items),
+  },
+  chatMessages: {
+    dataStore: STORE_NAME.CHAT_MESSAGES,
+    useStoreHook: useStoreChatMessage,
+    fetchItems: (id) => chatMessagesGet({ userId: id }),
+    setState: (store, items) => store.setChatMessages(items),
+  },
+  customizations: {
+    dataStore: STORE_NAME.CUSTOMIZATIONS,
+    useStoreHook: useStoreCustomization,
+    fetchItems: (id) => customizationsGet({ userId: id }),
+    setState: (store, items) => store.setCustomizations(items),
   },
 } as const;
 
