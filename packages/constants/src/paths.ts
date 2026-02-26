@@ -23,6 +23,11 @@ export const HOSTNAME_CLIENT_KAIRO = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_KAIRO_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_KAIRO_DEV;
 
+// Select MAI client host
+export const HOSTNAME_CLIENT_MAI = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_MAI_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_MAI_DEV;
+
 // Select sate client host
 export const HOSTNAME_CLIENT_SATE = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_PROD
@@ -76,6 +81,7 @@ export const AUTH_URLS = {
 export const BASE_URL_CLIENT = {
   FRAKT: `${getUrlPrefix(HOSTNAME_CLIENT_FRAKT)}${HOSTNAME_CLIENT_FRAKT}`,
   KAIRO: `${getUrlPrefix(HOSTNAME_CLIENT_KAIRO)}${HOSTNAME_CLIENT_KAIRO}`,
+  MAI: `${getUrlPrefix(HOSTNAME_CLIENT_MAI)}${HOSTNAME_CLIENT_MAI}`,
   NOTELINE: `${getUrlPrefix(HOSTNAME_CLIENT_NOTELINE)}${HOSTNAME_CLIENT_NOTELINE}`,
   SATE: `${getUrlPrefix(HOSTNAME_CLIENT_SATE)}${HOSTNAME_CLIENT_SATE}`,
   WEB: `${getUrlPrefix(HOSTNAME_CLIENT_WEB)}${HOSTNAME_CLIENT_WEB}`,
