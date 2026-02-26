@@ -2,14 +2,27 @@
 
 import { Box, Group, ScrollArea } from '@mantine/core';
 import React, { useRef } from 'react';
-import { APPSHELL } from '@/data/constants';
-import TabNavbarLeft from '@/components/common/tabs/navbar/left';
-import TabNavbarRight from '@/components/common/tabs/navbar/right';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { ScrollContext } from '@repo/hooks/contexts/scroll';
+import { ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 
-export default function Child({ children }: { children: React.ReactNode }) {
+export type PropsAppShellChild = {
+  appShell: {
+    headerHeight?: number;
+    footerHeight?: number;
+  };
+  leftSection?: { component: React.ReactNode };
+  rightSection?: { component: React.ReactNode };
+};
+
+export default function Child({
+  props,
+  children,
+}: {
+  props: PropsAppShellChild;
+  children: React.ReactNode;
+}) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const mobile = useMediaQuery('(max-width: 36em)');
   const appshell = useStoreAppShell((s) => s.appshell);
@@ -49,12 +62,12 @@ export default function Child({ children }: { children: React.ReactNode }) {
         visibleFrom="xs"
       >
         <ScrollArea
-          h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
+          h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
           type="auto"
           scrollbars={'y'}
-          scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
+          scrollbarSize={ICON_STROKE_WIDTH * 3}
         >
-          <TabNavbarLeft />
+          {props.leftSection?.component}
         </ScrollArea>
       </Box>
 
@@ -62,10 +75,10 @@ export default function Child({ children }: { children: React.ReactNode }) {
         <ScrollContext.Provider value={viewportRef}>
           <ScrollArea
             viewportRef={viewportRef}
-            h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
+            h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
             type="auto"
             scrollbars={'y'}
-            scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
+            scrollbarSize={ICON_STROKE_WIDTH * 3}
             styles={{ thumb: { zIndex: 1 } }}
           >
             {children}
@@ -83,12 +96,12 @@ export default function Child({ children }: { children: React.ReactNode }) {
         visibleFrom="xs"
       >
         <ScrollArea
-          h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
+          h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
           type="auto"
           scrollbars={'y'}
-          scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
+          scrollbarSize={ICON_STROKE_WIDTH * 3}
         >
-          <TabNavbarRight />
+          {props.rightSection?.component}
         </ScrollArea>
       </Box>
     </Group>
