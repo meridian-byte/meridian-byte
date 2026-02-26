@@ -18,7 +18,7 @@ import {
 export default function Navbar({
   props,
 }: {
-  props: { options?: { mobile?: boolean } };
+  props?: { options?: { mobile?: boolean } };
 }) {
   const { appshell, handleAppshellChange } = useAppshellNavbar();
 
@@ -32,32 +32,34 @@ export default function Navbar({
   };
 
   return (
-    <Tooltip
-      label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
-      position="right"
-    >
-      <Group display={!props.options?.mobile ? 'none' : undefined}>
-        <ActionIcon
-          variant="subtle"
-          color="pri.5"
-          aria-label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
-          onClick={() => {
-            if (!props.options?.mobile) return;
-            if (!appshell) return;
+    <Group display={!props?.options?.mobile ? 'none' : undefined}>
+      <Tooltip
+        label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
+        position="right"
+      >
+        <Group>
+          <ActionIcon
+            variant="subtle"
+            color="pri.5"
+            aria-label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
+            onClick={() => {
+              if (!props?.options?.mobile) return;
+              if (!appshell) return;
 
-            handleAppshellChange({
-              ...appshell,
-              child: {
-                ...appshell.child,
-                navbar: !appshell?.child.navbar,
-              },
-            });
-          }}
-          size={ICON_WRAPPER_SIZE}
-        >
-          <states.iconLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-        </ActionIcon>
-      </Group>
-    </Tooltip>
+              handleAppshellChange({
+                ...appshell,
+                child: {
+                  ...appshell.child,
+                  navbar: !appshell?.child.navbar,
+                },
+              });
+            }}
+            size={ICON_WRAPPER_SIZE}
+          >
+            <states.iconLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </Group>
+      </Tooltip>
+    </Group>
   );
 }
