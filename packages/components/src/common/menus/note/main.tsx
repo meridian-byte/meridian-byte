@@ -27,14 +27,18 @@ import ModalConfirm from '@repo/components/common/modals/confirm';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import ModalMerge from '../../modals/merge';
 import ModalMove from '../../modals/move';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Main({
-  item,
+  props,
   children,
 }: {
-  item: NoteGet;
+  props?: { noteId?: string };
   children: React.ReactNode;
 }) {
+  const notes = useStoreNote((s) => s.notes);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
+
   // const userStates = useStoreUserStates((s) => s.userStates);
   // const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
@@ -58,7 +62,6 @@ export default function Main({
 
   return (
     <Menu
-      onClose={close}
       withinPortal
       position="bottom-end"
       keepMounted
@@ -108,7 +111,7 @@ export default function Main({
           Rename
         </MenuItem>
 
-        <ModalMove props={{ noteId: item.id }}>
+        <ModalMove props={{ noteId: note?.id }}>
           <MenuItem
             leftSection={
               <IconSortAscendingSmallBig
@@ -122,7 +125,7 @@ export default function Main({
           </MenuItem>
         </ModalMove>
 
-        <ModalMerge props={{ noteId: item.id }}>
+        <ModalMerge props={{ noteId: note?.id }}>
           <MenuItem
             leftSection={
               <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
@@ -189,7 +192,13 @@ export default function Main({
 
         <MenuDivider />
 
-        <ModalConfirm props={{ onConfirm: () => noteDelete({ values: item }) }}>
+        <ModalConfirm
+          props={{
+            onConfirm: () => {
+              if (note) noteDelete({ values: note });
+            },
+          }}
+        >
           <MenuItem
             color="red.6"
             leftSection={

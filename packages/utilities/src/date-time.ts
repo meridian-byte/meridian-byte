@@ -67,11 +67,16 @@ export const isPastDate = (date: Date | string): boolean => {
  */
 export const getRelativeTime = (
   input: Date | string,
-  locale = 'en-GB'
+  locale = 'en-GB',
+  options?: {
+    hideSeconds?: boolean;
+    format?: 'long' | 'short' | 'narrow';
+  }
 ): string => {
+  const { hideSeconds = false, format = 'long' } = options ?? {};
+
   const date = typeof input === 'string' ? new Date(input) : input;
 
-  // Validate
   if (isNaN(date.getTime())) {
     throw new Error('Utility Error → Invalid date provided');
   }
@@ -80,31 +85,48 @@ export const getRelativeTime = (
   const diffMs = date.getTime() - now.getTime();
   const diffSec = Math.round(diffMs / 1000);
 
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const rtf = new Intl.RelativeTimeFormat(locale, {
+    numeric: 'auto',
+    style: format,
+  });
+
+  // Collapse < 60 seconds
+  if (hideSeconds && Math.abs(diffSec) < 60) {
+    // Important: this won't be perfectly localized.
+    // If you need full i18n correctness, use a translation map.
+    return diffSec < 0
+      ? format === 'narrow'
+        ? 'less than 1m ago'
+        : 'less than a minute ago'
+      : format === 'narrow'
+        ? 'in less than 1m'
+        : 'in less than a minute';
+  }
 
   const divisions = [
-    { amount: 60, unit: 'seconds' }, // < 1 min
-    { amount: 60, unit: 'minutes' }, // < 1 hr
-    { amount: 24, unit: 'hours' }, // < 1 day
-    { amount: 7, unit: 'days' }, // < 1 week
-    { amount: 4.34524, unit: 'weeks' }, // ~1 month
-    { amount: 12, unit: 'months' }, // < 1 year
+    { amount: 60, unit: 'seconds' },
+    { amount: 60, unit: 'minutes' },
+    { amount: 24, unit: 'hours' },
+    { amount: 7, unit: 'days' },
+    { amount: 4.34524, unit: 'weeks' },
+    { amount: 12, unit: 'months' },
     { amount: Number.POSITIVE_INFINITY, unit: 'years' },
   ] as const;
 
   let duration = diffSec;
+
   for (const division of divisions) {
     if (Math.abs(duration) < division.amount) {
       const unit = division.unit.replace(
         /s$/,
         ''
       ) as Intl.RelativeTimeFormatUnit;
+
       return rtf.format(Math.round(duration), unit);
     }
     duration /= division.amount;
   }
 
-  // Fallback (shouldn't normally reach here)
   return rtf.format(0, 'second');
 };
 

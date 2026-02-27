@@ -9,6 +9,7 @@ import {
 } from '@repo/constants/sizes';
 import {
   ActionIcon,
+  Badge,
   Box,
   Divider,
   Group,
@@ -30,17 +31,25 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import WrapperUnderlayGlass from '@repo/components/wrappers/underlays/glass';
-import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
 import { useScroll } from '@repo/hooks/scroll';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { getRegionalDate, getRelativeTime } from '@repo/utilities/date-time';
+import BreadcrumbAppNote from '@repo/components/common/breadcrumbs/app/note';
 
-export default function NoteDetails({ props }: { props?: NoteGet }) {
+export default function NoteDetails({
+  props,
+}: {
+  props?: { noteId?: string };
+}) {
+  const notes = useStoreNote((s) => s.notes);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
+
   const { styles } = useScroll({
     threshold: 70,
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
     scrolledStyles: useMemo(() => ({ opacity: 1 }), []),
   });
   // const searchParams = useSearchParams();
-  const router = useRouter();
   // const userStates = useStoreUserStates((s) => s.userStates);
   // const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
@@ -67,46 +76,35 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
     >
       <LayoutSection id={`note-details-header`} containerized={false}>
         <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-          <Group p={'xs'} justify="space-between" wrap="nowrap">
+          <Group p={'xs'} pl={'md'} justify="space-between" wrap="nowrap">
             <Group gap={5} wrap="nowrap">
-              <Tooltip label={'Navigate Back'}>
-                <ActionIcon
-                  size={ICON_WRAPPER_SIZE}
-                  variant={'subtle'}
-                  onClick={() => router.back()}
-                >
-                  <IconArrowLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-
-              <Tooltip label={'Navigate Forward'}>
-                <ActionIcon
-                  size={ICON_WRAPPER_SIZE}
-                  variant={'subtle'}
-                  onClick={() => router.forward()}
-                >
-                  <IconArrowRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
+              <BreadcrumbAppNote props={{ noteId: note?.id }} />
             </Group>
 
-            <Group gap={5} wrap="nowrap">
-              <Title
-                order={1}
-                fz={'sm'}
-                fw={'normal'}
-                ta={'center'}
-                lineClamp={1}
-                style={{ ...styles, transition: '0.25s all ease' }}
-              >
-                {props?.title}
-              </Title>
-            </Group>
-
-            <Group gap={5} wrap="nowrap">
-              <Box visibleFrom="xs">
-                <ButtonsFullscreen />
-              </Box>
+            <Group gap={5} wrap="nowrap" justify="end">
+              <Group gap={5} visibleFrom="xs" justify="end">
+                {notes === undefined ? (
+                  <Skeleton h={24} w={80} />
+                ) : !note ? null : (
+                  <Badge
+                    tt={'none'}
+                    variant="light"
+                    color="dark"
+                    size="lg"
+                    fw={'normal'}
+                    h={ICON_WRAPPER_SIZE}
+                    radius={'md'}
+                  >
+                    Edited{' '}
+                    <Text component="span" inherit>
+                      {getRelativeTime(note.updated_at, 'en-GB', {
+                        hideSeconds: true,
+                        format: 'narrow',
+                      })}
+                    </Text>
+                  </Badge>
+                )}
+              </Group>
 
               {/* {userStates === undefined ? (
                 <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
@@ -140,7 +138,7 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
               )} */}
 
               {props && (
-                <MenuNoteMain item={props}>
+                <MenuNoteMain props={{ noteId: note?.id }}>
                   <Group>
                     <Tooltip label={'More options'}>
                       <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
