@@ -46,7 +46,7 @@ const nextConfig: NextConfig = {
     additionalData: `@use "${path.join(process.cwd(), '_mantine').replace(/\\/g, '/')}" as mantine;`,
   },
 
-  output: 'export',
+  // output: 'export',
 };
 
 export default nextConfig;

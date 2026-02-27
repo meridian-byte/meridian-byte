@@ -5,8 +5,6 @@ import { APP_NAME } from '@repo/constants/app';
 
 export interface typeParams {
   'noteTitle-noteId': string;
-  categoryId: string;
-  tagId: string;
 }
 
 export const metadata: Metadata = {

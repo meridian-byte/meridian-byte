@@ -9,7 +9,7 @@ import { extractUuidFromParam } from '@repo/utilities/url';
 export const generateMetadata = async ({
   params,
 }: {
-  params: typeParams;
+  params: Promise<typeParams>;
 }): Promise<Metadata> => {
   const postId = extractUuidFromParam((await params)['postTitle-postId']);
 
