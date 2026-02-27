@@ -24,8 +24,6 @@ import {
 } from '@repo/libraries/zustand/stores/session';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { notesUpdate } from '@repo/handlers/requests/database/notes';
-import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
-import { notebooksUpdate } from '@repo/handlers/requests/database/notebooks';
 import { useStoreLink } from '@repo/libraries/zustand/stores/link';
 import { linksUpdate } from '@repo/handlers/requests/database/links';
 import { useStorePost } from '@repo/libraries/zustand/stores/post';
@@ -120,15 +118,6 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     getDeleted: (store) => store.deleted,
     setItems: (store, items) => store.setTransactions(items),
     clearDeleted: (store) => store.clearDeletedTransactions(),
-  },
-  notebooks: {
-    dataStore: STORE_NAME.NOTEBOOKS,
-    useStoreHook: useStoreNotebook,
-    serverUpdate: notebooksUpdate,
-    getItems: (store) => store.notebooks,
-    getDeleted: (store) => store.deleted,
-    setItems: (store, items) => store.setNotebooks(items),
-    clearDeleted: (store) => store.clearDeletedNotebooks(),
   },
   notes: {
     dataStore: STORE_NAME.NOTES,
