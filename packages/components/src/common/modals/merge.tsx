@@ -21,20 +21,22 @@ import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 
 export default function Merge({
-  item,
+  props,
   children,
 }: {
-  item: NoteGet;
+  props?: { noteId?: string };
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState('');
+
   const notes = useStoreNote((s) => s.notes);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
 
   const { noteMerge } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
-    list: (notes || []).filter((n) => n.id != item.id),
+    list: (notes || []).filter((n) => n.id != props?.noteId),
     searchValue: searchValue,
   });
 
@@ -71,14 +73,16 @@ export default function Merge({
                   </Center>
                 </>
               ) : (
-                searchCriteriaItems.map((n, i) => (
+                searchCriteriaItems.map((mni, i) => (
                   <NavLink
                     key={i}
-                    label={n.title}
+                    label={mni.title}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
                     }}
-                    onClick={() => noteMerge({ from: item, to: n })}
+                    onClick={() => {
+                      if (note) noteMerge({ from: note, to: mni });
+                    }}
                   />
                 ))
               )}
