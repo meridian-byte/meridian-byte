@@ -56,12 +56,10 @@ import {
 import { ColorScheme } from '@repo/types/enums';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
-import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreLink } from '@repo/libraries/zustand/stores/link';
 import { linksGet } from '@repo/handlers/requests/database/links';
 import { notesGet } from '@repo/handlers/requests/database/notes';
-import { notebooksGet } from '@repo/handlers/requests/database/notebooks';
 import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
 import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
@@ -330,12 +328,6 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     useStoreHook: useStoreTransaction,
     fetchItems: (id) => transactionsGet({ userId: id }),
     setState: (store, items) => store.setTransactions(items),
-  },
-  notebooks: {
-    dataStore: STORE_NAME.NOTEBOOKS,
-    useStoreHook: useStoreNotebook,
-    fetchItems: (id) => notebooksGet({ userId: id }),
-    setState: (store, items) => store.setNotebooks(items),
   },
   notes: {
     dataStore: STORE_NAME.NOTES,

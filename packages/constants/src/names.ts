@@ -52,7 +52,6 @@ export const STORE_NAME = {
   EATS: 'eats',
   MASSES: 'masses',
   NOTES: 'notes',
-  NOTEBOOKS: 'notebooks',
   LINKS: 'links',
   CHATS: 'chats',
   CHAT_MESSAGES: 'chat-messages',
