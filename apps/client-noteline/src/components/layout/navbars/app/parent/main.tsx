@@ -35,6 +35,7 @@ import IndicatorTheme from '@repo/components/common/indicators/theme';
 import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import NavbarParentFooter from './footer';
+import { linkify } from '@repo/utilities/url';
 
 export default function Main({
   props,
@@ -67,7 +68,7 @@ export default function Main({
       const exists = notes?.find((n) => n.title == currentDate);
 
       if (exists) {
-        router.push(`/app?noteId=${exists.id}`);
+        router.push(`/app/n/${linkify(exists.title)}-${exists.id}`);
         return;
       }
     }

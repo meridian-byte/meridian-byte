@@ -16,7 +16,7 @@ import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
-import { getUrlParam } from '@repo/utilities/url';
+import { getUrlParam, linkify } from '@repo/utilities/url';
 import { useSearchParams } from 'next/navigation';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
@@ -96,7 +96,7 @@ export default function Search() {
               <NavLink
                 key={i}
                 component={Link}
-                href={`/app?noteId=${n.id}`}
+                href={`/app/n/${linkify(n.title)}-${n.id}`}
                 active={active}
                 onClick={() => {
                   if (desktop) return;
