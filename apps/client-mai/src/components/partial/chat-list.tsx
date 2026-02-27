@@ -43,11 +43,11 @@ export default function ChatList({ chatId }: { chatId?: string }) {
           </Text>
         </Stack>
       ) : (
-        currentChatMessages?.map((m, i) => {
+        currentChatMessages?.map((m) => {
           const user = m.role == ChatMessageRole.USER;
 
           return (
-            <Group key={i} justify={user ? 'end' : undefined}>
+            <Group key={m.id} justify={user ? 'end' : undefined}>
               <Paper
                 bg={
                   user

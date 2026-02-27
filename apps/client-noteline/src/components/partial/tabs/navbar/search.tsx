@@ -18,8 +18,6 @@ import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { getUrlParam, linkify } from '@repo/utilities/url';
 import { useSearchParams } from 'next/navigation';
-import { sortArray } from '@repo/utilities/array';
-import { Order } from '@repo/types/enums';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { useSearchCriteria } from '@repo/hooks/search';
 
@@ -88,13 +86,13 @@ export default function Search() {
             </Text>
           </Center>
         ) : (
-          searchCriteriaItems?.map((n, i) => {
+          searchCriteriaItems?.map((n) => {
             const category = categories?.find((c) => c.id == n.notebook_id);
             const active = paramNoteId == n.id;
 
             return (
               <NavLink
-                key={i}
+                key={n.id}
                 component={Link}
                 href={`/app/n/${linkify(n.title)}-${n.id}`}
                 active={active}

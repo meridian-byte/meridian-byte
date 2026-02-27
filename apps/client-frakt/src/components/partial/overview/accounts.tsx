@@ -50,8 +50,8 @@ export default function Accounts() {
       }
     >
       <Group justify="center" grow>
-        {overview.map((oi, i) => (
-          <Stack key={i} gap={0} align="center">
+        {overview.map((oi) => (
+          <Stack key={oi.label} gap={0} align="center">
             <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
               {oi.label}
             </Text>

@@ -73,9 +73,9 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
 
       <Divider />
 
-      {navLinks.app.slice(2, navLinks.app.length).map((nl, i) => (
+      {navLinks.app.slice(2, navLinks.app.length).map((nl) => (
         <NavLink
-          key={i}
+          key={nl.label}
           label={nl.label}
           onClick={props?.close}
           leftSection={<nl.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}

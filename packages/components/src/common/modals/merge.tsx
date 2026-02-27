@@ -14,7 +14,6 @@ import {
 } from '@mantine/core';
 import LayoutModalMain from '@repo/components/layout/modal';
 import { useNoteActions } from '@repo/hooks/actions/note';
-import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useSearchCriteria } from '@repo/hooks/search';
@@ -73,9 +72,9 @@ export default function Merge({
                   </Center>
                 </>
               ) : (
-                searchCriteriaItems.map((mni, i) => (
+                searchCriteriaItems.map((mni) => (
                   <NavLink
-                    key={i}
+                    key={mni.id}
                     label={mni.title}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
