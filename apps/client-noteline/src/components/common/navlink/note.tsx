@@ -31,6 +31,8 @@ import {
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { usePathname, useRouter } from 'next/navigation';
+import { sortArray } from '@repo/utilities/array';
+import { Order } from '@repo/types/enums';
 
 export default function Note({ props }: { props: { noteId?: string } }) {
   const appshell = useStoreAppShell((s) => s.appshell);
@@ -39,8 +41,10 @@ export default function Note({ props }: { props: { noteId?: string } }) {
   const notes = useStoreNote((s) => s.notes);
 
   const note = notes?.find((n) => n.id === props.noteId);
-  const childNotes = (notes || []).filter(
-    (ni) => ni.parent_note_id == props.noteId
+  const childNotes = sortArray(
+    (notes || []).filter((ni) => ni.parent_note_id == props.noteId),
+    (i) => i.created_at,
+    Order.DESCENDING
   );
 
   const pathname = usePathname();
