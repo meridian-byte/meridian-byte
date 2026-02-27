@@ -15,9 +15,11 @@ import {
 } from '@mantine/core';
 import {
   IconCalendarEvent,
+  IconEdit,
   IconFilePlus,
   IconFileSearch,
   IconHome,
+  IconSearch,
   IconTerminal,
 } from '@tabler/icons-react';
 import React from 'react';
@@ -36,6 +38,7 @@ import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import NavbarParentFooter from './footer';
 import { linkify } from '@repo/utilities/url';
+import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
 
 export default function Main({
   props,
@@ -105,6 +108,16 @@ export default function Main({
             </Group>
           </NextLink>
 
+          <ModalSearch>
+            <Group>
+              <Tooltip label={'Search note'} position={'right'}>
+                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+                  <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+          </ModalSearch>
+
           <Group>
             <Tooltip label={'Create new note'} position={'right'}>
               <ActionIcon
@@ -112,7 +125,7 @@ export default function Main({
                 size={ICON_WRAPPER_SIZE}
                 onClick={() => handleCreate()}
               >
-                <IconFilePlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                <IconEdit size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ActionIcon>
             </Tooltip>
           </Group>
@@ -134,17 +147,7 @@ export default function Main({
             </Tooltip>
           )}
 
-          <ModalSearch>
-            <Group>
-              <Tooltip label={'Open quick switcher'} position={'right'}>
-                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
-                  <IconFileSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </ModalSearch>
-
-          <ModalCommands>
+          {/* <ModalCommands>
             <Group>
               <Tooltip label={'Open command palette'} position={'right'}>
                 <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
@@ -152,7 +155,7 @@ export default function Main({
                 </ActionIcon>
               </Tooltip>
             </Group>
-          </ModalCommands>
+          </ModalCommands> */}
 
           {theme === undefined ? (
             <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
@@ -163,6 +166,8 @@ export default function Main({
               props={{ colorScheme: theme, setColorScheme: setTheme }}
             />
           )}
+
+          <ButtonsFullscreen />
         </Flex>
       </AppShellSection>
 
