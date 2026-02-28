@@ -62,7 +62,19 @@ export function SignOut({
         localStorage.clear();
         sessionStorage.clear();
 
-        await signOut({ options: { baseUrl: '' } });
+        // clear client cookies
+        document.cookie.split(';').forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, '')
+            .replace(
+              /=.*/,
+              '=;expires=' + new Date().toUTCString() + ';path=/'
+            );
+        });
+
+        await signOut({ options: { baseUrl: props.baseUrl } });
+
+        window.location.href = '/';
       }}
     >
       <LoadingOverlay
