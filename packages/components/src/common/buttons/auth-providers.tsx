@@ -4,13 +4,16 @@ import { useState } from 'react';
 import { Button, Grid, GridCol } from '@mantine/core';
 import { capitalizeWords } from '@repo/utilities/string';
 import ImageDefault from '@repo/components/common/images/default';
-import { API_URL } from '@repo/constants/paths';
 import { AUTH_URLS } from '@repo/constants/paths';
 import { PARAM_NAME } from '@repo/constants/names';
 import { getUrlParam } from '@repo/utilities/url';
 import { icons } from '@repo/constants/icons';
 
-export default function Providers({ props }: { props: { supabase: any } }) {
+export default function Providers({
+  props,
+}: {
+  props: { supabase: any; baseUrl: string };
+}) {
   const [loading, setLoading] = useState('');
 
   const getButton = (providerDetails: { image: string; provider: string }) => {
@@ -19,7 +22,7 @@ export default function Providers({ props }: { props: { supabase: any } }) {
       await props.supabase.auth.signInWithOAuth({
         provider: providerDetails.provider.toLocaleLowerCase() as any,
         options: {
-          redirectTo: `${API_URL}/auth/callback/oauth?next=${encodeURIComponent((getUrlParam(PARAM_NAME.REDIRECT) as string) || AUTH_URLS.REDIRECT.DEFAULT)}`,
+          redirectTo: `${props.baseUrl}/api/auth/callback/oauth?next=${encodeURIComponent((getUrlParam(PARAM_NAME.REDIRECT) as string) || AUTH_URLS.REDIRECT.DEFAULT)}`,
 
           // The following options are commented out because they are not needed for most OAuth flows.
           // These options can be uncommented if you need offline access or to prompt for consent.
