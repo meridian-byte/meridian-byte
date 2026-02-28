@@ -6,7 +6,8 @@
  */
 
 export const authRoutes = [
-  '/auth',
+  '/auth/sign-in',
+  '/auth/sign-up',
   // Add other auth routes
 ];
 

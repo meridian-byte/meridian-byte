@@ -23,10 +23,7 @@ import ProviderSync from '@/components/provider/sync';
 import { mantine } from '@/data/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
-import { AUTH_URLS } from '@repo/constants/paths';
 import { APP_NAME } from '@repo/constants/app';
-import RouteProtection from '@repo/components/wrappers/auth/route-protection';
-import { authRoutes, protectedRoutes } from '@repo/constants/routes';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -90,17 +87,9 @@ export default async function RootLayout({
           appThemeProps={{ styleSheets: { ...mantine } }}
           colorScheme={DEFAULT_COLOR_SCHEME}
         >
-          <RouteProtection
-            props={{
-              authRoutes,
-              protectedRoutes,
-              authRedirectDefault: AUTH_URLS.REDIRECT.DEFAULT,
-            }}
-          >
-            <ProviderStore>
-              <ProviderSync>{children}</ProviderSync>
-            </ProviderStore>
-          </RouteProtection>
+          <ProviderStore>
+            <ProviderSync>{children}</ProviderSync>
+          </ProviderStore>
         </ProviderMantine>
       </body>
     </html>
