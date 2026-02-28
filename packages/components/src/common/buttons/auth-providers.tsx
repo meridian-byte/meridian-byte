@@ -8,18 +8,18 @@ import { AUTH_URLS } from '@repo/constants/paths';
 import { PARAM_NAME } from '@repo/constants/names';
 import { getUrlParam } from '@repo/utilities/url';
 import { icons } from '@repo/constants/icons';
+import { createClient } from '@repo/libraries/supabase/client';
 
-export default function Providers({
-  props,
-}: {
-  props: { supabase: any; baseUrl: string };
-}) {
+export default function Providers({ props }: { props: { baseUrl: string } }) {
+  const supabase = createClient();
+
   const [loading, setLoading] = useState('');
 
   const getButton = (providerDetails: { image: string; provider: string }) => {
     const handleClick = async () => {
       setLoading(providerDetails.provider);
-      await props.supabase.auth.signInWithOAuth({
+
+      await supabase.auth.signInWithOAuth({
         provider: providerDetails.provider.toLocaleLowerCase() as any,
         options: {
           redirectTo: `${props.baseUrl}/api/auth/callback/oauth?next=${encodeURIComponent((getUrlParam(PARAM_NAME.REDIRECT) as string) || AUTH_URLS.REDIRECT.DEFAULT)}`,

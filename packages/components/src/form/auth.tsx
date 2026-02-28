@@ -70,6 +70,16 @@ export default function Auth({
         <Stack>
           {header && <AuthHeader title={header.title} desc={header.desc} />}
 
+          <Box pos={'relative'}>
+            {submittedAuth && (
+              <Overlay zIndex={1000} radius={'lg'} backgroundOpacity={0.05} />
+            )}
+
+            <AuthProviders props={{ baseUrl }} />
+          </Box>
+
+          <Divider label="or" />
+
           <Grid>
             <GridCol span={{ base: 12, sm: 12 }}>
               <TextInput
@@ -217,20 +227,10 @@ export default function Auth({
               </>
             )}
           </Grid>
-
-          {/* <Divider label="or" />
-
-          <Box pos={'relative'}>
-            {submittedAuth && (
-              <Overlay zIndex={1000} radius={'lg'} backgroundOpacity={0.05} />
-            )}
-
-            <AuthProviders />
-          </Box> */}
         </Stack>
       </form>
 
-      {action == AuthAction.SIGN_IN ? (
+      {/* {action == AuthAction.SIGN_IN ? (
         <Text fz={'xs'} ta={'center'}>
           Don&apos;t have an account?{' '}
           <NextLink
@@ -264,7 +264,7 @@ export default function Auth({
             Sign In
           </NextLink>
         </Text>
-      )}
+      )} */}
 
       {!submittedAuth && (errorAuth || messageAuth) && (
         <>
