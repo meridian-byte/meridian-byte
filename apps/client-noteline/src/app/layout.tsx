@@ -24,6 +24,7 @@ import { mantine } from '@/data/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 import { APP_NAME } from '@repo/constants/app';
+import { createClient } from '@repo/libraries/supabase/server';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -45,6 +46,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const { data: session } = await supabase.auth.getUser();
+
   return (
     <html
       lang="en"
@@ -87,7 +91,7 @@ export default async function RootLayout({
           appThemeProps={{ styleSheets: { ...mantine } }}
           colorScheme={DEFAULT_COLOR_SCHEME}
         >
-          <ProviderStore>
+          <ProviderStore props={{ sessionUser: session.user }}>
             <ProviderSync>{children}</ProviderSync>
           </ProviderStore>
         </ProviderMantine>

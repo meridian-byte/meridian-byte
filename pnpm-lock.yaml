@@ -1002,6 +1002,9 @@ importers:
       '@repo/utilities':
         specifier: workspace:*
         version: link:../utilities
+      '@supabase/supabase-js':
+        specifier: ^2.89.0
+        version: 2.89.0
       next:
         specifier: 16.0.10
         version: 16.0.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.97.1)
