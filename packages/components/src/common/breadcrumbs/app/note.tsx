@@ -41,7 +41,6 @@ export default function Note({ props }: { props?: { noteId?: string } }) {
           const isLast = i === path.length - 1;
 
           const sharedProps = {
-            key: note.id,
             size: 'compact-sm',
             color: 'dark',
             fw: 'normal',
@@ -49,11 +48,12 @@ export default function Note({ props }: { props?: { noteId?: string } }) {
           };
 
           return isLast ? (
-            <Button {...sharedProps} variant="transparent">
+            <Button key={note.id} {...sharedProps} variant="transparent">
               {note.title}
             </Button>
           ) : (
             <Button
+              key={note.id}
               {...sharedProps}
               component={Link}
               href={`/app/n/${linkify(note.title)}-${note.id}`}
