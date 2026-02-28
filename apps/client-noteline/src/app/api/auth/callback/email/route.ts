@@ -8,6 +8,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { AUTH_URLS } from '@repo/constants/paths';
 import { authEmail } from '@repo/services/auth/email';
+import { COOKIE_NAME } from '@repo/constants/names';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,14 @@ export async function GET(request: NextRequest) {
   try {
     const redirect = await authEmail({ searchParams, baseUrl });
 
-    return NextResponse.redirect(redirect);
+    const response = NextResponse.redirect(redirect);
+
+    response.cookies.delete({
+      name: COOKIE_NAME.AUTH.EMAIL,
+      path: '/', // must match original path
+    });
+
+    return response;
   } catch (error) {
     console.error('---> route handler error (callback email):', error);
 
