@@ -32,10 +32,12 @@ export const signIn = async (params: SignIn): Promise<SignInReturn> => {
 
     if (signInError) throw signInError;
 
+    // const message =
+    //   params.options?.action == AuthAction.SIGN_UP
+    //     ? "If the provided email is valid, you'll receive an email containing an OTP."
+    //     : "If an account with the provided email exists, you'll receive an email containing an OTP.";
     const message =
-      params.options?.action == AuthAction.SIGN_UP
-        ? "If the provided email is valid, you'll receive an email containing an OTP."
-        : "If an account with the provided email exists, you'll receive an email containing an OTP.";
+      "If the provided email is valid, you'll receive an email containing an OTP.";
 
     return { message };
   } catch (error) {
