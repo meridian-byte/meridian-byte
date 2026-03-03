@@ -44,6 +44,7 @@ import { useStoreCustomization } from '@repo/libraries/zustand/stores/customizat
 import { customizationsUpdate } from '@repo/handlers/requests/database/customizations';
 import { useStoreChatMessage } from '@repo/libraries/zustand/stores/chat-message';
 import { chatMessagesUpdate } from '@repo/handlers/requests/database/chat-messages';
+import { useIdle } from '@mantine/hooks';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -218,6 +219,7 @@ const useGenericSync = <K extends keyof typeof SYNC_STORES>(params: {
   syncFunction: (input: SyncParams) => void;
   online: boolean;
 }) => {
+  const idle = useIdle(4000, { events: ['keypress', 'click'] });
   const { storeKey, syncFunction, online } = params;
   const { noSession } = useSessionCheck();
 
@@ -238,8 +240,9 @@ const useGenericSync = <K extends keyof typeof SYNC_STORES>(params: {
 
   useEffect(() => {
     if (noSession) return;
+    if (!idle) return;
     sync();
-  }, [store, online, noSession, sync]);
+  }, [store, online, noSession, idle, sync]);
 };
 
 export const useSyncStores = (params: {
