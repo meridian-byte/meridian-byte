@@ -30,13 +30,20 @@ export const handleSync = async (
   try {
     const isOnline = networkStatus.online;
 
-    const { hasPendingItems, hasDeletedItems, hasSavedItems, hasErrorItems } =
-      triggerClientSync({
-        items: syncParams.items,
-        deletedItems: syncParams.deletedItems || [],
-        syncStatus: params.syncStatus,
-        online: isOnline,
-      });
+    const {
+      trigger,
+      hasPendingItems,
+      hasDeletedItems,
+      hasSavedItems,
+      hasErrorItems,
+    } = triggerClientSync({
+      items: syncParams.items,
+      deletedItems: syncParams.deletedItems || [],
+      syncStatus: params.syncStatus,
+      online: isOnline,
+    });
+
+    if (!trigger) return;
 
     if (hasPendingItems || hasDeletedItems) {
       setSyncStatus(SyncStatus.PENDING);
@@ -308,6 +315,10 @@ export const triggerClientSync = (params: {
   syncStatus: SyncStatus;
   online: boolean;
 }) => {
+  const trigger = params.syncStatus !== SyncStatus.PENDING;
+
+  if (!trigger) return { trigger };
+
   const hasDeletedItems = params.deletedItems.length > 0;
 
   let hasPendingItems: boolean = false;
@@ -324,7 +335,13 @@ export const triggerClientSync = (params: {
     hasErrorItems = params.items.some((i) => i.sync_status == SyncStatus.ERROR);
   }
 
-  return { hasPendingItems, hasSavedItems, hasDeletedItems, hasErrorItems };
+  return {
+    trigger,
+    hasPendingItems,
+    hasSavedItems,
+    hasDeletedItems,
+    hasErrorItems,
+  };
 };
 
 function dedupeBy<T, K>(arr: T[], key: (item: T) => K): T[] {

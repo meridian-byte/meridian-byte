@@ -13,10 +13,7 @@ import {
   IconUserEdit,
 } from '@tabler/icons-react';
 import { AUTH_URLS } from './paths';
-
-export type Link = { link: string; label: string };
-
-export type NavLink = Link & { subLinks: Link[] | null };
+import { NavLink } from '@repo/types/link';
 
 export const navLinkItems = {
   user: {
@@ -36,7 +33,7 @@ export const navLinkItems = {
       //   link: `/account/reviews`,
       //   label: 'My Reviews',
       // },
-    ],
+    ] satisfies NavLink[],
 
     account: [
       {
@@ -49,7 +46,7 @@ export const navLinkItems = {
         link: `/account/settings`,
         label: 'Account Settings',
       },
-    ],
+    ] satisfies NavLink[],
 
     danger: [
       {
@@ -57,7 +54,7 @@ export const navLinkItems = {
         link: AUTH_URLS.SIGN_OUT,
         label: 'Sign Out',
       },
-    ],
+    ] satisfies NavLink[],
   },
 };
 
