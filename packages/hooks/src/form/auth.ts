@@ -11,9 +11,9 @@ import { validators } from '@repo/utilities/validation';
 import { signIn } from '@repo/handlers/requests/auth';
 import { AuthAction } from '@repo/types/enums';
 import { getUrlParam } from '@repo/utilities/url';
-import { AUTH_URLS, BASE_URL_CLIENT } from '@repo/constants/paths';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { COOKIE_NAME, PARAM_NAME } from '@repo/constants/names';
-import { useFormBase } from '../../form';
+import { useFormBase } from '../form';
 import { useEffect, useState } from 'react';
 import {
   getCookieClient,
@@ -57,7 +57,7 @@ export const useFormAuth = (params: {
           const response = await signIn({
             formData: { email },
             options: { action: params.action },
-            apiUrl: `${BASE_URL_CLIENT.NOTELINE}/api`,
+            apiUrl: `${params.baseUrl}/api`,
           });
           const result = await response.json();
           if (result.data.error) {
