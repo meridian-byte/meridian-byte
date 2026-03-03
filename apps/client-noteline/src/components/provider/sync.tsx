@@ -23,7 +23,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
   const setSyncStatus = useStoreSyncStatus((s) => s.setSyncStatus);
 
-  const enqueueSync = useSyncQueue({ syncFunction: handleSync });
+  // const enqueueSync = useSyncQueue({ syncFunction: handleSync });
 
   const debounceSyncToServer = useDebouncedCallback(
     syncToServerAfterDelay,
@@ -40,7 +40,8 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   };
 
   useSyncStores({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+    // syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => handleSync({ ...i, ...restProps }),
     online: networkStatus.online,
     storesToSync: {
       notes: true,
