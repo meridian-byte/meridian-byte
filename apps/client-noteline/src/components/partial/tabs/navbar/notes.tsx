@@ -13,11 +13,17 @@ export default function Notes() {
     <div>
       <Stack gap={0} style={{ zIndex: 0 }}>
         {notes === undefined ? (
-          <>
-            <Skeleton h={35} />
-            <Skeleton h={35} />
-            <Skeleton h={35} />
-          </>
+          <Stack gap={2}>
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+            <Skeleton h={31.7} />
+          </Stack>
         ) : (
           <>
             {sortArray(
