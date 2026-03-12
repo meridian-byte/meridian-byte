@@ -8,6 +8,7 @@ import NavlinkNote from '@/components/common/navlink/note';
 
 export default function Notes() {
   const notes = useStoreNote((s) => s.notes);
+  const ids = new Set((notes || []).map((n) => n.id));
 
   return (
     <div>
@@ -27,7 +28,9 @@ export default function Notes() {
         ) : (
           <>
             {sortArray(
-              (notes || []).filter((n) => !n.parent_note_id),
+              (notes || []).filter(
+                (n) => !n.parent_note_id || !ids.has(n.parent_note_id)
+              ),
               (i) => i.created_at,
               Order.DESCENDING
             ).map((n) => {
