@@ -17,7 +17,8 @@ import { useNoteActions } from '@repo/hooks/actions/note';
 import InputTextSearch from '../inputs/text/search';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
-import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { NotesValue, useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { NoteGet } from '@repo/types/models/note';
 
 export default function Move({
   props,
@@ -35,7 +36,10 @@ export default function Move({
   const { noteMove } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
-    list: (notes || []).filter((n) => n.id != props?.noteId),
+    list: getValidParentNotes(
+      props?.noteId || '',
+      (notes || []).filter((n) => n.id != props?.noteId)
+    ),
     searchValue: searchValue,
   });
 
@@ -75,6 +79,7 @@ export default function Move({
                 <>
                   <NavLink
                     label={'Root'}
+                    display={!note?.parent_note_id ? 'none' : undefined}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
                     }}
@@ -109,4 +114,32 @@ export default function Move({
       <span onClick={open}>{children}</span>
     </>
   );
+}
+
+function getValidParentNotes(noteId: string, notes: NoteGet[]): NoteGet[] {
+  const childrenMap = new Map<string, string[]>();
+
+  for (const note of notes) {
+    if (!note.parent_note_id) continue;
+
+    if (!childrenMap.has(note.parent_note_id)) {
+      childrenMap.set(note.parent_note_id, []);
+    }
+
+    childrenMap.get(note.parent_note_id)!.push(note.id);
+  }
+
+  const descendants = new Set<string>();
+
+  function collect(id: string) {
+    const children = childrenMap.get(id) || [];
+    for (const child of children) {
+      descendants.add(child);
+      collect(child);
+    }
+  }
+
+  collect(noteId);
+
+  return notes.filter((n) => n.id !== noteId && !descendants.has(n.id));
 }
