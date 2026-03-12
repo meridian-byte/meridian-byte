@@ -3,7 +3,7 @@ import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { NoteGet } from '@repo/types/models/note';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useItemEditContext } from '../contexts/item-edit';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { linkify } from '@repo/utilities/url';
@@ -15,9 +15,6 @@ export const useNoteActions = () => {
   const addNote = useStoreNote((s) => s.addNote);
   const updateNote = useStoreNote((s) => s.updateNote);
   const deleteNote = useStoreNote((s) => s.deleteNote);
-
-  const searchParams = useSearchParams();
-  const noteId = searchParams.get('noteId');
 
   const { editing, editingId, setEditingState, startRename, inputRefs } =
     useItemEditContext();
@@ -127,7 +124,7 @@ export const useNoteActions = () => {
     });
 
     // check if current note is in view
-    if (!params.options?.noRedirect && noteId) {
+    if (!params.options?.noRedirect && !!params.values.id) {
       router.replace(`/app`);
     }
   };
