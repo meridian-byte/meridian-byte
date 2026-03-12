@@ -2,7 +2,7 @@
 
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import MenuNoteSide from '@repo/components/common/menus/note/side';
 import {
   ActionIcon,
@@ -69,6 +69,23 @@ export default function Note({ props }: { props: { noteId?: string } }) {
     !!note?.id && !!activeId && isAncestor(note.id, activeId, notes || []);
 
   const [opened, setOpened] = useState(shouldBeOpen);
+
+  const prevChildCountRef = useRef(childNotes.length);
+
+  useEffect(() => {
+    const prevCount = prevChildCountRef.current;
+    const currCount = childNotes.length;
+
+    if (currCount > prevCount) {
+      // New children added → auto-expand
+      setOpened(true);
+    } else if (currCount === 0 && prevCount > 0) {
+      // All children removed → auto-collapse
+      setOpened(false);
+    }
+
+    prevChildCountRef.current = currCount;
+  }, [childNotes.length]);
 
   useEffect(() => {
     if (shouldBeOpen) setOpened(true);
