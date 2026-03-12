@@ -40,12 +40,23 @@ export default function Move({
     searchValue: searchValue,
   });
 
+  const handleClose = () => {
+    setSearchValue('');
+    close();
+  };
+
   return (
     <>
-      <Modal opened={opened} onClose={close} withCloseButton={false} centered>
-        <LayoutModalMain props={{ close, title: 'Move Note' }}>
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        withCloseButton={false}
+        centered
+      >
+        <LayoutModalMain props={{ close: handleClose, title: 'Move Note' }}>
           <InputTextSearch
             props={{ value: searchValue, setValue: setSearchValue }}
+            data-autofocus
           />
 
           <Divider />
