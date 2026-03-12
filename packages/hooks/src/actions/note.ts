@@ -3,13 +3,14 @@ import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { NoteGet } from '@repo/types/models/note';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useItemEditContext } from '../contexts/item-edit';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { linkify } from '@repo/utilities/url';
 
 export const useNoteActions = () => {
   const session = useStoreSession((s) => s.session);
+  const pathname = usePathname();
   const router = useRouter();
   const notes = useStoreNote((s) => s.notes);
   const addNote = useStoreNote((s) => s.addNote);
@@ -125,7 +126,7 @@ export const useNoteActions = () => {
 
     // check if current note is in view
     if (!params.options?.noRedirect && !!params.values.id) {
-      router.replace(`/app`);
+      if (pathname != '/app') router.replace(`/app`);
     }
   };
 
