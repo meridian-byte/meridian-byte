@@ -106,10 +106,6 @@ export default function Main({ item }: { item: NoteGet }) {
               scrollbars={'x'}
               type="auto"
               scrollbarSize={ICON_STROKE_WIDTH}
-              style={{
-                opacity: (item?.content?.length || 0) > 7 ? 1 : 0,
-                transition: '.25s all ease',
-              }}
             >
               <RichTextEditor.Toolbar
                 style={{ flexWrap: 'nowrap', backgroundColor: 'transparent' }}
