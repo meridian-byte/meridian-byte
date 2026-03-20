@@ -1,6 +1,6 @@
 {
   "eslint.useFlatConfig": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "eslint.workingDirectories": [
     { "mode": "auto" },
 
@@ -9,6 +9,7 @@
     { "directory": "packages/client-mai", "changeProcessCWD": true },
     { "directory": "packages/client-noteline", "changeProcessCWD": true },
     { "directory": "packages/client-sate", "changeProcessCWD": true },
+    { "directory": "packages/client-stride", "changeProcessCWD": true },
     { "directory": "packages/client-web", "changeProcessCWD": true },
 
     { "directory": "packages/components", "changeProcessCWD": true },
