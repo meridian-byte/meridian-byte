@@ -1,0 +1,27 @@
+.chevron {
+  transform: rotate(-90deg);
+
+  &[data-rotate] {
+    transform: rotate(0deg);
+  }
+}
+
+.item {
+  border-color: transparent;
+}
+
+.control {
+  border-color: transparent;
+
+  @include mantine.hover {
+    background-color: transparent;
+  }
+}
+
+.label {
+  padding: 0;
+}
+
+.content {
+  padding: 0;
+}

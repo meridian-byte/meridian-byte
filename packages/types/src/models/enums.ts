@@ -61,3 +61,36 @@ export enum ChatMessageRole {
   USER = 'USER',
   ASSISTANT = 'ASSISTANT',
 }
+
+export enum Priority {
+  URGENT_IMPORTANT = 'URGENT_IMPORTANT',
+  NOT_URGENT_IMPORTANT = 'NOT_URGENT_IMPORTANT',
+  URGENT_UNIMPORTANT = 'URGENT_UNIMPORTANT',
+  NOT_URGENT_UNIMPORTANT = 'NOT_URGENT_UNIMPORTANT',
+}
+
+export enum Frequency {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  QUARTERLY = 'QUARTERLY',
+  SEMI_ANNUALLY = 'SEMI_ANNUALLY',
+  ANNUALLY = 'ANNUALLY',
+}
+
+export enum ViewType {
+  LIST = 'LIST',
+  BOARD = 'BOARD',
+  CALENDAR = 'CALENDAR',
+}
+
+export enum GroupSort {
+  PRIORITY = 'PRIORITY',
+  CATEGORY = 'CATEGORY',
+  DATE = 'DATE',
+}
+
+export enum SortDirection {
+  ASCENDING = 'ASCENDING',
+  DESCENDING = 'DESCENDING',
+}
