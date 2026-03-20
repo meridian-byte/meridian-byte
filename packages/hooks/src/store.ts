@@ -423,7 +423,7 @@ const useGenericLoader = <K extends LoadStoreKey>(params: {
     };
 
     load();
-  }, [store, clientOnly, session, noSession]);
+  }, [clientOnly, session, noSession]);
 };
 
 export const useLoadStores = (params?: {
