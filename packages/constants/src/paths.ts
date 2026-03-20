@@ -8,12 +8,12 @@
 const isProduction = process.env.NODE_ENV === 'production';
 const useRemoteServer = process.env.NEXT_PUBLIC_USE_REMOTE_SERVER === 'true';
 
-// Select web client host
+// Select WEB client host
 export const HOSTNAME_CLIENT_WEB = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_WEB_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_WEB_DEV;
 
-// Select frakt client host
+// Select FRAKT client host
 export const HOSTNAME_CLIENT_FRAKT = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_DEV;
@@ -28,15 +28,20 @@ export const HOSTNAME_CLIENT_MAI = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_MAI_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_MAI_DEV;
 
-// Select sate client host
+// Select SATE client host
 export const HOSTNAME_CLIENT_SATE = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_DEV;
 
-// Select noteline client host
+// Select NOTELINE client host
 export const HOSTNAME_CLIENT_NOTELINE = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_NOTELINE_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_NOTELINE_DEV;
+
+// Select STRIDE client host
+export const HOSTNAME_CLIENT_STRIDE = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_STRIDE_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_STRIDE_DEV;
 
 // Select server host
 const HOSTNAME_SERVER = isProduction

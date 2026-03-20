@@ -1,0 +1,19 @@
+.card {
+  transition: 0.25s all ease;
+
+  @include mantine.hover {
+    background-color: light-dark(
+      var(--mantine-color-gray-1),
+      var(--mantine-color-dark-light)
+    );
+
+    .grip {
+      opacity: 1;
+    }
+  }
+}
+
+.grip {
+  opacity: 0;
+  transition: 0.25s all ease;
+}

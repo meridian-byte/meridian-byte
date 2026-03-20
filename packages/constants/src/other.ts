@@ -33,3 +33,7 @@ export const COLOR_CODES = {
     BMI: 'cyan',
   },
 };
+
+export const TIME_FORMAT = {
+  LOCALE: 'en-GB',
+};

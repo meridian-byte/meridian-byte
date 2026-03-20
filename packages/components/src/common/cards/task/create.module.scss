@@ -1,0 +1,19 @@
+.card {
+  border-top: 1px dashed var(--mantine-color-default-border);
+  padding-top: var(--mantine-spacing-md);
+
+  @include mantine.hover {
+    cursor: pointer;
+
+    .icon {
+      background-color: var(--mantine-color-pri-7);
+      color: var(--mantine-color-white);
+    }
+  }
+}
+
+.icon {
+  background-color: transparent;
+  color: var(--mantine-color-pri-7);
+  transition: 0.25s all ease;
+}
