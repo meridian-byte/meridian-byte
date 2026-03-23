@@ -101,7 +101,11 @@ export default function Main({
           <NextLink href="/app">
             <Group>
               <Tooltip label={'Go to home page'} position={'right'}>
-                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+                <ActionIcon
+                  variant="subtle"
+                  size={ICON_WRAPPER_SIZE}
+                  color="dark"
+                >
                   <IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
@@ -111,7 +115,11 @@ export default function Main({
           <ModalSearch>
             <Group>
               <Tooltip label={'Search note'} position={'right'}>
-                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+                <ActionIcon
+                  variant="subtle"
+                  size={ICON_WRAPPER_SIZE}
+                  color="dark"
+                >
                   <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
@@ -122,6 +130,7 @@ export default function Main({
             <Tooltip label={'Create new note'} position={'right'}>
               <ActionIcon
                 variant="subtle"
+                color="dark"
                 size={ICON_WRAPPER_SIZE}
                 onClick={() => handleCreate()}
               >
@@ -136,6 +145,7 @@ export default function Main({
             <Tooltip label={"Open today's daily note"} position={'right'}>
               <ActionIcon
                 variant="subtle"
+                color="dark"
                 size={ICON_WRAPPER_SIZE}
                 onClick={() => handleCreate({ options: { today: true } })}
               >
@@ -150,7 +160,7 @@ export default function Main({
           {/* <ModalCommands>
             <Group>
               <Tooltip label={'Open command palette'} position={'right'}>
-                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE} color="dark">
                   <IconTerminal size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>

@@ -1,8 +1,16 @@
-import { Button, Card, CardSection, Divider, Group, Text } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  CardSection,
+  Divider,
+  Group,
+  Text,
+} from '@mantine/core';
 import React from 'react';
 import FormTaskCreate from '../../form/task/create';
 import ComboboxTaskProject from '../../common/inputs/combobox/task/project';
-import ModalPrompt from '../../common/modals/prompt';
+import ModalConfirm from '../../common/modals/confirm';
 import { FormTask } from '@repo/hooks/form/task';
 
 export default function Create({
@@ -17,49 +25,50 @@ export default function Create({
   };
 }) {
   const cancelButton = (
-    <Button size="xs" color="gray" variant="light" disabled={props.submitted}>
+    <Button size="xs" color="dark" variant="light" disabled={props.submitted}>
       Cancel
     </Button>
   );
 
   return (
-    <Card
-      bg={'transparent'}
-      padding={'lg'}
-      style={{ overflow: 'visible' }}
-      withBorder
-    >
-      <div>
+    <Card padding={0} style={{ overflow: 'visible' }}>
+      <Box
+        p={'md'}
+        bg={
+          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+        }
+        style={{
+          borderTopLeftRadius: 'var(--mantine-radius-md)',
+          borderTopRightRadius: 'var(--mantine-radius-md)',
+        }}
+      >
         <FormTaskCreate props={{ form: props.form as any }} />
-      </div>
+      </Box>
 
-      <CardSection>
-        <Divider my={'lg'} />
-      </CardSection>
-
-      <Group justify="space-between">
+      <Group
+        justify="space-between"
+        p={'md'}
+        bg={
+          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
+        }
+        style={{
+          borderBottomLeftRadius: 'var(--mantine-radius-md)',
+          borderBottomRightRadius: 'var(--mantine-radius-md)',
+        }}
+      >
         <ComboboxTaskProject props={{ formTask: props.form }} />
 
         <Group gap={'xs'}>
           {props.form.isDirty() ? (
-            <ModalPrompt
+            <ModalConfirm
               props={{
                 title: 'Discard unsaved changes?',
-                color: 'red.6',
-                modalContent: (
-                  <Text>Your unsaved changes will be discarded.</Text>
-                ),
-                parentModalstate: props.opened
-                  ? { opened: props.opened, close }
-                  : undefined,
-                actions: {
-                  confirm: () => props.handleClose(),
-                },
-                wrapperId,
+                desc: 'Your unsaved changes will be discarded.',
+                onConfirm: () => props.handleClose(),
               }}
             >
               {cancelButton}
-            </ModalPrompt>
+            </ModalConfirm>
           ) : (
             <div onClick={props.handleClose}>{cancelButton}</div>
           )}
@@ -68,7 +77,7 @@ export default function Create({
             size="xs"
             onClick={async () => {
               await props.handleSubmit();
-              close();
+              props.handleClose();
             }}
             disabled={!props.form.values.title?.trim()}
             loading={props.submitted}
@@ -80,5 +89,3 @@ export default function Create({
     </Card>
   );
 }
-
-const wrapperId = 'taskCreatePrompt';

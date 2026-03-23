@@ -51,7 +51,7 @@ export const useFormChatMessage = (params?: {
           if (newChat) newChatId = newChat.id;
         }
 
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           if (!chatId && !newChatId) return;
 
           chatMessageCreate({

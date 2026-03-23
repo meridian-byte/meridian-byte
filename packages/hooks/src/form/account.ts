@@ -39,7 +39,7 @@ export const useFormAccount = (params?: {
           currency_code: currencies[0]?.currency_code || '',
         };
 
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           accountCreate({
             ...submitObject,
             balance: Number(submitObject.balance).toFixed(2) as any,

@@ -19,7 +19,7 @@ import {
   WEEK,
 } from '@repo/constants/sizes';
 import { setCookieClient } from '@repo/utilities/cookie-client';
-import TabNavbarLeft from '../../tabs/navbar/left';
+import PartialNavbarLinks from '@/components/partial/tabs/navbar/links';
 import { IconLayoutSidebarLeftCollapse } from '@tabler/icons-react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
@@ -128,7 +128,7 @@ export default function Navbar({
             </Tooltip>
           </Group>
 
-          <TabNavbarLeft />
+          <PartialNavbarLinks />
         </ScrollArea>
       </Drawer>
 

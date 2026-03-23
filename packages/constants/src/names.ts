@@ -58,6 +58,7 @@ export const STORE_NAME = {
   CUSTOMIZATIONS: 'customizations',
   TASKS: 'tasks',
   REMINDERS: 'reminders',
+  RECURRING_RULES: 'recurring-rules',
   VIEWS: 'views',
   NOTIFICATIONS: 'notifications',
 };

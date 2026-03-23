@@ -9,8 +9,8 @@ export default function Task({ props }: { props: { form: FormTask } }) {
   return (
     <Checkbox
       radius="xl"
-      key={props.form.key('properties.complete')}
-      {...props.form.getInputProps('properties.complete', { type: 'checkbox' })}
+      key={props.form.key('complete')}
+      {...props.form.getInputProps('complete', { type: 'checkbox' })}
       styles={{
         input: {
           width: ICON_WRAPPER_SIZE / 1.5,

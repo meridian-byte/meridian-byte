@@ -15,7 +15,7 @@ import AccordionTasks, {
 } from '@repo/components/common/accordions/tasks';
 import PlaceholderEmpty from '@repo/components/common/placeholder/empty';
 import { getTimeOfDay, isWithinNext7Days } from '@repo/utilities/date-time';
-import ModalTaskCrud from '@repo/components/common/modals/task/crud';
+import ModalTaskCreate from '@repo/components/common/modals/task/create';
 import { capitalizeWords } from '@repo/utilities/string';
 import PartialTaskCreate from '@repo/components/partial/task/create';
 import { useFormTask } from '@repo/hooks/form/task';
@@ -50,7 +50,6 @@ export default function Home() {
 
   const { form, handleSubmit, submitted } = useFormTask({
     defaultValues: { due_date: now },
-    // options: { home: true },
   });
 
   const handleClose = () => {
@@ -59,7 +58,7 @@ export default function Home() {
   };
 
   return (
-    <Container p={{ md: SECTION_SPACING }} py={SECTION_SPACING / 2}>
+    <div>
       <Stack gap={SECTION_SPACING / 2}>
         {session == null ? (
           <Group justify="center">
@@ -90,13 +89,13 @@ export default function Home() {
               desc: 'Add some tasks to get done this week.',
             }}
           >
-            <ModalTaskCrud
+            <ModalTaskCreate
               props={{
                 due_date: tomorrow,
               }}
             >
               <Button size="xs">Add task</Button>
-            </ModalTaskCrud>
+            </ModalTaskCreate>
           </PlaceholderEmpty>
         ) : (
           <AccordionTasks
@@ -107,6 +106,6 @@ export default function Home() {
           />
         )}
       </Stack>
-    </Container>
+    </div>
   );
 }

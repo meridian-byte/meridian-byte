@@ -126,7 +126,7 @@ export default function Time({
     >
       <ComboboxTarget>{popoverTarget}</ComboboxTarget>
 
-      <ComboboxDropdown miw={220}>
+      <ComboboxDropdown miw={260}>
         <ComboboxOptions>
           {options}
 

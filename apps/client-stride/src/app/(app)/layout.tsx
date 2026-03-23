@@ -6,6 +6,7 @@ import { APPSHELL } from '@/data/constants';
 import HeaderAppMain from '@/components/layout/headers/app/main';
 import NavbarAppParentMain from '@/components/layout/navbars/app/parent/main';
 import PartialTabNavbarLinks from '@/components/partial/tabs/navbar/links';
+import ProviderView from '@repo/components/provider/view';
 
 export default async function LayoutApp({
   children, // will be a page or nested layout
@@ -29,7 +30,7 @@ export default async function LayoutApp({
             },
           }}
         >
-          {children}
+          <ProviderView>{children}</ProviderView>
         </AppShellAppMain>
       </ItemEditProvider>
     </LayoutBody>

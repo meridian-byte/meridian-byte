@@ -18,9 +18,10 @@ export const useCategoryActions = () => {
 
     const newCategory: CategoryGet = {
       id: params.id || id,
-      title: params.title || '',
+      title: params.title || 'New Project',
       type: params.type || CategoryType.DEBIT,
       profile_id: session.id || params.profile_id || '',
+      parent_category_id: params.parent_category_id || '',
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

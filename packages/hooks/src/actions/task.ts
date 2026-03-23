@@ -3,12 +3,15 @@ import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { TaskGet } from '@repo/types/models/task';
 import { Priority, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
+import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
 
 export const useTaskActions = () => {
   const session = useStoreSession((s) => s.session);
   const addTask = useStoreTask((s) => s.addTask);
   const updateTask = useStoreTask((s) => s.updateTask);
   const deleteTask = useStoreTask((s) => s.deleteTask);
+  const selectedTask = useStoreSelectedTask((s) => s.selectedTask);
+  const setSelectedTask = useStoreSelectedTask((s) => s.setSelectedTask);
 
   const taskCreate = (params: Partial<TaskGet>) => {
     if (!session) return;
@@ -18,13 +21,16 @@ export const useTaskActions = () => {
 
     const newTask: TaskGet = {
       id: params.id || id,
-      category_id: params.category_id || '',
+      category_id:
+        !params.category_id || params.category_id == 'inbox'
+          ? null
+          : params.category_id,
       complete: params.complete || false,
       description: params.description || '',
-      due_date: params.due_date || null,
+      due_date: (params.due_date?.toISOString() as any) || null,
       priority: params.priority || Priority.NOT_URGENT_UNIMPORTANT,
-      recurring_rule_id: session.id || params.recurring_rule_id || '',
-      title: session.id || params.title || '',
+      recurring_rule_id: params.recurring_rule_id || null,
+      title: params.title || '',
       profile_id: session.id || params.profile_id || '',
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
@@ -42,6 +48,10 @@ export const useTaskActions = () => {
 
     const newTask: TaskGet = {
       ...params,
+      category_id:
+        !params.category_id || params.category_id == 'inbox'
+          ? null
+          : params.category_id,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at).toISOString() as any,
       updated_at: new Date(now).toISOString() as any,
@@ -54,6 +64,8 @@ export const useTaskActions = () => {
     if (!session) return;
 
     const now = new Date();
+
+    if (selectedTask?.id == params.id) setSelectedTask(null);
 
     deleteTask({
       ...params,

@@ -13,7 +13,7 @@ import {
   RecurringRuleUpdate,
 } from '@repo/types/models/recurring-rule';
 
-const baseRequestUrl = `${API_URL}/recurringRules`;
+const baseRequestUrl = `${API_URL}/recurring-rules`;
 
 export const recurringRulesGet = async (params?: { userId?: string }) => {
   try {

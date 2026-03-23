@@ -386,13 +386,14 @@ export const isDateInRange = (
 /**
  * Checks if a date is within the next 7 days
  */
-export const isWithinNext7Days = (date: Date | null): boolean => {
+export const isWithinNext7Days = (date: Date | string | null): boolean => {
   if (!date) return false;
+  const inputDate = new Date(date);
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const end = new Date(now);
   end.setDate(now.getDate() + 7);
-  return date >= now && date <= end;
+  return inputDate >= now && inputDate <= end;
 };
 
 /**

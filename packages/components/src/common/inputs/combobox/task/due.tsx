@@ -139,7 +139,7 @@ export default function DueDate({
     >
       <ComboboxTarget>{popoverTarget}</ComboboxTarget>
 
-      <ComboboxDropdown miw={200}>
+      <ComboboxDropdown miw={220}>
         <ComboboxOptions>
           {options}
 

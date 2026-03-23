@@ -8,7 +8,7 @@ import AccordionTasks, {
 } from '@repo/components/common/accordions/tasks';
 import PlaceholderEmpty from '@repo/components/common/placeholder/empty';
 import { isToday, isWithinNext7Days } from '@repo/utilities/date-time';
-import ModalTaskCreate from '@repo/components/common/modals/task/crud';
+import ModalTaskCreate from '@repo/components/common/modals/task/create';
 import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
 
@@ -37,7 +37,7 @@ export default function Upcoming() {
   );
 
   return (
-    <Container p={{ md: SECTION_SPACING }} py={SECTION_SPACING / 2}>
+    <div>
       {tasks == null ? (
         taskSkeleton
       ) : !tasksInSevenDays?.length ? (
@@ -63,6 +63,6 @@ export default function Upcoming() {
           }}
         />
       )}
-    </Container>
+    </div>
   );
 }

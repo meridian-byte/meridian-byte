@@ -17,7 +17,7 @@ import {
   useCombobox,
 } from '@mantine/core';
 import { FormTask } from '@repo/hooks/form/task';
-import { IconCategory, IconInbox } from '@tabler/icons-react';
+import { IconCategory, IconCircleFilled, IconInbox } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { useState } from 'react';
 import { FormTaskView } from '@repo/hooks/form/task/view';
@@ -94,8 +94,8 @@ export default function Project({
   const options = filteredOptions.map((item, index) => (
     <ComboboxOption key={index} value={item.value}>
       <Group gap={'xs'}>
-        <IconCategory
-          size={ICON_SIZE}
+        <IconCircleFilled
+          size={ICON_SIZE / 2}
           stroke={ICON_STROKE_WIDTH}
           color={item.color}
         />

@@ -28,7 +28,7 @@ export const useFormChat = (params?: { defaultValues?: Partial<ChatGet> }) => {
           ...rawValues,
         };
 
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           chatCreate({
             ...submitObject,
           });

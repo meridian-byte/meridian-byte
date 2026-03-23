@@ -9,9 +9,11 @@ import { CategoryGet } from '@repo/types/models/category';
 
 export default function Crud({
   props,
+  source,
   children,
 }: {
   props?: CategoryGet;
+  source: string;
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -20,9 +22,9 @@ export default function Crud({
     <>
       <Modal opened={opened} onClose={close}>
         <LayoutModal
-          props={{ title: `${!props ? 'Create' : 'Edit'} Category`, close }}
+          props={{ title: `${!props ? 'Create' : 'Edit'} Project`, close }}
         >
-          <FormCategory props={{ defaultValues: props, close }} />
+          <FormCategory props={{ defaultValues: props, close, source }} />
         </LayoutModal>
       </Modal>
 

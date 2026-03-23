@@ -43,9 +43,7 @@ export default function Theme({
     label:
       props.colorScheme == ColorScheme.LIGHT
         ? ColorScheme.DARK
-        : props.colorScheme == ColorScheme.DARK
-          ? ColorScheme.AUTO
-          : ColorScheme.LIGHT,
+        : ColorScheme.LIGHT,
     action:
       props.colorScheme == ColorScheme.LIGHT
         ? ColorScheme.DARK
@@ -56,16 +54,18 @@ export default function Theme({
     <Tooltip
       label={
         <Stack ta={'center'} gap={0}>
-          <Text inherit>Current: {capitalizeWord(props.colorScheme)}</Text>
-          <Text inherit>Switch to {capitalizeWord(iconProps.label)}</Text>
+          {/* <Text inherit>Current: {capitalizeWord(props.colorScheme)}</Text> */}
+          <Text inherit>Switch to {capitalizeWord(iconProps.label)} theme</Text>
         </Stack>
       }
+      position="right"
     >
       <Group>
         <ActionIcon
           variant={'subtle'}
           size={ICON_WRAPPER_SIZE}
           onClick={() => handleChange(iconProps.action)}
+          color="dark"
         >
           <iconProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>

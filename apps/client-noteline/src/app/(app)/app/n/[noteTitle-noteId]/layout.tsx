@@ -24,7 +24,7 @@ export const generateMetadata = async ({
   const note = notes.find((ni) => ni.id === noteId);
 
   return {
-    title: note?.title || '',
+    title: note?.title || 'New Note',
   };
 };
 
