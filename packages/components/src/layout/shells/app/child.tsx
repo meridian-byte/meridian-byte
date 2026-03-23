@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Group, ScrollArea } from '@mantine/core';
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { ScrollContext } from '@repo/hooks/contexts/scroll';
@@ -24,23 +24,23 @@ export default function Child({
   children: React.ReactNode;
 }) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  // Memoize the context value to prevent sub-tree thrashing
+  const contextValue = useMemo(() => viewportRef, []);
+
   const mobile = useMediaQuery('(max-width: 36em)');
-  const appshell = useStoreAppShell((s) => s.appshell);
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
 
   const widths = {
     navbarLeft: 22.5,
     navbarRight: 22.5,
   };
 
-  const widthPercentage = mobile
-    ? 100
-    : appshell?.child.navbar && appshell?.child.aside
-      ? 100 - (widths.navbarLeft + widths.navbarRight)
-      : appshell?.child.navbar
-        ? 100 - widths.navbarLeft
-        : appshell?.child.aside
-          ? 100 - widths.navbarRight
-          : 100;
+  const MemoizedChildren = useMemo(() => children, [children]);
+  // ... inside return
+  {
+    MemoizedChildren;
+  }
 
   return (
     <Group
@@ -51,8 +51,8 @@ export default function Child({
     >
       <Box
         style={{
-          display: appshell?.child.navbar ? undefined : 'none',
-          width: `${widths.navbarLeft}%`,
+          display: navbarActive ? 'block' : 'none',
+          flex: `0 0 ${widths.navbarLeft}%`, // Fixed basis
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
           borderTopRightRadius: 'var(--mantine-radius-lg)',
@@ -71,25 +71,31 @@ export default function Child({
         </ScrollArea>
       </Box>
 
-      <Box style={{ width: `${widthPercentage}%`, zIndex: 1 }}>
-        <ScrollContext.Provider value={viewportRef}>
+      <Box
+        style={{
+          flex: 1, // Take up all remaining space
+          minWidth: 0, // Crucial for flex children with overflow
+          zIndex: 1,
+        }}
+      >
+        <ScrollContext.Provider value={contextValue}>
           <ScrollArea
-            viewportRef={viewportRef}
+            viewportRef={contextValue}
             h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
             type="auto"
             scrollbars={'y'}
             scrollbarSize={ICON_STROKE_WIDTH * 3}
             styles={{ thumb: { zIndex: 1 } }}
           >
-            {children}
+            {MemoizedChildren}
           </ScrollArea>
         </ScrollContext.Provider>
       </Box>
 
       <Box
         style={{
-          display: appshell?.child.aside ? undefined : 'none',
-          width: `${widths.navbarRight}%`,
+          display: asideActive ? 'block' : 'none',
+          flex: `0 0 ${widths.navbarRight}%`,
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}

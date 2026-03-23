@@ -48,8 +48,6 @@ export default function Main({
   props?: { options?: { mobile: boolean } };
 }) {
   const appshell = useStoreAppShell((s) => s.appshell);
-  const tasks = useStoreTask((s) => s.tasks);
-  const mobile = useMediaQuery('(max-width: 36em)');
   const theme = useStoreTheme((s) => s.theme);
   const setTheme = useStoreTheme((s) => s.setTheme);
 
@@ -68,7 +66,7 @@ export default function Main({
             <></>
           ) : (
             <DrawerAppNavbar options={{ hover: true }}>
-              <ButtonAppshellNavbar props={{ options: { mobile: !mobile } }} />
+              <ButtonAppshellNavbar />
             </DrawerAppNavbar>
           )}
 

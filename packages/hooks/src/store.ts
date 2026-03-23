@@ -235,7 +235,7 @@ export const useAppshellStore = () => {
 
     const newAppshell: AppShellValue = {
       ...appShell,
-      child: { navbar: desktop ? appShell.child.navbar : false, aside: false },
+      child: { navbar: desktop ? appShell.child?.navbar : false, aside: false },
     };
 
     setAppShell(newAppshell);
