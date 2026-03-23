@@ -12,8 +12,7 @@ import {
   useAppshellStore,
   useSessionStore,
   useThemeStore,
-  useLoadStores,
-  useUserStatesStore,
+  useLoadAppData,
   useSelectedTaskStore,
 } from '@repo/hooks/store';
 import { User } from '@supabase/supabase-js';
@@ -35,16 +34,14 @@ export default function Store({
   useThemeStore();
   useSelectedTaskStore();
   useAppshellStore();
-  useLoadStores({
-    options: {
-      clientOnly: false,
-      storesToLoad: {
-        tasks: true,
-        categories: true,
-        reminders: true,
-        recurringRules: true,
-        views: true,
-      },
+  useLoadAppData({
+    clientOnly: false,
+    storesToLoad: {
+      tasks: true,
+      categories: true,
+      reminders: true,
+      recurringRules: true,
+      views: true,
     },
   });
 

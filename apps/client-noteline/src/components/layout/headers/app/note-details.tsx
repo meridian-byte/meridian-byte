@@ -13,6 +13,7 @@ import {
   Box,
   Divider,
   Group,
+  ScrollArea,
   Skeleton,
   Stack,
   Text,
@@ -79,9 +80,11 @@ export default function NoteDetails({
       <LayoutSection id={`note-details-header`} containerized={false}>
         <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
           <Group p={'xs'} pl={'md'} justify="space-between" wrap="nowrap">
-            <Group gap={5} wrap="nowrap">
-              <BreadcrumbAppNote props={{ noteId: note?.id }} />
-            </Group>
+            <ScrollArea scrollbars={'x'}>
+              <Group gap={5} wrap="nowrap">
+                <BreadcrumbAppNote props={{ noteId: note?.id }} />
+              </Group>
+            </ScrollArea>
 
             <Group gap={5} wrap="nowrap" justify="end">
               <Group gap={5} visibleFrom="xs" justify="end">
