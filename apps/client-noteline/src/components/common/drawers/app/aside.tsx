@@ -18,34 +18,17 @@ import { useMediaQuery } from '@mantine/hooks';
 
 export default function Aside({ children }: { children: React.ReactNode }) {
   const mobile = useMediaQuery('(max-width: 36em)');
-  const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
+  const asideChild = useStoreAppShell((s) => s.appshell?.child?.aside);
+  const toggleAsideChild = useStoreAppShell((s) => s.toggleAsideChild);
 
-  const handleAppshellChange = (params: AppShell) => {
+  const handleAppshellChange = () => {
     if (!mobile) return;
-    if (!appshell) return;
-
-    setAppShell(params);
-
-    // To defer this operation and prevent blocking the main thread, wrap it in setTimeout or use scheduler.postTask
-    setTimeout(() => {
-      setCookieClient(COOKIE_NAME.APP_SHELL, params, {
-        expiryInSeconds: WEEK,
-      });
-    }, 0);
+    toggleAsideChild();
   };
 
   const handleClose = () => {
     if (!mobile) return;
-    if (!appshell) return;
-
-    handleAppshellChange({
-      ...appshell,
-      child: {
-        ...appshell.child,
-        aside: false,
-      },
-    });
+    handleAppshellChange();
   };
 
   return (
@@ -54,7 +37,7 @@ export default function Aside({ children }: { children: React.ReactNode }) {
         <Drawer
           hiddenFrom="xs"
           keepMounted
-          opened={appshell?.child.aside ?? false}
+          opened={asideChild ?? false}
           padding={0}
           position="right"
           withCloseButton={false}
@@ -86,15 +69,7 @@ export default function Aside({ children }: { children: React.ReactNode }) {
       <span
         onClick={() => {
           if (!mobile) return;
-          if (!appshell) return;
-
-          handleAppshellChange({
-            ...appshell,
-            child: {
-              ...appshell.child,
-              aside: !appshell?.child.aside,
-            },
-          });
+          handleAppshellChange();
         }}
       >
         {children}

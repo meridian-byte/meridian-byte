@@ -31,40 +31,23 @@ export default function Navbar({
   children: React.ReactNode;
 }) {
   const mobile = useMediaQuery('(max-width: 36em)');
-  const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
+  const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
   const [opened, { open, close }] = useDisclosure(false);
 
-  const handleAppshellChange = (params: AppShell) => {
+  const handleAppshellChange = () => {
     if (!mobile) return;
-    if (!appshell) return;
-
-    setAppShell(params);
-
-    // To defer this operation and prevent blocking the main thread, wrap it in setTimeout or use scheduler.postTask
-    setTimeout(() => {
-      setCookieClient(COOKIE_NAME.APP_SHELL, params, {
-        expiryInSeconds: WEEK,
-      });
-    }, 0);
+    toggleNavbarChild();
   };
 
   const handleClose = () => {
     if (!mobile) return;
-    if (!appshell) return;
-
-    handleAppshellChange({
-      ...appshell,
-      child: {
-        ...appshell.child,
-        navbar: false,
-      },
-    });
+    handleAppshellChange();
   };
 
   useEffect(() => {
-    if (options?.hover && appshell?.child.navbar && opened && !mobile) close();
-  }, [appshell?.child.navbar, opened]);
+    if (options?.hover && navbarChild && opened && !mobile) close();
+  }, [navbarChild, opened]);
 
   return (
     <>
@@ -72,7 +55,7 @@ export default function Navbar({
         size={options?.hover ? 'xs' : undefined}
         hiddenFrom={!options?.hover ? 'xs' : undefined}
         keepMounted
-        opened={!mobile ? opened : (appshell?.child.navbar ?? false)}
+        opened={!mobile ? opened : (navbarChild ?? false)}
         padding={0}
         transitionProps={{ enterDelay: 400, duration: 250 }}
         withCloseButton={false}
@@ -87,9 +70,7 @@ export default function Navbar({
           },
         }}
         display={
-          mobile || (options?.hover && !appshell?.child.navbar)
-            ? undefined
-            : 'none'
+          mobile || (options?.hover && !navbarChild) ? undefined : 'none'
         }
       >
         <ScrollArea
@@ -99,7 +80,7 @@ export default function Navbar({
             close();
           }}
           display={
-            mobile || (options?.hover && !appshell?.child.navbar)
+            mobile || (options?.hover && !navbarChild)
               ? !opened && !mobile
                 ? 'none'
                 : undefined
@@ -109,9 +90,7 @@ export default function Navbar({
           <Group p={'xs'} justify="end">
             <Tooltip
               label={
-                (options?.hover ? opened : appshell?.child.navbar)
-                  ? 'Collapse'
-                  : 'Expand'
+                (options?.hover ? opened : navbarChild) ? 'Collapse' : 'Expand'
               }
               position="right"
             >
@@ -135,20 +114,11 @@ export default function Navbar({
       <span
         onMouseEnter={() => {
           if (mobile) return;
-          if (!appshell) return;
-          if (!appshell.child.navbar && !opened) open();
+          if (!navbarChild && !opened) open();
         }}
         onClick={() => {
           if (!mobile) return;
-          if (!appshell) return;
-
-          handleAppshellChange({
-            ...appshell,
-            child: {
-              ...appshell.child,
-              navbar: !appshell?.child.navbar,
-            },
-          });
+          handleAppshellChange();
         }}
       >
         {children}

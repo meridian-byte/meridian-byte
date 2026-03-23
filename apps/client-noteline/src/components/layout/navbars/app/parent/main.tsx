@@ -46,7 +46,6 @@ export default function Main({
   props?: { options?: { mobile: boolean } };
 }) {
   const router = useRouter();
-  const appshell = useStoreAppShell((s) => s.appshell);
   const notes = useStoreNote((s) => s.notes);
   const { noteCreate } = useNoteActions();
   const mobile = useMediaQuery('(max-width: 36em)');
@@ -88,15 +87,9 @@ export default function Main({
           align={'center'}
           gap={5}
         >
-          {appshell === undefined ? (
-            <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
-          ) : !appshell ? (
-            <></>
-          ) : (
-            <DrawerAppNavbar options={{ hover: true }}>
-              <ButtonAppshellNavbar props={{ options: { mobile: !mobile } }} />
-            </DrawerAppNavbar>
-          )}
+          {/* <DrawerAppNavbar options={{ hover: true }}> */}
+          <ButtonAppshellNavbar />
+          {/* </DrawerAppNavbar> */}
 
           <NextLink href="/app">
             <Group>
@@ -181,9 +174,11 @@ export default function Main({
         </Flex>
       </AppShellSection>
 
-      <AppShellSection id="navbar-footer">
-        <NavbarParentFooter />
-      </AppShellSection>
+      {!mobile && (
+        <AppShellSection id="navbar-footer">
+          <NavbarParentFooter />
+        </AppShellSection>
+      )}
     </>
   );
 }

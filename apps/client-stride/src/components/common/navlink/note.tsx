@@ -44,8 +44,8 @@ export default function Category({
 }: {
   props: { categoryId?: string };
 }) {
-  const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
+  const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
   const desktop = useMediaQuery('(min-width: 62em)');
   const categories = useStoreCategory((s) => s.categories);
 
@@ -66,11 +66,8 @@ export default function Category({
   function handleNavigate() {
     router.push(parentLink);
 
-    if (!desktop && appshell) {
-      setAppShell({
-        ...appshell,
-        child: { ...appshell.child, navbar: false },
-      });
+    if (!desktop && navbarChild) {
+      toggleNavbarChild();
     }
   }
 

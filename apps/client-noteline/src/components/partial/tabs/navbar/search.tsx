@@ -26,8 +26,7 @@ export default function Search() {
   const notes = useStoreNote((s) => s.notes);
   const categories = useStoreCategory((s) => s.categories);
   const [value, setValue] = useState('');
-  const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
   const desktop = useMediaQuery('(min-width: 62em)');
 
   const [paramNoteId, setParamNoteId] = useState('');
@@ -98,12 +97,7 @@ export default function Search() {
                 active={active}
                 onClick={() => {
                   if (desktop) return;
-                  if (!appshell) return;
-
-                  setAppShell({
-                    ...appshell,
-                    child: { ...appshell.child, navbar: false },
-                  });
+                  toggleNavbarChild();
                 }}
                 label={
                   <Stack mih={30} gap={0} justify="center" fw={500}>

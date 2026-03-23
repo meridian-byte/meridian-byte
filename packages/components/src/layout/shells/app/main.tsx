@@ -29,7 +29,7 @@ export default function Main({
   };
   children: React.ReactNode;
 }) {
-  const appShell = useStoreAppShell((s) => s.appshell);
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const mobile = useMediaQuery('(max-width: 36em)');
 
   return (
@@ -56,7 +56,7 @@ export default function Main({
       }
       withBorder={false}
       bg={
-        !appShell?.child.navbar
+        !navbarActive
           ? 'var(--mantine-color-body)'
           : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
       }
@@ -75,7 +75,7 @@ export default function Main({
       {props.navbar?.component && (
         <AppShellNavbar
           style={{
-            backgroundColor: !appShell?.child.navbar
+            backgroundColor: !navbarActive
               ? 'var(--mantine-color-body)'
               : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
             borderTopRightRadius: 'var(--mantine-radius-lg)',

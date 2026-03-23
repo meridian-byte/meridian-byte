@@ -2,7 +2,15 @@
 
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import MenuNoteSide from '@repo/components/common/menus/note/side';
 import {
   ActionIcon,
@@ -31,46 +39,74 @@ import {
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { usePathname, useRouter } from 'next/navigation';
-import { sortArray } from '@repo/utilities/array';
-import { Order } from '@repo/types/enums';
+import { useDebouncedCallback } from '@repo/hooks/utility';
 
-export default function Note({ props }: { props: { noteId?: string } }) {
-  const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
-  const desktop = useMediaQuery('(min-width: 62em)');
-  const notes = useStoreNote((s) => s.notes);
-
-  const note = notes?.find((n) => n.id === props.noteId);
-  const childNotes = sortArray(
-    (notes || []).filter((ni) => ni.parent_note_id == props.noteId),
-    (i) => i.created_at,
-    Order.DESCENDING
+export const Note = memo(NoteComponent, (prev, next) => {
+  return (
+    prev.noteId === next.noteId &&
+    prev.notesMap === next.notesMap &&
+    prev.childrenMap === next.childrenMap
   );
+});
+
+function NoteComponent({
+  noteId,
+  notesMap,
+  childrenMap,
+}: {
+  noteId?: string;
+  notesMap: Map<string, NoteGet>;
+  childrenMap: Map<string, NoteGet[]>;
+}) {
+  const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  // 2. Instead of .find(), use the Map (O(1) speed)
+  const note = notesMap.get(noteId || '');
+
+  const childNotes = useMemo(() => {
+    return childrenMap.get(noteId || '') || [];
+  }, [childrenMap, noteId]);
 
   const pathname = usePathname();
   const router = useRouter();
 
-  const parentLink = `/app/n/${linkify(note?.title || '')}-${note?.id}`;
+  const parentLink = useMemo(() => {
+    return `/app/n/${linkify(note?.title || '')}-${note?.id}`;
+  }, [note?.title, note?.id]);
 
   function handleNavigate() {
     router.push(parentLink);
 
-    if (!desktop && appshell) {
-      setAppShell({
-        ...appshell,
-        child: { ...appshell.child, navbar: false },
-      });
+    if (!desktop && navbarChild) {
+      toggleNavbarChild();
     }
   }
 
   const activeId = extractUuidFromParam(pathname);
+  const active = note?.id === activeId;
 
-  const shouldBeOpen =
-    !!note?.id && !!activeId && isAncestor(note.id, activeId, notes || []);
+  const shouldBeOpen = useMemo(() => {
+    if (!note?.id || !activeId) return false;
+    return isAncestor(note.id, activeId, notesMap);
+  }, [note?.id, activeId, notesMap]);
 
   const [opened, setOpened] = useState(shouldBeOpen);
 
+  // Debounced toggle to prevent rapid clicking
+  const { debouncedCallback: debouncedToggle } = useDebouncedCallback(
+    () => {
+      startTransition(() => {
+        setOpened((o) => !o);
+      });
+    },
+    100 // 100ms debounce
+  );
+
   const prevChildCountRef = useRef(childNotes.length);
+
+  const childCount = childNotes.length;
 
   useEffect(() => {
     const prevCount = prevChildCountRef.current;
@@ -85,44 +121,46 @@ export default function Note({ props }: { props: { noteId?: string } }) {
     }
 
     prevChildCountRef.current = currCount;
-  }, [childNotes.length]);
+  }, [childCount]);
 
   useEffect(() => {
     if (shouldBeOpen) setOpened(true);
   }, [shouldBeOpen]);
 
   return (
-    <MenuNoteSide props={{ noteId: note?.id, options: { context: true } }}>
-      <NavLink
-        component={Link}
-        href={parentLink}
-        onClick={(e) => e.preventDefault()}
-        opened={childNotes.length ? opened : undefined}
-        active={!note ? false : pathname.includes(note.id)}
-        childrenOffset={8}
-        mt={2}
-        classNames={classes}
-        label={
-          <NoteLabel
-            item={note}
-            link={parentLink}
-            hasChildren={!!childNotes.length}
-            opened={opened}
-            toggle={() => setOpened((o) => !o)}
-            onNavigate={handleNavigate}
-          />
-        }
-      >
-        {childNotes.map((cni) => (
-          <MenuNoteSide
-            key={cni.id}
-            props={{ noteId: cni.id, options: { context: true } }}
-          >
-            <Note props={{ noteId: cni.id }} />
-          </MenuNoteSide>
-        ))}
-      </NavLink>
-    </MenuNoteSide>
+    <NavLink
+      component={Link}
+      href={parentLink}
+      onClick={(e) => e.preventDefault()}
+      opened={childNotes.length ? opened : undefined}
+      active={!note ? false : active}
+      childrenOffset={8}
+      mt={2}
+      classNames={classes}
+      label={
+        <NoteLabel
+          item={note}
+          link={parentLink}
+          hasChildren={!!childNotes.length}
+          opened={opened}
+          toggle={debouncedToggle}
+          onNavigate={handleNavigate}
+        />
+      }
+    >
+      {opened && (
+        <div className={classes.children}>
+          {childNotes.map((cni) => (
+            <NoteComponent
+              key={cni.id}
+              noteId={cni.id}
+              notesMap={notesMap}
+              childrenMap={childrenMap}
+            />
+          ))}
+        </div>
+      )}
+    </NavLink>
   );
 }
 
@@ -243,14 +281,12 @@ function NoteLabel({
 function isAncestor(
   noteId: string,
   activeId: string,
-  notes: NoteGet[]
+  notesMap: Map<string, NoteGet>
 ): boolean {
-  let current = notes.find((n) => n.id === activeId);
-
+  let current = notesMap.get(activeId);
   while (current?.parent_note_id) {
     if (current.parent_note_id === noteId) return true;
-    current = notes.find((n) => n.id === current?.parent_note_id);
+    current = notesMap.get(current.parent_note_id); // O(1) lookup
   }
-
   return false;
 }
