@@ -84,107 +84,70 @@ export const mergeItems = async (
 };
 
 export const loadInitialData = async (params: {
-  prevItemsRef: RefObject<any[]>;
   dataStore: string;
   session: SessionValue;
-  fileSyncAdapter?: FileSyncAdapter;
-  options?: { clientOnly?: boolean };
-  dataFetchFunction: (items?: any[]) => Promise<{ items: any[] }>;
+  serverItems: any[]; // Directly pass the data from the combined fetch
+  options?: { clientOnly?: boolean; fileSyncAdapter?: FileSyncAdapter };
   stateUpdateFunction: (items: any[]) => void;
-  // deletedStateUpdateFunction?: (items: any[]) => void;
 }) => {
-  const { clientOnly } = params.options || {};
-
-  let combinedItems: any[] = [];
-
-  const db = await openDatabase(config);
-  let clientItems: any[] = [];
-
-  clientItems = await db.get(params.dataStore);
-
-  // reconcile possible case of multiple temporary user ids
-  const { session } = params;
-
-  if (session) {
-    clientItems.map((i) => {
-      return { ...i, profile_id: session.id || null };
-    });
-  }
+  const { clientOnly, fileSyncAdapter } = params.options || {};
+  const { session, dataStore, serverItems, stateUpdateFunction } = params;
 
   try {
-    let serverItems: any[] = [];
+    const db = await openDatabase(config);
+    let clientItems: any[] = await db.get(dataStore);
 
-    const fetchedServerItems: { items: any[]; deletedItems?: any[] } =
-      await params.dataFetchFunction();
+    // 1. Reconcile profile IDs for offline-created items
+    if (session?.id) {
+      clientItems = clientItems.map((i) => ({
+        ...i,
+        profile_id: i.profile_id || session.id,
+      }));
+    }
 
-    serverItems = fetchedServerItems.items;
+    let combinedItems: any[] = [];
 
-    if (!clientOnly && !clientItems?.length) {
-      // filter out items with DELETED sync status from server items
-      const filteredServerItems = serverItems.filter(
-        (item) => item.sync_status !== SyncStatus.DELETED
-      );
-
-      if (filteredServerItems.length) {
-        const indexedServerItems = filteredServerItems.map((item) => ({
+    // 2. Logic: Empty Local DB vs. Existing Local DB
+    if (!clientOnly && (!clientItems || clientItems.length === 0)) {
+      // First-time sync: Filter and save server data locally
+      const filteredServerItems = serverItems
+        .filter((item) => item.sync_status !== SyncStatus.DELETED)
+        .map((item) => ({
           ...item,
-          // sync_status: SyncStatus.SYNCED,
           updated_at: new Date(item.updated_at).toISOString(),
         }));
 
-        await db.add(params.dataStore, indexedServerItems);
-
-        combinedItems = indexedServerItems as any[];
-
-        // Initialize prevItemsRef with indexed items
-        params.prevItemsRef.current = indexedServerItems as any[];
+      if (filteredServerItems.length > 0) {
+        await db.add(dataStore, filteredServerItems);
       }
+      combinedItems = filteredServerItems;
     } else {
-      let mergedItems: any[] = [];
-      let fsItems: any[] = [];
+      // Reconcile / Merge
+      let source = clientItems;
 
-      if (clientOnly && params.fileSyncAdapter) {
-        const bundle = await params.fileSyncAdapter.readBackup();
-        fsItems = bundle?.[params.dataStore.toLowerCase()] || [];
+      if (clientOnly && fileSyncAdapter) {
+        const bundle = await fileSyncAdapter.readBackup();
+        source = bundle?.[dataStore.toLowerCase()] || clientItems;
       }
-
-      const source = clientItems?.length ? clientItems : fsItems;
 
       const filteredItems = source.filter(
-        (item) => item.sync_status != SyncStatus.DELETED
+        (i) => i.sync_status !== SyncStatus.DELETED
       );
 
-      let lengthComparison;
-      let serialComparison;
-
       if (!serverItems.length) {
-        mergedItems = filteredItems;
-        lengthComparison = mergedItems.length !== filteredItems.length;
-        serialComparison =
-          JSON.stringify(mergedItems) !== JSON.stringify(filteredItems);
+        combinedItems = filteredItems;
       } else {
-        mergedItems = await mergeItems(
-          params.dataStore,
-          clientItems,
-          serverItems
-        );
-        lengthComparison = mergedItems.length !== clientItems.length;
-        serialComparison =
-          JSON.stringify(mergedItems) !== JSON.stringify(clientItems);
+        combinedItems = await mergeItems(dataStore, clientItems, serverItems);
       }
 
-      if (lengthComparison || serialComparison) {
-        await db.put(params.dataStore, mergedItems);
-      }
-
-      combinedItems = mergedItems;
-
-      // Initialize prevItemsRef with indexed items
-      params.prevItemsRef.current = mergedItems;
+      // 3. Update IndexedDB if data has changed
+      // Comparison logic is now internal to the sync process
+      await db.put(dataStore, combinedItems);
     }
-  } catch (error) {
-    console.error('Initial data load error: ', (error as Error).message);
-  }
 
-  params.stateUpdateFunction(combinedItems);
+    // 4. Update the Zustand/Global Store
+    stateUpdateFunction(combinedItems);
+  } catch (error) {
+    console.error(`Sync error for ${dataStore}:`, (error as Error).message);
+  }
 };

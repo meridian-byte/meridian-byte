@@ -12,7 +12,7 @@ import {
   useAppshellStore,
   useSessionStore,
   useThemeStore,
-  useLoadStores,
+  useLoadAppData,
   useUserStatesStore,
 } from '@repo/hooks/store';
 import { User } from '@supabase/supabase-js';
@@ -33,12 +33,10 @@ export default function Store({
   // useUserRoleStore();
   useThemeStore();
   useAppshellStore();
-  useLoadStores({
-    options: {
-      clientOnly: false,
-      storesToLoad: {
-        notes: true,
-      },
+  useLoadAppData({
+    clientOnly: false,
+    storesToLoad: {
+      notes: true,
     },
   });
 

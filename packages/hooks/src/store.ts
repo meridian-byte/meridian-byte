@@ -43,11 +43,6 @@ import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
 import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
 import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
-import { categoriesGet } from '@repo/handlers/requests/database/categories';
-import { budgetsGet } from '@repo/handlers/requests/database/budgets';
-import { accountsGet } from '@repo/handlers/requests/database/accounts';
-import { accountGroupsGet } from '@repo/handlers/requests/database/account-groups';
-import { transactionsGet } from '@repo/handlers/requests/database/transactions';
 import {
   ThemeValue,
   useStoreTheme,
@@ -57,29 +52,15 @@ import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreLink } from '@repo/libraries/zustand/stores/link';
-import { linksGet } from '@repo/handlers/requests/database/links';
-import { tasksGet } from '@repo/handlers/requests/database/tasks';
-import { remindersGet } from '@repo/handlers/requests/database/reminders';
-import { recurringRulesGet } from '@repo/handlers/requests/database/recurring-rules';
-import { viewsGet } from '@repo/handlers/requests/database/views';
-import { notesGet } from '@repo/handlers/requests/database/notes';
 import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
 import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
 import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
 import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
-import { foodsGet } from '@repo/handlers/requests/database/foods';
-import { mealsGet } from '@repo/handlers/requests/database/meals';
-import { servingsGet } from '@repo/handlers/requests/database/servings';
-import { eatsGet } from '@repo/handlers/requests/database/eats';
-import { massesGet } from '@repo/handlers/requests/database/masses';
 import { useMediaQuery } from '@mantine/hooks';
-import { chatsGet } from '@repo/handlers/requests/database/chats';
-import { chatMessagesGet } from '@repo/handlers/requests/database/chat-messages';
 import { useStoreChat } from '@repo/libraries/zustand/stores/chat';
 import { useStoreChatMessage } from '@repo/libraries/zustand/stores/chat-message';
 import { useStoreCustomization } from '@repo/libraries/zustand/stores/customization';
-import { customizationsGet } from '@repo/handlers/requests/database/customizations';
 import { useStoreChatTemporary } from '@repo/libraries/zustand/stores/chat-temporary';
 import { SAMPLE_CHAT } from '@repo/constants/chat';
 import { User } from '@supabase/supabase-js';
@@ -88,6 +69,7 @@ import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
 import { useStoreRecurringRule } from '@repo/libraries/zustand/stores/recurring-rule';
 import { useStoreView } from '@repo/libraries/zustand/stores/view';
 import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
+import { API_URL } from '@repo/constants/paths';
 
 export const useSessionStore = (params?: {
   sessionUser: User | null;
@@ -311,7 +293,6 @@ export const useUserStatesStore = () => {
 type LoadStoreConfig<TItems = any, THookReturn = any> = {
   dataStore: (typeof STORE_NAME)[keyof typeof STORE_NAME];
   useStoreHook: () => THookReturn;
-  fetchItems: (id?: string) => Promise<{ items: TItems[] }>;
   setState: (store: THookReturn, items: TItems[]) => void;
 };
 
@@ -319,179 +300,176 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
   categories: {
     dataStore: STORE_NAME.CATEGORIES,
     useStoreHook: useStoreCategory,
-    fetchItems: (id) => categoriesGet({ userId: id }),
     setState: (store, items) => store.setCategories(items),
-  },
-  budgets: {
-    dataStore: STORE_NAME.BUDGETS,
-    useStoreHook: useStoreBudget,
-    fetchItems: (id) => budgetsGet({ userId: id }),
-    setState: (store, items) => store.setBudgets(items),
-  },
-  accounts: {
-    dataStore: STORE_NAME.ACCOUNTS,
-    useStoreHook: useStoreAccount,
-    fetchItems: (id) => accountsGet({ userId: id }),
-    setState: (store, items) => store.setAccounts(items),
-  },
-  accountGroups: {
-    dataStore: STORE_NAME.ACCOUNT_GROUPS,
-    useStoreHook: useStoreAccountGroup,
-    fetchItems: (id) => accountGroupsGet({ userId: id }),
-    setState: (store, items) => store.setAccountGroups(items),
-  },
-  transactions: {
-    dataStore: STORE_NAME.TRANSACTIONS,
-    useStoreHook: useStoreTransaction,
-    fetchItems: (id) => transactionsGet({ userId: id }),
-    setState: (store, items) => store.setTransactions(items),
   },
   notes: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
-    fetchItems: (id) => notesGet({ userId: id }),
     setState: (store, items) => store.setNotes(items),
   },
-  links: {
-    dataStore: STORE_NAME.LINKS,
-    useStoreHook: useStoreLink,
-    fetchItems: (id) => linksGet({ userId: id }),
-    setState: (store, items) => store.setLinks(items),
-  },
-  foods: {
-    dataStore: STORE_NAME.FOODS,
-    useStoreHook: useStoreFood,
-    fetchItems: (id) => foodsGet({ userId: id }),
-    setState: (store, items) => store.setFoods(items),
-  },
-  meals: {
-    dataStore: STORE_NAME.MEALS,
-    useStoreHook: useStoreMeal,
-    fetchItems: (id) => mealsGet({ userId: id }),
-    setState: (store, items) => store.setMeals(items),
-  },
-  servings: {
-    dataStore: STORE_NAME.SERVINGS,
-    useStoreHook: useStoreServing,
-    fetchItems: (id) => servingsGet({ userId: id }),
-    setState: (store, items) => store.setServings(items),
-  },
-  eats: {
-    dataStore: STORE_NAME.EATS,
-    useStoreHook: useStoreEat,
-    fetchItems: (id) => eatsGet({ userId: id }),
-    setState: (store, items) => store.setEats(items),
-  },
-  masses: {
-    dataStore: STORE_NAME.MASSES,
-    useStoreHook: useStoreMass,
-    fetchItems: (id) => massesGet({ userId: id }),
-    setState: (store, items) => store.setMasses(items),
-  },
-  chats: {
-    dataStore: STORE_NAME.CHATS,
-    useStoreHook: useStoreChat,
-    fetchItems: (id) => chatsGet({ userId: id }),
-    setState: (store, items) => store.setChats(items),
-  },
-  chatMessages: {
-    dataStore: STORE_NAME.CHAT_MESSAGES,
-    useStoreHook: useStoreChatMessage,
-    fetchItems: (id) => chatMessagesGet({ userId: id }),
-    setState: (store, items) => store.setChatMessages(items),
-  },
-  customizations: {
-    dataStore: STORE_NAME.CUSTOMIZATIONS,
-    useStoreHook: useStoreCustomization,
-    fetchItems: (id) => customizationsGet({ userId: id }),
-    setState: (store, items) => store.setCustomizations(items),
-  },
+  // budgets: {
+  //   dataStore: STORE_NAME.BUDGETS,
+  //   useStoreHook: useStoreBudget,
+  //   setState: (store, items) => store.setBudgets(items),
+  // },
+  // accounts: {
+  //   dataStore: STORE_NAME.ACCOUNTS,
+  //   useStoreHook: useStoreAccount,
+  //   setState: (store, items) => store.setAccounts(items),
+  // },
+  // accountGroups: {
+  //   dataStore: STORE_NAME.ACCOUNT_GROUPS,
+  //   useStoreHook: useStoreAccountGroup,
+  //   setState: (store, items) => store.setAccountGroups(items),
+  // },
+  // transactions: {
+  //   dataStore: STORE_NAME.TRANSACTIONS,
+  //   useStoreHook: useStoreTransaction,
+  //   setState: (store, items) => store.setTransactions(items),
+  // },
+  // links: {
+  //   dataStore: STORE_NAME.LINKS,
+  //   useStoreHook: useStoreLink,
+  //   setState: (store, items) => store.setLinks(items),
+  // },
+  // foods: {
+  //   dataStore: STORE_NAME.FOODS,
+  //   useStoreHook: useStoreFood,
+  //   setState: (store, items) => store.setFoods(items),
+  // },
+  // meals: {
+  //   dataStore: STORE_NAME.MEALS,
+  //   useStoreHook: useStoreMeal,
+  //   setState: (store, items) => store.setMeals(items),
+  // },
+  // servings: {
+  //   dataStore: STORE_NAME.SERVINGS,
+  //   useStoreHook: useStoreServing,
+  //   setState: (store, items) => store.setServings(items),
+  // },
+  // eats: {
+  //   dataStore: STORE_NAME.EATS,
+  //   useStoreHook: useStoreEat,
+  //   setState: (store, items) => store.setEats(items),
+  // },
+  // masses: {
+  //   dataStore: STORE_NAME.MASSES,
+  //   useStoreHook: useStoreMass,
+  //   setState: (store, items) => store.setMasses(items),
+  // },
+  // chats: {
+  //   dataStore: STORE_NAME.CHATS,
+  //   useStoreHook: useStoreChat,
+  //   setState: (store, items) => store.setChats(items),
+  // },
+  // chatMessages: {
+  //   dataStore: STORE_NAME.CHAT_MESSAGES,
+  //   useStoreHook: useStoreChatMessage,
+  //   setState: (store, items) => store.setChatMessages(items),
+  // },
+  // customizations: {
+  //   dataStore: STORE_NAME.CUSTOMIZATIONS,
+  //   useStoreHook: useStoreCustomization,
+  //   setState: (store, items) => store.setCustomizations(items),
+  // },
   tasks: {
     dataStore: STORE_NAME.TASKS,
     useStoreHook: useStoreTask,
-    fetchItems: (id) => tasksGet({ userId: id }),
     setState: (store, items) => store.setTasks(items),
   },
   reminders: {
     dataStore: STORE_NAME.REMINDERS,
     useStoreHook: useStoreReminder,
-    fetchItems: (id) => remindersGet({ userId: id }),
     setState: (store, items) => store.setReminders(items),
   },
   recurringRules: {
     dataStore: STORE_NAME.RECURRING_RULES,
     useStoreHook: useStoreRecurringRule,
-    fetchItems: (id) => recurringRulesGet({ userId: id }),
     setState: (store, items) => store.setRecurringRules(items),
   },
   views: {
     dataStore: STORE_NAME.VIEWS,
     useStoreHook: useStoreView,
-    fetchItems: (id) => viewsGet({ userId: id }),
     setState: (store, items) => store.setViews(items),
   },
 } as const;
 
 type LoadStoreKey = keyof typeof LOAD_STORES;
 
-const useGenericLoader = <K extends LoadStoreKey>(params: {
-  storeKey: K;
+export const useLoadAppData = (options: {
+  storesToLoad: Partial<Record<LoadStoreKey, boolean>>;
   clientOnly?: boolean;
-  session?: SessionValue | null;
 }) => {
-  const { storeKey, clientOnly, session } = params;
-  const prevItemsRef = useRef<any[]>([]);
-  const noSession = !session || !session?.email;
-
-  const config = LOAD_STORES[storeKey];
-  const store = config.useStoreHook();
-
-  useEffect(() => {
-    if (session === undefined) return;
-
-    const load = async () => {
-      if (prevItemsRef.current.length) return;
-
-      const data =
-        clientOnly || noSession
-          ? { items: [] }
-          : await config.fetchItems(session.id);
-
-      await loadInitialData({
-        prevItemsRef,
-        dataStore: config.dataStore,
-        session,
-        options: { clientOnly },
-        dataFetchFunction: async () => data,
-        stateUpdateFunction: (items: any[]) => config.setState(store, items),
-      });
-    };
-
-    load();
-  }, [clientOnly, session, noSession]);
-};
-
-export const useLoadStores = (params?: {
-  options?: {
-    clientOnly?: boolean;
-    storesToLoad: Partial<Record<LoadStoreKey, boolean>>;
-  };
-}) => {
-  const { options } = params || {};
-  const { clientOnly, storesToLoad = {} } = options || {};
   const session = useStoreSession((s) => s.session);
 
-  const results = {} as Record<string, void>;
+  const stores = {
+    categories: useStoreCategory(),
+    notes: useStoreNote(),
+    // budgets: useStoreBudget(),
+    // accounts: useStoreAccount(),
+    // accountGroups: useStoreAccountGroup(),
+    // transactions: useStoreTransaction(),
+    // links: useStoreLink(),
+    // foods: useStoreFood(),
+    // meals: useStoreMeal(),
+    // servings: useStoreServing(),
+    // eats: useStoreEat(),
+    // masses: useStoreMass(),
+    // chats: useStoreChat(),
+    // chatMessages: useStoreChatMessage(),
+    // customizations: useStoreCustomization(),
+    tasks: useStoreTask(),
+    reminders: useStoreReminder(),
+    recurringRules: useStoreRecurringRule(),
+    views: useStoreView(),
+  };
 
-  (Object.keys(storesToLoad) as LoadStoreKey[]).forEach((key) => {
-    if (!storesToLoad[key]) return;
+  useEffect(() => {
+    if (!session?.id) return;
 
-    results[key] = useGenericLoader({
-      storeKey: key,
-      clientOnly,
-      session,
-    });
-  });
+    const syncAll = async () => {
+      try {
+        // 1. Identify which keys are set to 'true'
+        const activeStoreKeys = (
+          Object.keys(options.storesToLoad) as LoadStoreKey[]
+        ).filter((key) => options.storesToLoad[key]);
 
-  return results;
+        if (activeStoreKeys.length === 0) return;
+
+        // 2. Fetch only the required data
+        // Pass the requested stores as a query param so the server can optimize
+        const storeQuery = activeStoreKeys.join(',');
+        const res = await fetch(
+          `${API_URL}/app-data?userId=${session.id}&stores=${storeQuery}`
+        );
+        if (!res.ok) throw new Error('Failed to fetch app data');
+
+        const fullPayload = await res.json();
+
+        // 2. Process each store in parallel (only the active stores)
+        const syncPromises = activeStoreKeys.map(async (key) => {
+          const config = LOAD_STORES[key];
+          const serverData = fullPayload[key] || [];
+          const storeInstance = stores[key as keyof typeof stores];
+
+          if (!config || !storeInstance) return;
+
+          return loadInitialData({
+            dataStore: config.dataStore,
+            session,
+            options: { clientOnly: options.clientOnly },
+            serverItems: serverData,
+            stateUpdateFunction: (items) =>
+              config.setState(storeInstance, items),
+          });
+        });
+
+        await Promise.all(syncPromises);
+      } catch (e) {
+        console.error('Data initialization failed:', e);
+      }
+    };
+
+    syncAll();
+  }, [session?.id, JSON.stringify(options.storesToLoad), options.clientOnly]);
 };
