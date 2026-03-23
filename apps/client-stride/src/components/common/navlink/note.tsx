@@ -11,6 +11,7 @@ import {
   GridCol,
   Group,
   NavLink,
+  NumberFormatter,
   Text,
   ThemeIcon,
   Tooltip,
@@ -24,6 +25,7 @@ import classes from './category.module.scss';
 import {
   IconChevronDown,
   IconChevronRight,
+  IconCircleFilled,
   IconDots,
   IconDotsVertical,
   IconFile,
@@ -33,6 +35,9 @@ import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { usePathname, useRouter } from 'next/navigation';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
+import MenuCategorySide from '@repo/components/common/menus/category/side';
+import { APP_NAME } from '@repo/constants/app';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 
 export default function Category({
   props,
@@ -56,7 +61,7 @@ export default function Category({
   const pathname = usePathname();
   const router = useRouter();
 
-  const parentLink = `/app/n/${linkify(category?.title || '')}-${category?.id}`;
+  const parentLink = `/app/p/${linkify(category?.title || '')}-${category?.id}`;
 
   function handleNavigate() {
     router.push(parentLink);
@@ -100,75 +105,78 @@ export default function Category({
   }, [shouldBeOpen]);
 
   return (
-    // <MenuCategorySide
-    //   props={{ categoryId: category?.id, options: { context: true } }}
-    // >
-    <NavLink
-      component={Link}
-      href={parentLink}
-      onClick={(e) => e.preventDefault()}
-      opened={childCategories.length ? opened : undefined}
-      active={!category ? false : pathname.includes(category.id)}
-      childrenOffset={8}
-      mt={2}
-      classNames={classes}
-      label={
-        <CategoryLabel
-          item={category}
-          link={parentLink}
-          hasChildren={!!childCategories.length}
-          opened={opened}
-          toggle={() => setOpened((o) => !o)}
-          onNavigate={handleNavigate}
-        />
-      }
+    <MenuCategorySide
+      props={{ categoryId: category?.id, options: { context: true } }}
     >
-      {childCategories.map((cni) => (
-        // <MenuCategorySide
-        //   key={cni.id}
-        //   props={{ categoryId: cni.id, options: { context: true } }}
-        // >
-        <Category props={{ categoryId: cni.id }} />
-        // </MenuCategorySide>
-      ))}
-    </NavLink>
-    // </MenuCategorySide>
+      <NavLink
+        component={Link}
+        href={parentLink}
+        onClick={(e) => e.preventDefault()}
+        opened={childCategories.length ? opened : undefined}
+        active={!category ? false : pathname.includes(category.id)}
+        childrenOffset={8}
+        mt={2}
+        classNames={classes}
+        label={
+          <CategoryLabel
+            item={category}
+            link={parentLink}
+            hasChildren={!!childCategories.length}
+            opened={opened}
+            toggle={() => setOpened((o) => !o)}
+            onNavigate={handleNavigate}
+          />
+        }
+      >
+        {childCategories.map((cni) => (
+          <MenuCategorySide
+            key={cni.id}
+            props={{ categoryId: cni.id, options: { context: true } }}
+          >
+            <Category key={cni.id} props={{ categoryId: cni.id }} />
+          </MenuCategorySide>
+        ))}
+      </NavLink>
+    </MenuCategorySide>
   );
 }
 
 function CategoryActions({ categoryId }: { categoryId?: string }) {
   const { categoryCreate } = useCategoryActions();
+  const { tasks } = useStoreTask();
+  const categoryTasks = useMemo(
+    () => tasks?.filter((ti) => ti.category_id === categoryId),
+    [tasks, categoryId]
+  );
 
   return (
-    <Group justify="end" gap={0}>
-      {/* <MenuCategorySide props={{ categoryId }}> */}
-      <Tooltip label="Category actions">
-        <Group>
-          <ActionIcon
-            size={ICON_SIZE}
-            radius="sm"
-            color="dark"
-            variant="subtle"
-          >
-            <IconDots size={ICON_SIZE - 4} />
-          </ActionIcon>
-        </Group>
-      </Tooltip>
-      {/* </MenuCategorySide> */}
+    <Group justify="end" gap={5}>
+      <Box display={!categoryTasks?.length ? 'none' : undefined}>
+        <Tooltip label={`${categoryTasks?.length || 0} tasks`}>
+          <ThemeIcon size={ICON_SIZE} variant="transparent">
+            <Text component={'span'} inherit fz={'xs'} c={'dimmed'}>
+              <NumberFormatter value={categoryTasks?.length || 0} />
+            </Text>
+          </ThemeIcon>
+        </Tooltip>
+      </Box>
 
-      <Tooltip label="Create category inside">
-        <Group>
-          <ActionIcon
-            size={ICON_SIZE}
-            radius="sm"
-            color="dark"
-            variant="subtle"
-            onClick={() => categoryCreate({ parent_category_id: categoryId })}
-          >
-            <IconPlus size={ICON_SIZE - 4} />
-          </ActionIcon>
-        </Group>
-      </Tooltip>
+      <MenuCategorySide
+        props={{ categoryId, options: { source: APP_NAME.STRIDE } }}
+      >
+        <Tooltip label="Category actions">
+          <Group>
+            <ActionIcon
+              size={ICON_SIZE}
+              radius="sm"
+              color="dark"
+              variant="subtle"
+            >
+              <IconDots size={ICON_SIZE - 4} />
+            </ActionIcon>
+          </Group>
+        </Tooltip>
+      </MenuCategorySide>
     </Group>
   );
 }
@@ -207,7 +215,10 @@ function CategoryLabel({
                 variant="subtle"
                 className={classes.theme}
               >
-                <IconFile size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconCircleFilled
+                  size={ICON_SIZE / 2}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
 
               <ActionIcon
@@ -228,7 +239,7 @@ function CategoryLabel({
               color="dark"
               variant="transparent"
             >
-              <IconFile size={ICON_SIZE - 4} />
+              <IconCircleFilled size={ICON_SIZE / 2} />
             </ThemeIcon>
           )}
         </Group>

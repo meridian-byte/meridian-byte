@@ -30,7 +30,7 @@ export const useFormRecurringRule = (params?: {
       clientOnly: true,
 
       onSubmit: async (rawValues) => {
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           recurringRuleCreate(rawValues);
         } else {
           recurringRuleUpdate({

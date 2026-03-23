@@ -198,7 +198,6 @@ model Category {
   updated_at DateTime @updatedAt
   tasks      Task[]
 
-  @@unique([title])
   @@map(name: "categories")
 }
 
@@ -238,7 +237,6 @@ model AccountGroup {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@unique([profile_id, name])
   @@map(name: "account_groups")
 }
 
@@ -264,7 +262,6 @@ model Account {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@unique([profile_id, name, group_id])
   @@map(name: "accounts")
 }
 

@@ -9,7 +9,7 @@ import { Button, Container } from '@mantine/core';
 import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import PlaceholderEmpty from '@repo/components/common/placeholder/empty';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
-import ModalTaskCreate from '@repo/components/common/modals/task/crud';
+import ModalTaskCreate from '@repo/components/common/modals/task/create';
 import { capitalizeWords } from '@repo/utilities/string';
 
 export default function Category({
@@ -30,7 +30,7 @@ export default function Category({
   );
 
   return (
-    <Container p={{ md: SECTION_SPACING }} py={SECTION_SPACING / 2}>
+    <div>
       {tasks == null || categories == null ? (
         taskSkeleton // Avoid rendering mismatched DOM before hydration
       ) : !category ? (
@@ -47,11 +47,7 @@ export default function Category({
             desc: 'Add some tasks to get started',
           }}
         >
-          <ModalTaskCreate
-            props={{
-              category_id: props.categoryId || '',
-            }}
-          >
+          <ModalTaskCreate props={{ category_id: category.id }}>
             <Button size="xs">Add task</Button>
           </ModalTaskCreate>
         </PlaceholderEmpty>
@@ -59,10 +55,10 @@ export default function Category({
         <AccordionTasks
           props={{
             tasks: tasksOfCategory,
-            defaultValues: { category_id: props.categoryId || '' },
+            defaultValues: { category_id: category.id || '' },
           }}
         />
       )}
-    </Container>
+    </div>
   );
 }

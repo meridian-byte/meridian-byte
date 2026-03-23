@@ -26,7 +26,7 @@ export const useFormReminder = (params?: {
       clientOnly: true,
 
       onSubmit: async (rawValues) => {
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           reminderCreate(rawValues);
         } else {
           reminderUpdate({

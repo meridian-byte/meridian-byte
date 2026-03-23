@@ -1,6 +1,6 @@
 import { Group, Text, ThemeIcon } from '@mantine/core';
 import React from 'react';
-import ModalTask from '../../../common/modals/task/crud';
+import ModalTaskCreate from '../../modals/task/create';
 import { IconPlus } from '@tabler/icons-react';
 import {
   ICON_SIZE,
@@ -16,7 +16,7 @@ export default function Create({
   props?: { defaultValues?: Partial<TaskGet> };
 }) {
   return (
-    <ModalTask props={props?.defaultValues}>
+    <ModalTaskCreate props={props?.defaultValues}>
       <Group
         pl={'calc(var(--mantine-spacing-md) * 3)'}
         className={classes.card}
@@ -31,6 +31,6 @@ export default function Create({
 
         <Text>Add task</Text>
       </Group>
-    </ModalTask>
+    </ModalTaskCreate>
   );
 }

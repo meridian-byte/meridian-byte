@@ -8,7 +8,7 @@ import { SECTION_SPACING } from '@repo/constants/sizes';
 import { Button, Container } from '@mantine/core';
 import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import PlaceholderEmpty from '@repo/components/common/placeholder/empty';
-import ModalTaskCrud from '@repo/components/common/modals/task/crud';
+import ModalTaskCreate from '@repo/components/common/modals/task/create';
 
 export default function Inbox() {
   const tasks = useStoreTask((s) => s.tasks);
@@ -18,7 +18,7 @@ export default function Inbox() {
   );
 
   return (
-    <Container p={{ md: SECTION_SPACING }} py={SECTION_SPACING / 2}>
+    <div>
       {tasks == null ? (
         taskSkeleton
       ) : !tasksWithoutCategory?.length ? (
@@ -28,9 +28,9 @@ export default function Inbox() {
             desc: 'Tasks without a category will be listed here. Add some tasks to get started.',
           }}
         >
-          <ModalTaskCrud>
+          <ModalTaskCreate>
             <Button size="xs">Add task</Button>
-          </ModalTaskCrud>
+          </ModalTaskCreate>
         </PlaceholderEmpty>
       ) : (
         <AccordionTasks
@@ -39,6 +39,6 @@ export default function Inbox() {
           }}
         />
       )}
-    </Container>
+    </div>
   );
 }

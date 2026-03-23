@@ -13,7 +13,7 @@ export default function All() {
   const tasks = useStoreTask((s) => s.tasks);
 
   return (
-    <Container p={{ md: SECTION_SPACING }} py={SECTION_SPACING / 2}>
+    <div>
       {tasks == null ? (
         taskSkeleton
       ) : !tasks?.length ? (
@@ -26,6 +26,6 @@ export default function All() {
       ) : (
         <AccordionTasks props={{ tasks }} />
       )}
-    </Container>
+    </div>
   );
 }

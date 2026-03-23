@@ -40,8 +40,9 @@ export default function Navbar({
         <Group>
           <ActionIcon
             variant="subtle"
-            color="pri.5"
+            color="dark"
             aria-label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
+            size={ICON_WRAPPER_SIZE}
             onClick={() => {
               if (!props?.options?.mobile) return;
               if (!appshell) return;
@@ -54,7 +55,6 @@ export default function Navbar({
                 },
               });
             }}
-            size={ICON_WRAPPER_SIZE}
           >
             <states.iconLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>

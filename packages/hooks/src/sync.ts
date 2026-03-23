@@ -11,7 +11,7 @@ import { budgetsUpdate } from '@repo/handlers/requests/database/budgets';
 import { accountsUpdate } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsUpdate } from '@repo/handlers/requests/database/account-groups';
 import { transactionsUpdate } from '@repo/handlers/requests/database/transactions';
-import { categoriesUpdate } from '@repo/handlers/requests/database/category';
+import { categoriesUpdate } from '@repo/handlers/requests/database/categories';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
 import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
@@ -45,6 +45,14 @@ import { customizationsUpdate } from '@repo/handlers/requests/database/customiza
 import { useStoreChatMessage } from '@repo/libraries/zustand/stores/chat-message';
 import { chatMessagesUpdate } from '@repo/handlers/requests/database/chat-messages';
 import { useIdle } from '@mantine/hooks';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
+import { tasksUpdate } from '@repo/handlers/requests/database/tasks';
+import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
+import { remindersUpdate } from '@repo/handlers/requests/database/reminders';
+import { viewsUpdate } from '@repo/handlers/requests/database/views';
+import { useStoreView } from '@repo/libraries/zustand/stores/view';
+import { useStoreRecurringRule } from '@repo/libraries/zustand/stores/recurring-rule';
+import { recurringRulesUpdate } from '@repo/handlers/requests/database/recurring-rules';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -209,6 +217,42 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     getDeleted: (store) => store.deleted,
     setItems: (store, items) => store.setCustomizations(items),
     clearDeleted: (store) => store.clearDeletedCustomizations(),
+  },
+  tasks: {
+    dataStore: STORE_NAME.TASKS,
+    useStoreHook: useStoreTask,
+    serverUpdate: tasksUpdate,
+    getItems: (store) => store.tasks,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setTasks(items),
+    clearDeleted: (store) => store.clearDeletedTasks(),
+  },
+  reminders: {
+    dataStore: STORE_NAME.REMINDERS,
+    useStoreHook: useStoreReminder,
+    serverUpdate: remindersUpdate,
+    getItems: (store) => store.reminders,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setReminders(items),
+    clearDeleted: (store) => store.clearDeletedReminders(),
+  },
+  recurringRules: {
+    dataStore: STORE_NAME.RECURRING_RULES,
+    useStoreHook: useStoreRecurringRule,
+    serverUpdate: recurringRulesUpdate,
+    getItems: (store) => store.recurringRules,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setRecurringRules(items),
+    clearDeleted: (store) => store.clearDeletedRecurringRules(),
+  },
+  views: {
+    dataStore: STORE_NAME.VIEWS,
+    useStoreHook: useStoreView,
+    serverUpdate: viewsUpdate,
+    getItems: (store) => store.views,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setViews(items),
+    clearDeleted: (store) => store.clearDeletedViews(),
   },
 } as const;
 

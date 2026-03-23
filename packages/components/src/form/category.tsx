@@ -16,12 +16,14 @@ import { CategoryGet } from '@repo/types/models/category';
 import { capitalizeWords } from '@repo/utilities/string';
 import { CategoryType } from '@repo/types/models/enums';
 import { useMediaQuery } from '@mantine/hooks';
+import { APP_NAME } from '@repo/constants/app';
 
 export default function Category({
   props,
 }: {
   props?: {
     defaultValues?: Partial<CategoryGet>;
+    source: string;
     close?: () => void;
   };
 }) {
@@ -33,41 +35,43 @@ export default function Category({
 
   return (
     <form
-      onSubmit={form.onSubmit(() => {
-        handleSubmit();
-        if (props?.close) props.close();
-      })}
+      // onSubmit={form.onSubmit(async () => {
+      //   await handleSubmit();
+      //   if (props?.close) props.close();
+      // })}
       noValidate
     >
       <Grid gutter={mobile ? 5 : undefined}>
-        <GridCol span={12}>
-          <NativeSelect
-            required
-            label={mobile ? 'Type' : undefined}
-            aria-label="Type"
-            leftSection={
-              <IconSettingsQuestion
-                size={ICON_SIZE}
-                stroke={ICON_STROKE_WIDTH}
-              />
-            }
-            data={[
-              {
-                label: 'Select Type',
-                value: '',
-              },
-              {
-                label: capitalizeWords(CategoryType.CREDIT),
-                value: CategoryType.CREDIT,
-              },
-              {
-                label: capitalizeWords(CategoryType.DEBIT),
-                value: CategoryType.DEBIT,
-              },
-            ]}
-            {...form.getInputProps('type')}
-          />
-        </GridCol>
+        {props?.source == APP_NAME.SATE && (
+          <GridCol span={12}>
+            <NativeSelect
+              required
+              label={mobile ? 'Type' : undefined}
+              aria-label="Type"
+              leftSection={
+                <IconSettingsQuestion
+                  size={ICON_SIZE}
+                  stroke={ICON_STROKE_WIDTH}
+                />
+              }
+              data={[
+                {
+                  label: 'Select Type',
+                  value: '',
+                },
+                {
+                  label: capitalizeWords(CategoryType.CREDIT),
+                  value: CategoryType.CREDIT,
+                },
+                {
+                  label: capitalizeWords(CategoryType.DEBIT),
+                  value: CategoryType.DEBIT,
+                },
+              ]}
+              {...form.getInputProps('type')}
+            />
+          </GridCol>
+        )}
 
         <GridCol span={12}>
           <TextInput
@@ -83,8 +87,26 @@ export default function Category({
         </GridCol>
 
         <GridCol span={12}>
-          <Group justify="end" mt={mobile ? 'xs' : undefined}>
-            <Button fullWidth type="submit" loading={submitted}>
+          <Group grow mt={mobile ? 'xs' : undefined}>
+            <Button
+              disabled={submitted}
+              color="dark"
+              variant="light"
+              onClick={() => {
+                if (props?.close) props.close();
+              }}
+            >
+              {'Cancel'}
+            </Button>
+
+            <Button
+              type="submit"
+              loading={submitted}
+              onClick={async () => {
+                await handleSubmit();
+                if (props?.close) props.close();
+              }}
+            >
               {submitted ? 'Saving' : 'Save'}
             </Button>
           </Group>

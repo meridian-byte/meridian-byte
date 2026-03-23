@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import {
   IconCalendarEvent,
+  IconCirclePlus,
   IconEdit,
   IconFilePlus,
   IconFileSearch,
@@ -25,10 +26,10 @@ import {
 import React from 'react';
 import ModalSearch from '@repo/components/common/modals/search';
 import ModalCommands from '@repo/components/common/modals/commands';
-import { useNoteActions } from '@repo/hooks/actions/note';
+import { useTaskActions } from '@repo/hooks/actions/task';
 import { getRegionalDate } from '@repo/utilities/date-time';
 import { useRouter } from 'next/navigation';
-import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 import { useMediaQuery } from '@mantine/hooks';
 import NextLink from '@repo/components/common/anchor/next-link';
@@ -39,45 +40,18 @@ import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import NavbarParentFooter from './footer';
 import { linkify } from '@repo/utilities/url';
 import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
+import ModalTaskCreate from '@repo/components/common/modals/task/create';
 
 export default function Main({
   props,
 }: {
   props?: { options?: { mobile: boolean } };
 }) {
-  const router = useRouter();
   const appshell = useStoreAppShell((s) => s.appshell);
-  const notes = useStoreNote((s) => s.notes);
-  const { noteCreate } = useNoteActions();
+  const tasks = useStoreTask((s) => s.tasks);
   const mobile = useMediaQuery('(max-width: 36em)');
   const theme = useStoreTheme((s) => s.theme);
   const setTheme = useStoreTheme((s) => s.setTheme);
-
-  const handleCreate = (params?: { options?: { today?: boolean } }) => {
-    if (notes === undefined) return;
-
-    let regionalDate = null;
-
-    if (params?.options?.today) {
-      const now = new Date();
-
-      const currentDate = getRegionalDate(now, {
-        locale: 'en-GB',
-        format: 'numeric',
-      }).date;
-
-      regionalDate = currentDate;
-
-      const exists = notes?.find((n) => n.title == currentDate);
-
-      if (exists) {
-        router.push(`/app/n/${linkify(exists.title)}-${exists.id}`);
-        return;
-      }
-    }
-
-    noteCreate(!regionalDate ? undefined : { title: regionalDate });
-  };
 
   return (
     <>
@@ -101,51 +75,45 @@ export default function Main({
           <NextLink href="/app">
             <Group>
               <Tooltip label={'Go to home page'} position={'right'}>
-                <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+                <ActionIcon
+                  variant="subtle"
+                  size={ICON_WRAPPER_SIZE}
+                  color="dark"
+                >
                   <IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>
           </NextLink>
 
-          <ModalSearch>
-            <Group>
-              <Tooltip label={'Search note'} position={'right'}>
+          {/* <ModalSearch>
+              <Group>
+              <Tooltip label={'Search task'} position={'right'}>
                 <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
                   <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
-              </Tooltip>
-            </Group>
-          </ModalSearch>
+                </Tooltip>
+                </Group>
+          </ModalSearch> */}
 
           <Group>
-            <Tooltip label={'Create new note'} position={'right'}>
-              <ActionIcon
-                variant="subtle"
-                size={ICON_WRAPPER_SIZE}
-                onClick={() => handleCreate()}
-              >
-                <IconEdit size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              </ActionIcon>
-            </Tooltip>
+            <ModalTaskCreate>
+              <Group>
+                <Tooltip label={'Create new task'} position={'right'}>
+                  <ActionIcon
+                    variant="subtle"
+                    size={ICON_WRAPPER_SIZE}
+                    color="dark"
+                  >
+                    <IconCirclePlus
+                      size={ICON_SIZE}
+                      stroke={ICON_STROKE_WIDTH}
+                    />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </ModalTaskCreate>
           </Group>
-
-          {notes === undefined ? (
-            <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
-          ) : (
-            <Tooltip label={"Open today's daily note"} position={'right'}>
-              <ActionIcon
-                variant="subtle"
-                size={ICON_WRAPPER_SIZE}
-                onClick={() => handleCreate({ options: { today: true } })}
-              >
-                <IconCalendarEvent
-                  size={ICON_SIZE}
-                  stroke={ICON_STROKE_WIDTH}
-                />
-              </ActionIcon>
-            </Tooltip>
-          )}
 
           {/* <ModalCommands>
             <Group>

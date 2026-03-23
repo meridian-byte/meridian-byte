@@ -22,7 +22,7 @@ export const useFormView = (params?: { defaultValues?: Partial<ViewGet> }) => {
       clientOnly: true,
 
       onSubmit: async (rawValues) => {
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           viewCreate(rawValues);
         } else {
           viewUpdate({

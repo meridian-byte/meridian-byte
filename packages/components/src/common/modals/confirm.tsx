@@ -15,6 +15,7 @@ export default function Confirm({
     desc?: string;
     onCancel?: () => void;
     onConfirm?: () => void;
+    variant?: Alert;
   };
   children: React.ReactNode;
 }) {
@@ -25,7 +26,7 @@ export default function Confirm({
       <Modal opened={opened} onClose={close} padding={'md'} pos={'relative'}>
         <LayoutModal
           props={{ title: props?.title || 'Confirm Action', close }}
-          variant={Alert.WARNING}
+          variant={props?.variant || Alert.WARNING}
         >
           <div>
             <Text>{props?.desc || 'Are you sure you want to proceed?'}</Text>
@@ -33,8 +34,8 @@ export default function Confirm({
 
           <Group justify="end" mt={'md'}>
             <Button
-              color="red.6"
-              variant="outline"
+              color="dark"
+              variant="light"
               onClick={() => {
                 if (props?.onCancel) props.onCancel();
                 close();

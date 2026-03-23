@@ -11,12 +11,9 @@ export default async function Category({
 }: {
   params: Promise<typeParams>;
 }) {
-  const categoryId = extractUuidFromParam(
-    (await params)['categoryTitle-categoryId']
-  );
-  const categoryTitle = extractSlugFromParam(
-    (await params)['categoryTitle-categoryId']
-  );
+  const paramValues = (await params)['categoryTitle-categoryId'];
+  const categoryId = extractUuidFromParam(paramValues);
+  const categoryTitle = extractSlugFromParam(paramValues);
 
   return (
     <div>

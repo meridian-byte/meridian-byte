@@ -26,7 +26,7 @@ export const useFormAccountGroup = (params?: {
       clientOnly: true,
 
       onSubmit: async (rawValues) => {
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           accountGroupCreate(rawValues);
         } else {
           accountGroupUpdate({
