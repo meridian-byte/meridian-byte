@@ -34,7 +34,11 @@ export default function Left() {
         <TabsTab value="folders">
           <Tooltip label={'Files & folders'}>
             <Group justify="center">
-              <ThemeIcon size={ICON_WRAPPER_SIZE} variant={'transparent'}>
+              <ThemeIcon
+                size={ICON_WRAPPER_SIZE}
+                variant={'transparent'}
+                color="dark"
+              >
                 <IconFolder size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ThemeIcon>
             </Group>
@@ -44,7 +48,11 @@ export default function Left() {
         <TabsTab value="search">
           <Tooltip label={'Search'}>
             <Group justify="center">
-              <ThemeIcon size={ICON_WRAPPER_SIZE} variant={'transparent'}>
+              <ThemeIcon
+                size={ICON_WRAPPER_SIZE}
+                variant={'transparent'}
+                color="dark"
+              >
                 <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ThemeIcon>
             </Group>

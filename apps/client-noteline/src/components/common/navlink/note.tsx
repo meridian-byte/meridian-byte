@@ -127,6 +127,8 @@ function NoteComponent({
     if (shouldBeOpen) setOpened(true);
   }, [shouldBeOpen]);
 
+  const isRoot = !note?.parent_note_id;
+
   return (
     <NavLink
       component={Link}
@@ -134,8 +136,8 @@ function NoteComponent({
       onClick={(e) => e.preventDefault()}
       opened={childNotes.length ? opened : undefined}
       active={!note ? false : active}
-      childrenOffset={8}
-      mt={2}
+      childrenOffset={16}
+      mt={1.5}
       classNames={classes}
       label={
         <NoteLabel
@@ -147,19 +149,26 @@ function NoteComponent({
           onNavigate={handleNavigate}
         />
       }
+      styles={
+        isRoot
+          ? undefined
+          : {
+              root: {
+                borderLeft:
+                  '1px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4))',
+              },
+            }
+      }
     >
-      {opened && (
-        <div className={classes.children}>
-          {childNotes.map((cni) => (
-            <NoteComponent
-              key={cni.id}
-              noteId={cni.id}
-              notesMap={notesMap}
-              childrenMap={childrenMap}
-            />
-          ))}
-        </div>
-      )}
+      {opened &&
+        childNotes.map((cni) => (
+          <NoteComponent
+            key={cni.id}
+            noteId={cni.id}
+            notesMap={notesMap}
+            childrenMap={childrenMap}
+          />
+        ))}
     </NavLink>
   );
 }
@@ -262,14 +271,14 @@ function NoteLabel({
         </Group>
       </GridCol>
 
-      <GridCol span={9} onClick={onNavigate}>
+      <GridCol span={8} onClick={onNavigate}>
         <Text component="span" inherit lineClamp={1}>
           {item?.title}
         </Text>
       </GridCol>
 
       <GridCol
-        span={2}
+        span={3}
         className={hasChildren ? classes.menu : classes.menuChild}
       >
         <NoteActions noteId={item?.id} />

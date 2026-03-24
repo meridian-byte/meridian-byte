@@ -76,18 +76,17 @@ export default function NoteDetails({
       top={0}
       style={{ zIndex: 1 }}
       display={!props?.noteId ? 'none' : undefined}
+      visibleFrom="xs"
     >
       <LayoutSection id={`note-details-header`} containerized={false}>
         <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
           <Group p={'xs'} pl={'md'} justify="space-between" wrap="nowrap">
-            <ScrollArea scrollbars={'x'}>
-              <Group gap={5} wrap="nowrap">
-                <BreadcrumbAppNote props={{ noteId: note?.id }} />
-              </Group>
-            </ScrollArea>
+            <Group gap={5} wrap="nowrap">
+              <BreadcrumbAppNote props={{ noteId: note?.id }} />
+            </Group>
 
             <Group gap={5} wrap="nowrap" justify="end">
-              <Group gap={5} visibleFrom="xs" justify="end">
+              <Group gap={5} justify="end">
                 {notes === undefined ? (
                   <Skeleton h={24} w={80} />
                 ) : !note ? null : (
@@ -132,7 +131,11 @@ export default function NoteDetails({
                 <MenuNoteMain props={{ noteId: note?.id }}>
                   <Group>
                     <Tooltip label={'More options'}>
-                      <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
+                      <ActionIcon
+                        size={ICON_WRAPPER_SIZE}
+                        variant={'subtle'}
+                        color="dark"
+                      >
                         <IconDotsVertical
                           size={ICON_SIZE}
                           stroke={ICON_STROKE_WIDTH}

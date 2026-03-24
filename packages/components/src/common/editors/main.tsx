@@ -19,7 +19,7 @@ import { BubbleMenu } from '@tiptap/react/menus';
 import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
-import { useDebouncedCallback, useIdle } from '@mantine/hooks';
+import { useDebouncedCallback, useIdle, useMediaQuery } from '@mantine/hooks';
 import { Box, Divider, ScrollArea, Typography } from '@mantine/core';
 import WrapperUnderlayGlass from '../../wrappers/underlays/glass';
 import classes from './main.module.scss';
@@ -35,6 +35,7 @@ export default function Main({ item }: { item: NoteGet }) {
   const searchParams = useSearchParams();
   const { noteUpdate } = useNoteActions();
   const idle = useIdle(2000);
+  const mobile = useMediaQuery('(max-width: 36em)');
 
   const [content, setContent] = useState<string>(item.content || '');
 
@@ -92,7 +93,7 @@ export default function Main({ item }: { item: NoteGet }) {
       >
         <Box
           pos={'sticky'}
-          top={49}
+          top={mobile ? 0 : 49}
           style={{
             zIndex: 1000,
             opacity: idle ? 0 : 1,
