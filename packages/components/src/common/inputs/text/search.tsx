@@ -1,6 +1,10 @@
 'use client';
 
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+} from '@repo/constants/sizes';
 import { ActionIcon, TextInput, TextInputProps, Tooltip } from '@mantine/core';
 import { IconSearch, IconX } from '@tabler/icons-react';
 import React, { useState } from 'react';
@@ -42,8 +46,9 @@ export default function Search({
         ) : (
           <Tooltip label={'Clear Search'}>
             <ActionIcon
-              size={ICON_SIZE}
-              variant="transparent"
+              size={ICON_WRAPPER_SIZE - 2}
+              variant="light"
+              color="dark"
               onClick={() => {
                 setValue('');
                 props.setValue('');

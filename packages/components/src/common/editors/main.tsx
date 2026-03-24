@@ -114,7 +114,7 @@ export default function Main({ item }: { item?: NoteGet }) {
               w={'100%'}
               scrollbars={'x'}
               type="auto"
-              scrollbarSize={ICON_STROKE_WIDTH}
+              scrollbarSize={ICON_STROKE_WIDTH * 2}
             >
               <RichTextEditor.Toolbar
                 style={{ flexWrap: 'nowrap', backgroundColor: 'transparent' }}

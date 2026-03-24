@@ -16,6 +16,7 @@ import {
   Divider,
   Group,
   SimpleGrid,
+  Skeleton,
   Stack,
   Text,
   Textarea,
@@ -33,9 +34,11 @@ import { linkify } from '@repo/utilities/url';
 import Link from 'next/link';
 import { useField } from '@mantine/form';
 import EditorMain from '@repo/components/common/editors/main';
+import { useNoteActions } from '@repo/hooks/actions/note';
 
 export default function Home() {
   const notes = useStoreNote((s) => s.notes);
+  const { noteCreate } = useNoteActions();
 
   return (
     <LayoutSection id={`app-home`} padded containerized={'md'}>
@@ -49,8 +52,14 @@ export default function Home() {
             </Title>
           </Group>
 
-          <Box>
-            <EditorMain />
+          <Divider color="light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))" />
+
+          <Box mih={80.8}>
+            {notes === undefined ? (
+              <Skeleton h={20} w={200} mt={'sm'} />
+            ) : (
+              <EditorMain />
+            )}
           </Box>
         </Stack>
 
@@ -63,14 +72,45 @@ export default function Home() {
             </Title>
           </Group>
 
-          <SimpleGrid cols={{ base: 2, xs: 3, sm: 4, md: 3, lg: 4, xl: 5 }}>
-            {sortArray(notes || [], (i) => i.updated_at, Order.DESCENDING).map(
-              (ni, i) =>
-                i < 6 && (
-                  <div key={ni.id}>
-                    <RecentNoteCard props={ni} />
-                  </div>
-                )
+          <Divider color="light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))" />
+
+          <SimpleGrid
+            cols={
+              notes !== undefined && !notes?.length
+                ? 1
+                : { base: 2, xs: 3, sm: 4, md: 3, lg: 4, xl: 5 }
+            }
+            mih={272.4}
+          >
+            {notes === undefined ? (
+              <>
+                {cardSkeleton}
+                {cardSkeleton}
+                {cardSkeleton}
+                {cardSkeleton}
+              </>
+            ) : !notes?.length ? (
+              <Stack align="center" ta={'center'} py={SECTION_SPACING / 2}>
+                <Text c={'dimmed'}>No Notes Found</Text>
+                <Button
+                  size="xs"
+                  variant="light"
+                  onClick={() =>
+                    noteCreate({ content: 'Write your content here...' })
+                  }
+                >
+                  Create note
+                </Button>
+              </Stack>
+            ) : (
+              sortArray(notes || [], (i) => i.updated_at, Order.DESCENDING).map(
+                (ni, i) =>
+                  i < 6 && (
+                    <div key={ni.id}>
+                      <RecentNoteCard props={ni} />
+                    </div>
+                  )
+              )
             )}
           </SimpleGrid>
         </Stack>
@@ -78,6 +118,8 @@ export default function Home() {
     </LayoutSection>
   );
 }
+
+const cardSkeleton = <Skeleton h={128.2} />;
 
 function RecentNoteCard({ props }: { props: NoteGet }) {
   const link = useMemo(() => {

@@ -55,9 +55,14 @@ export default function Search() {
         }
         style={{ zIndex: 1 }}
       >
-        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
+        {/* <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" /> */}
 
-        <Box pos={'sticky'} top={48} py={'xs'}>
+        <Box
+          pos={'sticky'}
+          top={48}
+          pb={'xs'}
+          px={'calc(var(--mantine-spacing-xs) - 3.33333px)'}
+        >
           <InputTextSearch
             props={{ value, setValue }}
             styles={{
@@ -69,9 +74,11 @@ export default function Search() {
             }}
           />
         </Box>
+
+        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
       </Box>
 
-      <Stack gap={5} style={{ zIndex: 0 }}>
+      <Stack gap={5} style={{ zIndex: 0 }} pt={3.33333} pb={'xs'}>
         {notes === undefined ? (
           <Stack gap={5}>
             {navlinkSkeleton}

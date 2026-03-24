@@ -55,11 +55,19 @@
 }
 
 .menu {
-  opacity: 0;
+  opacity: 1;
   transition: 0.25s all ease;
+
+  @include mantine.larger-than(mantine.$mantine-breakpoint-md) {
+    opacity: 0;
+  }
 }
 
 .menuChild {
-  opacity: 0;
+  opacity: 1;
   transition: 0.25s all ease;
+
+  @include mantine.larger-than(mantine.$mantine-breakpoint-md) {
+    opacity: 0;
+  }
 }

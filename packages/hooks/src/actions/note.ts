@@ -15,6 +15,7 @@ export const useNoteActions = () => {
   const notes = useStoreNote((s) => s.notes);
   const addNote = useStoreNote((s) => s.addNote);
   const updateNote = useStoreNote((s) => s.updateNote);
+  const setNotes = useStoreNote((s) => s.setNotes);
   const deleteNote = useStoreNote((s) => s.deleteNote);
 
   const { editing, editingId, setEditingState, startRename, inputRefs } =
@@ -59,7 +60,7 @@ export const useNoteActions = () => {
     const newNote: NoteGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      created_at: new Date(params.created_at).toISOString() as any,
+      // created_at: new Date(params.created_at).toISOString() as any,
       updated_at: new Date(now).toISOString() as any,
     };
 
@@ -114,8 +115,29 @@ export const useNoteActions = () => {
     options?: { noRedirect?: boolean };
   }) => {
     if (!session) return;
+    if (!notes) return;
 
     const now = new Date();
+
+    // find the note's children to update their parent_note_id to null (move them to root)
+    const children = notes?.filter(
+      (n) => n.parent_note_id === params.values.id
+    );
+
+    if (children?.length) {
+      setNotes(
+        notes.map((n) => {
+          if (n.parent_note_id !== params.values.id) return n;
+
+          return {
+            ...n,
+            parent_note_id: null,
+            sync_status: SyncStatus.PENDING,
+            updated_at: new Date(now).toISOString() as any,
+          };
+        })
+      );
+    }
 
     deleteNote({
       ...params.values,
