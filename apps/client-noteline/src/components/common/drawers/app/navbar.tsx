@@ -26,34 +26,37 @@ import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navba
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
   const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const desktop = useMediaQuery('(min-width: 62em)');
 
   return (
     <>
-      <Drawer
-        hiddenFrom={'xs'}
-        keepMounted
-        opened={navbarChild ?? false}
-        padding={0}
-        withCloseButton={false}
-        onClose={() => {}}
-        styles={{
-          content: {
-            backgroundColor:
-              'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
-            borderTopRightRadius: 'var(--mantine-radius-lg)',
-            borderBottomRightRadius: 'var(--mantine-radius-lg)',
-            overflow: 'hidden',
-          },
-        }}
-      >
-        <ScrollArea h="100vh">
-          <Group p={'xs'} justify="end">
-            <ButtonAppshellNavbar />
-          </Group>
+      {!desktop && (
+        <Drawer
+          keepMounted
+          opened={navbarChild ?? false}
+          padding={0}
+          withCloseButton={false}
+          onClose={() => {}}
+          size={'xs'}
+          styles={{
+            content: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+              borderTopRightRadius: 'var(--mantine-radius-lg)',
+              borderBottomRightRadius: 'var(--mantine-radius-lg)',
+              overflow: 'hidden',
+            },
+          }}
+        >
+          <ScrollArea h="100vh">
+            <Group p={'xs'} justify="end">
+              <ButtonAppshellNavbar />
+            </Group>
 
-          <TabNavbarLeft />
-        </ScrollArea>
-      </Drawer>
+            <TabNavbarLeft />
+          </ScrollArea>
+        </Drawer>
+      )}
 
       <span>{children}</span>
     </>

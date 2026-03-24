@@ -8,6 +8,7 @@ import {
 import {
   ActionIcon,
   AppShellSection,
+  Box,
   Flex,
   Group,
   Skeleton,
@@ -87,9 +88,9 @@ export default function Main({
           align={'center'}
           gap={5}
         >
-          {/* <DrawerAppNavbar options={{ hover: true }}> */}
-          <ButtonAppshellNavbar />
-          {/* </DrawerAppNavbar> */}
+          <DrawerAppNavbar>
+            <ButtonAppshellNavbar />
+          </DrawerAppNavbar>
 
           <NextLink href="/app">
             <Group>

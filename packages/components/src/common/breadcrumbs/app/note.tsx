@@ -20,7 +20,7 @@ export default function Note({ props }: { props?: { noteId?: string } }) {
 
   if (notes === undefined) {
     return (
-      <Group gap={'xs'}>
+      <Group gap={'xs'} wrap="nowrap">
         <Skeleton h={18} w={60} />
         <span>/</span>
         <Skeleton h={18} w={60} />
@@ -35,34 +35,38 @@ export default function Note({ props }: { props?: { noteId?: string } }) {
   const path = buildPath(props.noteId, noteMap);
 
   return (
-    <Breadcrumbs>
-      <Breadcrumbs separatorMargin={5}>
-        {path.map((note, i) => {
-          const isLast = i === path.length - 1;
+    <Breadcrumbs styles={{ root: { flexWrap: 'nowrap' } }} separatorMargin={5}>
+      {path.map((note, i) => {
+        const isLast = i === path.length - 1;
 
-          const sharedProps = {
-            size: 'compact-sm',
-            color: 'dark',
-            fw: 'normal',
-            variant: 'subtle',
-          };
+        const sharedProps = {
+          size: 'compact-sm',
+          color: 'dark',
+          fw: 'normal',
+          variant: 'subtle',
+        };
 
-          return isLast ? (
-            <Button key={note.id} {...sharedProps} variant="transparent">
-              {note.title}
-            </Button>
-          ) : (
-            <Button
-              key={note.id}
-              {...sharedProps}
-              component={Link}
-              href={`/app/n/${linkify(note.title)}-${note.id}`}
-            >
-              {note.title}
-            </Button>
-          );
-        })}
-      </Breadcrumbs>
+        return isLast ? (
+          <Button
+            key={note.id}
+            {...sharedProps}
+            variant="transparent"
+            px={{ base: 0, md: '5' }}
+          >
+            {note.title}
+          </Button>
+        ) : (
+          <Button
+            key={note.id}
+            {...sharedProps}
+            component={Link}
+            href={`/app/n/${linkify(note.title)}-${note.id}`}
+            px={{ base: 0, md: '5' }}
+          >
+            {note.title}
+          </Button>
+        );
+      })}
     </Breadcrumbs>
   );
 }
