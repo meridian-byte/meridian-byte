@@ -81,10 +81,97 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(responsePayload, {
       status: 200,
-      statusText: 'App Data Synchronized',
+      statusText: 'App Data Fetched',
     });
   } catch (error) {
     console.error('---> route handler error (get app data):', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+const PRISMA_MODEL_MAP: Record<string, any> = {
+  categories: prisma.category,
+  notes: prisma.note,
+  tasks: prisma.task,
+  reminders: prisma.reminder,
+  recurringRules: prisma.recurringRule,
+  views: prisma.view,
+};
+
+export async function POST(request: NextRequest) {
+  try {
+    const storesParam = request.nextUrl.searchParams.get('stores');
+    // 1. Parse the requested stores into an array
+    const requestedStores = storesParam ? storesParam.split(',') : [];
+
+    // 1. Parse the body ONCE
+    const fullPayload = await request.json();
+
+    const allOperations: any[] = [];
+    const storeRanges: Record<string, { start: number; end: number }> = {};
+
+    // 2. Build a single flat array of Prisma promises
+    requestedStores.forEach((key) => {
+      const model = PRISMA_MODEL_MAP[key]; // Get the correct model accessor
+      const data = fullPayload[key];
+
+      if (!data || !model) {
+        console.error(`No model found for key: ${key}`);
+        return;
+      }
+
+      const startIdx = allOperations.length;
+
+      // Handle Deletions
+      if (data.deletedIds?.length) {
+        allOperations.push(
+          model.deleteMany({
+            where: { id: { in: data.deletedIds } },
+          })
+        );
+      }
+
+      // Handle Upserts
+      const upserts = data[key].map((item: any) =>
+        model.upsert({
+          where: { id: item.id },
+          update: { ...item, updated_at: new Date(item.updated_at) },
+          create: {
+            ...item,
+            created_at: new Date(item.created_at),
+            updated_at: new Date(item.updated_at),
+          },
+        })
+      );
+
+      allOperations.push(...upserts);
+      storeRanges[key] = { start: startIdx, end: allOperations.length };
+    });
+
+    // 3. Execute everything in ONE transaction
+    const flatResults = await prisma.$transaction(allOperations);
+
+    // 4. Map the flat results back to the store keys
+    const responsePayload = requestedStores.reduce(
+      (acc, key) => {
+        const range = storeRanges[key];
+        if (range) {
+          acc[key] = flatResults.slice(range.start, range.end);
+        }
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+
+    return NextResponse.json(
+      { items: responsePayload },
+      { status: 200, statusText: 'App Data Updated' }
+    );
+  } catch (error) {
+    console.error('---> route handler error (update app data):', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -11,5 +11,5 @@ export type SyncParams = {
   dataStore: string;
   stateUpdateFunction: (items: any[]) => void;
   stateUpdateFunctionDeleted: () => void;
-  serverUpdateFunction: (items: any[], deletedIds?: string[]) => Promise<void>;
+  serverUpdateFunction?: (items: any[], deletedIds?: string[]) => Promise<void>;
 };
