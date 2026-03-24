@@ -9,14 +9,6 @@ export default function Main() {
     <LayoutSection id={'loading-main'}>
       <Center mih={'100vh'}>
         <Stack align="center">
-          <ImageDefault
-            src={images.brand.icon.default}
-            alt={'loading'}
-            height={48}
-            width={48}
-            fit="contain"
-          />
-
           <LoaderMain />
         </Stack>
       </Center>

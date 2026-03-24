@@ -73,11 +73,17 @@ export default function Search() {
 
       <Stack gap={5} style={{ zIndex: 0 }}>
         {notes === undefined ? (
-          <>
-            <Skeleton h={35} />
-            <Skeleton h={35} />
-            <Skeleton h={35} />
-          </>
+          <Stack gap={5}>
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+            {navlinkSkeleton}
+          </Stack>
         ) : !searchCriteriaItems.length ? (
           <Center ta={'center'} py={SECTION_SPACING}>
             <Text inherit fz={'sm'} c={'dimmed'}>
@@ -136,3 +142,5 @@ export default function Search() {
     </div>
   );
 }
+
+const navlinkSkeleton = <Skeleton h={26} />;
