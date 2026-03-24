@@ -35,6 +35,7 @@ import {
   IconDots,
   IconDotsVertical,
   IconFile,
+  IconNote,
   IconPlus,
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
@@ -154,6 +155,8 @@ function NoteComponent({
           ? undefined
           : {
               root: {
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
                 borderLeft:
                   '1px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4))',
               },
@@ -244,19 +247,24 @@ function NoteLabel({
                 variant="subtle"
                 className={classes.theme}
               >
-                <IconFile size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
               </ActionIcon>
 
-              <ActionIcon
-                size={ICON_SIZE}
-                radius="sm"
-                color="dark"
-                variant="subtle"
-                onClick={toggle}
-                className={classes.action}
-              >
-                <ChevronIcon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-              </ActionIcon>
+              <Tooltip label={`${opened ? 'Hide' : 'Show'} child notes`}>
+                <ActionIcon
+                  size={ICON_SIZE}
+                  radius="sm"
+                  color="dark"
+                  variant="subtle"
+                  onClick={toggle}
+                  className={classes.action}
+                >
+                  <ChevronIcon
+                    size={ICON_SIZE - 4}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
+                </ActionIcon>
+              </Tooltip>
             </>
           ) : (
             <ThemeIcon
@@ -265,7 +273,7 @@ function NoteLabel({
               color="dark"
               variant="transparent"
             >
-              <IconFile size={ICON_SIZE - 4} />
+              <IconNote size={ICON_SIZE - 4} />
             </ThemeIcon>
           )}
         </Group>

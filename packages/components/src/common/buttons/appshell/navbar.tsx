@@ -2,6 +2,8 @@
 
 import React from 'react';
 import {
+  IconArrowBarLeft,
+  IconArrowBarRight,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
   IconLayoutSidebarRightCollapse,
@@ -23,22 +25,21 @@ export default function Navbar() {
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   const states = {
-    iconLeft: !navbarChild
-      ? IconLayoutSidebarLeftExpand
-      : IconLayoutSidebarLeftCollapse,
+    iconLeft: !navbarChild ? IconArrowBarRight : IconArrowBarLeft,
     iconRight: !asideChild
       ? IconLayoutSidebarRightExpand
       : IconLayoutSidebarRightCollapse,
   };
 
+  const label = `${navbarChild ? 'Collapse' : 'Expand'} Navbar`;
   return (
     <Group>
-      <Tooltip label={navbarChild ? 'Collapse' : 'Expand'} position="right">
+      <Tooltip label={label} position="right">
         <Group>
           <ActionIcon
             variant="subtle"
             color="dark"
-            aria-label={navbarChild ? 'Collapse' : 'Expand'}
+            aria-label={label}
             size={ICON_WRAPPER_SIZE}
             onClick={toggleNavbarChild}
           >
