@@ -1,8 +1,5 @@
 import { create } from 'zustand';
 import { AppShell } from '@repo/types/components';
-import { setCookieClient } from '@repo/utilities/cookie-client';
-import { COOKIE_NAME } from '@repo/constants/names';
-import { WEEK } from '@repo/constants/sizes';
 
 export type AppShellValue = AppShell | null | undefined;
 
@@ -21,9 +18,6 @@ export const useStoreAppShell = create<AppShellState>((set) => ({
     set((state) => {
       if (!state.appshell) return state;
 
-      // Move side effects here; they won't block the React render update
-      setCookieClient(COOKIE_NAME.APP_SHELL, state, { expiryInSeconds: WEEK });
-
       return {
         appshell: {
           ...state.appshell,
@@ -40,9 +34,6 @@ export const useStoreAppShell = create<AppShellState>((set) => ({
     set((state) => {
       if (!state.appshell) return state;
 
-      // Move side effects here; they won't block the React render update
-      setCookieClient(COOKIE_NAME.APP_SHELL, state, { expiryInSeconds: WEEK });
-
       return {
         appshell: {
           ...state.appshell,
@@ -56,10 +47,14 @@ export const useStoreAppShell = create<AppShellState>((set) => ({
   },
 
   setAppShell: (data) => {
-    set({ appshell: data });
+    set((state) => {
+      return { appshell: data };
+    });
   },
 
   clearAppShell: () => {
-    set({ appshell: undefined });
+    set(() => {
+      return { appshell: null };
+    });
   },
 }));

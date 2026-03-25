@@ -32,8 +32,11 @@ import WrapperUnderlayGlass from '../../wrappers/underlays/glass';
 import classes from './main.module.scss';
 import { useSearchParams } from 'next/navigation';
 import { useScroll } from '@repo/hooks/scroll';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
+import ParserHtml from '../../parsers/html';
 
 export default function Main({ item }: { item?: NoteGet }) {
+  const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
   const { styles } = useScroll({
     threshold: 70,
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
@@ -92,11 +95,16 @@ export default function Main({ item }: { item?: NoteGet }) {
 
   return (
     <Typography>
+      <Box display={userStateEditing == true ? 'none' : undefined} mt={60 - 1}>
+        <ParserHtml props={{ html: content }} />
+      </Box>
+
       <RichTextEditor
         id="rich-text-editor-content"
         editor={editor}
         classNames={classes}
         withTypographyStyles={false}
+        display={userStateEditing == true ? undefined : 'none'}
       >
         <Box
           pos={'sticky'}
@@ -105,7 +113,7 @@ export default function Main({ item }: { item?: NoteGet }) {
             zIndex: 1000,
             opacity: idle ? 0 : 1,
             transition: '.25s all ease',
-            display: !item ? 'none' : undefined,
+            display: !item || userStateEditing != true ? 'none' : undefined,
           }}
         >
           <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
@@ -157,9 +165,9 @@ export default function Main({ item }: { item?: NoteGet }) {
                   </BubbleMenu>
                 )}
 
-                {/* <RichTextEditorControlsGroup> */}
-                <RichTextEditor.ClearFormatting />
-                {/* </RichTextEditorControlsGroup> */}
+                <RichTextEditorControlsGroup>
+                  <RichTextEditor.ClearFormatting />
+                </RichTextEditorControlsGroup>
               </RichTextEditor.Toolbar>
             </ScrollArea>
           </WrapperUnderlayGlass>

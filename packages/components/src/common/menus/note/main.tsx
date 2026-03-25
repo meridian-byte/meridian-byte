@@ -16,6 +16,8 @@ import {
   IconFileTypePdf,
   IconGitMerge,
   IconListDetails,
+  IconLock,
+  IconLockOpen,
   IconPencil,
   IconSortAscendingSmallBig,
   IconSwipeLeft,
@@ -25,11 +27,14 @@ import {
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { NoteGet } from '@repo/types/models/note';
 import { useNoteActions } from '@repo/hooks/actions/note';
-import ModalConfirm from '@repo/components/common/modals/confirm';
+import ModalConfirm, {
+  ConfirmProps,
+} from '@repo/components/common/modals/confirm';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import ModalMerge from '../../modals/merge';
 import ModalMove from '../../modals/move';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Main({
   props,
@@ -38,35 +43,26 @@ export default function Main({
   props?: { noteId?: string };
   children: React.ReactNode;
 }) {
-  const notes = useStoreNote((s) => s.notes);
+  const addActiveNote = useStoreActiveItems((s) => s.addActiveNote);
+  const addActiveConfirm = useStoreActiveItems((s) => s.addActiveConfirm);
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
 
-  // const userStates = useStoreUserStates((s) => s.userStates);
-  // const setUserStates = useStoreUserStates((s) => s.setUserStates);
+  const userStates = useStoreUserStates((s) => s.userStates);
+  const toggleUserStateEditing = useStoreUserStates(
+    (s) => s.toggleUserStateEditing
+  );
 
-  // const toogleProperties = {
-  //   label: userStates?.editing == true ? 'Reading' : 'Editing',
-  //   icon: userStates?.editing == true ? IconBook : IconWriting,
-  // };
+  const toogleProperties = {
+    label: userStates?.editing == true ? 'Lock' : 'Unlock',
+    icon: userStates?.editing == true ? IconLock : IconLockOpen,
+  };
 
   const { noteDelete } = useNoteActions();
-
-  const handleRename = () => {
-    const myInput = document.getElementById(
-      'note-title-input'
-    ) as HTMLInputElement | null;
-
-    if (myInput) {
-      myInput.focus();
-      myInput.select(); // highlights all text
-    }
-  };
 
   return (
     <Menu
       withinPortal
       position="bottom-end"
-      keepMounted
       width={220}
       styles={{
         dropdown: {
@@ -93,7 +89,7 @@ export default function Main({
 
         <MenuDivider />
 
-        {/* <MenuItem
+        <MenuItem
           leftSection={
             <toogleProperties.icon
               size={ICON_SIZE}
@@ -102,21 +98,19 @@ export default function Main({
           }
           onClick={() => {
             if (!userStates) return;
-
-            setUserStates({
-              ...userStates,
-              editing: !userStates.editing,
-            });
+            toggleUserStateEditing();
           }}
         >
-          {toogleProperties.label} view
-        </MenuItem> */}
+          {toogleProperties.label} note
+        </MenuItem>
 
         <MenuItem
           leftSection={
             <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
-          onClick={() => handleRename()}
+          onClick={() => {
+            if (note) addActiveNote(note);
+          }}
         >
           Rename
         </MenuItem>
@@ -131,7 +125,7 @@ export default function Main({
             }
             onClick={() => {}}
           >
-            Move file to...
+            Move note to...
           </MenuItem>
         </ModalMove>
 
@@ -142,7 +136,7 @@ export default function Main({
             }
             onClick={() => {}}
           >
-            Merge entire file with...
+            Merge note with...
           </MenuItem>
         </ModalMerge>
 
@@ -150,43 +144,12 @@ export default function Main({
 
         <MenuItem
           leftSection={
-            <IconSwipeLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          }
-          onClick={() => {}}
-        >
-          Backlinks in document
-        </MenuItem>
-
-        <MenuItem
-          leftSection={
             <IconListDetails size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
           onClick={() => {}}
+          disabled
         >
           Add file property
-        </MenuItem>
-
-        <MenuDivider />
-
-        <MenuItem
-          leftSection={<IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-          onClick={() => {}}
-        >
-          Copy URL
-        </MenuItem>
-
-        <MenuItem
-          leftSection={<IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-          onClick={() => {}}
-        >
-          Copy path
-        </MenuItem>
-
-        <MenuItem
-          leftSection={<IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-          onClick={() => {}}
-        >
-          Copy relative path
         </MenuItem>
 
         <MenuDivider />
@@ -196,28 +159,28 @@ export default function Main({
             <IconFileTypePdf size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
           onClick={() => {}}
+          disabled
         >
           Export to PDF
         </MenuItem>
 
         <MenuDivider />
 
-        <ModalConfirm
-          props={{
-            onConfirm: () => {
-              if (note) noteDelete({ values: note });
-            },
+        <MenuItem
+          color="red.6"
+          leftSection={
+            <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => {
+            addActiveConfirm({
+              onConfirm: () => {
+                if (note) noteDelete({ values: note });
+              },
+            } satisfies ConfirmProps);
           }}
         >
-          <MenuItem
-            color="red.6"
-            leftSection={
-              <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-          >
-            Delete
-          </MenuItem>
-        </ModalConfirm>
+          Delete
+        </MenuItem>
       </MenuDropdown>
     </Menu>
   );

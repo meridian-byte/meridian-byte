@@ -11,14 +11,12 @@ import {
 } from '@mantine/core';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { AppShell } from '@repo/types/components';
-import { COOKIE_NAME } from '@repo/constants/names';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
   WEEK,
 } from '@repo/constants/sizes';
-import { setCookieClient } from '@repo/utilities/cookie-client';
 import PartialNavbarLinks from '@/components/partial/tabs/navbar/links';
 import { IconLayoutSidebarLeftCollapse } from '@tabler/icons-react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';

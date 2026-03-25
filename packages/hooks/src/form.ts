@@ -46,6 +46,8 @@ export function useFormBase<TValues extends Record<string, any>>(
 
   const handleSubmit = async (params?: { options?: any }) => {
     if (!form.isValid()) {
+      form.validate();
+
       showNotification({
         variant: Variant.WARNING,
         title: 'Form Invalid',

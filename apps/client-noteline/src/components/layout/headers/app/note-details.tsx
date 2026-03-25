@@ -37,6 +37,7 @@ import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { getRegionalDate, getRelativeTime } from '@repo/utilities/date-time';
 import BreadcrumbAppNote from '@repo/components/common/breadcrumbs/app/note';
 import BadgeUpdatedTimestamp from '@repo/components/common/badges/updated-timestamp';
+import BadgeNoteStatus from '@repo/components/common/badges/note-status';
 
 export default function NoteDetails({
   props,
@@ -45,6 +46,7 @@ export default function NoteDetails({
 }) {
   const notes = useStoreNote((s) => s.notes);
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
+  const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
 
   const { styles } = useScroll({
     threshold: 70,
@@ -87,6 +89,12 @@ export default function NoteDetails({
 
             <Group gap={5} wrap="nowrap" justify="end">
               <Group gap={5} justify="end">
+                {userStateEditing === undefined ? (
+                  <Skeleton h={24} w={80} />
+                ) : (
+                  <BadgeNoteStatus />
+                )}
+
                 {notes === undefined ? (
                   <Skeleton h={24} w={80} />
                 ) : !note ? null : (

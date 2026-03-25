@@ -23,7 +23,7 @@ import InputCheckboxTask from '../../inputs/checkboxes/task';
 import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
-import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Main({
   props,
@@ -45,7 +45,7 @@ export default function Main({
   const reminders = useStoreReminder((s) => s.reminders);
   const taskReminders = reminders?.filter((ri) => ri.task_id == task?.id);
 
-  const setSelectedTask = useStoreSelectedTask((s) => s.setSelectedTask);
+  const addActiveTask = useStoreActiveItems((s) => s.addActiveTask);
 
   const { form } = useFormTask({ defaultValues: props });
 
@@ -67,7 +67,7 @@ export default function Main({
 
         <Box
           onClick={() => {
-            if (task) setSelectedTask(task);
+            if (task) addActiveTask(task);
           }}
           w={'100%'}
           py={'xs'}

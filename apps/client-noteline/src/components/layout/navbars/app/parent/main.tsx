@@ -36,7 +36,6 @@ import NextLink from '@repo/components/common/anchor/next-link';
 import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
-import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import NavbarParentFooter from './footer';
 import { linkify } from '@repo/utilities/url';
 import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';

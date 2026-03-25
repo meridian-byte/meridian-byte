@@ -68,7 +68,7 @@ import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
 import { useStoreRecurringRule } from '@repo/libraries/zustand/stores/recurring-rule';
 import { useStoreView } from '@repo/libraries/zustand/stores/view';
-import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 import { API_URL } from '@repo/constants/paths';
 
 export const useSessionStore = (params?: {
@@ -179,55 +179,52 @@ export const useUserRoleStore = () => {
   }, [setRole, pathname, router, session]);
 };
 
-export const useAppshellStore = () => {
+export const useAppshellStore = (params?: { cookie?: AppShellValue }) => {
   const desktop = useMediaQuery('(min-width: 62em)');
 
-  const appShell = useStoreAppShell((s) => s.appshell);
+  const appshell = useStoreAppShell((s) => s.appshell);
   const setAppShell = useStoreAppShell((s) => s.setAppShell);
 
+  const cookie: AppShellValue = getCookieClient(COOKIE_NAME.APP_SHELL);
+
   useEffect(() => {
-    const initializeAppShell = () => {
-      let defaultValue: AppShellValue = {
+    // 1. Establish base defaults
+    const base = params?.cookie ??
+      cookie ?? {
         navbar: true,
         aside: false,
-        child: { navbar: desktop ? true : false, aside: false },
+        child: { navbar: true, aside: false },
       };
 
-      const appShellCookie = getCookieClient<AppShellValue>(
-        COOKIE_NAME.APP_SHELL
-      );
-
-      if (!appShellCookie) {
-        setCookieClient(COOKIE_NAME.APP_SHELL, defaultValue, {
-          expiryInSeconds: WEEK,
-        });
-      } else {
-        defaultValue = appShellCookie;
-      }
-
-      setAppShell(defaultValue);
+    // 2. Apply Mobile Constraints (Override if !desktop)
+    const resolvedChild = {
+      navbar: desktop ? base.child.navbar : false,
+      aside: desktop ? base.child.aside : false,
     };
 
-    initializeAppShell();
-  }, []);
+    const resolvedShell = {
+      ...base,
+      child: resolvedChild,
+    };
+
+    setTimeout(() => {
+      setCookieClient(COOKIE_NAME.APP_SHELL, resolvedShell, {
+        expiryInSeconds: WEEK,
+      });
+    }, 100);
+
+    setAppShell(resolvedShell);
+  }, [desktop, setAppShell]);
 
   useEffect(() => {
-    if (appShell === undefined) return;
-    if (appShell === null) return;
-    if (!desktop && !appShell?.child?.navbar) return;
-    if (desktop && !!appShell?.child?.navbar) return;
+    if (appshell === undefined) return;
 
-    const newAppshell: AppShellValue = {
-      ...appShell,
-      child: { navbar: desktop ? true : false, aside: false },
-    };
-
-    setAppShell(newAppshell);
-
-    setCookieClient(COOKIE_NAME.APP_SHELL, newAppshell, {
-      expiryInSeconds: WEEK,
-    });
-  }, [desktop]);
+    setTimeout(() => {
+      setCookieClient(COOKIE_NAME.APP_SHELL, appshell, {
+        expiryInSeconds: WEEK,
+      });
+    }, 100);
+  }, [appshell]);
 };
 
 export const useThemeStore = () => {
@@ -257,15 +254,16 @@ export const useThemeStore = () => {
 };
 
 export const useSelectedTaskStore = () => {
-  const setSelectedTask = useStoreSelectedTask((s) => s.setSelectedTask);
+  const activeTask = useStoreActiveItems((s) => s.activeItems?.task);
+  const removeActiveTask = useStoreActiveItems((s) => s.removeActiveTask);
 
   useEffect(() => {
     const initializeTheme = () => {
-      setSelectedTask(null);
+      removeActiveTask();
     };
 
     initializeTheme();
-  }, [useStoreSelectedTask]);
+  }, [activeTask]);
 };
 
 export const useChatTemporaryStore = () => {

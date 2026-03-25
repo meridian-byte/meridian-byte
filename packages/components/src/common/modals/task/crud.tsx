@@ -28,20 +28,20 @@ import InputCheckboxTask from '../../inputs/checkboxes/task';
 import { useMediaQuery, useResizeObserver } from '@mantine/hooks';
 import { SyncStatus } from '@repo/types/models/enums';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
-import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { useTaskActions } from '@repo/hooks/actions/task';
 
-export default function View({ children }: { children: React.ReactNode }) {
+export default function Crud({ children }: { children: React.ReactNode }) {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
-  const selectedTask = useStoreSelectedTask((s) => s.selectedTask);
-  const setSelectedTask = useStoreSelectedTask((s) => s.setSelectedTask);
+  const activeTask = useStoreActiveItems((s) => s.activeItems?.task);
+  const removeActiveTask = useStoreActiveItems((s) => s.removeActiveTask);
 
   const tasks = useStoreTask((s) => s.tasks);
   const task = useMemo(
-    () => tasks?.find((t) => t.id == selectedTask?.id),
-    [tasks, selectedTask?.id]
+    () => tasks?.find((t) => t.id == activeTask?.id),
+    [tasks, activeTask?.id]
   );
 
   const categories = useStoreCategory((s) => s.categories);
@@ -55,7 +55,7 @@ export default function View({ children }: { children: React.ReactNode }) {
       const wrapperElement = document.getElementById(wrapperId);
       wrapperElement?.click();
     } else {
-      setSelectedTask(null);
+      removeActiveTask();
     }
   };
 
@@ -104,7 +104,7 @@ export default function View({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Modal
-        opened={!!selectedTask}
+        opened={!!activeTask}
         onClose={close}
         withCloseButton={false}
         centered
@@ -147,7 +147,7 @@ export default function View({ children }: { children: React.ReactNode }) {
                 size={ICON_WRAPPER_SIZE}
                 color="gray"
                 variant="subtle"
-                onClick={() => setSelectedTask(null)}
+                onClick={() => removeActiveTask()}
               >
                 <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ActionIcon>

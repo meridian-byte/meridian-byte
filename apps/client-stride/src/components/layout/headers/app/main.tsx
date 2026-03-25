@@ -8,8 +8,6 @@ import {
   ICON_WRAPPER_SIZE,
   WEEK,
 } from '@repo/constants/sizes';
-import { COOKIE_NAME } from '@repo/constants/names';
-import { setCookieClient } from '@repo/utilities/cookie-client';
 import {
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,

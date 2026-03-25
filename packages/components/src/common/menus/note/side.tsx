@@ -21,11 +21,14 @@ import {
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { useContextMenu } from '@repo/hooks/ui/context-menu';
 import { NoteGet } from '@repo/types/models/note';
-import ModalConfirm from '@repo/components/common/modals/confirm';
+import ModalConfirm, {
+  ConfirmProps,
+} from '@repo/components/common/modals/confirm';
 import ModalMerge from '../../modals/merge';
 import ModalMove from '../../modals/move';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Side({
   props,
@@ -34,6 +37,9 @@ export default function Side({
   props: { noteId?: string; options?: { context?: boolean } };
   children: React.ReactNode;
 }) {
+  const addActiveNote = useStoreActiveItems((s) => s.addActiveNote);
+  const addActiveConfirm = useStoreActiveItems((s) => s.addActiveConfirm);
+
   const { opened, setOpened, close, menuWidth, targetProps, anchorProps } =
     useContextMenu();
 
@@ -65,7 +71,6 @@ export default function Side({
         onClose={props.options?.context ? close : undefined}
         withinPortal
         width={menuWidth}
-        keepMounted
       >
         <MenuTarget>
           {props.options?.context ? <div {...anchorProps} /> : target}
@@ -84,8 +89,9 @@ export default function Side({
             leftSection={
               <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
-            onClick={() => {}}
-            disabled
+            onClick={() => {
+              if (note) addActiveNote(note);
+            }}
           >
             Rename
           </MenuItem>
@@ -113,7 +119,7 @@ export default function Side({
               }
               onClick={() => {}}
             >
-              Move to...
+              Move note to...
             </MenuItem>
           </ModalMove>
 
@@ -123,57 +129,27 @@ export default function Side({
                 <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               }
             >
-              Merge with...
+              Merge note with...
             </MenuItem>
           </ModalMerge>
 
           <MenuDivider />
 
           <MenuItem
+            color="red.6"
             leftSection={
-              <IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
-            onClick={() => {}}
-          >
-            Copy URL
-          </MenuItem>
-
-          <MenuItem
-            leftSection={
-              <IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {}}
-          >
-            Copy path
-          </MenuItem>
-
-          <MenuItem
-            leftSection={
-              <IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {}}
-          >
-            Copy relative path
-          </MenuItem>
-
-          <MenuDivider />
-
-          <ModalConfirm
-            props={{
-              onConfirm: () => {
-                if (note) noteDelete({ values: note });
-              },
+            onClick={() => {
+              addActiveConfirm({
+                onConfirm: () => {
+                  if (note) noteDelete({ values: note });
+                },
+              } satisfies ConfirmProps);
             }}
           >
-            <MenuItem
-              color="red.6"
-              leftSection={
-                <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              }
-            >
-              Delete
-            </MenuItem>
-          </ModalConfirm>
+            Delete
+          </MenuItem>
         </MenuDropdown>
       </Menu>
     </>
