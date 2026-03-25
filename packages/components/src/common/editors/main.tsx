@@ -16,7 +16,11 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { TableKit } from '@tiptap/extension-table';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { BubbleMenu } from '@tiptap/react/menus';
-import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
+import {
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+  SECTION_SPACING,
+} from '@repo/constants/sizes';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import { useDebouncedCallback, useIdle, useMediaQuery } from '@mantine/hooks';
@@ -26,6 +30,7 @@ import {
   Divider,
   Group,
   ScrollArea,
+  Title,
   Typography,
 } from '@mantine/core';
 import WrapperUnderlayGlass from '../../wrappers/underlays/glass';
@@ -34,6 +39,7 @@ import { useSearchParams } from 'next/navigation';
 import { useScroll } from '@repo/hooks/scroll';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import ParserHtml from '../../parsers/html';
+import LayoutSection from '../../layout/section';
 
 export default function Main({ item }: { item?: NoteGet }) {
   const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
@@ -95,90 +101,120 @@ export default function Main({ item }: { item?: NoteGet }) {
 
   return (
     <Typography>
-      <Box display={userStateEditing == true ? 'none' : undefined} mt={60 - 1}>
-        <ParserHtml props={{ html: content }} />
-      </Box>
-
       <RichTextEditor
         id="rich-text-editor-content"
         editor={editor}
         classNames={classes}
         withTypographyStyles={false}
-        display={userStateEditing == true ? undefined : 'none'}
+        // display={userStateEditing == true ? undefined : 'none'}
       >
         <Box
           pos={'sticky'}
           top={mobile ? 0 : 49}
           style={{
-            zIndex: 1000,
+            zIndex: 10,
             opacity: idle ? 0 : 1,
             transition: '.25s all ease',
-            display: !item || userStateEditing != true ? 'none' : undefined,
+            // display: !item || userStateEditing != true ? 'none' : undefined,
           }}
         >
           <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-            <ScrollArea
-              bg={'transparent'}
-              w={'100%'}
-              scrollbars={'x'}
-              type="auto"
-              scrollbarSize={ICON_STROKE_WIDTH * 2}
-            >
-              <RichTextEditor.Toolbar
-                style={{ flexWrap: 'nowrap', backgroundColor: 'transparent' }}
+            <LayoutSection id={`note-editor-toolbar`} containerized={'md'}>
+              <Box
+                style={{ ...styles, transition: '0.25s all ease' }}
+                hiddenFrom="xs"
               >
-                {controlGroups.basic}
-                {divider}
-                {controlGroups.basic2}
-                {divider}
-                {controlGroups.alignment}
-                {divider}
-                {controlGroups.headings}
-                {divider}
-                {controlGroups.lists}
-                {divider}
-                {controlGroups.tasks}
-                {divider}
-                {controlGroups.blocks}
-                {divider}
-                {controlGroups.links}
-                {divider}
-                {controlGroups.actions}
-                {divider}
+                <Group py={'xs'}>
+                  <Title order={2} fz={'sm'} fw={500} lineClamp={1}>
+                    {item?.title}
+                  </Title>
+                </Group>
 
-                {editor && (
-                  <BubbleMenu editor={editor}>
-                    <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-                      <RichTextEditorControlsGroup
-                        style={{
-                          border:
-                            '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))',
-                        }}
-                      >
-                        {controlGroups.basic}
-                        {divider}
-                        {controlGroups.basic2}
-                        {divider}
-                        {controlGroups.links}
-                      </RichTextEditorControlsGroup>
-                    </WrapperUnderlayGlass>
-                  </BubbleMenu>
-                )}
+                <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))" />
+              </Box>
 
-                <RichTextEditorControlsGroup>
-                  <RichTextEditor.ClearFormatting />
-                </RichTextEditorControlsGroup>
-              </RichTextEditor.Toolbar>
-            </ScrollArea>
+              <Box display={userStateEditing == true ? undefined : 'none'}>
+                <ScrollArea
+                  bg={'transparent'}
+                  w={'100%'}
+                  scrollbars={'x'}
+                  type="auto"
+                >
+                  <RichTextEditor.Toolbar
+                    style={{
+                      flexWrap: 'nowrap',
+                      backgroundColor: 'transparent',
+                    }}
+                  >
+                    {controlGroups.basic}
+                    {divider}
+                    {controlGroups.basic2}
+                    {divider}
+                    {controlGroups.alignment}
+                    {divider}
+                    {controlGroups.headings}
+                    {divider}
+                    {controlGroups.lists}
+                    {divider}
+                    {controlGroups.tasks}
+                    {divider}
+                    {controlGroups.blocks}
+                    {divider}
+                    {controlGroups.links}
+                    {divider}
+                    {controlGroups.actions}
+                    {divider}
+
+                    {editor && (
+                      <BubbleMenu editor={editor}>
+                        <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
+                          <RichTextEditorControlsGroup
+                            style={{
+                              border:
+                                '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))',
+                            }}
+                          >
+                            {controlGroups.basic}
+                            {divider}
+                            {controlGroups.basic2}
+                            {divider}
+                            {controlGroups.links}
+                          </RichTextEditorControlsGroup>
+                        </WrapperUnderlayGlass>
+                      </BubbleMenu>
+                    )}
+
+                    <RichTextEditorControlsGroup>
+                      <RichTextEditor.ClearFormatting />
+                    </RichTextEditorControlsGroup>
+                  </RichTextEditor.Toolbar>
+                </ScrollArea>
+
+                <Divider
+                  color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))"
+                  style={{ ...styles, transition: '0.25s all ease' }}
+                />
+              </Box>
+            </LayoutSection>
           </WrapperUnderlayGlass>
-
-          <Divider
-            color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))"
-            style={{ ...styles, transition: '0.25s all ease' }}
-          />
         </Box>
 
-        <RichTextEditor.Content p={0} mt={'xs'} />
+        <Box
+          display={userStateEditing == true ? 'none' : undefined}
+          mt={60 - 1}
+        >
+          <LayoutSection id={`note-editor-parser`} containerized={'md'}>
+            <ParserHtml props={{ html: content }} />
+          </LayoutSection>
+        </Box>
+
+        <LayoutSection
+          id={`note-editor-content`}
+          containerized={'md'}
+          display={userStateEditing == true ? undefined : 'none'}
+        >
+          <RichTextEditor.Content p={0} mt={'xs'} />
+        </LayoutSection>
       </RichTextEditor>
 
       <Group

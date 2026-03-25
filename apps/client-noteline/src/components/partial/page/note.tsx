@@ -68,7 +68,7 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
     <LayoutSection
       id={`note-details`}
       padded={SECTION_SPACING / 2}
-      containerized={'md'}
+      containerized={false}
     >
       <div>
         <InputTextEditorTitle item={note} />
