@@ -90,13 +90,13 @@ export default function NoteDetails({
             <Group gap={5} wrap="nowrap" justify="end">
               <Group gap={5} justify="end">
                 {userStateEditing === undefined ? (
-                  <Skeleton h={24} w={80} />
+                  <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
                 ) : (
                   <BadgeNoteStatus />
                 )}
 
                 {notes === undefined ? (
-                  <Skeleton h={24} w={80} />
+                  <Skeleton h={ICON_WRAPPER_SIZE} w={80} />
                 ) : !note ? null : (
                   <BadgeUpdatedTimestamp
                     props={{ updatedAt: note.updated_at }}

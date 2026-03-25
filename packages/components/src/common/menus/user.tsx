@@ -16,6 +16,7 @@ import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import PartialUser from '../../partial/user';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { navLinkItems } from '@repo/constants/links';
+import ModalUser from '../modals/user';
 
 export default function User({ children }: { children: React.ReactNode }) {
   const session = useStoreSession((s) => s.session);
@@ -35,6 +36,7 @@ export default function User({ children }: { children: React.ReactNode }) {
       withArrow
       arrowOffset={16}
       disabled={!session?.email}
+      keepMounted
     >
       <MenuTarget>
         <Group component={'span'} style={{ cursor: 'pointer' }}>
@@ -50,16 +52,17 @@ export default function User({ children }: { children: React.ReactNode }) {
         <MenuDivider />
 
         {navLinkItems.user.account.map((item) => (
-          <MenuItem
-            key={item.label}
-            leftSection={
-              <item.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            component={Link}
-            href={item.link}
-          >
-            {item.label}
-          </MenuItem>
+          <div key={item.label}>
+            <ModalUser>
+              <MenuItem
+                leftSection={
+                  <item.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                }
+              >
+                {item.label}
+              </MenuItem>
+            </ModalUser>
+          </div>
         ))}
 
         <MenuDivider />
