@@ -51,7 +51,7 @@ export default function Profile() {
           />
         </GridCol>
 
-        <GridCol span={{ base: 12 }}>
+        {/* <GridCol span={{ base: 12 }}>
           <Stack gap={'xs'}>
             <Text component="label" htmlFor="phone-number">
               Phone
@@ -77,7 +77,7 @@ export default function Profile() {
               />
             </Group>
           </Stack>
-        </GridCol>
+        </GridCol> */}
 
         <GridCol span={{ base: 12 }}>
           <Button type="submit" loading={submitted} mt={'md'}>
