@@ -93,7 +93,6 @@ export default function CountryCode({
               mah={200}
               type={options.length > 6 ? 'always' : 'never'}
               offsetScrollbars={options.length > 6}
-              scrollbarSize={6}
               scrollbars="y"
             >
               {options}
