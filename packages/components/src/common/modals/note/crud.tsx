@@ -22,6 +22,8 @@ export default function Crud({
   const activeNote = useStoreActiveItems((s) => s.activeItems?.note);
   const removeActiveNote = useStoreActiveItems((s) => s.removeActiveNote);
 
+  const resolvedOpened = !!activeNote && !activeNote.merge && !activeNote.move;
+
   const handleClose = () => {
     if (options?.global) {
       removeActiveNote();
@@ -30,17 +32,18 @@ export default function Crud({
     }
   };
 
-  const workingNote = options?.global && activeNote ? activeNote : note;
+  const workingNote =
+    options?.global && activeNote?.item ? activeNote.item : note;
 
   return (
     <>
       <Modal
-        opened={options?.global ? !!activeNote : opened}
+        opened={options?.global ? resolvedOpened : opened}
         onClose={handleClose}
       >
         <LayoutModal
           props={{
-            title: `${!activeNote ? 'Create' : 'Edit'} Note`,
+            title: `${!activeNote ? 'Add' : 'Edit'} Note`,
             close: handleClose,
           }}
         >
@@ -50,7 +53,7 @@ export default function Crud({
         </LayoutModal>
       </Modal>
 
-      <span onClick={open}>{children}</span>
+      <span onClick={options?.global ? undefined : open}>{children}</span>
     </>
   );
 }

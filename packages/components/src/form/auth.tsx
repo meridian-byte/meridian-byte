@@ -90,7 +90,8 @@ export default function Auth({
                 styles={{
                   input: {
                     textAlign: 'center',
-                    backgroundColor: 'var(--mantine-color-dark-7)',
+                    backgroundColor:
+                      'light-dark(var(--mantine-color-body), var(--mantine-color-dark-7))',
                   },
                   error: { textAlign: 'center' },
                 }}
@@ -156,7 +157,8 @@ export default function Auth({
                       input: {
                         textAlign: 'center',
                         letterSpacing: 5,
-                        backgroundColor: 'var(--mantine-color-dark-7)',
+                        backgroundColor:
+                          'light-dark(var(--mantine-color-body), var(--mantine-color-dark-7))',
                       },
                       error: { textAlign: 'center' },
                     }}

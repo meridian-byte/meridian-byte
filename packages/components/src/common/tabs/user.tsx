@@ -310,6 +310,9 @@ function UserEdit() {
                     color="dark"
                     variant="light"
                     disabled={submitted}
+                    onClick={() => {
+                      form.reset();
+                    }}
                   >
                     Cancel
                   </Button>

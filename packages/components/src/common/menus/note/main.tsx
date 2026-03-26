@@ -115,30 +115,30 @@ export default function Main({
           Rename
         </MenuItem>
 
-        <ModalMove props={{ noteId: note?.id }}>
-          <MenuItem
-            leftSection={
-              <IconSortAscendingSmallBig
-                size={ICON_SIZE}
-                stroke={ICON_STROKE_WIDTH}
-              />
-            }
-            onClick={() => {}}
-          >
-            Move note to...
-          </MenuItem>
-        </ModalMove>
+        <MenuItem
+          leftSection={
+            <IconSortAscendingSmallBig
+              size={ICON_SIZE}
+              stroke={ICON_STROKE_WIDTH}
+            />
+          }
+          onClick={() => {
+            if (note) addActiveNote(note, { move: true });
+          }}
+        >
+          Move note to...
+        </MenuItem>
 
-        <ModalMerge props={{ noteId: note?.id }}>
-          <MenuItem
-            leftSection={
-              <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {}}
-          >
-            Merge note with...
-          </MenuItem>
-        </ModalMerge>
+        <MenuItem
+          leftSection={
+            <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => {
+            if (note) addActiveNote(note, { merge: true });
+          }}
+        >
+          Merge note with...
+        </MenuItem>
 
         <MenuDivider />
 

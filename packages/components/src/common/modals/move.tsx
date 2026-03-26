@@ -19,15 +19,23 @@ import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { NotesValue, useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { NoteGet } from '@repo/types/models/note';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Move({
   props,
+  options,
   children,
 }: {
   props?: { noteId?: string };
+  options?: { global?: boolean };
   children: React.ReactNode;
 }) {
-  const [opened, { open, close }] = useDisclosure(false);
+  const activeNote = useStoreActiveItems((s) => s.activeItems?.note);
+  const addActiveNote = useStoreActiveItems((s) => s.addActiveNote);
+  const removeActiveNote = useStoreActiveItems((s) => s.removeActiveNote);
+
+  const resolvedOpened = !!activeNote && !!activeNote.move;
+
   const [searchValue, setSearchValue] = useState('');
 
   const notes = useStoreNote((s) => s.notes);
@@ -42,13 +50,13 @@ export default function Move({
 
   const handleClose = () => {
     setSearchValue('');
-    close();
+    removeActiveNote();
   };
 
   return (
     <>
       <Modal
-        opened={opened}
+        opened={resolvedOpened}
         onClose={handleClose}
         withCloseButton={false}
         centered
@@ -119,7 +127,17 @@ export default function Move({
         </LayoutModalMain>
       </Modal>
 
-      <span onClick={open}>{children}</span>
+      <span
+        onClick={
+          options?.global
+            ? undefined
+            : () => {
+                if (note) addActiveNote(note);
+              }
+        }
+      >
+        {children}
+      </span>
     </>
   );
 }

@@ -3,7 +3,8 @@ import { TaskGet } from '@repo/types/models/task';
 import { NoteGet } from '@repo/types/models/note';
 
 export type ActiveTaskValue = TaskGet | null;
-export type ActiveNoteValue = NoteGet | null;
+type NoteActions = { move?: boolean; merge?: boolean };
+export type ActiveNoteValue = ({ item: NoteGet } & NoteActions) | null;
 export type ActiveItemsValue =
   | {
       task: ActiveTaskValue;
@@ -17,7 +18,7 @@ interface ActiveItemsState {
   activeItems: ActiveItemsValue;
   addActiveConfirm: (data: any) => void;
   removeActiveConfirm: () => void;
-  addActiveNote: (data: NoteGet) => void;
+  addActiveNote: (data: NoteGet, actions?: NoteActions) => void;
   removeActiveNote: () => void;
   addActiveTask: (data: TaskGet) => void;
   removeActiveTask: () => void;
@@ -48,12 +49,12 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
     }));
   },
 
-  addActiveNote: (data) => {
+  addActiveNote: (data, actions?: NoteActions) => {
     set((state) => ({
       activeItems: {
         task: state.activeItems?.task ?? null,
         confirm: state.activeItems?.task ?? null,
-        note: data,
+        note: { item: data, ...actions },
       },
     }));
   },
