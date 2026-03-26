@@ -33,7 +33,6 @@ import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 import { useMediaQuery } from '@mantine/hooks';
 import NextLink from '@repo/components/common/anchor/next-link';
-import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import NavbarParentFooter from './footer';
@@ -49,8 +48,6 @@ export default function Main({
   const notes = useStoreNote((s) => s.notes);
   const { noteCreate } = useNoteActions();
   const mobile = useMediaQuery('(max-width: 36em)');
-  const theme = useStoreTheme((s) => s.theme);
-  const setTheme = useStoreTheme((s) => s.setTheme);
 
   const handleCreate = (params?: { options?: { today?: boolean } }) => {
     if (notes === undefined) return;
@@ -160,15 +157,7 @@ export default function Main({
             </Group>
           </ModalCommands> */}
 
-          {theme === undefined ? (
-            <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
-          ) : !theme ? (
-            <></>
-          ) : (
-            <IndicatorTheme
-              props={{ colorScheme: theme, setColorScheme: setTheme }}
-            />
-          )}
+          <IndicatorTheme />
 
           <Box visibleFrom="xs">
             <ButtonsFullscreen />

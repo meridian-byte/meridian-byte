@@ -33,7 +33,6 @@ import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 import { useMediaQuery } from '@mantine/hooks';
 import NextLink from '@repo/components/common/anchor/next-link';
-import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
@@ -48,8 +47,6 @@ export default function Main({
   props?: { options?: { mobile: boolean } };
 }) {
   const appshell = useStoreAppShell((s) => s.appshell);
-  const theme = useStoreTheme((s) => s.theme);
-  const setTheme = useStoreTheme((s) => s.setTheme);
 
   return (
     <>
@@ -123,15 +120,7 @@ export default function Main({
             </Group>
           </ModalCommands> */}
 
-          {theme === undefined ? (
-            <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
-          ) : !theme ? (
-            <></>
-          ) : (
-            <IndicatorTheme
-              props={{ colorScheme: theme, setColorScheme: setTheme }}
-            />
-          )}
+          <IndicatorTheme />
 
           <ButtonsFullscreen />
         </Flex>
