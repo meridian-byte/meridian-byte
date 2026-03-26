@@ -178,6 +178,9 @@ function NoteComponent({
 
 function NoteActions({ noteId }: { noteId?: string }) {
   const { noteCreate } = useNoteActions();
+  const childNavbar = useStoreAppShell((s) => s.appshell?.child.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+  const mobile = useMediaQuery('(max-width: 36em)');
 
   return (
     <Group justify="end" gap={0}>
@@ -203,7 +206,10 @@ function NoteActions({ noteId }: { noteId?: string }) {
             radius="sm"
             color="dark"
             variant="subtle"
-            onClick={() => noteCreate({ parent_note_id: noteId })}
+            onClick={() => {
+              noteCreate({ parent_note_id: noteId });
+              if (mobile && childNavbar) toggleNavbarChild();
+            }}
           >
             <IconPlus size={ICON_SIZE - 4} />
           </ActionIcon>

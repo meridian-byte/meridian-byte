@@ -29,6 +29,8 @@ import ModalMove from '../../modals/move';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
+import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Side({
   props,
@@ -85,74 +87,100 @@ export default function Side({
 
           <MenuDivider />
 
-          <MenuItem
-            leftSection={
-              <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {
-              if (note) addActiveNote(note);
-            }}
-          >
-            Rename
-          </MenuItem>
+          <CloseProvider>
+            <MenuItem
+              leftSection={
+                <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              onClick={() => {
+                if (note) addActiveNote(note);
+              }}
+            >
+              Rename
+            </MenuItem>
+          </CloseProvider>
 
-          <MenuItem
-            leftSection={
-              <IconFiles size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {
-              if (note) noteCopy({ values: note });
-            }}
-          >
-            Make a copy
-          </MenuItem>
-
-          <MenuDivider />
-
-          <MenuItem
-            leftSection={
-              <IconSortAscendingSmallBig
-                size={ICON_SIZE}
-                stroke={ICON_STROKE_WIDTH}
-              />
-            }
-            onClick={() => {
-              if (note) addActiveNote(note, { move: true });
-            }}
-          >
-            Move note to...
-          </MenuItem>
-
-          <MenuItem
-            leftSection={
-              <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {
-              if (note) addActiveNote(note, { merge: true });
-            }}
-          >
-            Merge note with...
-          </MenuItem>
+          <CloseProvider>
+            <MenuItem
+              leftSection={
+                <IconFiles size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              onClick={() => {
+                if (note) noteCopy({ values: note });
+              }}
+            >
+              Make a copy
+            </MenuItem>
+          </CloseProvider>
 
           <MenuDivider />
 
-          <MenuItem
-            color="red.6"
-            leftSection={
-              <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            onClick={() => {
-              addActiveConfirm({
-                onConfirm: () => {
-                  if (note) noteDelete({ values: note });
-                },
-              } satisfies ConfirmProps);
-            }}
-          >
-            Delete
-          </MenuItem>
+          <CloseProvider>
+            <MenuItem
+              leftSection={
+                <IconSortAscendingSmallBig
+                  size={ICON_SIZE}
+                  stroke={ICON_STROKE_WIDTH}
+                />
+              }
+              onClick={() => {
+                if (note) addActiveNote(note, { move: true });
+              }}
+            >
+              Move note to...
+            </MenuItem>
+          </CloseProvider>
+
+          <CloseProvider>
+            <MenuItem
+              leftSection={
+                <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              onClick={() => {
+                if (note) addActiveNote(note, { merge: true });
+              }}
+            >
+              Merge note with...
+            </MenuItem>
+          </CloseProvider>
+
+          <MenuDivider />
+
+          <CloseProvider>
+            <MenuItem
+              color="red.6"
+              leftSection={
+                <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              onClick={() => {
+                addActiveConfirm({
+                  onConfirm: () => {
+                    if (note) noteDelete({ values: note });
+                  },
+                } satisfies ConfirmProps);
+              }}
+            >
+              Delete
+            </MenuItem>
+          </CloseProvider>
         </MenuDropdown>
       </Menu>
     </>
+  );
+}
+
+function CloseProvider({ children }: { children: React.ReactNode }) {
+  const childNavbar = useStoreAppShell((s) => s.appshell?.child.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+  const mobile = useMediaQuery('(max-width: 36em)');
+
+  return (
+    <span
+      onClick={() => {
+        if (mobile && childNavbar) toggleNavbarChild();
+      }}
+    >
+      {children}
+    </span>
   );
 }

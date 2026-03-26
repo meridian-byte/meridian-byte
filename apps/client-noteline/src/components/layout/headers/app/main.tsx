@@ -9,6 +9,7 @@ import {
   WEEK,
 } from '@repo/constants/sizes';
 import {
+  IconDotsVertical,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
   IconLayoutSidebarRightCollapse,
@@ -25,26 +26,57 @@ import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navba
 import AvatarMain from '@repo/components/common/avatars/main';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import ModalUser from '@repo/components/common/modals/user';
+import MenuNoteMain from '@repo/components/common/menus/note/main';
+import { usePathname } from 'next/navigation';
+import { extractUuidFromParam } from '@repo/utilities/url';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
+import BadgeNoteStatus from '@repo/components/common/badges/note-status';
 
 export default function Main() {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
   const session = useStoreSession((s) => s.session);
+  const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
+  const pathname = usePathname();
+  const noteId = extractUuidFromParam(pathname);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == noteId));
 
   return (
     <Group justify="space-between" h={'100%'} px={'xs'}>
       <Group gap={5}>
         <Group gap={5} hiddenFrom="xs">
           <NavbarAppMainParent props={{ options: { mobile: true } }} />
+
           <IndicatorNetworkStatus props={{ syncStatus }} />
+
+          {userStateEditing === undefined ? (
+            <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
+          ) : (
+            <BadgeNoteStatus />
+          )}
         </Group>
       </Group>
 
-      <Group justify="end" hiddenFrom="xs">
+      <Group justify="end" hiddenFrom="xs" gap={'xs'}>
         {session && (
           <ModalUser>
             <AvatarMain size={ICON_WRAPPER_SIZE} />
           </ModalUser>
         )}
+
+        <MenuNoteMain props={{ noteId: note?.id }}>
+          <Group>
+            <Tooltip label={'More options'}>
+              <ActionIcon
+                size={ICON_WRAPPER_SIZE}
+                variant={'subtle'}
+                color="dark"
+              >
+                <IconDotsVertical size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </MenuNoteMain>
 
         {/* {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
