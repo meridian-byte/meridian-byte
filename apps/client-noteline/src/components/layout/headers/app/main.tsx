@@ -22,9 +22,9 @@ import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 import NavbarAppMainParent from '../../navbars/app/parent/main';
 import { useMediaQuery } from '@mantine/hooks';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
-import MenuUser from '@repo/components/common/menus/user';
 import AvatarMain from '@repo/components/common/avatars/main';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
+import ModalUser from '@repo/components/common/modals/user';
 
 export default function Main() {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
@@ -35,19 +35,16 @@ export default function Main() {
       <Group gap={5}>
         <Group gap={5} hiddenFrom="xs">
           <NavbarAppMainParent props={{ options: { mobile: true } }} />
+          <IndicatorNetworkStatus props={{ syncStatus }} />
         </Group>
       </Group>
 
-      <Group justify="end" gap={5}>
-        <Group gap={5} hiddenFrom="xs">
-          <IndicatorNetworkStatus props={{ syncStatus }} />
-
-          {session && (
-            <MenuUser>
-              <AvatarMain size={ICON_WRAPPER_SIZE} />
-            </MenuUser>
-          )}
-        </Group>
+      <Group justify="end" hiddenFrom="xs">
+        {session && (
+          <ModalUser>
+            <AvatarMain size={ICON_WRAPPER_SIZE} />
+          </ModalUser>
+        )}
 
         {/* {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />

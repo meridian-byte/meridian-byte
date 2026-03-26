@@ -26,7 +26,7 @@ export const setCookieClient = (
   if (typeof document === 'undefined') return;
 
   const cookieValue =
-    typeof value === 'object'
+    value && typeof value === 'object'
       ? encodeURIComponent(JSON.stringify(value))
       : encodeURIComponent(value);
 
@@ -47,13 +47,10 @@ export const setCookieClient = (
 export const getCookieClient = <T = string>(name: string): T | null => {
   if (typeof document === 'undefined') return null;
 
-  const cookie = document.cookie
-    .split('; ')
-    .find((c) => c.startsWith(`${name}=`));
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (!match) return null;
 
-  if (!cookie) return null;
-
-  const value = decodeURIComponent(cookie.split('=')[1]);
+  const value = decodeURIComponent(match[2]);
 
   try {
     return JSON.parse(value) as T;

@@ -16,9 +16,7 @@ export default function User({ children }: { children: React.ReactNode }) {
         withCloseButton={false}
         size={'lg'}
       >
-        <Box>
-          <TabsUser props={{ close }} />
-        </Box>
+        <TabsUser props={{ close }} />
       </Modal>
 
       <span onClick={open}>{children}</span>
