@@ -12,25 +12,19 @@ import { authOauth } from '@repo/services/auth/oauth';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  const host = request.headers.get('host');
+  const protocol = request.headers.get('x-forwarded-proto') || 'https';
+  const baseUrl = `${protocol}://${host}`;
+
   try {
-    const { searchParams, origin } = new URL(request.url);
+    const { searchParams } = new URL(request.url);
 
-    const { next, forwardedHost, isLocalEnv } = await authOauth({
-      request,
-      searchParams,
-    });
+    const { next } = await authOauth({ searchParams });
 
-    if (isLocalEnv) {
-      // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-      return NextResponse.redirect(`${origin}${next}`);
-    } else if (forwardedHost) {
-      return NextResponse.redirect(`https://${forwardedHost}${next}`);
-    } else {
-      return NextResponse.redirect(`${origin}${next}`);
-    }
+    return NextResponse.redirect(`${baseUrl}${next}`);
   } catch (error) {
     return NextResponse.redirect(
-      `${AUTH_URLS.ERROR}?message=${encodeURIComponent((error as Error).message)}`
+      `${baseUrl + AUTH_URLS.ERROR}?message=${encodeURIComponent((error as Error).message)}`
     );
   }
 }

@@ -6,11 +6,8 @@ import { emailSendOnboarding } from '@repo/libraries/wrappers/email';
 import { emailContactAdd } from '@repo/services/api/email/contacts';
 import { COMPANY_NAME } from '@repo/constants/app';
 
-export const authOauth = async (params: {
-  request: Request;
-  searchParams: URLSearchParams;
-}) => {
-  const { request, searchParams } = params;
+export const authOauth = async (params: { searchParams: URLSearchParams }) => {
+  const { searchParams } = params;
 
   const code = searchParams.get('code');
 
@@ -69,8 +66,6 @@ export const authOauth = async (params: {
 
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? AUTH_URLS.REDIRECT.DEFAULT;
-  const forwardedHost = request.headers.get('x-forwarded-host'); // original origin before load balancer
-  const isLocalEnv = process.env.NODE_ENV === 'development';
 
-  return { next, forwardedHost, isLocalEnv };
+  return { next };
 };
