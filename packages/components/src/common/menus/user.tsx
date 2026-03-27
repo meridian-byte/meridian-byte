@@ -16,6 +16,7 @@ import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import PartialUser from '../../partial/user';
 import classes from './user.module.scss';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
+import { navLinkItems } from '@repo/constants/links';
 
 export default function User({ children }: { children: React.ReactNode }) {
   const { session } = useStoreSession();
@@ -25,14 +26,14 @@ export default function User({ children }: { children: React.ReactNode }) {
 
   return (
     <Menu
-      position={'bottom-end'}
+      position="top-start"
       width={mobile ? 200 : 240}
-      trigger="click-hover"
+      trigger="click"
       openDelay={50}
-      closeDelay={50}
+      closeDelay={200}
       classNames={classes}
       opened={desktop ? undefined : false}
-      transitionProps={{ transition: 'pop-top-right', duration: 100 }}
+      transitionProps={{ transition: 'pop-bottom-left', duration: 100 }}
       withArrow
       arrowOffset={16}
       disabled={!session?.email}
@@ -44,34 +45,14 @@ export default function User({ children }: { children: React.ReactNode }) {
 
       <MenuDropdown>
         <Stack p={'md'}>
-          <PartialUser options={{ withoutAvatar: true }} />
+          <PartialUser />
         </Stack>
 
-        <MenuDivider mb={0} />
-
-        {/* <MenuLabel>Activity</MenuLabel>
-
-        {navLinkItems.activity.map((item) => (
-          <MenuItem
-            key={item.label}
-            leftSection={
-              <item.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            component={Link}
-            href={item.link}
-            className={
-              matchesPath(item.link) ? classes.itemActive : classes.item
-            }
-          >
-            {item.label}
-          </MenuItem>
-        ))}
-
-        <MenuDivider mb={0} /> */}
+        <MenuDivider m={0} />
 
         <MenuLabel>Account</MenuLabel>
 
-        {/* {navLinkItems.account.map((item) => (
+        {navLinkItems.user.account.map((item) => (
           <MenuItem
             key={item.label}
             leftSection={
@@ -85,27 +66,9 @@ export default function User({ children }: { children: React.ReactNode }) {
           </MenuItem>
         ))}
 
-        <MenuDivider mb={0} />
+        <MenuDivider m={0} />
 
-        <MenuLabel>Support</MenuLabel>
-
-        {navLinkItems.support.map((item) => (
-          <MenuItem
-            key={item.label}
-            leftSection={
-              <item.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            component={Link}
-            href={item.link}
-            className={classes.item}
-          >
-            {item.label}
-          </MenuItem>
-        ))}
-
-        <MenuDivider mb={0} />
-
-        {navLinkItems.danger.map((item) => (
+        {navLinkItems.user.danger.map((item) => (
           <MenuItem
             key={item.label}
             leftSection={
@@ -117,7 +80,7 @@ export default function User({ children }: { children: React.ReactNode }) {
           >
             {item.label}
           </MenuItem>
-        ))} */}
+        ))}
       </MenuDropdown>
     </Menu>
   );
