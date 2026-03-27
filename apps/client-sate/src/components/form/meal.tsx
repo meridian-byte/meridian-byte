@@ -119,7 +119,7 @@ export default function Meal({
                       <Stack gap={0} key={s.id}>
                         {i > 0 && <Divider />}
 
-                        <ModalServingCrud props={s}>
+                        <ModalServingCrud props={s} options={{ meal: true }}>
                           <CardServing props={s} />
                         </ModalServingCrud>
                       </Stack>

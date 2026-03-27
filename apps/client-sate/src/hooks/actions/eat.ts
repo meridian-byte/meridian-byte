@@ -1,12 +1,15 @@
 import { useStoreEat } from '@/libraries/zustand/stores/eat';
+import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { EatGet, EatRelations } from '@repo/types/models/eat';
-import { Status, SyncStatus } from '@repo/types/models/enums';
+import { EatTime, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useEatActions = () => {
   const { session } = useStoreSession();
   const { addEat, updateEat, deleteEat } = useStoreEat();
+  const { servings, setServings, updateServing, deleteServing } =
+    useStoreServing();
 
   const eatCreate = (params: Partial<EatRelations>) => {
     if (!session) return;
@@ -16,8 +19,9 @@ export const useEatActions = () => {
 
     const newEat: EatRelations = {
       id: params.id || id,
+      time: params.time || EatTime.BREAKFAST,
       profile_id: session.id || params.profile_id || '',
-      servings: params.servings || [],
+      servings: [],
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: now.toISOString() as any,
@@ -25,6 +29,7 @@ export const useEatActions = () => {
     };
 
     addEat(newEat);
+    setServings([...(servings || []), ...(params.servings || [])]);
   };
 
   const eatUpdate = (params: EatRelations) => {
