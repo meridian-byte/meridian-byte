@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import {
   ICON_SIZE,
@@ -9,6 +9,7 @@ import {
 } from '@repo/constants/sizes';
 import {
   ActionIcon,
+  Box,
   Group,
   Skeleton,
   Stack,
@@ -24,13 +25,14 @@ import {
   IconWriting,
 } from '@tabler/icons-react';
 import { NoteGet } from '@repo/types/models/note';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import WrapperUnderlayGlass from '@repo/components/wrappers/underlays/glass';
 import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
 
 export default function NoteDetails({ props }: { props?: NoteGet }) {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const userStates = useStoreUserStates((s) => s.userStates);
   const setUserStates = useStoreUserStates((s) => s.setUserStates);
@@ -40,6 +42,14 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
     label: userStates?.editing == true ? 'read' : 'edit',
     icon: userStates?.editing == true ? IconBook : IconWriting,
   };
+
+  useEffect(() => {
+    if (!userStates) return;
+    if (!props) return;
+    if (!props.content) return;
+
+    if (!userStates.editing) setUserStates({ ...userStates, editing: true });
+  }, [searchParams]);
 
   return (
     <LayoutSection
@@ -87,7 +97,9 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
           </Group>
 
           <Group gap={5} wrap="nowrap">
-            <ButtonsFullscreen />
+            <Box visibleFrom="xs">
+              <ButtonsFullscreen />
+            </Box>
 
             {userStates === undefined ? (
               <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
