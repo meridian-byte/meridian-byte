@@ -1,2 +1,3 @@
 commit visibility test
 commit visibility test (branch rule added)
+commit visibility test (branch rule with restricted pushing added)
