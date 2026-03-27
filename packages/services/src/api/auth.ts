@@ -23,8 +23,9 @@ export const signIn = async (params: SignIn): Promise<SignInReturn> => {
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email: params.formData.email,
       options: {
-        // set this to false if you do not want the user to be automatically signed up
-        shouldCreateUser: params.options?.action == AuthAction.SIGN_UP,
+        // // set this to false if you do not want the user to be automatically signed up
+        // shouldCreateUser: params.options?.action == AuthAction.SIGN_UP,
+        shouldCreateUser: true,
         // emailRedirectTo: `${params.options.baseUrl}${params.options?.redirectUrl || '/'}`,
       },
     });
