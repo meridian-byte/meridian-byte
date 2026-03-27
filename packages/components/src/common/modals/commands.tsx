@@ -64,8 +64,8 @@ export default function Commands({ children }: { children: React.ReactNode }) {
       <Modal opened={opened} onClose={close}>
         <LayoutModal props={{ close, title: 'Commands' }}>
           <ScrollArea h={280}>
-            {actions.map((a, i) => (
-              <div key={i}>
+            {actions.map((a) => (
+              <div key={a.id}>
                 <NavLink
                   label={a.label}
                   rightSection={a.rightSection}

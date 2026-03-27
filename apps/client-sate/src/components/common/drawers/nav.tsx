@@ -78,9 +78,9 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
 
       {navLinks.app
         .slice(navLinks.app.length - 1, navLinks.app.length)
-        .map((nl, i) => (
+        .map((nl) => (
           <NavLink
-            key={i}
+            key={nl.label}
             label={nl.label}
             onClick={props?.close}
             leftSection={

@@ -193,8 +193,8 @@ export function OverviewTransactions({
       )}
 
       <Group justify="center" grow mt={'xs'}>
-        {overview.map((oi, i) => (
-          <Stack key={i} gap={0} align="center">
+        {overview.map((oi) => (
+          <Stack key={oi.label} gap={0} align="center">
             <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
               {oi.label}
             </Text>

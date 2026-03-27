@@ -228,7 +228,7 @@ export function DiaryOverview({
       <Group justify="center" grow py={'xs'}>
         {overview.map((oi, i) => {
           return (
-            <Stack key={i} gap={0} align="center">
+            <Stack key={oi.label} gap={0} align="center">
               <RingProgress
                 size={mobile ? 64 : 96}
                 thickness={ICON_STROKE_WIDTH}

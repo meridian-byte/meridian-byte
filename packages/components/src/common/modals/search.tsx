@@ -64,8 +64,8 @@ export default function Search({ children }: { children: React.ReactNode }) {
                   </Text>
                 </Center>
               ) : (
-                items.map((a, i) => (
-                  <div key={i}>
+                items.map((a) => (
+                  <div key={a.id}>
                     <NavLink
                       label={a.label}
                       leftSection={a.leftSection}

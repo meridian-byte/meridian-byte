@@ -37,8 +37,8 @@ export default function App() {
   return (
     <LayoutSection id="footer-app" containerized={'xs'} h={'100%'}>
       <Group h={'100%'} justify="center" gap={'xl'}>
-        {footerLinks.map((fl, i) => (
-          <NextLink key={i} href={fl.link} underline="never">
+        {footerLinks.map((fl) => (
+          <NextLink key={fl.label} href={fl.link} underline="never">
             <Tooltip label={fl.label}>
               <Stack gap={5} align="center">
                 <ActionIcon size={ICON_WRAPPER_SIZE + 4} variant="subtle">

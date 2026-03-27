@@ -14,7 +14,6 @@ import {
 } from '@mantine/core';
 import LayoutModalMain from '@repo/components/layout/modal';
 import { useNoteActions } from '@repo/hooks/actions/note';
-import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
@@ -73,9 +72,9 @@ export default function Move({
                   </Center>
                 </>
               ) : (
-                searchCriteriaItems.map((pni, i) => (
+                searchCriteriaItems.map((pni) => (
                   <NavLink
-                    key={i}
+                    key={pni.id}
                     label={pni.title}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
