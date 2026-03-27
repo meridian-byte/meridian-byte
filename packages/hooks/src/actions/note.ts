@@ -6,6 +6,7 @@ import { generateUUID } from '@repo/utilities/generators';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { NotebookGet } from '@repo/types/models/notebook';
 import { useItemEditContext } from '../contexts/item-edit';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 
 export const useNoteActions = () => {
   const { session } = useStoreSession();
@@ -18,8 +19,11 @@ export const useNoteActions = () => {
   const { editing, editingId, setEditingState, startRename, inputRefs } =
     useItemEditContext();
 
+  const { userStates, setUserStates } = useStoreUserStates();
+
   const noteCreate = (params?: Partial<NoteGet>) => {
     if (!session) return;
+    if (!userStates) return;
 
     const id = generateUUID();
     const now = new Date();
@@ -39,6 +43,8 @@ export const useNoteActions = () => {
     addNote(newNote);
 
     router.push(`/app?noteId=${newNote.id}`);
+
+    if (!userStates.editing) setUserStates({ ...userStates, editing: true });
 
     return newNote;
   };

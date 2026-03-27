@@ -252,7 +252,7 @@ export const useUserStatesStore = () => {
 
   useEffect(() => {
     const initializeUserState = () => {
-      setUserStates({ editing: true });
+      setUserStates({ editing: false });
     };
 
     initializeUserState();
