@@ -1,6 +1,6 @@
 'use client';
 
-import { Skeleton, Stack } from '@mantine/core';
+import { Box, Divider, Skeleton, Stack } from '@mantine/core';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
@@ -36,7 +36,18 @@ export default function Notes() {
 
   return (
     <div>
-      <Stack gap={0} style={{ zIndex: 0 }}>
+      <Box
+        pos={'sticky'}
+        top={48}
+        bg={
+          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+        }
+        style={{ zIndex: 1 }}
+      >
+        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
+      </Box>
+
+      <Stack gap={0} style={{ zIndex: 0 }} pt={3.33333} pb={'xs'}>
         {notes === undefined ? (
           <Stack gap={5}>
             {navlinkSkeleton}

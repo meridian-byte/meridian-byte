@@ -27,8 +27,8 @@ export default function Left() {
         style={{ gap: 5, zIndex: 1 }}
         pos={'sticky'}
         top={0}
-        pl={'xs'}
-        mr={'xs'}
+        px={'xs'}
+        // mr={'xs'}
         bg={
           'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
         }

@@ -27,6 +27,7 @@ import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navba
 export default function Navbar({ children }: { children: React.ReactNode }) {
   const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const desktop = useMediaQuery('(min-width: 62em)');
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   return (
     <>
@@ -36,7 +37,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
           opened={navbarChild ?? false}
           padding={0}
           withCloseButton={false}
-          onClose={() => {}}
+          onClose={toggleNavbarChild}
           size={'xs'}
           styles={{
             content: {

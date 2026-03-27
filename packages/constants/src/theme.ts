@@ -184,6 +184,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
 
       Tooltip: Tooltip.extend({
         defaultProps: {
+          visibleFrom: 'md',
           withArrow: true,
           transitionProps: {
             duration: 100,

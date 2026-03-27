@@ -30,12 +30,13 @@ export default function Child({
   const mobile = useMediaQuery('(max-width: 36em)');
   const desktop = useMediaQuery('(min-width: 62em)');
   const desktopLg = useMediaQuery('(min-width: 75em)');
+  const desktopXl = useMediaQuery('(min-width: 88em)');
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
 
   const widths = {
-    navbarLeft: desktopLg ? 22.5 : desktop ? 30 : 22.5,
-    navbarRight: desktopLg ? 22.5 : desktop ? 30 : 22.5,
+    navbarLeft: desktopXl ? 22.5 : desktopLg ? 25 : desktop ? 30 : 22.5,
+    navbarRight: desktopXl ? 22.5 : desktopLg ? 25 : desktop ? 30 : 22.5,
   };
 
   const MemoizedChildren = useMemo(() => children, [children]);

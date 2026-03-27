@@ -228,6 +228,7 @@ function NoteLabel({
   toggle?: () => void;
   onNavigate: () => void;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
   const ChevronIcon = opened ? IconChevronDown : IconChevronRight;
 
   return (
@@ -246,6 +247,7 @@ function NoteLabel({
                 color="dark"
                 variant="subtle"
                 className={classes.theme}
+                style={{ display: !desktop ? 'none' : undefined }}
               >
                 <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
               </ActionIcon>
@@ -257,7 +259,7 @@ function NoteLabel({
                   color="dark"
                   variant="subtle"
                   onClick={toggle}
-                  className={classes.action}
+                  className={!desktop ? undefined : classes.action}
                 >
                   <ChevronIcon
                     size={ICON_SIZE - 4}
@@ -279,14 +281,14 @@ function NoteLabel({
         </Group>
       </GridCol>
 
-      <GridCol span={8} onClick={onNavigate}>
+      <GridCol span={9} onClick={onNavigate}>
         <Text component="span" inherit lineClamp={1}>
           {item?.title}
         </Text>
       </GridCol>
 
       <GridCol
-        span={3}
+        span={2}
         className={hasChildren ? classes.menu : classes.menuChild}
       >
         <NoteActions noteId={item?.id} />
