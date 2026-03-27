@@ -24,6 +24,7 @@ import {
   useSyncMasses,
 } from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
+import { useSyncQueue } from '@repo/utilities/sync';
 
 export default function Sync({
   children,
@@ -39,7 +40,7 @@ export default function Sync({
   const { session } = useStoreSession();
   const { syncStatus, setSyncStatus } = useStoreSyncStatus();
 
-  const debounceSync = useThrottledCallback(handleSync, 1000);
+  const enqueueSync = useSyncQueue({ syncFunction: handleSync });
 
   const debounceSyncToServer = useDebouncedCallback(
     syncToServerAfterDelay,
@@ -56,27 +57,27 @@ export default function Sync({
   };
 
   const { syncFoods } = useSyncFoods({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncMeals } = useSyncMeals({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncServings } = useSyncServings({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncEats } = useSyncEats({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncMasses } = useSyncMasses({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 

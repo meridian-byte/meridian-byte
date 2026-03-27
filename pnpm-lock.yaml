@@ -775,6 +775,12 @@ importers:
       next:
         specifier: 16.0.10
         version: 16.0.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.97.0)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.0(react@19.2.0)
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
@@ -788,6 +794,12 @@ importers:
       '@types/node':
         specifier: ^22.15.3
         version: 22.19.3
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
       typescript:
         specifier: 5.9.2
         version: 5.9.2

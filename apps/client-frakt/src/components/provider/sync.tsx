@@ -8,11 +8,7 @@
  */
 
 import React, { useEffect } from 'react';
-import {
-  useDebouncedCallback,
-  useNetwork,
-  useThrottledCallback,
-} from '@mantine/hooks';
+import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
@@ -24,6 +20,7 @@ import {
   useSyncTransactions,
 } from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
+import { useSyncQueue } from '@repo/utilities/sync';
 
 export default function Sync({
   children,
@@ -39,7 +36,7 @@ export default function Sync({
   const { session } = useStoreSession();
   const { syncStatus, setSyncStatus } = useStoreSyncStatus();
 
-  const debounceSync = useThrottledCallback(handleSync, 1000);
+  const enqueueSync = useSyncQueue({ syncFunction: handleSync });
 
   const debounceSyncToServer = useDebouncedCallback(
     syncToServerAfterDelay,
@@ -56,27 +53,27 @@ export default function Sync({
   };
 
   const { syncCategories } = useSyncCategories({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncBudgets } = useSyncBudgets({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncAccounts } = useSyncAccounts({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncAccountGroups } = useSyncAccountGroups({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
   const { syncTransactions } = useSyncTransactions({
-    syncFunction: (i: SyncParams) => debounceSync({ ...i, ...restProps }),
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
   });
 
