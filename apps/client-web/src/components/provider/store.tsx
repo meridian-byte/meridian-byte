@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { useSessionStore, useLoadStores } from '@repo/hooks/store';
+import { useSessionStore, useLoadAppData } from '@repo/hooks/store';
 import { User } from '@supabase/supabase-js';
 
 export default function Store({
@@ -27,7 +27,7 @@ export default function Store({
   // useUserRoleStore();
   // useThemeStore()
   // useAppshellStore();
-  useLoadStores({ options: { clientOnly: true, storesToLoad: {} } });
+  useLoadAppData({ clientOnly: true, storesToLoad: {} });
 
   return <div>{children}</div>;
 }
