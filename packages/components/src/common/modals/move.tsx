@@ -32,7 +32,7 @@ export default function Move({
   const notes = useStoreNote((s) => s.notes);
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
 
-  const { noteMove, noteUpdate } = useNoteActions();
+  const { noteMove } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
     list: (notes || []).filter((n) => n.id != props?.noteId),
@@ -80,7 +80,7 @@ export default function Move({
                     }}
                     onClick={() => {
                       if (note) {
-                        noteUpdate({ ...note, parent_note_id: '' });
+                        noteMove({ values: note, parent_note_id: null });
                       }
                     }}
                   />

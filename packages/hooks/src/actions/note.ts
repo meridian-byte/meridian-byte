@@ -172,14 +172,15 @@ export const useNoteActions = () => {
   };
 
   // handler to move note
-  const noteMove = (params: { values: NoteGet; parent_note_id?: string }) => {
+  const noteMove = (params: {
+    values: NoteGet;
+    parent_note_id: string | null;
+  }) => {
     // update note notebook id
-    if (params.parent_note_id) {
-      noteUpdate({
-        ...params.values,
-        parent_note_id: params.parent_note_id,
-      });
-    }
+    noteUpdate({
+      ...params.values,
+      parent_note_id: params.parent_note_id,
+    });
   };
 
   return {
