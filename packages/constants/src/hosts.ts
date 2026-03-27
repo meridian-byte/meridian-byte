@@ -8,10 +8,15 @@
 export const crossOrigins = [
   'localhost',
   '127.0.0.1',
-  'meridian-byte-client-frakt.vercel.app',
-  'meridian-byte-client-kairo.vercel.app',
-  'meridian-byte-client-noteline.vercel.app',
-  'meridian-byte-client-sate.vercel.app',
+
   'meridian-byte-client-web.vercel.app',
-  'meridianbyte.com', // production domain
+  'meridianbyte.com',
+  'meridian-byte-client-noteline.vercel.app',
+  'noteline.meridianbyte.com',
+  'meridian-byte-client-frakt.vercel.app',
+  'frakt.meridianbyte.com',
+  'meridian-byte-client-kairo.vercel.app',
+  'kairo.meridianbyte.com',
+  'meridian-byte-client-sate.vercel.app',
+  'sate.meridianbyte.com',
 ];
