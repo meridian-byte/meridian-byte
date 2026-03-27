@@ -1,29 +1,30 @@
 <table style="
     width: 100%;
-    max-width: 840px;
-    padding: 3rem;
-    border: 1px solid #e4e6ed;
-    border-radius: 0.25rem;
+    max-width: 600px;
+    padding: 4rem 1rem;
+    background-color: #f7f7f7;
+    border-radius: 1rem;
     margin: 0 auto;
     font-family: 'Calibri', Arial, sans-serif;
+    font-size: 14px;
   ">
-  <tr>
+  <!-- <tr>
     <td style="text-align: center">
       <a href="https://meridian-byte.vercel.app">
         <img src="https://kevon.net/images/brand/icon/light.png" alt="MeridianByte" style="width: 40px; height: auto" />
       </a>
     </td>
-  </tr>
+  </tr> -->
 
   <tr>
-    <td style="text-align: center; padding-top: 2rem">
-      <h1 style="margin: 0">Sign In OTP</h1>
+    <td>
+      <h1 style="margin: 0;font-size: 18px;">Confirm Your Sign In</h1>
     </td>
   </tr>
 
   <tr>
     <td style="padding-top: 2rem">
-      <p>Hi,</p>
+      <p>Hi there,</p>
       <p style="margin: 0">
         This is an email containing an OTP to sign you in. We're just
         making sure it's really you. Enter the code below to access your
@@ -32,23 +33,34 @@
     </td>
   </tr>
 
-  <td style="text-align: center; padding-top: 2rem">
-    <p style="font-weight: bold; font-size: 2rem; color: #b08e67;">
-      {{ .Token }}
-    </p>
+  <td style="padding-top: 2rem">
+    <div style="background-color: #e4e6ed; border-radius: 1rem; padding: 1rem 2rem;">
+      <p style="font-weight: bold; font-size: 1rem; margin: 0;">
+        {{ .Token }}
+      </p>
+    </div>
   </td>
 
   <tr>
-    <td style="padding-top: 2rem">
+    <td style="padding-top: 3rem">
       <hr style="border: none; height: 1px; background-color: #e4e6ed" />
     </td>
   </tr>
 
   <tr>
-    <td style="font-size: small; color: dimgray; margin: 0; padding-top: 2rem">
-      If you didn't request this OTP, you can safely ignore this email.
-      If you are concerned about the security of your account, please
-      <a href="mailto:support@meridianbyte.com" style="color: black">contact support</a>.
+    <td style="color: gray; margin: 0; padding-top: 1rem; font-size: 12px;">
+      <p>
+        If you didn't request an OTP from MeridianByte, you can safely ignore this email.
+      </p>
+      <p>
+        If you are concerned about the security of your account, please
+        <a href="mailto:support@meridianbyte.com" style="color: black; font-weight:bold; text-decoration: none;">contact
+          support</a>.
+      </p>
+      <p>
+        © 2026, <a href="mailto:info@meridianbyte.com"
+          style="color: black; font-weight:bold; text-decoration: none;">MeridianByte</a> Inc.
+      </p>
     </td>
   </tr>
 </table>

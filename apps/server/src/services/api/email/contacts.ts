@@ -5,6 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
+import resend from '@/libraries/resend';
 import { emailSendOnboardNewsletter } from '@/libraries/wrappers/email';
 import { FormValuesInquiry } from '@repo/types/form';
 import { segmentFullName } from '@repo/utilities/string';
@@ -18,40 +19,27 @@ export const emailContactAdd = async (
       throw new Error('Email is required');
     }
 
-    const now = new Date();
+    const nameSegments = segmentFullName(formData.name || '');
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_MAILERLITE_API_URL}/subscribers`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_MAILERLITE_KEY_GENERAL}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          fields: {
-            name: segmentFullName(formData.name || '').first,
-            last_name: segmentFullName(formData.name || '').last,
-            phone: formData.phone || '',
-          },
-          groups: [process.env.NEXT_MAILERLITE_GROUP_GENERAL],
-          status: 'active',
-          subscribed_at: now.toISOString().replace('T', ' ').slice(0, 19),
-          opted_in_at: now.toISOString().replace('T', ' ').slice(0, 19),
-        }),
-      }
-    );
+    const contactCreate = await resend.contacts.create({
+      email: formData.email,
+      firstName: nameSegments.first,
+      lastName: nameSegments.last,
+      properties: {
+        phone: formData.phone || '',
+      },
+    });
 
-    if (response.status >= 400) {
+    if (contactCreate.error) {
       console.error(
-        '---> route handler error (add email contact):',
+        '---> route service error (add email contact):',
         'API Service Error'
       );
+
       throw new Error('API Service Error');
     }
 
-    if (notify && response.status == 201) {
+    if (notify) {
       // send welcome email if new user
       await emailSendOnboardNewsletter({
         to: formData.email,
@@ -59,7 +47,7 @@ export const emailContactAdd = async (
       });
     }
 
-    return response;
+    return contactCreate.data;
   } catch (error) {
     console.error('---> api service error (add email contact):', error);
     throw error;
