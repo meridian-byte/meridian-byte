@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { signIn } from '@/services/api/auth';
+import { signIn } from '@repo/services/api/auth';
 import { SignIn } from '@repo/types/auth';
 
 export const dynamic = 'force-dynamic';

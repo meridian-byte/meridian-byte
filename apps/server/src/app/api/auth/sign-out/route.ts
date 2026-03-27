@@ -5,7 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { signOut } from '@/services/api/auth';
+import { signOut } from '@repo/services/api/auth';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';

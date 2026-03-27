@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { emailContactAdd } from '@/services/api/email/contacts';
+import { emailContactAdd } from '@repo/services/api/email/contacts';
 import { FormValuesInquiry } from '@repo/types/form';
 
 export async function POST(request: NextRequest) {
