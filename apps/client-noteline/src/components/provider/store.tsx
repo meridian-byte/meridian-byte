@@ -19,12 +19,12 @@ import { useThemeStore } from '../../hooks/store';
 export default function Store({ children }: { children: React.ReactNode }) {
   // initialize stores
 
-  useSessionStore({ options: { clientOnly: true } });
+  useSessionStore({ options: { clientOnly: false } });
   // useUserRoleStore();
   useThemeStore();
   useAppshellStore();
   useUserStatesStore();
-  useStoreData({ options: { clientOnly: true } });
+  useStoreData({ options: { clientOnly: false } });
 
   return <div>{children}</div>;
 }
