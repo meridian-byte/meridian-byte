@@ -24,7 +24,7 @@ export const useFormUserProfile = () => {
   }>(
     {
       name: session?.user_metadata.name || 'Set Name',
-      user_name: session?.user_metadata.user_name || 'Set username',
+      user_name: session?.user_metadata.userName || 'Set username',
     },
     {
       name: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
@@ -66,7 +66,7 @@ export const useFormUserProfile = () => {
             ...session.user_metadata,
             name: cleanValues.name,
             full_name: cleanValues.name,
-            user_name: cleanValues.userName,
+            userName: cleanValues.userName,
           },
         });
 
