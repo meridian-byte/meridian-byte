@@ -10,6 +10,7 @@ import { Metadata } from 'next';
 import LayoutPage from '@repo/components/layout/page';
 import FormAuth from '@repo/components/form/auth';
 import { AuthAction } from '@repo/types/enums';
+import { BASE_URL_CLIENT } from '@repo/constants/paths';
 
 export const metadata: Metadata = { title: 'Sign Up' };
 
@@ -22,6 +23,7 @@ export default function SignUp() {
           title: 'Create Your Account!',
           desc: 'Join us and start your journey today.',
         }}
+        baseUrl={BASE_URL_CLIENT.NOTELINE}
       />
     </LayoutPage>
   );

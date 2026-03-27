@@ -14,7 +14,8 @@ import { useNotification } from '@repo/hooks/notification';
 type UseFormBaseOptions<TValues> = {
   /** Called with parsed values after validation passes */
   onSubmit: (
-    values: TValues
+    values: TValues,
+    options?: any
   ) => Promise<{ response?: Response; result?: any } | void>;
   /** Optional close callback (eg. for modal) */
   close?: () => void;
@@ -43,7 +44,7 @@ export function useFormBase<TValues extends Record<string, any>>(
 
   const { showNotification } = useNotification();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (params?: { options?: any }) => {
     if (!form.isValid()) {
       showNotification({
         variant: Variant.WARNING,
@@ -64,7 +65,7 @@ export function useFormBase<TValues extends Record<string, any>>(
 
     setSubmitted(true);
     try {
-      const submit = await options?.onSubmit(form.values);
+      const submit = await options?.onSubmit(form.values, params?.options);
 
       if (options?.resetOnSuccess) form.reset();
 
