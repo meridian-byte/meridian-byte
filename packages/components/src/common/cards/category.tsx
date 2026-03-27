@@ -23,12 +23,18 @@ import ModalConfirm from '@repo/components/common/modals/confirm';
 import { useCategoryActions } from '@repo/hooks/actions/category';
 import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
 
-export default function Category({ props }: { props: CategoryGet }) {
+export default function Category({
+  props,
+}: {
+  props: { category: CategoryGet; source: string };
+}) {
   const { categoryDelete } = useCategoryActions();
 
   const transactions = useStoreTransaction((s) => s.transactions);
 
-  const groupAccounts = transactions?.filter((t) => t.category_id == props.id);
+  const groupAccounts = transactions?.filter(
+    (t) => t.category_id == props.category.id
+  );
 
   let totalCategoryAmount = 0.0;
 
@@ -41,11 +47,11 @@ export default function Category({ props }: { props: CategoryGet }) {
       <Group justify="space-between">
         <Stack gap={2}>
           <Title order={3} fz={'md'} fw={'normal'}>
-            {props.title}
+            {props.category.title}
           </Title>
 
           <Group gap={5} pl={4}>
-            <ModalCategoryCrud props={props}>
+            <ModalCategoryCrud props={props.category} source={props.source}>
               <Group>
                 <Tooltip label="Edit Category">
                   <ActionIcon size={ICON_WRAPPER_SIZE - 4} variant="subtle">
@@ -58,8 +64,8 @@ export default function Category({ props }: { props: CategoryGet }) {
             <Tooltip label="Delete Category">
               <ModalConfirm
                 props={{
-                  desc: `Category '${props.title}' and all transactions tied to it will be permanently deleted.`,
-                  onConfirm: () => categoryDelete(props),
+                  desc: `Category '${props.category.title}' and all transactions tied to it will be permanently deleted.`,
+                  onConfirm: () => categoryDelete(props.category),
                 }}
               >
                 <Group>
