@@ -4,7 +4,6 @@ import { NoteGet } from '@repo/types/models/note';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { NotebookGet } from '@repo/types/models/notebook';
 import { useItemEditContext } from '../contexts/item-edit';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { linkify } from '@repo/utilities/url';
@@ -37,8 +36,8 @@ export const useNoteActions = () => {
       id: params?.id || id,
       title: params?.title || 'New Note',
       content: params?.content || '<p></p>',
+      parent_note_id: params?.parent_note_id || null,
       profile_id: session.id || params?.profile_id || '',
-      notebook_id: params?.notebook_id || null,
       status: params?.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params?.created_at || now).toISOString() as any,
@@ -176,12 +175,12 @@ export const useNoteActions = () => {
   };
 
   // handler to move note
-  const noteMove = (params: { values: NoteGet; notebook?: NotebookGet }) => {
+  const noteMove = (params: { values: NoteGet; parent_note_id?: string }) => {
     // update note notebook id
-    if (params.notebook) {
+    if (params.parent_note_id) {
       noteUpdate({
         ...params.values,
-        notebook_id: params.notebook.id,
+        parent_note_id: params.parent_note_id,
       });
     }
   };

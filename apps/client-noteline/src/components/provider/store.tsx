@@ -28,7 +28,6 @@ export default function Store({ children }: { children: React.ReactNode }) {
       clientOnly: false,
       storesToLoad: {
         notes: true,
-        notebooks: true,
       },
     },
   });

@@ -43,9 +43,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
     storesToSync: {
-      notebooks: true,
       notes: true,
-      links: true,
     },
   });
 

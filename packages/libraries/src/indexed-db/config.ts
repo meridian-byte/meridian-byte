@@ -39,10 +39,6 @@ export const config: DBConfig = {
       keyPath: 'id',
     },
     {
-      name: STORE_NAME.NOTEBOOKS,
-      keyPath: 'id',
-    },
-    {
       name: STORE_NAME.NOTES,
       keyPath: 'id',
     },

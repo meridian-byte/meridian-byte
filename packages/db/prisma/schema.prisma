@@ -110,7 +110,6 @@ model Profile {
   servings       Serving[]
   eats           Eat[]
   masses         Mass[]
-  notebooks      Notebook[]
   notes          Note[]
   links          Link[]
   chats          Chat[]
@@ -412,33 +411,14 @@ model Mass {
   @@map(name: "masses")
 }
 
-model Notebook {
-  id    String @id @default(uuid())
-  title String
+model Note {
+  id             String  @id @default(uuid())
+  title          String
+  content        String?
+  parent_note_id String?
 
   profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id String
-
-  notes Note[]
-
-  status      Status     @default(ACTIVE)
-  sync_status SyncStatus @default(SYNCED)
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@map(name: "notebooks")
-}
-
-model Note {
-  id      String  @id @default(uuid())
-  title   String
-  content String?
-
-  profile     Profile   @relation(fields: [profile_id], references: [id], onDelete: Cascade)
-  profile_id  String
-  notebook    Notebook? @relation(fields: [notebook_id], references: [id], onDelete: SetNull)
-  notebook_id String?
 
   links_from Link[] @relation("FromLinks") // outgoing links
   links_to   Link[] @relation("ToLinks") // incoming links (backlinks)
