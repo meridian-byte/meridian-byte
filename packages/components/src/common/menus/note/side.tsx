@@ -36,7 +36,7 @@ export default function Side({
   };
   children: React.ReactNode;
 }) {
-  const { opened, setOpened, close, menuWidth, targetProps, anchor } =
+  const { opened, setOpened, close, menuWidth, targetProps, anchorProps } =
     useContextMenu();
 
   return (
@@ -64,7 +64,9 @@ export default function Side({
           },
         }}
       >
-        <MenuTarget>{anchor}</MenuTarget>
+        <MenuTarget>
+          <div {...anchorProps} />
+        </MenuTarget>
 
         <MenuDropdown>
           <MenuItem

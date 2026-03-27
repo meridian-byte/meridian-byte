@@ -10,7 +10,7 @@ import LayoutBody from '@repo/components/layout/body';
 import LayoutSection from '@repo/components/layout/section';
 import ImageDefault from '@repo/components/common/images/default';
 import { Stack, Card, Group } from '@mantine/core';
-import { images } from '@/assets/images';
+import { images } from '@repo/constants/images';
 import { COMPANY_NAME } from '@repo/constants/app';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { Metadata } from 'next';

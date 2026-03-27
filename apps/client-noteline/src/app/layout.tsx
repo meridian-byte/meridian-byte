@@ -20,13 +20,13 @@ import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
 import ProviderStore from '@/components/provider/store';
 import ProviderSync from '@/components/provider/sync';
-import { mantine } from '@/assets/styles';
+import { mantine } from '@repo/constants/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { COMPANY_NAME } from '@repo/constants/app';
 import { AUTH_URLS } from '@repo/constants/paths';
-import { APP_NAME } from '@/data/constants';
+import { APP_NAME } from '@repo/constants/app';
 import RouteProtection from '@repo/components/wrappers/auth/route-protection';
-import { authRoutes, protectedRoutes } from '@/data/routes';
+import { authRoutes, protectedRoutes } from '@repo/constants/routes';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -59,13 +59,13 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         {/* General Web App Metadata */}
-        <meta name="application-name" content={APP_NAME} />
+        <meta name="application-name" content={APP_NAME.NOTELINE} />
         <meta name="theme-color" content="#b08e67" />
 
         {/* Apple Web App Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content={APP_NAME} />
+        <meta name="apple-mobile-web-app-title" content={APP_NAME.NOTELINE} />
 
         {/* Misc. Mobile Enhancements */}
         <meta name="format-detection" content="telephone=no" />

@@ -8,7 +8,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import LayoutPage from '@repo/components/layout/page';
-import { NotifyError as PartialNotifyError } from '@/components/partial/page/notify';
+import { NotifyError as PartialNotifyError } from '@repo/components/partial/page/notify';
 
 export const metadata: Metadata = { title: 'Authentication Error' };
 

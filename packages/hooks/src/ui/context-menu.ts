@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function useContextMenu(params?: { menuWidth?: number }) {
+export const useContextMenu = (params?: { menuWidth?: number }) => {
   const [opened, setOpened] = useState(false);
   const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
 
@@ -23,16 +23,14 @@ export function useContextMenu(params?: { menuWidth?: number }) {
       onContextMenu: handleContextMenu,
       style: { cursor: 'context-menu' },
     },
-    anchor: (
-      <div
-        style={{
-          position: 'fixed',
-          top: coords?.y,
-          left: coords?.x,
-          width: menuWidth,
-          height: 0,
-        }}
-      />
-    ),
+    anchorProps: {
+      style: {
+        position: 'fixed' as const,
+        top: coords?.y,
+        left: coords?.x,
+        width: menuWidth,
+        height: 0,
+      },
+    },
   };
-}
+};

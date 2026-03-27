@@ -21,13 +21,13 @@ import {
   WEEK,
 } from '@repo/constants/sizes';
 import { IconFilePlus, IconFolderPlus } from '@tabler/icons-react';
-import { useNotebookActions } from '@/hooks/actions/notebook';
-import MenuNoteSide from '@/components/common/menu/note/side';
-import InputTextRename from '@/components/common/inputs/text/rename';
+import { useNotebookActions } from '@repo/hooks/actions/notebook';
+import MenuNoteSide from '@repo/components/common/menus/note/side';
+import InputTextRename from '@repo/components/common/inputs/text/rename';
 import { NoteGet } from '@repo/types/models/note';
-import AccordionNotebooks from '@/components/common/accordions/notebooks';
+import AccordionNotebooks from '@repo/components/common/accordions/notebooks';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
-import { useNoteActions } from '@/hooks/actions/note';
+import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { AppShell } from '@repo/types/components';

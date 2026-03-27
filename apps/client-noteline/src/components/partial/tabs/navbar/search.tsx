@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, NavLink, Skeleton, Stack, Text } from '@mantine/core';
-import InputTextSearch from '@/components/common/inputs/text/search';
+import InputTextSearch from '@repo/components/common/inputs/text/search';
 import Link from 'next/link';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';

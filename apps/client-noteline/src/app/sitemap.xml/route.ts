@@ -1,7 +1,6 @@
 // app/sitemap.xml/route.ts
 import { NextResponse } from 'next/server';
 import { PRODUCTION_BASE_URL_CLIENT_WEB } from '@repo/constants/paths';
-import { sitemapRoutes } from '@/data/routes';
 
 export const dynamic = 'force-static';
 
@@ -13,7 +12,6 @@ export async function GET() {
 
   const staticRoutes = [
     '', // homepage
-    ...sitemapRoutes,
   ].map((route) => ({
     loc: `${PRODUCTION_BASE_URL_CLIENT_WEB.DEFAULT}${route}`,
     lastmod: today,

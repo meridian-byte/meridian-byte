@@ -7,83 +7,148 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { MantineColorScheme, useMantineColorScheme } from '@mantine/core';
+// import { MantineColorScheme, useMantineColorScheme } from '@mantine/core';
+// import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
+// import { COOKIE_NAME, LOCAL_STORAGE_NAME } from '@repo/constants/names';
+// import { WEEK } from '@repo/constants/sizes';
+// import {
+//   setCookieClient,
+//   getCookieClient,
+// } from '@repo/utilities/cookie-client';
+// import { getOSTheme } from '@repo/utilities/misc';
+// import { useCallback, useEffect } from 'react';
+// import { ColorScheme } from '@repo/types/enums';
+// import { removeFromLocalStorage } from '@repo/utilities/storage';
+// import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
+
+// export const useColorSchemeHandler = () => {
+//   const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });
+
+//   const { theme, setTheme } = useStoreTheme();
+
+//   const persistCookies = useCallback(
+//     (stateValue: ColorScheme, schemeValue: MantineColorScheme) => {
+//       setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, stateValue, {
+//         expiryInSeconds: WEEK,
+//       });
+//       setCookieClient(COOKIE_NAME.COLOR_SCHEME, schemeValue, {
+//         expiryInSeconds: WEEK,
+//       });
+//     },
+//     []
+//   );
+
+//   const handleChange = useCallback(
+//     (value: ColorScheme) => {
+//       if (value === theme) return; // ✅ no-op if same value
+
+//       setTheme(value);
+
+//       const scheme = getOSTheme(value as ColorScheme) as MantineColorScheme;
+
+//       // ✅ set Mantine scheme
+//       setColorScheme(scheme);
+
+//       // ✅ persist to cookies
+//       persistCookies(value, scheme);
+
+//       // don't persist mantine scheme in storage
+//       removeFromLocalStorage(LOCAL_STORAGE_NAME.MANTINE_COLOR_SCHEME_VALUE);
+//     },
+//     [theme, setColorScheme, persistCookies, setTheme]
+//   );
+
+//   useEffect(() => {
+//     const stateValue = (getCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE) ||
+//       DEFAULT_COLOR_SCHEME) as ColorScheme;
+//     const schemeValue = (getCookieClient(COOKIE_NAME.COLOR_SCHEME) ||
+//       getOSTheme(stateValue as ColorScheme)) as MantineColorScheme;
+
+//     // ✅ ensure both cookies are present and consistent
+//     persistCookies(stateValue, schemeValue);
+
+//     // ✅ update store and Mantine
+//     setTheme(stateValue);
+//     setColorScheme(schemeValue);
+
+//     // don't persist mantine scheme in storage
+//     removeFromLocalStorage(LOCAL_STORAGE_NAME.MANTINE_COLOR_SCHEME_VALUE);
+//   }, [setColorScheme, persistCookies, setTheme]);
+
+//   // Auto-detect OS color scheme changes
+//   useEffect(() => {
+//     const media = window.matchMedia('(prefers-color-scheme: dark)');
+//     const listener = () => handleChange(ColorScheme.AUTO);
+//     media.addEventListener('change', listener);
+//     return () => media.removeEventListener('change', listener);
+//   }, [handleChange]);
+
+//   const resolvedScheme = getOSTheme(theme as ColorScheme);
+
+//   return { theme, resolvedScheme, handleChange };
+// };
+
+import { MantineColorScheme } from '@mantine/core';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
-import { COOKIE_NAME, LOCAL_STORAGE_NAME } from '@repo/constants/names';
+import { COOKIE_NAME } from '@repo/constants/names';
 import { WEEK } from '@repo/constants/sizes';
 import {
   setCookieClient,
   getCookieClient,
 } from '@repo/utilities/cookie-client';
 import { getOSTheme } from '@repo/utilities/misc';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ColorScheme } from '@repo/types/enums';
-import { removeFromLocalStorage } from '@repo/utilities/storage';
-import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 
-export const useColorSchemeHandler = () => {
-  const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });
+export const useColorSchemeHandler = (params: {
+  schemeState: string;
+  setSchemeState: (schemeState: ColorScheme) => void;
+  setMantineScheme: (scheme: MantineColorScheme) => void;
+}) => {
+  const handleChange = (value: ColorScheme) => {
+    // update in state
+    params.setSchemeState(value);
 
-  const { theme, setTheme } = useStoreTheme();
+    // update scheme state cookie
+    setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, value, {
+      expiryInSeconds: WEEK,
+    });
 
-  const persistCookies = useCallback(
-    (stateValue: ColorScheme, schemeValue: MantineColorScheme) => {
-      setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, stateValue, {
-        expiryInSeconds: WEEK,
-      });
-      setCookieClient(COOKIE_NAME.COLOR_SCHEME, schemeValue, {
-        expiryInSeconds: WEEK,
-      });
-    },
-    []
-  );
+    const scheme = getOSTheme(value as ColorScheme);
 
-  const handleChange = useCallback(
-    (value: ColorScheme) => {
-      if (value === theme) return; // ✅ no-op if same value
+    // update mantine color scheme
+    params.setMantineScheme(scheme as MantineColorScheme);
 
-      setTheme(value);
-
-      const scheme = getOSTheme(value as ColorScheme) as MantineColorScheme;
-
-      // ✅ set Mantine scheme
-      setColorScheme(scheme);
-
-      // ✅ persist to cookies
-      persistCookies(value, scheme);
-
-      // don't persist mantine scheme in storage
-      removeFromLocalStorage(LOCAL_STORAGE_NAME.MANTINE_COLOR_SCHEME_VALUE);
-    },
-    [theme, setColorScheme, persistCookies, setTheme]
-  );
+    // update scheme cookie
+    setCookieClient(COOKIE_NAME.COLOR_SCHEME, scheme, {
+      expiryInSeconds: WEEK,
+    });
+  };
 
   useEffect(() => {
-    const stateValue = (getCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE) ||
-      DEFAULT_COLOR_SCHEME) as ColorScheme;
-    const schemeValue = (getCookieClient(COOKIE_NAME.COLOR_SCHEME) ||
-      getOSTheme(stateValue as ColorScheme)) as MantineColorScheme;
+    const cookieValueState = getCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE);
 
-    // ✅ ensure both cookies are present and consistent
-    persistCookies(stateValue, schemeValue);
+    if (!cookieValueState) {
+      setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, DEFAULT_COLOR_SCHEME, {
+        expiryInSeconds: WEEK,
+      });
+    }
 
-    // ✅ update store and Mantine
-    setTheme(stateValue);
-    setColorScheme(schemeValue);
+    const cookieValue = getCookieClient(COOKIE_NAME.COLOR_SCHEME);
 
-    // don't persist mantine scheme in storage
-    removeFromLocalStorage(LOCAL_STORAGE_NAME.MANTINE_COLOR_SCHEME_VALUE);
-  }, [setColorScheme, persistCookies, setTheme]);
+    if (!cookieValue) {
+      setCookieClient(COOKIE_NAME.COLOR_SCHEME, DEFAULT_COLOR_SCHEME, {
+        expiryInSeconds: WEEK,
+      });
+    }
 
-  // Auto-detect OS color scheme changes
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const listener = () => handleChange(ColorScheme.AUTO);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [handleChange]);
+    params.setSchemeState(
+      (cookieValueState || DEFAULT_COLOR_SCHEME) as ColorScheme
+    );
+    params.setMantineScheme(
+      (cookieValue as MantineColorScheme) || DEFAULT_COLOR_SCHEME
+    );
+  }, []);
 
-  const resolvedScheme = getOSTheme(theme as ColorScheme);
-
-  return { theme, resolvedScheme, handleChange };
+  return { handleChange };
 };

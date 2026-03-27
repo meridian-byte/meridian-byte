@@ -1,7 +1,7 @@
 import React from 'react';
 import LayoutBody from '@repo/components/layout/body';
 import AppshellAppMain from '@/components/common/appshells/app/main';
-import ItemEditProvider from '@/components/provider/item-edit';
+import ItemEditProvider from '@repo/components/provider/item-edit';
 
 export default async function LayoutApp({
   children, // will be a page or nested layout
