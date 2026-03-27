@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import {
+  Center,
   Divider,
   Modal,
   NavLink,
@@ -16,6 +17,8 @@ import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
 import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
+import { useSearchCriteria } from '@repo/hooks/search';
+import { SECTION_SPACING } from '@repo/constants/sizes';
 
 export default function Move({
   item,
@@ -25,24 +28,23 @@ export default function Move({
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
-  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const notebooks = useStoreNotebook((s) => s.notebooks);
 
   const { noteMove } = useNoteActions();
 
-  const notebookList = notebooks?.filter((nb) => {
-    const withoutSelected = nb.id != item.notebook_id;
-    const inSearch = nb.title
-      .toLowerCase()
-      .includes(search.trim().toLowerCase());
-    return withoutSelected && inSearch;
+  const { searchCriteriaItems } = useSearchCriteria({
+    list: (notebooks || []).filter((nb) => nb.id != item.notebook_id),
+    searchValue: searchValue,
   });
 
   return (
     <>
       <Modal opened={opened} onClose={close} withCloseButton={false} centered>
         <LayoutModalMain props={{ close, title: 'Move Note' }}>
-          <InputTextSearch props={{ value: search, setValue: setSearch }} />
+          <InputTextSearch
+            props={{ value: searchValue, setValue: setSearchValue }}
+          />
 
           <Divider />
 
@@ -60,16 +62,16 @@ export default function Move({
                     <Skeleton h={18} />
                   </Stack>
                 </>
-              ) : !notebookList ? (
+              ) : !searchCriteriaItems.length ? (
                 <>
-                  <Stack h={41} justify="center">
-                    <Text inherit c={'dimmed'} ta={'center'}>
-                      Nothing found...
+                  <Center ta={'center'} py={SECTION_SPACING}>
+                    <Text inherit fz={'sm'} c={'dimmed'}>
+                      No folders found...
                     </Text>
-                  </Stack>
+                  </Center>
                 </>
               ) : (
-                notebookList?.map((nb, i) => (
+                searchCriteriaItems.map((nb, i) => (
                   <NavLink
                     key={i}
                     label={nb.title}

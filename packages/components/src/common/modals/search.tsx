@@ -50,13 +50,6 @@ export default function Search({ children }: { children: React.ReactNode }) {
         <LayoutModal props={{ close, title: 'Search note' }}>
           <InputTextSearch
             props={{ value: searchValue, setValue: setSearchValue }}
-            styles={{
-              input: {
-                backgroundColor:
-                  'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
-                fontWeight: 500,
-              },
-            }}
           />
 
           <div>

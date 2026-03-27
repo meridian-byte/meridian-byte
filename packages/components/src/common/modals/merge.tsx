@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import {
+  Center,
   Divider,
   Modal,
   NavLink,
@@ -16,6 +17,8 @@ import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useSearchCriteria } from '@repo/hooks/search';
+import { SECTION_SPACING } from '@repo/constants/sizes';
 
 export default function Merge({
   item,
@@ -25,24 +28,23 @@ export default function Merge({
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
-  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const notes = useStoreNote((s) => s.notes);
 
   const { noteMerge } = useNoteActions();
 
-  const noteList = notes?.filter((n) => {
-    const withoutSelected = n.id != item.id;
-    const inSearch = n.title
-      .toLowerCase()
-      .includes(search.trim().toLowerCase());
-    return withoutSelected && inSearch;
+  const { searchCriteriaItems } = useSearchCriteria({
+    list: (notes || []).filter((n) => n.id != item.id),
+    searchValue: searchValue,
   });
 
   return (
     <>
       <Modal opened={opened} onClose={close} withCloseButton={false} centered>
         <LayoutModalMain props={{ close, title: 'Merge Note' }}>
-          <InputTextSearch props={{ value: search, setValue: setSearch }} />
+          <InputTextSearch
+            props={{ value: searchValue, setValue: setSearchValue }}
+          />
 
           <Divider />
 
@@ -60,16 +62,16 @@ export default function Merge({
                     <Skeleton h={18} />
                   </Stack>
                 </>
-              ) : !noteList ? (
+              ) : !searchCriteriaItems.length ? (
                 <>
-                  <Stack h={41} justify="center">
-                    <Text inherit c={'dimmed'} ta={'center'}>
-                      Nothing found...
+                  <Center ta={'center'} py={SECTION_SPACING}>
+                    <Text inherit fz={'sm'} c={'dimmed'}>
+                      No notes found...
                     </Text>
-                  </Stack>
+                  </Center>
                 </>
               ) : (
-                noteList?.map((n, i) => (
+                searchCriteriaItems.map((n, i) => (
                   <NavLink
                     key={i}
                     label={n.title}

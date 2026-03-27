@@ -18,8 +18,6 @@ import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { getUrlParam } from '@repo/utilities/url';
 import { useSearchParams } from 'next/navigation';
-import { sortArray } from '@repo/utilities/array';
-import { Order } from '@repo/types/enums';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { useSearchCriteria } from '@repo/hooks/search';
 
@@ -61,16 +59,7 @@ export default function Search() {
         <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
 
         <Box pos={'sticky'} top={48} py={'xs'}>
-          <InputTextSearch
-            props={{ value, setValue }}
-            styles={{
-              input: {
-                backgroundColor:
-                  'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
-                fontWeight: 500,
-              },
-            }}
-          />
+          <InputTextSearch props={{ value, setValue }} />
         </Box>
       </Box>
 
