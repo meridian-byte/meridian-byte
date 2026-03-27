@@ -11,10 +11,13 @@ import React from 'react';
 import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
-import { handleSync, syncToServerAfterDelay } from '@repo/libraries/sync';
-import { useSyncStores } from '@repo/hooks/sync';
-import { SyncParams } from '@repo/types/sync';
-import { useSyncQueue } from '@repo/libraries/sync';
+import {
+  handleMergedSync,
+  MergedSyncPayload,
+  syncToServerAfterDelay,
+  useMergedSync,
+} from '@repo/hooks/sync';
+import { STORE_NAME } from '@repo/constants/names';
 
 export default function Sync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
@@ -23,9 +26,8 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
   const setSyncStatus = useStoreSyncStatus((s) => s.setSyncStatus);
 
-  // const enqueueSync = useSyncQueue({ syncFunction: handleSync });
-
-  const debounceSyncToServer = useDebouncedCallback(
+  // This now handles a MergedSyncPayload rather than one store's SyncParams
+  const debounceMergedSyncToServer = useDebouncedCallback(
     syncToServerAfterDelay,
     500
   );
@@ -35,21 +37,22 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     session,
     networkStatus,
     syncStatus,
-    debounceSyncToServer,
+    debounceMergedSyncToServer,
     clientOnly: false,
   };
 
-  useSyncStores({
-    // syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    syncFunction: (i: SyncParams) => handleSync({ ...i, ...restProps }),
+  useMergedSync({
+    syncStatus: restProps.syncStatus,
     online: networkStatus.online,
-    storesToSync: {
-      tasks: true,
-      categories: true,
-      reminders: true,
-      recurringRules: true,
-      views: true,
-    },
+    storesToSync: [
+      STORE_NAME.TASKS,
+      STORE_NAME.CATEGORIES,
+      STORE_NAME.REMINDERS,
+      STORE_NAME.RECURRING_RULES,
+      STORE_NAME.VIEWS,
+    ],
+    handleSync: (payload: MergedSyncPayload) =>
+      handleMergedSync({ payload, ...restProps }),
   });
 
   return <div>{children}</div>;
