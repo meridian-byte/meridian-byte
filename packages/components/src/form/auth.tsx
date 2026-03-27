@@ -20,7 +20,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import AuthProviders from '../common/buttons/auth-providers';
-import { useFormAuth } from '@repo/hooks/form/auth/auth';
+import { useFormAuth } from '@repo/hooks/form/auth';
 import { AuthAction } from '@repo/types/enums';
 import NextLink from '@repo/components/common/anchor/next-link';
 import { AUTH_URLS } from '@repo/constants/paths';
