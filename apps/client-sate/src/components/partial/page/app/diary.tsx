@@ -147,9 +147,12 @@ export function DiaryOverview({
 
   const { masses } = useStoreMass();
 
-  const latestMass = masses?.reduce((a, b) =>
-    new Date(a.created_at) > new Date(b.created_at) ? a : b
-  );
+  const latestMass =
+    !masses || masses.length < 1
+      ? null
+      : masses?.reduce((a, b) =>
+          new Date(a.created_at) > new Date(b.created_at) ? a : b
+        );
 
   const dailyMacros = calculateMacros({
     weightKg: latestMass?.weight || 0,
@@ -218,6 +221,7 @@ export function DiaryOverview({
                 thickness={ICON_STROKE_WIDTH}
                 roundCaps
                 transitionDuration={500}
+                rootColor={!latestMass ? 'transparent' : undefined}
                 label={
                   <Stack align="center" gap={0}>
                     {eats === undefined ? (
@@ -247,7 +251,12 @@ export function DiaryOverview({
                     </Text>
                   </Stack>
                 }
-                sections={[{ value: oi.progress || 0, color: oi.color }]}
+                sections={[
+                  {
+                    value: oi.progress || 0,
+                    color: !latestMass ? 'transparent' : oi.color,
+                  },
+                ]}
               />
 
               {!props?.entryDate && (
@@ -265,10 +274,10 @@ export function DiaryOverview({
                     />
                   </Group>
 
-                  {dayEats === undefined ? (
+                  {latestMass && dayEats === undefined ? (
                     <Skeleton h={22} w={44} />
                   ) : (
-                    oi.goal && (
+                    oi.goal > 0 && (
                       <Text
                         inherit
                         fz={{ base: 'xs', xs: 'sm' }}
