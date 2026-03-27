@@ -49,10 +49,6 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
           }}
         >
           <ScrollArea h="100vh">
-            <Group p={'xs'} justify="end">
-              <ButtonAppshellNavbar />
-            </Group>
-
             <TabNavbarLeft />
           </ScrollArea>
         </Drawer>

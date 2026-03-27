@@ -171,7 +171,9 @@ export default function Main({
             />
           )}
 
-          <ButtonsFullscreen />
+          <Box visibleFrom="xs">
+            <ButtonsFullscreen />
+          </Box>
         </Flex>
       </AppShellSection>
 

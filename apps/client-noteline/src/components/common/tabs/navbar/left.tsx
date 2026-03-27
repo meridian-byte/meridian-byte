@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Group,
   Tabs,
   TabsList,
@@ -17,6 +18,7 @@ import {
 } from '@repo/constants/sizes';
 import PartialTabNavbarNotes from '@/components/partial/tabs/navbar/notes';
 import PartialTabNavbarSearch from '@/components/partial/tabs/navbar/search';
+import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 
 export default function Left() {
   return (
@@ -32,7 +34,7 @@ export default function Left() {
         }
       >
         <TabsTab value="folders">
-          <Tooltip label={'Files & folders'}>
+          <Tooltip label={'All notes'}>
             <Group justify="center">
               <ThemeIcon
                 size={ICON_WRAPPER_SIZE}
@@ -46,7 +48,7 @@ export default function Left() {
         </TabsTab>
 
         <TabsTab value="search">
-          <Tooltip label={'Search'}>
+          <Tooltip label={'Search notes'}>
             <Group justify="center">
               <ThemeIcon
                 size={ICON_WRAPPER_SIZE}
@@ -58,6 +60,10 @@ export default function Left() {
             </Group>
           </Tooltip>
         </TabsTab>
+
+        <Group hiddenFrom="md" ml={'auto'}>
+          <ButtonAppshellNavbar />
+        </Group>
       </TabsList>
 
       <TabsPanel value="folders">

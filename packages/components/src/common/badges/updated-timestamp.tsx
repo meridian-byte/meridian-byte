@@ -15,12 +15,7 @@ export default function UpdatedTimestamp({
 
   return (
     <Tooltip
-      label={
-        <span>
-          Time of last edit: <br />
-          {getRegionalDate(props.updatedAt).date}
-        </span>
-      }
+      label={<span>Last edited: {getRegionalDate(props.updatedAt).date}</span>}
       styles={{ tooltip: { textAlign: 'center' } }}
     >
       <Badge
