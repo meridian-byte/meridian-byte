@@ -53,6 +53,34 @@ a {
   }
 }
 
+// scrollbars
+// variables
+$scrollbar-width: 2px;
+$scrollbar-track: var(--mantine-color-dark-8);
+$scrollbar-thumb: var(--mantine-color-dark-3);
+
+// Firefox
+* {
+  scrollbar-width: thin; // auto | thin | none
+  scrollbar-color: #{$scrollbar-thumb} #{$scrollbar-track};
+}
+
+// WebKit (Chrome, Edge, Safari)
+::-webkit-scrollbar {
+  width: $scrollbar-width;
+  height: $scrollbar-width;
+}
+
+::-webkit-scrollbar-track {
+  background: $scrollbar-track;
+}
+
+::-webkit-scrollbar-thumb {
+  // background-color: $scrollbar-thumb;
+  border-radius: 999px;
+  border: 1px solid $scrollbar-track; // creates padding effect
+}
+
 // tiptap
 
 /* Basic editor styles */
@@ -72,9 +100,11 @@ a {
   table {
     border-collapse: collapse;
     margin: 0;
-    overflow: hidden;
     table-layout: fixed;
     width: 100%;
+    min-width: 720px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
     border-top-right-radius: var(--mantine-radius-md);
     border-top-left-radius: var(--mantine-radius-md);
 
