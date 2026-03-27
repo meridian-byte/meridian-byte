@@ -32,12 +32,9 @@ export default function Child({ children }: { children: React.ReactNode }) {
     <Group wrap="nowrap" align="stretch" gap={0}>
       <Box
         style={{
-          overflow: 'hidden',
-          width: `${appshell.child.navbar ? widths.navbarLeft : 0}%`,
-          transition: '0.1s all ease',
-          borderRight: !appshell.child.navbar
-            ? undefined
-            : '1px solid var(--mantine-color-default-border)',
+          display: appshell.child.navbar ? undefined : 'none',
+          width: `${widths.navbarLeft}%`,
+          borderRight: '1px solid var(--mantine-color-default-border)',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}
@@ -53,12 +50,7 @@ export default function Child({ children }: { children: React.ReactNode }) {
         </ScrollArea>
       </Box>
 
-      <Box
-        style={{
-          width: `${widthPercentage}%`,
-          transition: '0.1s all ease',
-        }}
-      >
+      <Box style={{ width: `${widthPercentage}%` }}>
         <ScrollArea
           h={`calc(100vh - ${APPSHELL.HEADER_HEIGHT}px)`}
           type="auto"
@@ -72,12 +64,9 @@ export default function Child({ children }: { children: React.ReactNode }) {
 
       <Box
         style={{
-          overflow: 'hidden',
-          width: `${appshell.child.aside ? widths.navbarRight : 0}%`,
-          transition: '0.1s all ease',
-          borderLeft: !appshell.child.aside
-            ? undefined
-            : '1px solid var(--mantine-color-default-border)',
+          display: appshell.child.aside ? undefined : 'none',
+          width: `${widths.navbarRight}%`,
+          borderLeft: '1px solid var(--mantine-color-default-border)',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}

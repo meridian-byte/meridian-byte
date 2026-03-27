@@ -21,16 +21,21 @@ export default function Aside({ children }: { children: React.ReactNode }) {
   const { appshell, setAppShell } = useStoreAppShell();
 
   const handleAppshellChange = (params: AppShell) => {
+    if (!mobile) return;
     if (!appshell) return;
 
     setAppShell(params);
 
-    setCookieClient(COOKIE_NAME.APP_SHELL, params, {
-      expiryInSeconds: WEEK,
-    });
+    // To defer this operation and prevent blocking the main thread, wrap it in setTimeout or use scheduler.postTask
+    setTimeout(() => {
+      setCookieClient(COOKIE_NAME.APP_SHELL, params, {
+        expiryInSeconds: WEEK,
+      });
+    }, 0);
   };
 
   const handleClose = () => {
+    if (!mobile) return;
     if (!appshell) return;
 
     handleAppshellChange({
@@ -44,38 +49,38 @@ export default function Aside({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {mobile && (
-        <Drawer
-          hiddenFrom="xs"
-          keepMounted
-          opened={appshell?.child.aside ?? false}
-          padding={0}
-          position="right"
-          withCloseButton={false}
-          onClose={handleClose}
-          styles={{
-            content: {
-              backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
-            },
-          }}
-        >
-          <Group justify="end" p={'xs'}>
-            <ActionIcon
-              size={ICON_WRAPPER_SIZE}
-              variant={'transparent'}
-              onClick={handleClose}
-            >
-              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </Group>
+      <Drawer
+        hiddenFrom="xs"
+        keepMounted
+        opened={appshell?.child.aside ?? false}
+        padding={0}
+        position="right"
+        withCloseButton={false}
+        onClose={handleClose}
+        style={{ display: !mobile ? 'none' : undefined }}
+        styles={{
+          content: {
+            backgroundColor:
+              'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+          },
+        }}
+      >
+        <Group justify="end" p={'xs'}>
+          <ActionIcon
+            size={ICON_WRAPPER_SIZE}
+            variant={'transparent'}
+            onClick={handleClose}
+          >
+            <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </Group>
 
-          <TabNavbarRight />
-        </Drawer>
-      )}
+        <TabNavbarRight />
+      </Drawer>
 
       <span
         onClick={() => {
+          if (!mobile) return;
           if (!appshell) return;
 
           handleAppshellChange({
