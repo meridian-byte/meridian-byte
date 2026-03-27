@@ -10,14 +10,25 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@mantine/hooks": "^8.3.6",
+    "@repo/constants": "workspace:*",
+    "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",
+    "@repo/utilities": "workspace:*",
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
+    "next": "16.0.10",
+    "react": "^19.2.0",
+    "resend": "^6.9.2",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^19",
     "@types/wicg-file-system-access": "^2023.10.7",
+    "prisma": "6.17.1",
     "typescript": "5.9.2"
   }
 }

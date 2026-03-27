@@ -7,14 +7,14 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
-import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
-import { useSyncLinks, useSyncNotebooks, useSyncNotes } from '@/hooks/sync';
+import { handleSync, syncToServerAfterDelay } from '@repo/libraries/sync';
+import { useSyncStores } from '@repo/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
-import { useSyncQueue } from '@repo/utilities/sync';
+import { useSyncQueue } from '@repo/libraries/sync';
 
 export default function Sync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
@@ -38,47 +38,15 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     clientOnly: false,
   };
 
-  // const { syncPosts } = useSyncPosts({
-  //   syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-  //   online: networkStatus.online,
-  // });
-
-  // const { syncCategories } = useSyncCategories({
-  //   syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-  //   online: networkStatus.online,
-  // });
-
-  const { syncNotebooks } = useSyncNotebooks({
+  useSyncStores({
     syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
     online: networkStatus.online,
+    storesToSync: {
+      notebooks: true,
+      notes: true,
+      links: true,
+    },
   });
-
-  const { syncNotes } = useSyncNotes({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  const { syncLinks } = useSyncLinks({
-    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
-    online: networkStatus.online,
-  });
-
-  useEffect(() => {
-    if (!networkStatus.online) return;
-
-    // syncPosts();
-    // syncCategories();
-    syncNotes();
-    syncNotebooks();
-    syncLinks();
-  }, [
-    networkStatus.online,
-    // syncPosts,
-    // syncCategories,
-    syncNotes,
-    syncNotebooks,
-    syncLinks,
-  ]);
 
   return <div>{children}</div>;
 }

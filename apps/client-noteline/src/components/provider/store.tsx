@@ -11,10 +11,10 @@ import React from 'react';
 import {
   useAppshellStore,
   useSessionStore,
-  useStoreData,
+  useThemeStore,
+  useLoadStores,
   useUserStatesStore,
-} from '@/hooks/store';
-import { useThemeStore } from '../../hooks/store';
+} from '@repo/hooks/store';
 
 export default function Store({ children }: { children: React.ReactNode }) {
   // initialize stores
@@ -23,8 +23,17 @@ export default function Store({ children }: { children: React.ReactNode }) {
   // useUserRoleStore();
   useThemeStore();
   useAppshellStore();
+  useLoadStores({
+    options: {
+      clientOnly: false,
+      storesToLoad: {
+        notes: true,
+        notebooks: true,
+      },
+    },
+  });
+
   useUserStatesStore();
-  useStoreData({ options: { clientOnly: false } });
 
   return <div>{children}</div>;
 }

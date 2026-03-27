@@ -16,7 +16,7 @@ import type { Metadata } from 'next';
 import { Space_Grotesk, Tomorrow } from 'next/font/google';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
-import { companyName } from '@repo/constants/app';
+import { COMPANY_NAME } from '@repo/constants/app';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { mantine } from '@/assets/styles';
 
@@ -33,7 +33,7 @@ const tomorrowSans = Tomorrow({
 });
 
 export const metadata: Metadata = {
-  title: `${companyName} - API Engine`,
+  title: `${COMPANY_NAME} - API Engine`,
   // description: '',
 };
 
@@ -53,7 +53,7 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* <meta name="description" content={''} /> */}
 
-        <title>{companyName}</title>
+        <title>{COMPANY_NAME}</title>
 
         <ColorSchemeScript defaultColorScheme={DEFAULT_COLOR_SCHEME} />
       </head>

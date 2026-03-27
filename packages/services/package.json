@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@repo/constants": "workspace:*",
-    "@repo/types": "workspace:*"
+    "@repo/libraries": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/utilities": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

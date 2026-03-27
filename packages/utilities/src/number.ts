@@ -38,7 +38,7 @@ export const prependZeros = (value: number, length: number): string =>
  * Formats a large number into a short human-readable form
  * Example: 1234000 → "1.2M"
  */
-export const formatNumber = (value: number, decimals = 1): string => {
+export const formatNumberToReadable = (value: number, decimals = 1): string => {
   if (!Number.isFinite(value)) return '0';
 
   const lookup = [

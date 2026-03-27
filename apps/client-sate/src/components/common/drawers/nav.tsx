@@ -2,7 +2,7 @@
 
 import { useDisclosure } from '@mantine/hooks';
 import { Divider, Drawer, NavLink } from '@mantine/core';
-import { navLinkApp } from '@/data/links';
+import { navLinks } from '@/data/links';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import NextLink from '@repo/components/common/anchor/next-link';
 // import ModalAccountGroupList from '../modals/account-group/list';
@@ -24,21 +24,21 @@ export default function Nav({ children }: { children: React.ReactNode }) {
 
 export function NavComponent({ props }: { props?: { close?: () => void } }) {
   const foodsProps = {
-    link: navLinkApp[0].link,
-    label: navLinkApp[0].label,
-    icon: navLinkApp[0].icon,
+    link: navLinks.app[0].link,
+    label: navLinks.app[0].label,
+    icon: navLinks.app[0].icon,
   };
 
   const mealsProps = {
-    link: navLinkApp[1].link,
-    label: navLinkApp[1].label,
-    icon: navLinkApp[1].icon,
+    link: navLinks.app[1].link,
+    label: navLinks.app[1].label,
+    icon: navLinks.app[1].icon,
   };
 
   const weightsProps = {
-    link: navLinkApp[2].link,
-    label: navLinkApp[2].label,
-    icon: navLinkApp[2].icon,
+    link: navLinks.app[2].link,
+    label: navLinks.app[2].label,
+    icon: navLinks.app[2].icon,
   };
 
   return (
@@ -76,8 +76,8 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
 
       <Divider />
 
-      {navLinkApp
-        .slice(navLinkApp.length - 1, navLinkApp.length)
+      {navLinks.app
+        .slice(navLinks.app.length - 1, navLinks.app.length)
         .map((nl, i) => (
           <NavLink
             key={i}

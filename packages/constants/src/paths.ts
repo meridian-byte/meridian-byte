@@ -18,6 +18,11 @@ export const HOSTNAME_CLIENT_FRAKT = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_PROD
   : process.env.NEXT_PUBLIC_HOST_CLIENT_FRAKT_DEV;
 
+// Select KAIRO client host
+export const HOSTNAME_CLIENT_KAIRO = isProduction
+  ? process.env.NEXT_PUBLIC_HOST_CLIENT_KAIRO_PROD
+  : process.env.NEXT_PUBLIC_HOST_CLIENT_KAIRO_DEV;
+
 // Select sate client host
 export const HOSTNAME_CLIENT_SATE = isProduction
   ? process.env.NEXT_PUBLIC_HOST_CLIENT_SATE_PROD
@@ -66,4 +71,12 @@ export const AUTH_URLS = {
   REDIRECT: {
     DEFAULT: '/app',
   },
+};
+
+export const BASE_URL_CLIENT = {
+  FRAKT: `${getUrlPrefix(HOSTNAME_CLIENT_FRAKT)}${HOSTNAME_CLIENT_FRAKT}`,
+  KAIRO: `${getUrlPrefix(HOSTNAME_CLIENT_KAIRO)}${HOSTNAME_CLIENT_KAIRO}`,
+  NOTELINE: `${getUrlPrefix(HOSTNAME_CLIENT_NOTELINE)}${HOSTNAME_CLIENT_NOTELINE}`,
+  SATE: `${getUrlPrefix(HOSTNAME_CLIENT_SATE)}${HOSTNAME_CLIENT_SATE}`,
+  WEB: `${getUrlPrefix(HOSTNAME_CLIENT_WEB)}${HOSTNAME_CLIENT_WEB}`,
 };
