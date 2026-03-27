@@ -51,10 +51,10 @@ export const calculateMacros = (params: MacroOptions): MacroResult => {
   const proteinCalories = protein * 4; // 408k
   const fatCalories = fat * 9; // 559k
 
-  const totalCalories = (proteinCalories + fatCalories) * 1.5; // carbs fill the rest
+  const bmr = (proteinCalories + fatCalories) * 1.5; // carbs fill the rest
   const surplus = 300; // 300 - 500 kcal (excersise, day-to-day, etc.)
-  const carbsCalories =
-    totalCalories + surplus - (proteinCalories + fatCalories);
+  const totalCalories = bmr + surplus;
+  const carbsCalories = totalCalories - (proteinCalories + fatCalories);
   const carbs = carbsCalories / 4;
 
   return {
