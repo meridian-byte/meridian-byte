@@ -266,34 +266,27 @@ export default function Auth({
         </Text>
       )}
 
-      <Box
-        style={{
-          height: submittedAuth || (!errorAuth && !messageAuth) ? 1 : 130,
-          overflow: 'hidden',
-        }}
-      >
-        {!submittedAuth && (errorAuth || messageAuth) && (
-          <>
-            <Alert
-              variant="light"
-              color={errorAuth ? 'red.6' : 'blue.6'}
-              title={errorAuth ? 'Error' : 'OTP Sent'}
-              icon={
-                errorAuth ? (
-                  <IconExclamationCircle
-                    size={ICON_SIZE}
-                    stroke={ICON_STROKE_WIDTH}
-                  />
-                ) : (
-                  <IconInfoCircle size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                )
-              }
-            >
-              {errorAuth || messageAuth}
-            </Alert>
-          </>
-        )}
-      </Box>
+      {!submittedAuth && (errorAuth || messageAuth) && (
+        <>
+          <Alert
+            variant="light"
+            color={errorAuth ? 'red.6' : 'blue.6'}
+            title={errorAuth ? 'Error' : 'OTP Sent'}
+            icon={
+              errorAuth ? (
+                <IconExclamationCircle
+                  size={ICON_SIZE}
+                  stroke={ICON_STROKE_WIDTH}
+                />
+              ) : (
+                <IconInfoCircle size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              )
+            }
+          >
+            {errorAuth || messageAuth}
+          </Alert>
+        </>
+      )}
     </Stack>
   );
 }
