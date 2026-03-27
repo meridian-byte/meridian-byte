@@ -1,1 +1,2 @@
 commit visibility test
+commit visibility test (branch rule added)
