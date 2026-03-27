@@ -236,13 +236,13 @@ const useGenericSync = <K extends keyof typeof SYNC_STORES>(params: {
       serverUpdateFunction: async (i, di) =>
         await config.serverUpdate(i ?? [], di ?? []), // ← fallback here too
     });
-  }, [store, syncFunction, config]);
+  }, [syncFunction, config]);
 
   useEffect(() => {
     if (noSession) return;
     if (!idle) return;
     sync();
-  }, [store, online, noSession, idle, sync]);
+  }, [online, noSession, idle, sync]);
 };
 
 export const useSyncStores = (params: {
