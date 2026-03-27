@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { NotebookGet } from '@repo/types/models/notebook';
 import { useItemEditContext } from '../contexts/item-edit';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
+import { linkify } from '@repo/utilities/url';
 
 export const useNoteActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -46,7 +47,7 @@ export const useNoteActions = () => {
 
     addNote(newNote);
 
-    router.push(`/app?noteId=${newNote.id}`);
+    router.push(`/app/n/${linkify(newNote.title)}-${newNote.id}`);
 
     if (!userStates.editing) setUserStates({ ...userStates, editing: true });
 
@@ -161,7 +162,7 @@ export const useNoteActions = () => {
     // add to note to state
     updateNote(note);
 
-    router.push(`/app?noteId=${note.id}`);
+    router.push(`/app/n/${linkify(note.title)}-${note.id}`);
 
     // delete merged note
     setTimeout(() => {

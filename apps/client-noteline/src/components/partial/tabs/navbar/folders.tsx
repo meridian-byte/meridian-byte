@@ -33,7 +33,7 @@ import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { AppShell } from '@repo/types/components';
 import { setCookieClient } from '@repo/utilities/cookie-client';
 import { COOKIE_NAME } from '@repo/constants/names';
-import { getUrlParam } from '@repo/utilities/url';
+import { getUrlParam, linkify } from '@repo/utilities/url';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
 
@@ -134,7 +134,7 @@ export default function Folders() {
       <MenuNoteSide item={item} menuProps={menuProps}>
         <NavLink
           component={Link}
-          href={`/app?noteId=${item.id}`}
+          href={`/app/n/${linkify(item.title)}-${item.id}`}
           active={paramNoteId === item.id}
           label={
             !renameProps.editing || renameProps.editingId !== item.id ? (
@@ -213,7 +213,9 @@ export default function Folders() {
                 variant={'subtle'}
                 onClick={() => {
                   const newNote = noteCreate();
-                  router.push(`/app?noteId=${newNote?.id}`);
+                  router.push(
+                    `/app/n/${linkify(newNote?.title || '')}-${newNote?.id}`
+                  );
 
                   if (desktop) return;
                   if (!appshell) return;

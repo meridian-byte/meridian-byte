@@ -19,6 +19,7 @@ import {
 import LayoutModal from '@repo/components/layout/modal';
 import InputTextSearch from '../inputs/text/search';
 import { useSearchCriteria } from '@repo/hooks/search';
+import { linkify } from '@repo/utilities/url';
 
 export default function Search({ children }: { children: React.ReactNode }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -38,7 +39,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
       label: n.title,
       leftSection: <IconFile size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       onClick: () => {
-        router.push(`/app?noteId=${n.id}`);
+        router.push(`/app/n/${linkify(n.title)}-${n.id}`);
         close();
       },
     };
