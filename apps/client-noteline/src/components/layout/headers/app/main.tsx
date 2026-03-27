@@ -11,26 +11,33 @@ import {
 import { COOKIE_NAME } from '@repo/constants/names';
 import { setCookieClient } from '@repo/utilities/cookie-client';
 import {
-  IconLayoutSidebar,
-  IconLayoutSidebarFilled,
-  IconLayoutSidebarRight,
-  IconLayoutSidebarRightFilled,
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconLayoutSidebarRightCollapse,
+  IconLayoutSidebarRightExpand,
 } from '@tabler/icons-react';
 import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
 import { AppShell } from '@repo/types/components';
 import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import DrawerAppAside from '@/components/common/drawers/app/aside';
+import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
+import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
+import { useStoreTheme } from '@/libraries/zustand/stores/theme';
+import IndicatorTheme from '@repo/components/common/indicators/theme';
+import NavbarAppMainParent from '../../navbars/app/main/parent';
 
 export default function Main() {
   const { appshell, setAppShell } = useStoreAppShell();
+  const { syncStatus } = useStoreSyncStatus();
+  const { theme, setTheme } = useStoreTheme();
 
   const states = {
     iconLeft: !appshell?.child.navbar
-      ? IconLayoutSidebar
-      : IconLayoutSidebarFilled,
+      ? IconLayoutSidebarLeftExpand
+      : IconLayoutSidebarLeftCollapse,
     iconRight: !appshell?.child.aside
-      ? IconLayoutSidebarRight
-      : IconLayoutSidebarRightFilled,
+      ? IconLayoutSidebarRightExpand
+      : IconLayoutSidebarRightCollapse,
   };
 
   const handleAppshellChange = (params: AppShell) => {
@@ -45,7 +52,7 @@ export default function Main() {
 
   return (
     <Group justify="space-between">
-      <Group p={'xs'}>
+      <Group p={'xs'} gap={5}>
         {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
         ) : !appshell ? (
@@ -56,29 +63,52 @@ export default function Main() {
             position="right"
           >
             <DrawerAppNavbar>
-              <ActionIcon
-                variant="subtle"
-                color="pri.5"
-                aria-label={appshell.child.navbar ? 'Collapse' : 'Expand'}
-                onClick={() =>
-                  handleAppshellChange({
-                    ...appshell,
-                    child: {
-                      ...appshell.child,
-                      navbar: !appshell?.child.navbar,
-                    },
-                  })
-                }
-                size={ICON_WRAPPER_SIZE}
-              >
-                <states.iconLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              </ActionIcon>
+              <Group>
+                <ActionIcon
+                  variant="subtle"
+                  color="pri.5"
+                  aria-label={appshell.child.navbar ? 'Collapse' : 'Expand'}
+                  onClick={() =>
+                    handleAppshellChange({
+                      ...appshell,
+                      child: {
+                        ...appshell.child,
+                        navbar: !appshell?.child.navbar,
+                      },
+                    })
+                  }
+                  size={ICON_WRAPPER_SIZE}
+                >
+                  <states.iconLeft
+                    size={ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
+                </ActionIcon>
+              </Group>
             </DrawerAppNavbar>
           </Tooltip>
         )}
+
+        <Group gap={5} hiddenFrom="xs">
+          <NavbarAppMainParent props={{ options: { mobile: true } }} />
+        </Group>
       </Group>
 
-      <Group justify="end" p={'xs'}>
+      <Group justify="end" p={'xs'} gap={5}>
+        <Group gap={5} hiddenFrom="xs">
+          <IndicatorNetworkStatus props={{ syncStatus }} />
+
+          {theme === undefined ? (
+            <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
+          ) : !theme ? (
+            <></>
+          ) : (
+            <IndicatorTheme
+              props={{ colorScheme: theme, setColorScheme: setTheme }}
+            />
+          )}
+        </Group>
+
         {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
         ) : !appshell ? (
@@ -89,23 +119,28 @@ export default function Main() {
             position="left"
           >
             <DrawerAppAside>
-              <ActionIcon
-                variant="subtle"
-                color="pri.5"
-                aria-label={appshell.child.aside ? 'Collapse' : 'Expand'}
-                onClick={() =>
-                  handleAppshellChange({
-                    ...appshell,
-                    child: {
-                      ...appshell.child,
-                      aside: !appshell?.child.aside,
-                    },
-                  })
-                }
-                size={ICON_WRAPPER_SIZE}
-              >
-                <states.iconRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              </ActionIcon>
+              <Group>
+                <ActionIcon
+                  variant="subtle"
+                  color="pri.5"
+                  aria-label={appshell.child.aside ? 'Collapse' : 'Expand'}
+                  onClick={() =>
+                    handleAppshellChange({
+                      ...appshell,
+                      child: {
+                        ...appshell.child,
+                        aside: !appshell?.child.aside,
+                      },
+                    })
+                  }
+                  size={ICON_WRAPPER_SIZE}
+                >
+                  <states.iconRight
+                    size={ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
+                </ActionIcon>
+              </Group>
             </DrawerAppAside>
           </Tooltip>
         )}

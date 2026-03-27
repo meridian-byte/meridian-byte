@@ -18,6 +18,7 @@ import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
+  WEEK,
 } from '@repo/constants/sizes';
 import { IconFilePlus, IconFolderPlus } from '@tabler/icons-react';
 import { useNotebookActions } from '@/hooks/actions/notebook';
@@ -29,6 +30,9 @@ import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
 import { useNoteActions } from '@/hooks/actions/note';
 import { useStoreNote } from '@/libraries/zustand/stores/note';
 import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { AppShell } from '@repo/types/components';
+import { setCookieClient } from '@repo/utilities/cookie-client';
+import { COOKIE_NAME } from '@repo/constants/names';
 
 export default function Folders() {
   const pathname = usePathname();
@@ -56,6 +60,16 @@ export default function Folders() {
     notebookEditing,
     setNotebookEditingState,
   } = useNotebookActions();
+
+  const handleAppshellChange = (params: AppShell) => {
+    if (!appshell) return;
+
+    setAppShell(params);
+
+    setCookieClient(COOKIE_NAME.APP_SHELL, params, {
+      expiryInSeconds: WEEK,
+    });
+  };
 
   const NoteComponent = ({ item }: { item: NoteGet }) => {
     return (
@@ -89,7 +103,6 @@ export default function Folders() {
             if (noteEditing) e.preventDefault();
 
             if (desktop) return;
-
             if (!appshell) return;
 
             setAppShell({
@@ -136,6 +149,14 @@ export default function Folders() {
                 onClick={() => {
                   const newNote = noteCreate();
                   router.push(`/app?noteId=${newNote?.id}`);
+
+                  if (desktop) return;
+                  if (!appshell) return;
+
+                  handleAppshellChange({
+                    ...appshell,
+                    child: { ...appshell.child, navbar: false },
+                  });
                 }}
               >
                 <IconFilePlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
