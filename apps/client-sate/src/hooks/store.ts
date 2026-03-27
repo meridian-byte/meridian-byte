@@ -45,6 +45,8 @@ import { foodsGet } from '@repo/handlers/requests/database/foods';
 import { mealsGet } from '@repo/handlers/requests/database/meals';
 import { servingsGet } from '@repo/handlers/requests/database/servings';
 import { eatsGet } from '@repo/handlers/requests/database/eats';
+import { useStoreMass } from '@/libraries/zustand/stores/mass';
+import { massesGet } from '@repo/handlers/requests/database/masses';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -195,6 +197,7 @@ export const useStoreData = (params?: {
   const { setMeals } = useStoreMeal();
   const { setServings } = useStoreServing();
   const { setEats } = useStoreEat();
+  const { setMasses } = useStoreMass();
 
   useEffect(() => {
     if (prevItemsRef.current.length) return;
@@ -284,4 +287,26 @@ export const useStoreData = (params?: {
 
     loadEats();
   }, [setEats, session, clientOnly]);
+
+  useEffect(() => {
+    if (prevItemsRef.current.length) return;
+
+    const loadMasses = async () => {
+      await loadInitialData({
+        prevItemsRef,
+        dataStore: STORE_NAME.MASSES,
+        session,
+        dataFetchFunction: async () => {
+          if (clientOnly) {
+            return { items: [] };
+          } else {
+            return await massesGet();
+          }
+        },
+        stateUpdateFunction: (stateUpdateItems) => setMasses(stateUpdateItems),
+      });
+    };
+
+    loadMasses();
+  }, [setMasses, session, clientOnly]);
 };

@@ -104,6 +104,7 @@ model Profile {
   meals         Meal[]
   servings      Serving[]
   eats          Eat[]
+  masses        Mass[]
 
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
@@ -374,4 +375,28 @@ model Eat {
   updated_at DateTime @updatedAt
 
   @@map(name: "eats")
+}
+
+model Mass {
+  id           String @id @default(cuid())
+  weight       Int
+  fat          Int
+  visceral_fat Int
+  lean_weight  Int
+  muscle       Int
+  bone         Int
+  water        Int
+  bmi          Int
+  bmr          Int
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "masses")
 }

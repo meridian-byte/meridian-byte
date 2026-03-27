@@ -18,6 +18,8 @@ import { useStoreFood } from '@/libraries/zustand/stores/food';
 import { useStoreMeal } from '@/libraries/zustand/stores/meal';
 import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import { useStoreEat } from '@/libraries/zustand/stores/eat';
+import { useStoreMass } from '@/libraries/zustand/stores/mass';
+import { massesUpdate } from '@repo/handlers/requests/database/masses';
 
 // export const useSyncCategories = (params: {
 //   syncFunction: (input: SyncParams) => void;
@@ -167,4 +169,34 @@ export const useSyncEats = (params: {
   useEffect(() => syncEats(), [eats, syncEats, online]);
 
   return { syncEats };
+};
+
+export const useSyncMasses = (params: {
+  syncFunction: (input: SyncParams) => void;
+  online: boolean;
+}) => {
+  const { syncFunction, online } = params;
+
+  const {
+    masses,
+    deleted: deletedMasses,
+    setMasses,
+    clearDeletedMasses,
+  } = useStoreMass();
+
+  const syncMasses = useCallback(() => {
+    syncFunction({
+      items: masses || [],
+      deletedItems: deletedMasses,
+      dataStore: STORE_NAME.MASSES,
+      stateUpdateFunctionDeleted: () => clearDeletedMasses(),
+      stateUpdateFunction: (i) => setMasses(i),
+      serverUpdateFunction: async (i, di) => await massesUpdate(i, di),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [masses, deletedMasses, setMasses, clearDeletedMasses]);
+
+  useEffect(() => syncMasses(), [masses, syncMasses, online]);
+
+  return { syncMasses };
 };

@@ -11,7 +11,7 @@ import { DBConfig } from '@repo/types/indexed-db';
 
 export const config: DBConfig = {
   name: APP_NAME.toLowerCase(),
-  version: 1,
+  version: 2,
   stores: [
     {
       name: STORE_NAME.SETTINGS,
@@ -31,6 +31,10 @@ export const config: DBConfig = {
     },
     {
       name: STORE_NAME.EATS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.MASSES,
       keyPath: 'id',
     },
   ],
