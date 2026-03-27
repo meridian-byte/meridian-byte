@@ -25,19 +25,20 @@ export const isProduction = (): boolean =>
  * Determines the OS theme ('light' | 'dark') based on user preference
  * or a provided color scheme.
  */
+
+// Define this outside the function scope
+let darkQuery: MediaQueryList | null = null;
+
 export const getOSTheme = (colorScheme: ColorScheme): ColorScheme => {
-  if (typeof window === 'undefined') {
-    return DEFAULT_COLOR_SCHEME;
+  if (typeof window === 'undefined') return DEFAULT_COLOR_SCHEME;
+  if (colorScheme !== 'auto') return colorScheme;
+
+  // Cache the query object
+  if (!darkQuery) {
+    darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
   }
 
-  if (colorScheme !== 'auto') {
-    return colorScheme;
-  }
-
-  return window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? ColorScheme.DARK
-    : ColorScheme.LIGHT;
+  return darkQuery.matches ? ColorScheme.DARK : ColorScheme.LIGHT;
 };
 
 /**

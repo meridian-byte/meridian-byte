@@ -43,11 +43,6 @@ import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
 import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
 import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
-import {
-  ThemeValue,
-  useStoreTheme,
-} from '@repo/libraries/zustand/stores/theme';
-import { ColorScheme } from '@repo/types/enums';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
@@ -225,32 +220,6 @@ export const useAppshellStore = (params?: { cookie?: AppShellValue }) => {
       });
     }, 100);
   }, [appshell]);
-};
-
-export const useThemeStore = () => {
-  const setTheme = useStoreTheme((s) => s.setTheme);
-
-  useEffect(() => {
-    const initializeTheme = () => {
-      let defaultValue: ColorScheme = DEFAULT_COLOR_SCHEME;
-
-      const themeCookie = getCookieClient<ThemeValue>(
-        COOKIE_NAME.COLOR_SCHEME_STATE
-      );
-
-      if (!themeCookie) {
-        setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, defaultValue, {
-          expiryInSeconds: WEEK,
-        });
-      } else {
-        defaultValue = themeCookie;
-      }
-
-      setTheme(defaultValue);
-    };
-
-    initializeTheme();
-  }, [setTheme]);
 };
 
 export const useSelectedTaskStore = () => {

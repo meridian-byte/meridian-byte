@@ -19,8 +19,6 @@ import { AppShell } from '@repo/types/components';
 import DrawerAppAside from '@/components/common/drawers/app/aside';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
-import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
-import IndicatorTheme from '@repo/components/common/indicators/theme';
 import NavbarAppMainParent from '../../navbars/app/parent/main';
 import { useMediaQuery } from '@mantine/hooks';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';

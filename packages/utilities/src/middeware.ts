@@ -5,6 +5,8 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
+import { COOKIE_NAME } from '@repo/constants/names';
+import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { NextRequest, NextResponse } from 'next/server';
 
 type DynamicRedirectMap = {
@@ -158,4 +160,45 @@ export const conditionalRedirect = (
   return NextResponse.redirect(url, {
     status: options?.permanent ? 301 : 307,
   });
+};
+
+export const getColorScheme = (
+  request: NextRequest,
+  response: NextResponse
+) => {
+  const themeState =
+    request.cookies.get(COOKIE_NAME.COLOR_SCHEME)?.value ||
+    DEFAULT_COLOR_SCHEME;
+
+  // 1. Check if we already have a calculated theme cookie
+  const existingTheme = request.cookies.get(COOKIE_NAME.COLOR_SCHEME)?.value;
+
+  let themeToSet = themeState;
+
+  if (themeState === DEFAULT_COLOR_SCHEME) {
+    const preferredScheme = request.headers.get('sec-ch-prefers-color-scheme');
+
+    if (preferredScheme) {
+      // We have a hint! Use it.
+      themeToSet = preferredScheme === 'dark' ? 'dark' : 'light';
+    } else if (existingTheme) {
+      // No hint this time (Request 3), but we already have a value from Request 2.
+      // KEEP the existing value instead of defaulting to light.
+      themeToSet = existingTheme;
+    } else {
+      // Truly first visit, no hint, no existing cookie. Default to light.
+      themeToSet = DEFAULT_COLOR_SCHEME;
+    }
+  }
+
+  // 2. Only set the cookie if it's actually changing or missing
+  if (existingTheme !== themeToSet) {
+    response.cookies.set(COOKIE_NAME.COLOR_SCHEME, themeToSet, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'strict',
+    });
+  }
+
+  return response;
 };

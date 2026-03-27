@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { startTransition, useEffect, useState } from 'react';
 import {
   ActionIcon,
   Group,
+  MantineColorScheme,
+  Skeleton,
   Stack,
   Text,
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
-import { useColorSchemeHandler } from '@repo/hooks/color-scheme';
 import { ColorScheme } from '@repo/types/enums';
 import {
   ICON_SIZE,
@@ -17,45 +18,42 @@ import {
 import { IconDeviceDesktop, IconMoon, IconSun } from '@tabler/icons-react';
 import { capitalizeWord } from '@repo/utilities/string';
 
-export default function Theme({
-  props,
-}: {
-  props: {
-    colorScheme: ColorScheme;
-    setColorScheme: (colorScheme: ColorScheme) => void;
-  };
-}) {
-  const { setColorScheme } = useMantineColorScheme({ keepTransitions: false });
+export default function Theme() {
+  const [mounted, setMounted] = useState(false);
 
-  const { handleChange } = useColorSchemeHandler({
-    schemeState: props.colorScheme,
-    setSchemeState: props.setColorScheme,
-    setMantineScheme: setColorScheme,
+  // Ensure this only runs on the client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { colorScheme, setColorScheme } = useMantineColorScheme({
+    keepTransitions: false,
   });
 
-  const iconProps = {
+  const buttonProps = {
     icon:
-      props.colorScheme == ColorScheme.LIGHT
+      colorScheme == ColorScheme.LIGHT
         ? IconSun
-        : props.colorScheme == ColorScheme.DARK
+        : colorScheme == ColorScheme.DARK
           ? IconMoon
           : IconDeviceDesktop,
     label:
-      props.colorScheme == ColorScheme.LIGHT
+      colorScheme == ColorScheme.LIGHT
         ? ColorScheme.DARK
-        : ColorScheme.LIGHT,
-    action:
-      props.colorScheme == ColorScheme.LIGHT
-        ? ColorScheme.DARK
-        : ColorScheme.LIGHT,
+        : colorScheme == ColorScheme.DARK
+          ? ColorScheme.AUTO
+          : ColorScheme.LIGHT,
   };
+
+  if (!mounted) {
+    return <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />;
+  }
 
   return (
     <Tooltip
       label={
         <Stack ta={'center'} gap={0}>
-          {/* <Text inherit>Current: {capitalizeWord(props.colorScheme)}</Text> */}
-          <Text inherit>Switch to {capitalizeWord(iconProps.label)} theme</Text>
+          <Text inherit>Switch to {capitalizeWord(buttonProps.label)}</Text>
         </Stack>
       }
       position="right"
@@ -64,10 +62,14 @@ export default function Theme({
         <ActionIcon
           variant={'subtle'}
           size={ICON_WRAPPER_SIZE}
-          onClick={() => handleChange(iconProps.action)}
           color="dark"
+          onClick={() => {
+            startTransition(() => {
+              setColorScheme(buttonProps.label as MantineColorScheme);
+            });
+          }}
         >
-          <iconProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          <buttonProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
       </Group>
     </Tooltip>
