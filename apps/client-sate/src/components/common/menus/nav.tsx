@@ -12,14 +12,17 @@ import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 // import ModalAccountGroupList from '../modals/account-group/list';
 // import ModalCategoryList from '../modals/category/list';
 import { navLinkApp } from '@/data/links';
+import NextLink from '@repo/components/common/anchor/next-link';
 
 export default function Nav({ children }: { children: React.ReactNode }) {
-  const accountGroupProps = {
+  const foodsProps = {
+    link: navLinkApp[0].link,
     label: navLinkApp[0].label,
     icon: navLinkApp[0].icon,
   };
 
-  const categoryProps = {
+  const mealsProps = {
+    link: navLinkApp[1].link,
     label: navLinkApp[1].label,
     icon: navLinkApp[1].icon,
   };
@@ -31,28 +34,25 @@ export default function Nav({ children }: { children: React.ReactNode }) {
       </MenuTarget>
 
       <MenuDropdown>
-        {/* <ModalAccountGroupList> */}
-        <MenuItem
-          leftSection={
-            <accountGroupProps.icon
-              size={ICON_SIZE}
-              stroke={ICON_STROKE_WIDTH}
-            />
-          }
-        >
-          {accountGroupProps.label}
-        </MenuItem>
-        {/* </ModalAccountGroupList> */}
+        <NextLink href={foodsProps.link || ''} underline="never">
+          <MenuItem
+            leftSection={
+              <foodsProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+          >
+            {foodsProps.label}
+          </MenuItem>
+        </NextLink>
 
-        {/* <ModalCategoryList> */}
-        <MenuItem
-          leftSection={
-            <categoryProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          }
-        >
-          {categoryProps.label}
-        </MenuItem>
-        {/* </ModalCategoryList> */}
+        <NextLink href={mealsProps.link || ''} underline="never">
+          <MenuItem
+            leftSection={
+              <mealsProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+          >
+            {mealsProps.label}
+          </MenuItem>
+        </NextLink>
 
         <MenuDivider />
 

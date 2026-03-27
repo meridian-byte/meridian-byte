@@ -7,6 +7,8 @@
 
 import {
   IconBellRinging,
+  IconBowl,
+  IconCarrot,
   IconCategory,
   IconHeart,
   IconHelpCircle,
@@ -112,12 +114,14 @@ export const navLinkItems = {
 
 export const navLinkApp = [
   {
-    label: 'Account Groups',
-    icon: IconLabel,
+    link: '/app/foods',
+    label: 'Foods',
+    icon: IconCarrot,
   },
   {
-    label: 'Categories',
-    icon: IconCategory,
+    link: '/app/meals',
+    label: 'Meals',
+    icon: IconBowl,
   },
   {
     label: 'Settings',

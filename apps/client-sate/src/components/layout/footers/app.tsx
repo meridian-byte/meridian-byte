@@ -12,6 +12,7 @@ import {
   IconChartDots,
   IconCoins,
   IconDots,
+  IconLayout,
   IconNotebook,
   IconTransfer,
 } from '@tabler/icons-react';
@@ -67,27 +68,21 @@ export default function App() {
 
 const footerLinks = [
   {
-    icon: IconTransfer,
-    link: '/transactions',
-    label: 'Transactions',
-    labelShort: 'Trans.',
-  },
-  {
-    icon: IconChartDots,
-    link: '/statistics',
-    label: 'Statistics',
-    labelShort: 'Stats.',
-  },
-  {
-    icon: IconCoins,
-    link: '/accounts',
-    label: 'Accounts',
-    labelShort: 'Accts.',
+    icon: IconLayout,
+    link: '/app',
+    label: 'Overview',
+    labelShort: 'Dash.',
   },
   {
     icon: IconNotebook,
-    link: '/budgets',
-    label: 'Budgets',
-    labelShort: 'Budg.',
+    link: '/app/diary',
+    label: 'Diary',
+    labelShort: 'Hist.',
+  },
+  {
+    icon: IconChartDots,
+    link: '/app/statistics',
+    label: 'Statistics',
+    labelShort: 'Stat.',
   },
 ];
