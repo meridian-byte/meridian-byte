@@ -63,8 +63,9 @@ export default function User({ props }: { props?: { close?: () => void } }) {
           width: mobile ? undefined : '66%',
         },
         tab: {
-          border:
-            '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+          border: !mobile
+            ? undefined
+            : '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
         },
       }}
     >
