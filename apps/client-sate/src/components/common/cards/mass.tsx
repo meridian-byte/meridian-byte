@@ -11,9 +11,13 @@ import {
 } from '@mantine/core';
 import { MassGet } from '@repo/types/models/mass';
 import { getRegionalDate } from '@repo/utilities/date-time';
+import { formatNumber } from '@/utilities/string';
+import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Mass({ props }: { props: MassGet }) {
   const timeOfMeasurement = getRegionalDate(props.created_at);
+
+  const massPercentages = getMassPercentages(props);
 
   return (
     <Card radius={0} bg={'transparent'} padding={0} py={5}>
@@ -21,8 +25,8 @@ export default function Mass({ props }: { props: MassGet }) {
         <Stack gap={2}>
           <Title order={3} fz={'md'} fw={'normal'} lineClamp={1}>
             {timeOfMeasurement.date},{' '}
-            <Text component="span" inherit c={'dimmed'}>
-              {timeOfMeasurement.time}
+            <Text component="span" inherit c={'dimmed'} fz={'sm'}>
+              {timeOfMeasurement.time.toUpperCase()}
             </Text>
           </Title>
 
@@ -59,7 +63,7 @@ export default function Mass({ props }: { props: MassGet }) {
           </Group>
         </Stack>
 
-        <Group justify="end" ta={'end'}>
+        <Stack align="end" ta={'end'} gap={0}>
           <Text inherit fz={{ base: 'sm', xs: 'md' }}>
             <NumberFormatter value={props.weight} /> Kg
           </Text>
@@ -80,3 +84,10 @@ export default function Mass({ props }: { props: MassGet }) {
     </Card>
   );
 }
+
+const getMassPercentages = (params: MassGet) => {
+  const fat = formatNumber((params.fat / params.weight) * 100);
+  const muscle = formatNumber((params.muscle / params.weight) * 100);
+
+  return { fat, muscle };
+};

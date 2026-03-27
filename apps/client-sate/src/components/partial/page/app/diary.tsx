@@ -39,6 +39,8 @@ import { EntryDateReturnType, useEntryDate } from '@/hooks/entries';
 import { DateInput } from '@mantine/dates';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
+import { COLOR_CODES } from '@repo/constants/other';
+import { formatNumber } from '@/utilities/string';
 
 export default function Diary() {
   const { servings } = useStoreServing();
@@ -63,7 +65,7 @@ export default function Diary() {
         ) : !eatenServings?.length ? (
           <Center py={SECTION_SPACING}>
             <Text fz={'sm'} c={'dimmed'} ta={'center'}>
-              Nothing eaten today yet.
+              Nothing logged today yet.
             </Text>
           </Center>
         ) : (
@@ -121,16 +123,18 @@ function DiaryHeader({ props }: { props: { entryDate: EntryDateReturnType } }) {
   );
 }
 
-function DiaryOverview({
+export function DiaryOverview({
   props,
 }: {
-  props: { entryDate: EntryDateReturnType };
+  props?: { entryDate?: EntryDateReturnType };
 }) {
   const { eats } = useStoreEat();
 
   const dayEats = eats?.filter((e) => {
-    if (!props.entryDate.date) return false;
-    return areSameDay(e.created_at, props.entryDate.date);
+    return areSameDay(
+      e.created_at,
+      props?.entryDate?.date ? props.entryDate.date : new Date().toISOString()
+    );
   });
 
   const { totalEatenNutrients } = useEatTotals({ eats: dayEats || [] });
@@ -140,19 +144,37 @@ function DiaryOverview({
       value: totalEatenNutrients.totalCarbs,
       color: `${COLOR_CODES.FOOD.CARBS}.6`,
       label: 'Carbs',
-      color: 'blue',
+      percentage: formatNumber(
+        (Number(totalEatenNutrients.totalCarbs) /
+          (Number(totalEatenNutrients.totalCarbs) +
+            Number(totalEatenNutrients.totalProtein) +
+            Number(totalEatenNutrients.totalFat))) *
+          100
+      ),
     },
     {
       value: totalEatenNutrients.totalProtein,
       color: `${COLOR_CODES.FOOD.PROTEINS}.6`,
       label: 'Protein',
-      color: 'green',
+      percentage: formatNumber(
+        (Number(totalEatenNutrients.totalProtein) /
+          (Number(totalEatenNutrients.totalCarbs) +
+            Number(totalEatenNutrients.totalProtein) +
+            Number(totalEatenNutrients.totalFat))) *
+          100
+      ),
     },
     {
       value: totalEatenNutrients.totalFat,
       color: `${COLOR_CODES.FOOD.FATS}.6`,
       label: 'Fat',
-      color: 'yellow',
+      percentage: formatNumber(
+        (Number(totalEatenNutrients.totalFat) /
+          (Number(totalEatenNutrients.totalCarbs) +
+            Number(totalEatenNutrients.totalProtein) +
+            Number(totalEatenNutrients.totalFat))) *
+          100
+      ),
     },
     {
       value: totalEatenNutrients.totalKcal,
@@ -169,37 +191,60 @@ function DiaryOverview({
         'light-dark(var(--mantine-color-dark-4), var(--mantine-color-dark-8))'
       }
     >
-      <PartialDate props={props.entryDate} />
+      {props?.entryDate && (
+        <>
+          <PartialDate props={props.entryDate} />
+          <Divider mt={'xs'} mb={'md'} variant="dashed" />
+        </>
+      )}
 
-      <Divider mt={'xs'} mb={'md'} variant="dashed" />
+      <Group
+        justify="center"
+        grow
+        pb={'md'}
+        pt={!props?.entryDate ? 'sm' : undefined}
+      >
+        {overview.map((oi, i) => {
+          const totalsValid = oi.percentage && Number(oi.percentage);
 
-      <Group justify="center" grow pb={'md'}>
-        {overview.map((oi, i) => (
-          <Stack key={i} gap={0} align="center">
-            <Text
-              component="span"
-              inherit
-              c={`${oi.color}.6`}
-              ta={'center'}
-              fw={500}
-            >
-              <NumberFormatter value={oi.value} decimalScale={2} />
-            </Text>
+          return (
+            <Stack key={i} gap={0} align="center">
+              <Text
+                component="span"
+                inherit
+                c={`${oi.color}.6`}
+                ta={'center'}
+                fw={500}
+              >
+                <NumberFormatter value={oi.value} decimalScale={2} />
+              </Text>
 
-            <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
-              {oi.label}
-            </Text>
+              <Text inherit ta={'center'} fz={'sm'} c={'dimmed'}>
+                {oi.label}
+              </Text>
 
-            <Group justify="center" w={64} mt={5}>
-              <Progress
-                value={100}
-                color={oi.color}
-                size={ICON_STROKE_WIDTH}
-                w={'100%'}
-              />
-            </Group>
-          </Stack>
-        ))}
+              <Group
+                justify="center"
+                w={64}
+                mt={5}
+                mb={!props?.entryDate && dayEats?.length ? 5 : 0}
+              >
+                <Progress
+                  value={100}
+                  color={oi.color}
+                  size={ICON_STROKE_WIDTH}
+                  w={'100%'}
+                />
+              </Group>
+
+              {!props?.entryDate && dayEats && dayEats.length > 0 && (
+                <Text inherit fz={'sm'} c={'dimmed'} ta={'center'} mih={21.7}>
+                  {totalsValid ? `${oi.percentage} %` : ''}
+                </Text>
+              )}
+            </Stack>
+          );
+        })}
       </Group>
     </LayoutSection>
   );
