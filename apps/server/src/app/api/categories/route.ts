@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const categoryRecords = await prisma.category.findMany({
-      include: { _count: { select: { posts: true } } },
+      orderBy: { created_at: 'desc' },
     });
 
     return NextResponse.json(

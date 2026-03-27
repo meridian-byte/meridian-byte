@@ -7,7 +7,7 @@
 
 import { API_URL } from '@repo/constants/paths';
 import { HEADERS } from '@repo/constants/other';
-import { NoteCreate, NoteRelations, NoteUpdate } from '@repo/types/models/note';
+import { NoteCreate, NoteGet, NoteUpdate } from '@repo/types/models/note';
 
 const baseRequestUrl = `${API_URL}/notes`;
 
@@ -31,10 +31,7 @@ export const notesGet = async () => {
 
 let currentController: AbortController | null = null;
 
-export const notesUpdate = async (
-  notes: NoteRelations[],
-  deletedIds?: string[]
-) => {
+export const notesUpdate = async (notes: NoteGet[], deletedIds?: string[]) => {
   // Cancel previous request if still in-flight
   if (currentController) currentController.abort();
 

@@ -15,10 +15,6 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const notebookRecords = await prisma.notebook.findMany({
-      include: {
-        _count: { select: { notes: true } },
-      },
-
       orderBy: { created_at: 'desc' },
     });
 

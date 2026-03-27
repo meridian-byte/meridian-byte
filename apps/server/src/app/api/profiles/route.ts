@@ -14,9 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const profileRecords = await prisma.profile.findMany({
-      orderBy: { created_at: 'desc' },
-    });
+    const profileRecords = await prisma.profile.findMany();
 
     return NextResponse.json(
       { items: profileRecords },
