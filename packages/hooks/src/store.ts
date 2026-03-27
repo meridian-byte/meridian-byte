@@ -406,12 +406,13 @@ const useGenericLoader = <K extends LoadStoreKey>(params: {
   const store = config.useStoreHook();
 
   useEffect(() => {
+    if (session === undefined) return;
+
     const load = async () => {
       if (prevItemsRef.current.length) return;
 
-      const data = clientOnly
-        ? { items: [] }
-        : noSession
+      const data =
+        clientOnly || noSession
           ? { items: [] }
           : await config.fetchItems(session.id);
 
@@ -419,6 +420,7 @@ const useGenericLoader = <K extends LoadStoreKey>(params: {
         prevItemsRef,
         dataStore: config.dataStore,
         session,
+        options: { clientOnly },
         dataFetchFunction: async () => data,
         stateUpdateFunction: (items: any[]) => config.setState(store, items),
       });
