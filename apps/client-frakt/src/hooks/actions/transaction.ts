@@ -92,6 +92,18 @@ export const useTransactionActions = () => {
 
     const now = new Date();
 
+    const newAccountBalance = getNewAccountBalance({
+      accounts: accounts || [],
+      previousTransaction: params,
+    });
+
+    if (newAccountBalance) {
+      accountUpdate({
+        ...newAccountBalance.account,
+        balance: newAccountBalance.newBalance as any,
+      });
+    }
+
     deleteTransaction({
       ...params,
       sync_status: SyncStatus.DELETED,
@@ -102,35 +114,45 @@ export const useTransactionActions = () => {
   return { transactionCreate, transactionUpdate, transactionDelete };
 };
 
+const adjustBalance = (
+  balance: number,
+  transaction: TransactionGet,
+  reverse = false
+) => {
+  const amount = Number(transaction.amount);
+  const fees = Number(transaction.fees);
+  const multiplier = reverse ? -1 : 1;
+
+  return transaction.type === TransactionType.CREDIT
+    ? balance + amount * multiplier
+    : balance - (amount + fees) * multiplier;
+};
+
 const getNewAccountBalance = (params: {
-  newTransaction: TransactionGet;
+  newTransaction?: TransactionGet;
   previousTransaction?: TransactionGet;
   accounts: AccountGet[];
-}) => {
+}): {
+  account: AccountGet;
+  newBalance: string;
+} | null => {
   const { newTransaction, previousTransaction, accounts } = params;
 
-  if (!newTransaction.account_id) return null;
-  const account = accounts?.find((a) => a.id == newTransaction.account_id);
+  const targetTransaction = newTransaction || previousTransaction;
+  if (!targetTransaction) return null;
+
+  const account = accounts?.find((a) => a.id == targetTransaction.account_id);
   if (!account) return null;
 
-  let newBalance = Number(account.balance);
+  let updatedBalance = Number(account.balance);
 
-  // reverse previous transaction
   if (previousTransaction) {
-    if (previousTransaction.type === TransactionType.CREDIT) {
-      newBalance -= Number(previousTransaction.amount);
-    } else if (previousTransaction.type === TransactionType.DEBIT) {
-      newBalance +=
-        Number(previousTransaction.amount) + Number(previousTransaction.fees);
-    }
+    updatedBalance = adjustBalance(updatedBalance, previousTransaction, true);
   }
 
-  // apply new transaction
-  if (newTransaction.type === TransactionType.CREDIT) {
-    newBalance += Number(newTransaction.amount);
-  } else if (newTransaction.type === TransactionType.DEBIT) {
-    newBalance -= Number(newTransaction.amount) + Number(newTransaction.fees);
+  if (newTransaction) {
+    updatedBalance = adjustBalance(updatedBalance, newTransaction);
   }
 
-  return { account, newBalance: newBalance.toFixed(2) };
+  return { account, newBalance: updatedBalance.toFixed(2) };
 };
