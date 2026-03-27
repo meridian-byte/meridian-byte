@@ -23,6 +23,8 @@ export const LOCAL_STORAGE_NAME = {
 };
 
 export const PARAM_NAME = {
+  TEMPORARY: 'temporary_chat',
+  CHAT_ID: 'chat_id',
   REDIRECT: 'redirect',
 };
 
@@ -52,4 +54,7 @@ export const STORE_NAME = {
   NOTES: 'notes',
   NOTEBOOKS: 'notebooks',
   LINKS: 'links',
+  CHATS: 'chats',
+  CHAT_MESSAGES: 'chat-messages',
+  CUSTOMIZATIONS: 'customizations',
 };

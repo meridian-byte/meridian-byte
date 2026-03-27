@@ -1,0 +1,172 @@
+'use client';
+
+import React from 'react';
+import {
+  Menu,
+  MenuDivider,
+  MenuDropdown,
+  MenuItem,
+  MenuTarget,
+} from '@mantine/core';
+import {
+  IconBook,
+  IconCopy,
+  IconFileTypePdf,
+  IconGitMerge,
+  IconListDetails,
+  IconPencil,
+  IconSortAscendingSmallBig,
+  IconSwipeLeft,
+  IconTrash,
+  IconWriting,
+} from '@tabler/icons-react';
+import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
+import { ChatGet } from '@repo/types/models/chat';
+import { useChatActions } from '@repo/hooks/actions/chat';
+import ModalConfirm from '@repo/components/common/modals/confirm';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
+import ModalMerge from '../../modals/merge';
+import ModalMove from '../../modals/move';
+
+export default function Main({
+  item,
+  children,
+}: {
+  item: ChatGet;
+  children: React.ReactNode;
+}) {
+  // const userStates = useStoreUserStates((s) => s.userStates);
+  // const setUserStates = useStoreUserStates((s) => s.setUserStates);
+
+  // const toogleProperties = {
+  //   label: userStates?.editing == true ? 'Reading' : 'Editing',
+  //   icon: userStates?.editing == true ? IconBook : IconWriting,
+  // };
+
+  const { chatDelete } = useChatActions();
+
+  const handleRename = () => {
+    const myInput = document.getElementById(
+      'chat-title-input'
+    ) as HTMLInputElement | null;
+
+    if (myInput) {
+      myInput.focus();
+      myInput.select(); // highlights all text
+    }
+  };
+
+  return (
+    <Menu
+      onClose={close}
+      withinPortal
+      position="bottom-end"
+      keepMounted
+      width={220}
+      styles={{
+        dropdown: {
+          padding: 5,
+        },
+        item: {
+          padding: '2.5px 10px',
+        },
+        itemLabel: {
+          fontSize: 'var(--mantine-font-size-sm)',
+        },
+      }}
+    >
+      <MenuTarget>
+        <span>{children}</span>
+      </MenuTarget>
+
+      <MenuDropdown>
+        {/* <MenuItem
+          leftSection={
+            <toogleProperties.icon
+              size={ICON_SIZE}
+              stroke={ICON_STROKE_WIDTH}
+            />
+          }
+          onClick={() => {
+            if (!userStates) return;
+
+            setUserStates({
+              ...userStates,
+              editing: !userStates.editing,
+            });
+          }}
+        >
+          {toogleProperties.label} view
+        </MenuItem> */}
+
+        <MenuItem
+          leftSection={
+            <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => handleRename()}
+        >
+          Rename
+        </MenuItem>
+
+        {/* <ModalMove item={item}>
+          <MenuItem
+            leftSection={
+              <IconSortAscendingSmallBig
+                size={ICON_SIZE}
+                stroke={ICON_STROKE_WIDTH}
+              />
+            }
+            onClick={() => {}}
+          >
+            Move chat to...
+          </MenuItem>
+        </ModalMove> */}
+
+        <MenuItem
+          leftSection={<IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+          onClick={() => {}}
+        >
+          Copy URL
+        </MenuItem>
+
+        <MenuItem
+          leftSection={<IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+          onClick={() => {}}
+        >
+          Copy path
+        </MenuItem>
+
+        <MenuItem
+          leftSection={<IconCopy size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+          onClick={() => {}}
+        >
+          Copy relative path
+        </MenuItem>
+
+        <MenuDivider />
+
+        <MenuItem
+          leftSection={
+            <IconFileTypePdf size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => {}}
+        >
+          Export to PDF
+        </MenuItem>
+
+        <MenuDivider />
+
+        <ModalConfirm props={{ onConfirm: () => chatDelete(item) }}>
+          <MenuItem
+            color="red.6"
+            leftSection={
+              <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+          >
+            Delete
+          </MenuItem>
+        </ModalConfirm>
+      </MenuDropdown>
+    </Menu>
+  );
+}
