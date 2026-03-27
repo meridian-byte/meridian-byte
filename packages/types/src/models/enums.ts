@@ -13,6 +13,7 @@ export enum Status {
 
 export enum SyncStatus {
   PENDING = 'PENDING',
+  SYNCED_CLIENT = 'SYNCED_CLIENT',
   SYNCED = 'SYNCED',
   SAVED = 'SAVED',
   ERROR = 'ERROR',

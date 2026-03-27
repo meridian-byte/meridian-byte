@@ -49,7 +49,12 @@ export const handleSync = async (
       setSyncStatus(SyncStatus.PENDING);
 
       // update the client DB with pending items
-      await syncToClientDB({ ...syncParams, online: isOnline, sameDate: true });
+      await syncToClientDB({
+        ...syncParams,
+        online: isOnline,
+        clientOnly,
+        sameDate: true,
+      });
 
       if (params.clientOnly) {
         setSyncStatus(SyncStatus.SAVED);
@@ -124,6 +129,7 @@ export const syncToClientDB = async (
   params: SyncParams & {
     sameDate?: boolean;
     online?: boolean;
+    clientOnly?: boolean;
     cleanup?: boolean;
     options?: { fromServer?: boolean };
   }
@@ -161,7 +167,9 @@ export const syncToClientDB = async (
               ? SyncStatus.DELETED
               : item.sync_status == SyncStatus.ERROR
                 ? SyncStatus.ERROR
-                : SyncStatus.SAVED,
+                : params.online && !params.clientOnly
+                  ? SyncStatus.SYNCED_CLIENT
+                  : SyncStatus.SAVED,
         };
       });
     }
@@ -250,27 +258,29 @@ export const syncToServerAfterDelay = async (
       return;
     }
 
-    if (serverItems?.updatedItems) {
-      // update the client DB items' to synced status
-      await syncToClientDB({
-        ...syncParams,
-        online: networkStatus.online,
-        cleanup: true, // cleanup deleted items
-        items: serverItems.updatedItems.map((ui) => {
-          const latest = params.items.find((i) => i.id === ui.id);
+    // if (serverItems?.updatedItems) {
+    //   // update the client DB items' to synced status
+    //   await syncToClientDB({
+    //     ...syncParams,
+    //     online: networkStatus.online,
+    //     cleanup: true, // cleanup deleted items
+    //     items: serverItems.updatedItems.map((ui) => {
+    //       const latest = params.items.find((i) => i.id === ui.id);
 
-          if (!latest) return ui;
+    //       if (!latest) return ui;
 
-          return {
-            ...latest,
-            sync_status: ui.sync_status,
-          };
-        }),
-        options: { fromServer: true },
-      });
+    //       return {
+    //         ...latest,
+    //         sync_status: ui.sync_status,
+    //       };
+    //     }),
+    //     options: { fromServer: true },
+    //   });
 
-      setSyncStatus(SyncStatus.SYNCED);
-    }
+    //   return;
+    // }
+
+    setSyncStatus(SyncStatus.SYNCED);
   } catch (error) {
     console.error('Sync to Server Error:', (error as Error).message);
   }
