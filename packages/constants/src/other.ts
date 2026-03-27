@@ -7,7 +7,7 @@
 
 import { ColorScheme } from '@repo/types/enums';
 
-export const DEFAULT_COLOR_SCHEME: ColorScheme = ColorScheme.DARK;
+export const DEFAULT_COLOR_SCHEME: ColorScheme = ColorScheme.AUTO;
 
 const WITHOUT_BODY: HeadersInit = {
   Accept: 'application/json',

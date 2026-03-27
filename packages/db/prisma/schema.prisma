@@ -114,12 +114,14 @@ enum SortDirection {
 
 model Profile {
   id         String  @id
+  email      String
   user_name  String?
   first_name String?
   last_name  String?
   bio        String?
   avatar     String?
   phone      String?
+  customized Boolean @default(false)
   role       Role    @default(USER)
 
   posts           Post[]
@@ -149,6 +151,7 @@ model Profile {
   updated_at  DateTime   @updatedAt
   sync_status SyncStatus @default(SYNCED)
 
+  @@unique([email])
   @@map("profiles")
 }
 

@@ -11,7 +11,6 @@ import React from 'react';
 import {
   useAppshellStore,
   useSessionStore,
-  useThemeStore,
   useLoadAppData,
   useSelectedTaskStore,
 } from '@repo/hooks/store';
@@ -31,7 +30,6 @@ export default function Store({
     options: { clientOnly: false },
   });
   // useUserRoleStore();
-  useThemeStore();
   useSelectedTaskStore();
   useAppshellStore();
   useLoadAppData({

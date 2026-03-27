@@ -20,15 +20,15 @@ export const useFormUserProfile = () => {
 
   const { form, submitted, handleSubmit } = useFormBase<{
     name: string;
-    // user_name: string;
+    user_name: string;
   }>(
     {
       name: session?.user_metadata.name || 'Set Name',
-      // user_name: session?.user_metadata.user_name || 'Set username',
+      user_name: session?.user_metadata.user_name || 'Set username',
     },
     {
       name: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
-      // user_name: hasLength({ min: 0, max: 24 }, 'Max 24 characters'),
+      user_name: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
     },
     {
       hideSuccessNotification: true,
@@ -42,14 +42,15 @@ export const useFormUserProfile = () => {
           name: capitalizeWords(rawValues.name.trim()),
           firstName: segment.first.trim(),
           lastName: segment.last.trim(),
-          // userName: rawValues.user_name.trim(),
+          userName: rawValues.user_name.trim(),
         };
 
         const response = await profileUpdate({
+          customized: true,
           id: session.id,
           first_name: cleanValues.firstName,
           last_name: cleanValues.lastName,
-          // user_name: cleanValues.userName,
+          user_name: cleanValues.userName,
         });
 
         if (!response) throw new Error('No response from server');
