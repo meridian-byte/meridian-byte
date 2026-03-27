@@ -9,7 +9,7 @@ import {
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
 import { IconPlus } from '@tabler/icons-react';
-import ModalMassCrud from '@/components/common/modals/mass/crud';
+import ModalMassCrud from '@repo/components/common/modals/mass/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 

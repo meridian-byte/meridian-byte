@@ -20,7 +20,7 @@ import ProviderMantine from '@repo/components/provider/mantine';
 import ProviderStore from '@/components/provider/store';
 import { mantine } from '@/assets/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
-import { COMPANY_NAME } from '@repo/constants/app';
+import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,7 +34,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: COMPANY_NAME,
-  description: '',
+  description: APP_DESC.WEB,
 };
 
 export default async function RootLayout({
