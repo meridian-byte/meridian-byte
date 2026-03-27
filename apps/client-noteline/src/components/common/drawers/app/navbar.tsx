@@ -23,15 +23,17 @@ import TabNavbarLeft from '../../tabs/navbar/left';
 import { IconLayoutSidebarLeftCollapse } from '@tabler/icons-react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
+  const notes = useStoreNote((s) => s.notes);
   const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const desktop = useMediaQuery('(min-width: 62em)');
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   return (
     <>
-      {!desktop && (
+      {notes !== undefined && desktop == false && (
         <Drawer
           keepMounted
           opened={navbarChild ?? false}

@@ -16,8 +16,8 @@ export const useFormCategory = (params?: {
     },
     {
       title: hasLength(
-        { min: 2, max: 24 },
-        'Between 2 and 24 characters required'
+        { min: 2, max: 48 },
+        'Between 2 and 48 characters required'
       ),
     },
     {

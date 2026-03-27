@@ -16,12 +16,13 @@ import {
   useUserStatesStore,
 } from '@repo/hooks/store';
 import { User } from '@supabase/supabase-js';
+import { AppShellValue } from '@repo/libraries/zustand/stores/shell';
 
 export default function Store({
   props,
   children,
 }: {
-  props?: { sessionUser: User | null };
+  props?: { sessionUser: User | null; cookie?: AppShellValue };
   children: React.ReactNode;
 }) {
   // initialize stores
@@ -33,6 +34,7 @@ export default function Store({
   // useUserRoleStore();
   useThemeStore();
   useAppshellStore();
+
   useLoadAppData({
     clientOnly: false,
     storesToLoad: {

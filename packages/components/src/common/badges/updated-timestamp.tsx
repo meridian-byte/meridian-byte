@@ -22,7 +22,8 @@ export default function UpdatedTimestamp({
         tt={'none'}
         variant="light"
         color="dark"
-        size="lg"
+        size="md"
+        fz={'xs'}
         fw={'normal'}
         h={ICON_WRAPPER_SIZE}
         radius={'md'}

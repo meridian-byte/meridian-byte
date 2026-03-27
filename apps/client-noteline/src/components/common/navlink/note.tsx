@@ -230,6 +230,7 @@ function NoteLabel({
 }) {
   const desktop = useMediaQuery('(min-width: 62em)');
   const ChevronIcon = opened ? IconChevronDown : IconChevronRight;
+  const noteIcon = <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />;
 
   return (
     <Grid
@@ -245,11 +246,11 @@ function NoteLabel({
                 size={ICON_SIZE}
                 radius="sm"
                 color="dark"
-                variant="subtle"
+                variant="transparent"
                 className={classes.theme}
                 style={{ display: !desktop ? 'none' : undefined }}
               >
-                <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                {noteIcon}
               </ActionIcon>
 
               <Tooltip label={`${opened ? 'Hide' : 'Show'} child notes`}>
@@ -275,7 +276,7 @@ function NoteLabel({
               color="dark"
               variant="transparent"
             >
-              <IconNote size={ICON_SIZE - 4} />
+              {noteIcon}
             </ThemeIcon>
           )}
         </Group>

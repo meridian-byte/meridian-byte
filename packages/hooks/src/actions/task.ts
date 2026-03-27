@@ -3,15 +3,15 @@ import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { TaskGet } from '@repo/types/models/task';
 import { Priority, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export const useTaskActions = () => {
   const session = useStoreSession((s) => s.session);
   const addTask = useStoreTask((s) => s.addTask);
   const updateTask = useStoreTask((s) => s.updateTask);
   const deleteTask = useStoreTask((s) => s.deleteTask);
-  const selectedTask = useStoreSelectedTask((s) => s.selectedTask);
-  const setSelectedTask = useStoreSelectedTask((s) => s.setSelectedTask);
+  const activeTask = useStoreActiveItems((s) => s.activeItems?.task);
+  const removeActiveTask = useStoreActiveItems((s) => s.removeActiveTask);
 
   const taskCreate = (params: Partial<TaskGet>) => {
     if (!session) return;
@@ -65,7 +65,7 @@ export const useTaskActions = () => {
 
     const now = new Date();
 
-    if (selectedTask?.id == params.id) setSelectedTask(null);
+    if (activeTask?.id == params.id) removeActiveTask();
 
     deleteTask({
       ...params,
