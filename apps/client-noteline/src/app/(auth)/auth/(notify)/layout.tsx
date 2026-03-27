@@ -45,7 +45,7 @@ export default function LayoutNotify({
             <Center h={'100vh'} px={{ xs: 32 }}>
               <AnchorNextLink href={'/'}>
                 <ImageDefault
-                  src={images.brand.logo.light}
+                  src={images.brand.icon.default}
                   alt={companyName}
                   height={48}
                   width={160}

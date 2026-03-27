@@ -48,4 +48,7 @@ export const STORE_NAME = {
   SERVINGS: 'servings',
   EATS: 'eats',
   MASSES: 'masses',
+  NOTES: 'notes',
+  NOTEBOOKS: 'notebooks',
+  LINKS: 'links',
 };

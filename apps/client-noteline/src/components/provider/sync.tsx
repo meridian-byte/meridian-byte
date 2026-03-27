@@ -12,7 +12,13 @@ import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 import { handleSync, syncToServerAfterDelay } from '@/utilities/sync';
-import { useSyncCategories, useSyncPosts } from '@/hooks/sync';
+import {
+  useSyncCategories,
+  useSyncLinks,
+  useSyncNotebooks,
+  useSyncNotes,
+  useSyncPosts,
+} from '@/hooks/sync';
 import { SyncParams } from '@repo/types/sync';
 import { useSyncQueue } from '@repo/utilities/sync';
 
@@ -35,6 +41,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     networkStatus,
     syncStatus,
     debounceSyncToServer,
+    clientOnly: true,
   };
 
   const { syncPosts } = useSyncPosts({
@@ -47,12 +54,37 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     online: networkStatus.online,
   });
 
+  const { syncNotes } = useSyncNotes({
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+    online: networkStatus.online,
+  });
+
+  const { syncNotebooks } = useSyncNotebooks({
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+    online: networkStatus.online,
+  });
+
+  const { syncLinks } = useSyncLinks({
+    syncFunction: (i: SyncParams) => enqueueSync({ ...i, ...restProps }),
+    online: networkStatus.online,
+  });
+
   useEffect(() => {
     if (!networkStatus.online) return;
 
     syncPosts();
     syncCategories();
-  }, [networkStatus.online, syncPosts, syncCategories]);
+    syncNotes();
+    syncNotebooks();
+    syncLinks();
+  }, [
+    networkStatus.online,
+    syncPosts,
+    syncCategories,
+    syncNotes,
+    syncNotebooks,
+    syncLinks,
+  ]);
 
   return <div>{children}</div>;
 }

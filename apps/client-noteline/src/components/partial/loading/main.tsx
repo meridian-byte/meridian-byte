@@ -11,7 +11,7 @@ export default function Main() {
       <Center mih={'100vh'}>
         <Stack align="center">
           <ImageDefault
-            src={images.brand.logo.light}
+            src={images.brand.icon.default}
             alt={companyName}
             height={56}
             width={104}

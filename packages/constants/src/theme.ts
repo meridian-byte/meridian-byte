@@ -14,6 +14,7 @@ import {
   Drawer,
   Loader,
   MantineThemeOverride,
+  Menu,
   Modal,
   Notification,
   NumberFormatter,
@@ -135,13 +136,39 @@ export const getAppTheme = (params?: AppThemeProps) => {
         },
       }),
 
+      Menu: Menu.extend({
+        defaultProps: {
+          transitionProps: {
+            enterDelay: 0,
+            duration: 100,
+            exitDuration: 100,
+            exitDelay: 0,
+          },
+        },
+        // classNames: classesMenu,
+      }),
+
+      // Popover: Popover.extend({
+      //   defaultProps: {
+      //     transitionProps: {
+      //       enterDelay: 0,
+      //       duration: 100,
+      //       exitDuration: 100,
+      //       exitDelay: 0,
+      //     },
+      //   },
+      //   // classNames: classesPopover,
+      // }),
+
       Tooltip: Tooltip.extend({
         defaultProps: {
           withArrow: true,
           transitionProps: {
             duration: 100,
             transition: 'fade',
+            exitDuration: 100,
             enterDelay: 500,
+            exitDelay: 0,
           },
         },
       }),
@@ -152,7 +179,10 @@ export const getAppTheme = (params?: AppThemeProps) => {
           withCloseButton: false,
           padding: 0,
           transitionProps: {
+            enterDelay: 0,
             duration: 100,
+            exitDuration: 100,
+            exitDelay: 0,
             transition: 'fade',
           },
           overlayProps: {

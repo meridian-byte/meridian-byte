@@ -1,0 +1,16 @@
+.tab {
+  margin: var(--mantine-spacing-xs) 0;
+  height: 28;
+  width: 28;
+  overflow: hidden;
+  padding: 0;
+
+  &[data-active] {
+    background-color: var(--mantine-color-pri-light);
+  }
+}
+
+.panel {
+  padding: 0 var(--mantine-spacing-xs);
+  padding-bottom: var(--mantine-spacing-xs);
+}
