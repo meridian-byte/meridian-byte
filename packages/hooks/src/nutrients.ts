@@ -11,8 +11,8 @@ export const useServingTotals = (params?: {
   servings?: ServingGet[];
   options?: { round?: boolean };
 }): ServingTotals => {
-  const { servings } = useStoreServing();
-  const { foods } = useStoreFood();
+  const servings = useStoreServing((s) => s.servings);
+  const foods = useStoreFood((s) => s.foods);
 
   const totals: { carbs: number; protein: number; fat: number; kcal: number } =
     {
@@ -54,7 +54,7 @@ export const useServingTotals = (params?: {
 
 export const useMealTotals = (params: { meal: MealGet }) => {
   const { meal } = params;
-  const { servings } = useStoreServing();
+  const servings = useStoreServing((s) => s.servings);
   const mealServings = servings?.filter((s) => s.meal_id == meal.id);
 
   const servingTotals = useServingTotals({
@@ -70,7 +70,7 @@ export const useEatTotals = (params: { eats: EatGet[] }) => {
   const { eats } = params;
   const dedupedEats = Array.from(new Map(eats.map((e) => [e.id, e])).values());
 
-  const { servings } = useStoreServing();
+  const servings = useStoreServing((s) => s.servings);
 
   let eatServings: ServingGet[] = [];
 

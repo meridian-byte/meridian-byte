@@ -15,7 +15,7 @@ export const useFormServing = (params?: {
     formEat: params?.formEat,
   });
 
-  const { foods } = useStoreFood();
+  const foods = useStoreFood((s) => s.foods);
 
   const { form, submitted, handleSubmit } = useFormBase<Partial<ServingGet>>(
     {

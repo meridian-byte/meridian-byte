@@ -5,8 +5,10 @@ import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useAccountActions = () => {
-  const { session } = useStoreSession();
-  const { addAccount, updateAccount, deleteAccount } = useStoreAccount();
+  const session = useStoreSession((s) => s.session);
+  const addAccount = useStoreAccount((s) => s.addAccount);
+  const updateAccount = useStoreAccount((s) => s.updateAccount);
+  const deleteAccount = useStoreAccount((s) => s.deleteAccount);
 
   const accountCreate = (params: Partial<AccountGet>) => {
     if (!session) return;

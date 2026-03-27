@@ -9,9 +9,12 @@ import { useItemEditContext } from '../contexts/item-edit';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 
 export const useNoteActions = () => {
-  const { session } = useStoreSession();
-  const { notes, addNote, updateNote, deleteNote } = useStoreNote();
+  const session = useStoreSession((s) => s.session);
   const router = useRouter();
+  const notes = useStoreNote((s) => s.notes);
+  const addNote = useStoreNote((s) => s.addNote);
+  const updateNote = useStoreNote((s) => s.updateNote);
+  const deleteNote = useStoreNote((s) => s.deleteNote);
 
   const searchParams = useSearchParams();
   const noteId = searchParams.get('noteId');
@@ -19,7 +22,8 @@ export const useNoteActions = () => {
   const { editing, editingId, setEditingState, startRename, inputRefs } =
     useItemEditContext();
 
-  const { userStates, setUserStates } = useStoreUserStates();
+  const userStates = useStoreUserStates((s) => s.userStates);
+  const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
   const noteCreate = (params?: Partial<NoteGet>) => {
     if (!session) return;

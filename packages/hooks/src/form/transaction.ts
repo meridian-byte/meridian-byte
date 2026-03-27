@@ -11,8 +11,8 @@ export const useFormTransaction = (params?: {
   defaultValues?: Partial<TransactionGet>;
 }) => {
   const { transactionCreate, transactionUpdate } = useTransactionActions();
-  const { categories } = useStoreCategory();
-  const { accounts } = useStoreAccount();
+  const categories = useStoreCategory((s) => s.categories);
+  const accounts = useStoreAccount((s) => s.accounts);
 
   const [accountId2, setaccountId2] = useState('');
 

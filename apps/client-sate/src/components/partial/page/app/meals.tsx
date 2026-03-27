@@ -11,7 +11,7 @@ import CardMeal from '@repo/components/common/cards/meal';
 import ModalMealCrud from '@repo/components/common/modals/meal/crud';
 
 export default function Meals() {
-  const { meals } = useStoreMeal();
+  const meals = useStoreMeal((s) => s.meals);
 
   return (
     <LayoutSection id="app-home" containerized={'xs'}>

@@ -93,11 +93,11 @@ export function useFileSyncAdapter() {
 
 export function useBundledBackupSync({ clientOnly }: { clientOnly: boolean }) {
   const { fileSyncAdapter, hasHandle, hasAccess } = useFileSyncAdapter();
-  const { accounts } = useStoreAccount();
-  const { accountGroups } = useStoreAccountGroup();
-  const { budgets } = useStoreBudget();
-  const { categories } = useStoreCategory();
-  const { transactions } = useStoreTransaction();
+  const accounts = useStoreAccount((s) => s.accounts);
+  const accountGroups = useStoreAccountGroup((s) => s.accountGroups);
+  const budgets = useStoreBudget((s) => s.budgets);
+  const categories = useStoreCategory((s) => s.categories);
+  const transactions = useStoreTransaction((s) => s.transactions);
 
   const debouncedFsWrite = useDebouncedCallback(async () => {
     if (!fileSyncAdapter) return;

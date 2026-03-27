@@ -25,7 +25,7 @@ export default function Main({
   props?: { options?: { mobile: boolean } };
 }) {
   const router = useRouter();
-  const { notes } = useStoreNote();
+  const notes = useStoreNote((s) => s.notes);
   const { noteCreate } = useNoteActions();
 
   const handleCreate = () => {

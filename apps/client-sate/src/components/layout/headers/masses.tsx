@@ -14,7 +14,7 @@ import IndicatorNetworkStatus from '@repo/components/common/indicators/network-s
 import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 
 export default function Masses() {
-  const { syncStatus } = useStoreSyncStatus();
+  const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
 
   return (
     <Box

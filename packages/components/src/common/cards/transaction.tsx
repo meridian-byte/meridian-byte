@@ -21,8 +21,8 @@ import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import classes from './transaction.module.scss';
 
 export default function Transaction({ props }: { props: TransactionGet }) {
-  const { categories } = useStoreCategory();
-  const { accounts } = useStoreAccount();
+  const categories = useStoreCategory((s) => s.categories);
+  const accounts = useStoreAccount((s) => s.accounts);
 
   const transactionCategory = categories?.find(
     (c) => c.id == props.category_id

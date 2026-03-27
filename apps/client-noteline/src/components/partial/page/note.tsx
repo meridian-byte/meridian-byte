@@ -10,7 +10,7 @@ import ParserHtml from '@repo/components/parsers/html';
 import { NoteGet } from '@repo/types/models/note';
 
 export default function Note({ props }: { props: { note: NoteGet } }) {
-  const { userStates } = useStoreUserStates();
+  const userStates = useStoreUserStates((s) => s.userStates);
 
   return (
     <LayoutSection

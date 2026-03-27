@@ -15,7 +15,8 @@ import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 export const useFormUserProfile = () => {
   const supabase = createClient();
 
-  const { session, setSession } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
+  const setSession = useStoreSession((s) => s.setSession);
 
   const { form, submitted, handleSubmit } = useFormBase<{
     firstName: string;

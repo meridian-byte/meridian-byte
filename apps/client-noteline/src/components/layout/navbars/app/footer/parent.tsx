@@ -12,9 +12,10 @@ import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import { ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 
 export default function Parent() {
-  const { session } = useStoreSession();
-  const { syncStatus } = useStoreSyncStatus();
-  const { theme, setTheme } = useStoreTheme();
+  const session = useStoreSession((s) => s.session);
+  const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
+  const theme = useStoreTheme((s) => s.theme);
+  const setTheme = useStoreTheme((s) => s.setTheme);
 
   return (
     <Stack p={'xs'} align="center">

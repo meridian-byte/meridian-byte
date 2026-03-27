@@ -9,7 +9,7 @@ import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Title({ item }: { item: NoteGet }) {
-  const { notes } = useStoreNote();
+  const notes = useStoreNote((s) => s.notes);
   const { noteUpdate } = useNoteActions();
 
   const field = useField({

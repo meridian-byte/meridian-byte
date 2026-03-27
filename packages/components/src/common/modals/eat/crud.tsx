@@ -39,7 +39,7 @@ export default function Crud({
   props?: Partial<EatGet>;
   children: React.ReactNode;
 }) {
-  const { servings } = useStoreServing();
+  const servings = useStoreServing((s) => s.servings);
 
   const [opened, { open, close }] = useDisclosure(false);
 

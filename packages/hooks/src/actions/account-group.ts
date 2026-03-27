@@ -5,7 +5,7 @@ import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useAccountGroupActions = () => {
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
   const { addAccountGroup, updateAccountGroup, deleteAccountGroup } =
     useStoreAccountGroup();
 

@@ -26,7 +26,7 @@ export default function Merge({
 }) {
   const [opened, { open, close }] = useDisclosure(false);
   const [search, setSearch] = useState('');
-  const { notes } = useStoreNote();
+  const notes = useStoreNote((s) => s.notes);
 
   const { noteMerge } = useNoteActions();
 

@@ -6,9 +6,11 @@ import { generateUUID } from '@repo/utilities/generators';
 import { useServingActions } from './serving';
 
 export const useEatActions = () => {
-  const { session } = useStoreSession();
-  const { addEat, updateEat, deleteEat } = useStoreEat();
+  const session = useStoreSession((s) => s.session);
   const { servingCreate } = useServingActions();
+  const addEat = useStoreEat((s) => s.addEat);
+  const updateEat = useStoreEat((s) => s.updateEat);
+  const deleteEat = useStoreEat((s) => s.deleteEat);
 
   const eatCreate = (params: Partial<EatRelations>) => {
     if (!session) return;

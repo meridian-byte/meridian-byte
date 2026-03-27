@@ -12,7 +12,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const noteId = searchParams.get('noteId');
 
-  const { notes } = useStoreNote();
+  const notes = useStoreNote((s) => s.notes);
 
   const [activeNote, setActiveNote] = useState<NoteGet | undefined>(undefined);
 

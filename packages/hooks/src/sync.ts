@@ -42,7 +42,7 @@ import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
 import { massesUpdate } from '@repo/handlers/requests/database/masses';
 
 const useSessionCheck = () => {
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
   const noSession =
     session === undefined ||
     (!session && (!(session as SessionValue)?.email as any));

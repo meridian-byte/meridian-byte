@@ -16,7 +16,7 @@ import { getFoodServingTotals } from '@repo/hooks/nutrients';
 import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Serving({ props }: { props: ServingGet }) {
-  const { foods } = useStoreFood();
+  const foods = useStoreFood((s) => s.foods);
   const servingFood = foods?.find((f) => f.id == props.food_id);
 
   if (!servingFood) return null;

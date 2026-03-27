@@ -7,7 +7,7 @@ import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { AccountType } from '@repo/types/models/enums';
 
 export default function Accounts() {
-  const { accounts } = useStoreAccount();
+  const accounts = useStoreAccount((s) => s.accounts);
 
   const assetAccounts =
     (accounts || []).filter((acc) => acc.type === AccountType.ASSET) || [];

@@ -20,7 +20,7 @@ export default function RouteProtection({
   const pathname = usePathname();
   const router = useRouter();
   const idle = useIdle(500);
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
 
   const isProtected = props.protectedRoutes.some((pr) =>
     pathname.startsWith(pr)

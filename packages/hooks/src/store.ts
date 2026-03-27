@@ -80,7 +80,7 @@ export const useSessionStore = (params?: {
   const { options } = params || {};
   const { clientOnly } = options || {};
 
-  const { setSession } = useStoreSession();
+  const setSession = useStoreSession((s) => s.setSession);
   const supabase = createClient();
 
   useEffect(() => {
@@ -125,8 +125,8 @@ export const useUserRoleStore = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { session } = useStoreSession();
-  const { setRole } = useStoreRole();
+  const session = useStoreSession((s) => s.session);
+  const setRole = useStoreRole((s) => s.setRole);
 
   useEffect(() => {
     if (!session) return;
@@ -189,7 +189,7 @@ export const useUserRoleStore = () => {
 export const useAppshellStore = () => {
   const desktop = useMediaQuery('(min-width: 62em)');
 
-  const { setAppShell } = useStoreAppShell();
+  const setAppShell = useStoreAppShell((s) => s.setAppShell);
 
   useEffect(() => {
     const initializeAppShell = () => {
@@ -222,7 +222,7 @@ export const useAppshellStore = () => {
 };
 
 export const useThemeStore = () => {
-  const { setTheme } = useStoreTheme();
+  const setTheme = useStoreTheme((s) => s.setTheme);
 
   useEffect(() => {
     const initializeTheme = () => {
@@ -248,7 +248,7 @@ export const useThemeStore = () => {
 };
 
 export const useUserStatesStore = () => {
-  const { setUserStates } = useStoreUserStates();
+  const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
   useEffect(() => {
     const initializeUserState = () => {
@@ -392,7 +392,7 @@ export const useLoadStores = (params?: {
 }) => {
   const { options } = params || {};
   const { clientOnly, storesToLoad = {} } = options || {};
-  const { session } = useStoreSession();
+  const session = useStoreSession((s) => s.session);
 
   const results = {} as Record<string, void>;
 

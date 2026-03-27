@@ -30,7 +30,8 @@ import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 
 export default function NoteDetails({ props }: { props?: NoteGet }) {
   const router = useRouter();
-  const { userStates, setUserStates } = useStoreUserStates();
+  const userStates = useStoreUserStates((s) => s.userStates);
+  const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
   const toogleProperties = {
     view: userStates?.editing == true ? 'Editing' : 'Reading',

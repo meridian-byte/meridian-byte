@@ -5,8 +5,10 @@ import { CategoryType, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
 
 export const useCategoryActions = () => {
-  const { session } = useStoreSession();
-  const { addCategory, updateCategory, deleteCategory } = useStoreCategory();
+  const session = useStoreSession((s) => s.session);
+  const addCategory = useStoreCategory((s) => s.addCategory);
+  const updateCategory = useStoreCategory((s) => s.updateCategory);
+  const deleteCategory = useStoreCategory((s) => s.deleteCategory);
 
   const categoryCreate = (params: Partial<CategoryGet>) => {
     if (!session) return;

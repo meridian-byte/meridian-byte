@@ -7,10 +7,13 @@ import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useItemEditContext } from '../contexts/item-edit';
 
 export const useNotebookActions = () => {
-  const { session } = useStoreSession();
-  const { notebooks } = useStoreNotebook();
-  const { notes, setNotes } = useStoreNote();
-  const { addNotebook, updateNotebook, deleteNotebook } = useStoreNotebook();
+  const session = useStoreSession((s) => s.session);
+  const notebooks = useStoreNotebook((s) => s.notebooks);
+  const notes = useStoreNote((s) => s.notes);
+  const setNotes = useStoreNote((s) => s.setNotes);
+  const addNotebook = useStoreNotebook((s) => s.addNotebook);
+  const updateNotebook = useStoreNotebook((s) => s.updateNotebook);
+  const deleteNotebook = useStoreNotebook((s) => s.deleteNotebook);
 
   const { editing, editingId, setEditingState, startRename, inputRefs } =
     useItemEditContext();

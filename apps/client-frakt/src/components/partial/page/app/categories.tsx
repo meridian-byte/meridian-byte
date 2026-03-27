@@ -10,7 +10,7 @@ import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
 
 export default function Categories() {
-  const { categories } = useStoreCategory();
+  const categories = useStoreCategory((s) => s.categories);
 
   return (
     <LayoutSection id="app-home" containerized={'xs'} padded={'md'}>
