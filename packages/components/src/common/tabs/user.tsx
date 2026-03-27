@@ -258,9 +258,9 @@ function UserEdit() {
           />
         </Group>
 
-        {/* {divider} */}
+        {divider}
 
-        {/* <Group justify="space-between">
+        <Group justify="space-between">
           <Text fz={'sm'}>Username</Text>
 
           <TextInput
@@ -277,7 +277,7 @@ function UserEdit() {
               },
             }}
           />
-        </Group> */}
+        </Group>
 
         {divider}
 

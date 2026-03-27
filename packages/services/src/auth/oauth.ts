@@ -1,10 +1,11 @@
 import { createClient } from '@repo/libraries/supabase/server';
 import { profileCreate } from '@repo/services/database/profile';
-import { segmentFullName } from '@repo/utilities/string';
+import { getEmailLocalPart, segmentFullName } from '@repo/utilities/string';
 import { AUTH_URLS } from '@repo/constants/paths';
 import { emailSendOnboarding } from '@repo/libraries/wrappers/email';
 import { emailContactAdd } from '@repo/services/api/email/contacts';
 import { COMPANY_NAME } from '@repo/constants/app';
+import { linkify } from '@repo/utilities/url';
 
 export const authOauth = async (params: { searchParams: URLSearchParams }) => {
   const { searchParams } = params;
@@ -22,12 +23,17 @@ export const authOauth = async (params: { searchParams: URLSearchParams }) => {
 
   if (exchangeError) throw exchangeError;
 
+  const nameSegments = segmentFullName(data.user.user_metadata.name || '');
+  const nameFromEmail = getEmailLocalPart(data.user.email || '');
+
   // create profile if doesn't exist
   const { profile, existed } = await profileCreate({
     id: data.user?.id,
-    first_name: segmentFullName(data.user.user_metadata.name || '').first,
-    last_name: segmentFullName(data.user.user_metadata.name || '').last,
+    first_name: nameSegments.first,
+    last_name: nameSegments.last,
+    user_name: linkify(`${nameFromEmail || ''}-${data.user.id}`),
     phone: data.user.phone || '',
+    email: data.user.email || '',
     avatar: data.user.user_metadata.avatar_url || '',
   });
 
@@ -44,7 +50,7 @@ export const authOauth = async (params: { searchParams: URLSearchParams }) => {
       full_name: name,
       picture: profile?.avatar,
       avatar_url: profile?.avatar,
-      userName: profile?.user_name,
+      user_name: profile?.user_name,
     },
   });
 

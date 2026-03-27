@@ -5,6 +5,7 @@ import { getEmailLocalPart, segmentFullName } from '@repo/utilities/string';
 import { emailSendOnboarding } from '@repo/libraries/wrappers/email';
 import { emailContactAdd } from '../api/email/contacts';
 import { COMPANY_NAME } from '@repo/constants/app';
+import { linkify } from '@repo/utilities/url';
 
 export const authEmail = async (params: {
   searchParams: URLSearchParams;
@@ -38,10 +39,14 @@ export const authEmail = async (params: {
     }
   }
 
+  const nameFromEmail = getEmailLocalPart(session.user?.email || '');
+
   // create profile if doesn't exist
   const { profile, existed } = await profileCreate({
     id: session.user?.id || '',
-    first_name: getEmailLocalPart(session.user?.email || ''),
+    email: session.user?.email || '',
+    first_name: nameFromEmail,
+    user_name: linkify(`${nameFromEmail || ''}-${session.user?.id || ''}`),
   });
 
   const name = `${profile?.first_name} ${profile?.last_name || ''}`.trim();
@@ -56,7 +61,7 @@ export const authEmail = async (params: {
       full_name: name,
       picture: profile?.avatar,
       avatar_url: profile?.avatar,
-      userName: profile?.user_name,
+      user_name: profile?.user_name,
     },
   });
 

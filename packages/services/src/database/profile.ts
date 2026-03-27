@@ -12,17 +12,19 @@ export const profileCreate = async (params: ProfileCreate) => {
   try {
     const transaction = await prisma.$transaction(async (prisma) => {
       const profile = await prisma.profile.findUnique({
-        where: { id: params.id },
+        where: { email: params.email },
       });
 
       if (profile) {
-        const updatedProfile = await prisma.profile.update({
-          where: { id: params.id },
-          data: {
-            ...params,
-            updated_at: new Date(),
-          },
-        });
+        const updatedProfile = profile.customized
+          ? profile
+          : await prisma.profile.update({
+              where: { id: params.id },
+              data: {
+                ...params,
+                updated_at: new Date(),
+              },
+            });
 
         return { profile: updatedProfile, existed: true };
       }
