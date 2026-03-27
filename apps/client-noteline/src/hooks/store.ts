@@ -51,6 +51,7 @@ import { ThemeValue, useStoreTheme } from '@/libraries/zustand/stores/theme';
 import { ColorScheme } from '@repo/types/enums';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { useStoreUserStates } from '@/libraries/zustand/stores/user-states';
+import { useMediaQuery } from '@mantine/hooks';
 
 export const useSessionStore = (params?: {
   options?: { clientOnly?: boolean };
@@ -165,6 +166,8 @@ export const useUserRoleStore = () => {
 };
 
 export const useAppshellStore = () => {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { setAppShell } = useStoreAppShell();
 
   useEffect(() => {
@@ -172,7 +175,7 @@ export const useAppshellStore = () => {
       let defaultValue: AppShellValue = {
         navbar: true,
         aside: false,
-        child: { navbar: false, aside: false },
+        child: { navbar: desktop ? true : false, aside: false },
       };
 
       const appShellCookie = getCookieClient<AppShellValue>(
@@ -184,14 +187,17 @@ export const useAppshellStore = () => {
           expiryInSeconds: WEEK,
         });
       } else {
-        defaultValue = appShellCookie;
+        defaultValue = {
+          ...appShellCookie,
+          child: { ...appShellCookie.child, navbar: desktop ? true : false },
+        };
       }
 
       setAppShell(defaultValue);
     };
 
     initializeAppShell();
-  }, [setAppShell]);
+  }, [setAppShell, desktop]);
 };
 
 export const useThemeStore = () => {
