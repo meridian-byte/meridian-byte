@@ -71,12 +71,8 @@ export default function Note({ props }: { props: { noteId?: string } }) {
   const [opened, setOpened] = useState(shouldBeOpen);
 
   useEffect(() => {
-    if (shouldBeOpen) {
-      setOpened(true);
-    }
-
-    setOpened(shouldBeOpen);
-  }, [notes, pathname, shouldBeOpen]);
+    if (shouldBeOpen) setOpened(true);
+  }, [shouldBeOpen]);
 
   return (
     <MenuNoteSide props={{ noteId: note?.id, options: { context: true } }}>
@@ -101,7 +97,12 @@ export default function Note({ props }: { props: { noteId?: string } }) {
         }
       >
         {childNotes.map((cni) => (
-          <Note key={cni.id} props={{ noteId: cni.id }} />
+          <MenuNoteSide
+            key={cni.id}
+            props={{ noteId: cni.id, options: { context: true } }}
+          >
+            <Note props={{ noteId: cni.id }} />
+          </MenuNoteSide>
         ))}
       </NavLink>
     </MenuNoteSide>

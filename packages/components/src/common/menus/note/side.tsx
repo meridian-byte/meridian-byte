@@ -42,7 +42,14 @@ export default function Side({
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props.noteId));
 
   const target = (
-    <span id="note-menu-target" {...targetProps}>
+    <span
+      id={`note-menu-target-${props.noteId}`}
+      {...targetProps}
+      onContextMenu={(e) => {
+        e.stopPropagation();
+        targetProps.onContextMenu?.(e);
+      }}
+    >
       {children}
     </span>
   );
