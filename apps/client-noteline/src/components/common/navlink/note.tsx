@@ -2,7 +2,7 @@
 
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import MenuNoteSide from '@repo/components/common/menus/note/side';
 import {
   ActionIcon,
@@ -69,6 +69,14 @@ export default function Note({ props }: { props: { noteId?: string } }) {
     !!note?.id && !!activeId && isAncestor(note.id, activeId, notes || []);
 
   const [opened, setOpened] = useState(shouldBeOpen);
+
+  useEffect(() => {
+    if (shouldBeOpen) {
+      setOpened(true);
+    }
+
+    setOpened(shouldBeOpen);
+  }, [notes, pathname, shouldBeOpen]);
 
   return (
     <MenuNoteSide props={{ noteId: note?.id, options: { context: true } }}>
