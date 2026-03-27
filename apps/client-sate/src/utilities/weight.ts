@@ -48,11 +48,13 @@ export const calculateBmrTdee = (params: TDEEOptions): TDEEResult => {
 export const calculateMacros = (params: MacroOptions): MacroResult => {
   const protein = (params.leanMassKg ?? params.weightKg) * 2; // 2g per kg lean mass or total weight
   const fat = params.weightKg * 1; // 1g per kg body weight
-  const proteinCalories = protein * 4;
-  const fatCalories = fat * 9;
+  const proteinCalories = protein * 4; // 408k
+  const fatCalories = fat * 9; // 559k
 
   const totalCalories = (proteinCalories + fatCalories) * 1.5; // carbs fill the rest
-  const carbsCalories = totalCalories - (proteinCalories + fatCalories);
+  const surplus = 300; // 300 - 500 kcal (excersise, day-to-day, etc.)
+  const carbsCalories =
+    totalCalories + surplus - (proteinCalories + fatCalories);
   const carbs = carbsCalories / 4;
 
   return {
