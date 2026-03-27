@@ -65,7 +65,10 @@ export default function Serving({
             data={[
               { label: 'Select Food', value: '' },
               ...(foods || []).map((food) => {
-                return { label: food.name, value: food.id };
+                return {
+                  label: `${food.description}, ${food.name}`,
+                  value: food.id,
+                };
               }),
             ]}
             {...form.getInputProps('food_id')}
