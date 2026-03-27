@@ -37,7 +37,7 @@ import ModalEatCrud from '@/components/common/modals/eat/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreEat } from '@/libraries/zustand/stores/eat';
 import { useEatTotals } from '@/hooks/nutrients';
-import { EntryDateReturnType, useEntryDate } from '@/hooks/entries';
+import { useEntryDate, EntryDateReturnType } from '@repo/hooks/entries';
 import { DateInput } from '@mantine/dates';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
 import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';

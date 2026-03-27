@@ -25,6 +25,7 @@ export const useTransactionActions = () => {
       id: params.id || id,
       type: (params.type || '') as any,
       date: new Date(params.date || '').toISOString() as any,
+      transfer: params.transfer || false,
       amount: Number(params.amount || 0).toFixed(2) as any,
       fees: Number(params.fees || 0).toFixed(2) as any,
       category_id: params.category_id || '',
