@@ -13,12 +13,10 @@ export async function POST(request: NextRequest) {
   try {
     const formValues: Partial<FormValuesInquiry> = await request.json();
 
-    const response = await emailContactAdd(formValues, true);
-
-    const result = await response.json();
+    const result = await emailContactAdd(formValues, true);
 
     return new NextResponse(JSON.stringify({ ...result }), {
-      status: response.status,
+      status: 200,
       statusText: 'Subscriber Added',
     });
   } catch (error) {
