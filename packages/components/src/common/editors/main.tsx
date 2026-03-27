@@ -20,27 +20,34 @@ import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants/sizes';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import { useDebouncedCallback, useIdle, useMediaQuery } from '@mantine/hooks';
-import { Box, Divider, ScrollArea, Typography } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Divider,
+  Group,
+  ScrollArea,
+  Typography,
+} from '@mantine/core';
 import WrapperUnderlayGlass from '../../wrappers/underlays/glass';
 import classes from './main.module.scss';
 import { useSearchParams } from 'next/navigation';
 import { useScroll } from '@repo/hooks/scroll';
 
-export default function Main({ item }: { item: NoteGet }) {
+export default function Main({ item }: { item?: NoteGet }) {
   const { styles } = useScroll({
     threshold: 70,
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
     scrolledStyles: useMemo(() => ({ opacity: 1 }), []),
   });
   const searchParams = useSearchParams();
-  const { noteUpdate } = useNoteActions();
+  const { noteCreate, noteUpdate } = useNoteActions();
   const idle = useIdle(2000);
   const mobile = useMediaQuery('(max-width: 36em)');
 
-  const [content, setContent] = useState<string>(item.content || '');
+  const [content, setContent] = useState<string>(item?.content || '');
 
   const handleChangeDebounced = useDebouncedCallback((c: string) => {
-    noteUpdate({ ...item, content: c });
+    if (item) noteUpdate({ ...item, content: c });
   }, 400);
 
   const handleChange = (c: string) => {
@@ -66,15 +73,15 @@ export default function Main({ item }: { item: NoteGet }) {
     content: content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML().trim();
-      if (html == item.content) return;
+      if (html == item?.content) return;
       handleChange(html);
     },
   });
 
   useEffect(() => {
     if (!editor) return;
-    editor.commands.setContent(item.content || '');
-  }, [item.id, editor, searchParams]);
+    editor.commands.setContent(item?.content || '');
+  }, [item?.id, editor, searchParams]);
 
   const divider = (
     <Divider
@@ -98,6 +105,7 @@ export default function Main({ item }: { item: NoteGet }) {
             zIndex: 1000,
             opacity: idle ? 0 : 1,
             transition: '.25s all ease',
+            display: !item ? 'none' : undefined,
           }}
         >
           <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
@@ -164,6 +172,20 @@ export default function Main({ item }: { item: NoteGet }) {
 
         <RichTextEditor.Content p={0} mt={'xs'} />
       </RichTextEditor>
+
+      <Group
+        gap={'xs'}
+        mt={'md'}
+        style={{
+          opacity: content.length > 7 ? 1 : 0,
+          transition: '.25s all ease',
+          display: item ? 'none' : undefined,
+        }}
+      >
+        <Button onClick={() => noteCreate({ content })} size="xs">
+          Save
+        </Button>
+      </Group>
     </Typography>
   );
 }
