@@ -65,7 +65,6 @@ export default function Main({ item }: { item: NoteGet }) {
           border: '0px solid transparent',
         },
         content: {
-          padding: 0,
           paddingTop: 'var(--mantine-spacing-xs)',
           borderRadius: 0,
         },
@@ -135,7 +134,7 @@ export default function Main({ item }: { item: NoteGet }) {
         </RichTextEditor.Toolbar>
       </ScrollArea>
 
-      <RichTextEditor.Content />
+      <RichTextEditor.Content p={0} />
     </RichTextEditor>
   );
 }
