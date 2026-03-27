@@ -70,5 +70,17 @@ export const config: DBConfig = {
       name: STORE_NAME.MASSES,
       keyPath: 'id',
     },
+    {
+      name: STORE_NAME.CHATS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.CHAT_MESSAGES,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.CUSTOMIZATIONS,
+      keyPath: 'id',
+    },
   ],
 };

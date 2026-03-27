@@ -81,6 +81,11 @@ enum RecurringFrequency {
   ANNUALLY
 }
 
+enum ChatMessageRole {
+  USER
+  ASSISTANT
+}
+
 // models
 
 model Profile {
@@ -93,21 +98,24 @@ model Profile {
   phone      String?
   role       Role    @default(USER)
 
-  posts         Post[]
-  comments      Comment[]
-  categories    Category[]
-  accountGroups AccountGroup[]
-  accounts      Account[]
-  transactions  Transaction[]
-  budgets       Budget[]
-  food          Food[]
-  meals         Meal[]
-  servings      Serving[]
-  eats          Eat[]
-  masses        Mass[]
-  notebooks     Notebook[]
-  notes         Note[]
-  links         Link[]
+  posts          Post[]
+  comments       Comment[]
+  categories     Category[]
+  accountGroups  AccountGroup[]
+  accounts       Account[]
+  transactions   Transaction[]
+  budgets        Budget[]
+  food           Food[]
+  meals          Meal[]
+  servings       Serving[]
+  eats           Eat[]
+  masses         Mass[]
+  notebooks      Notebook[]
+  notes          Note[]
+  links          Link[]
+  chats          Chat[]
+  chat_messages  ChatMessage[]
+  customizations Customization[]
 
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
@@ -462,4 +470,66 @@ model Link {
 
   @@unique([from_id, to_id]) // avoid duplicate links
   @@map(name: "links")
+}
+
+model Chat {
+  id        String  @id @default(uuid())
+  title     String
+  archived  Boolean @default(false)
+  temporary Boolean @default(false)
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  messages ChatMessage[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("chats")
+}
+
+model ChatMessage {
+  id      String          @id @default(uuid())
+  role    ChatMessageRole
+  content String
+  sources String[]
+  error   String?
+  search  Boolean?
+
+  chat       Chat    @relation(fields: [chat_id], references: [id], onDelete: Cascade)
+  chat_id    String
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("chat_messages")
+}
+
+model Customization {
+  id           String  @id @default(uuid())
+  nickname     String?
+  occupation   String?
+  traits       String?
+  partialities String?
+  active       Boolean @default(false)
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("customizations")
 }

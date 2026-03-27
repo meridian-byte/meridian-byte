@@ -40,6 +40,12 @@ import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
 import { eatsUpdate } from '@repo/handlers/requests/database/eats';
 import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
 import { massesUpdate } from '@repo/handlers/requests/database/masses';
+import { chatsUpdate } from '@repo/handlers/requests/database/chats';
+import { useStoreChat } from '@repo/libraries/zustand/stores/chat';
+import { useStoreCustomization } from '@repo/libraries/zustand/stores/customization';
+import { customizationsUpdate } from '@repo/handlers/requests/database/customizations';
+import { useStoreChatMessage } from '@repo/libraries/zustand/stores/chat-message';
+import { chatMessagesUpdate } from '@repo/handlers/requests/database/chat-messages';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -186,6 +192,33 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     getDeleted: (store) => store.deleted,
     setItems: (store, items) => store.setMasses(items),
     clearDeleted: (store) => store.clearDeletedMasses(),
+  },
+  chats: {
+    dataStore: STORE_NAME.CHATS,
+    useStoreHook: useStoreChat,
+    serverUpdate: chatsUpdate,
+    getItems: (store) => store.chats,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setChats(items),
+    clearDeleted: (store) => store.clearDeletedChats(),
+  },
+  chatMessages: {
+    dataStore: STORE_NAME.CHAT_MESSAGES,
+    useStoreHook: useStoreChatMessage,
+    serverUpdate: chatMessagesUpdate,
+    getItems: (store) => store.chatMessages,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setChatMessages(items),
+    clearDeleted: (store) => store.clearDeletedChatMessages(),
+  },
+  customizations: {
+    dataStore: STORE_NAME.CUSTOMIZATIONS,
+    useStoreHook: useStoreCustomization,
+    serverUpdate: customizationsUpdate,
+    getItems: (store) => store.customizations,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setCustomizations(items),
+    clearDeleted: (store) => store.clearDeletedCustomizations(),
   },
 } as const;
 

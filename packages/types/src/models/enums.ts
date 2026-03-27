@@ -55,3 +55,8 @@ export enum EatTime {
   LUNCH = 'LUNCH',
   DINNER = 'DINNER',
 }
+
+export enum ChatMessageRole {
+  USER = 'USER',
+  ASSISTANT = 'ASSISTANT',
+}
