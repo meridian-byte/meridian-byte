@@ -61,7 +61,7 @@ export const authEmail = async (params: {
       full_name: name,
       picture: profile?.avatar,
       avatar_url: profile?.avatar,
-      user_name: profile?.user_name,
+      userName: profile?.user_name,
     },
   });
 

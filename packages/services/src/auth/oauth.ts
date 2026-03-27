@@ -49,7 +49,7 @@ export const authOauth = async (params: { searchParams: URLSearchParams }) => {
       full_name: name,
       picture: profile?.avatar,
       avatar_url: profile?.avatar,
-      user_name: profile?.user_name,
+      userName: profile?.user_name,
     },
   });
 
