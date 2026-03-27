@@ -101,7 +101,15 @@ export default function Crud({
 
           <Divider mb={'xs'} />
 
-          <FormEat props={{ form, submitted, handleSubmit, close }} />
+          <FormEat
+            props={{
+              form,
+              submitted,
+              handleSubmit,
+              close,
+              diaryDate: props?.created_at as any,
+            }}
+          />
 
           {props?.created_at && (
             <Box px={'sm'} pb={'sm'}>

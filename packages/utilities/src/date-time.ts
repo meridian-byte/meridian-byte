@@ -277,6 +277,19 @@ export const isOverdue = (date: Date | string): boolean => {
 };
 
 /**
+ * Returns true if a date is yesterday
+ */
+export const isYesterday = (date: Date | string): boolean => {
+  if (typeof date === 'string') date = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  date.setHours(0, 0, 0, 0);
+  return date.getTime() === yesterday.getTime();
+};
+
+/**
  * Returns true if a date is today
  */
 export const isToday = (date: Date | string): boolean => {

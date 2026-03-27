@@ -31,7 +31,11 @@ import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import { useNotification } from '@repo/hooks/notification';
 import { generateUUID } from '@repo/utilities/generators';
 
-export default function Eat({ props }: { props: { form: FormEat } }) {
+export default function Eat({
+  props,
+}: {
+  props: { form: FormEat; diaryDate?: string };
+}) {
   return (
     <Tabs defaultValue="foods">
       <TabsList justify="center">
@@ -53,17 +57,25 @@ export default function Eat({ props }: { props: { form: FormEat } }) {
       </TabsList>
 
       <TabsPanel value="foods">
-        <FoodsPartial props={{ formEat: props.form }} />
+        <FoodsPartial
+          props={{ formEat: props.form, diaryDate: props.diaryDate }}
+        />
       </TabsPanel>
 
       <TabsPanel value="meals">
-        <MealsPartial props={{ formEat: props.form }} />
+        <MealsPartial
+          props={{ formEat: props.form, diaryDate: props.diaryDate }}
+        />
       </TabsPanel>
     </Tabs>
   );
 }
 
-function FoodsPartial({ props }: { props: { formEat: FormEat } }) {
+function FoodsPartial({
+  props,
+}: {
+  props: { formEat: FormEat; diaryDate?: string };
+}) {
   const { foods } = useStoreFood();
 
   return (
@@ -95,6 +107,7 @@ function FoodsPartial({ props }: { props: { formEat: FormEat } }) {
                     serving_unit: f.per_unit,
                     food_id: f.id,
                     eat_id: props.formEat.values.id,
+                    created_at: props.diaryDate as any,
                   }}
                   formEat={props.formEat}
                 >
@@ -109,7 +122,11 @@ function FoodsPartial({ props }: { props: { formEat: FormEat } }) {
   );
 }
 
-function MealsPartial({ props }: { props: { formEat: FormEat } }) {
+function MealsPartial({
+  props,
+}: {
+  props: { formEat: FormEat; diaryDate?: string };
+}) {
   const { meals } = useStoreMeal();
   const { servings } = useStoreServing();
   const { servingCreate } = useServingActions({ formEat: props.formEat });
@@ -160,6 +177,7 @@ function MealsPartial({ props }: { props: { formEat: FormEat } }) {
                           id: generateUUID(),
                           eat_id: props.formEat.values.id as string,
                           meal_id: null,
+                          created_at: props.diaryDate as any,
                         };
                       });
 
