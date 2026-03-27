@@ -6,7 +6,9 @@ import {
   MenuDivider,
   MenuDropdown,
   MenuItem,
+  MenuLabel,
   MenuTarget,
+  Text,
 } from '@mantine/core';
 import {
   IconBook,
@@ -83,6 +85,14 @@ export default function Main({
       </MenuTarget>
 
       <MenuDropdown>
+        <MenuLabel>
+          <Text component="span" inherit lineClamp={1}>
+            {note?.title}
+          </Text>
+        </MenuLabel>
+
+        <MenuDivider />
+
         {/* <MenuItem
           leftSection={
             <toogleProperties.icon
