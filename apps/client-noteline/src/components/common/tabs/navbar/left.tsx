@@ -15,7 +15,7 @@ import {
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
-import PartialTabNavbarFolders from '@/components/partial/tabs/navbar/folders';
+import PartialTabNavbarNotes from '@/components/partial/tabs/navbar/notes';
 import PartialTabNavbarSearch from '@/components/partial/tabs/navbar/search';
 
 export default function Left() {
@@ -53,7 +53,7 @@ export default function Left() {
       </TabsList>
 
       <TabsPanel value="folders">
-        <PartialTabNavbarFolders />
+        <PartialTabNavbarNotes />
       </TabsPanel>
 
       <TabsPanel value="search">

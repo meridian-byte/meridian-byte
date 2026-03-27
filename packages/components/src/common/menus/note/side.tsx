@@ -6,7 +6,9 @@ import {
   MenuDivider,
   MenuDropdown,
   MenuItem,
+  MenuLabel,
   MenuTarget,
+  Text,
 } from '@mantine/core';
 import {
   IconCopy,
@@ -22,47 +24,61 @@ import { NoteGet } from '@repo/types/models/note';
 import ModalConfirm from '@repo/components/common/modals/confirm';
 import ModalMerge from '../../modals/merge';
 import ModalMove from '../../modals/move';
+import { useNoteActions } from '@repo/hooks/actions/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Side({
-  item,
-  menuProps,
+  props,
   children,
 }: {
-  item: NoteGet;
-  menuProps: {
-    deleteNote: (input: { values: NoteGet }) => void;
-    copyNote: (input: { values: NoteGet }) => void;
-    startRename: (input: string) => void;
-  };
+  props: { noteId?: string; options?: { context?: boolean } };
   children: React.ReactNode;
 }) {
   const { opened, setOpened, close, menuWidth, targetProps, anchorProps } =
     useContextMenu();
 
+  const { noteDelete, noteCopy } = useNoteActions();
+
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props.noteId));
+
+  const target = (
+    <span id="note-menu-target" {...targetProps}>
+      {children}
+    </span>
+  );
+
   return (
     <>
-      <span id="note-menu-target" {...targetProps}>
-        {children}
-      </span>
+      {props.options?.context && target}
 
       <Menu
-        opened={opened}
-        onChange={setOpened}
-        onClose={close}
+        position={props.options?.context ? undefined : 'bottom-start'}
+        opened={props.options?.context ? opened : undefined}
+        onChange={props.options?.context ? setOpened : undefined}
+        onClose={props.options?.context ? close : undefined}
         withinPortal
         width={menuWidth}
         keepMounted
       >
         <MenuTarget>
-          <div {...anchorProps} />
+          {props.options?.context ? <div {...anchorProps} /> : target}
         </MenuTarget>
 
         <MenuDropdown>
+          <MenuLabel>
+            <Text component="span" inherit lineClamp={1}>
+              {note?.title}
+            </Text>
+          </MenuLabel>
+
+          <MenuDivider />
+
           <MenuItem
             leftSection={
               <IconPencil size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
-            onClick={() => menuProps.startRename(item.id)}
+            onClick={() => {}}
+            disabled
           >
             Rename
           </MenuItem>
@@ -72,7 +88,7 @@ export default function Side({
               <IconFiles size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
             onClick={() => {
-              menuProps.copyNote({ values: item });
+              if (note) noteCopy({ values: note });
             }}
           >
             Make a copy
@@ -80,7 +96,7 @@ export default function Side({
 
           <MenuDivider />
 
-          <ModalMove item={item}>
+          <ModalMove props={{ noteId: note?.id }}>
             <MenuItem
               leftSection={
                 <IconSortAscendingSmallBig
@@ -90,17 +106,17 @@ export default function Side({
               }
               onClick={() => {}}
             >
-              Move file to...
+              Move to...
             </MenuItem>
           </ModalMove>
 
-          <ModalMerge item={item}>
+          <ModalMerge props={{ noteId: note?.id }}>
             <MenuItem
               leftSection={
                 <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               }
             >
-              Merge entire file with...
+              Merge with...
             </MenuItem>
           </ModalMerge>
 
@@ -137,7 +153,9 @@ export default function Side({
 
           <ModalConfirm
             props={{
-              onConfirm: () => menuProps.deleteNote({ values: item }),
+              onConfirm: () => {
+                if (note) noteDelete({ values: note });
+              },
             }}
           >
             <MenuItem

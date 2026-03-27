@@ -16,25 +16,27 @@ import LayoutModalMain from '@repo/components/layout/modal';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
-import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Move({
-  item,
+  props,
   children,
 }: {
-  item: NoteGet;
+  props?: { noteId?: string };
   children: React.ReactNode;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState('');
-  const notebooks = useStoreNotebook((s) => s.notebooks);
+
+  const notes = useStoreNote((s) => s.notes);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
 
   const { noteMove } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
-    list: (notebooks || []).filter((nb) => nb.id != item.notebook_id),
+    list: (notes || []).filter((n) => n.id != props?.noteId),
     searchValue: searchValue,
   });
 
@@ -50,7 +52,7 @@ export default function Move({
 
           <ScrollArea h={280}>
             <Stack gap={2}>
-              {notebooks === undefined ? (
+              {notes === undefined ? (
                 <>
                   <Stack h={41} justify="center">
                     <Skeleton h={18} />
@@ -66,19 +68,22 @@ export default function Move({
                 <>
                   <Center ta={'center'} py={SECTION_SPACING}>
                     <Text inherit fz={'sm'} c={'dimmed'}>
-                      No folders found...
+                      No notes found...
                     </Text>
                   </Center>
                 </>
               ) : (
-                searchCriteriaItems.map((nb, i) => (
+                searchCriteriaItems.map((pni, i) => (
                   <NavLink
                     key={i}
-                    label={nb.title}
+                    label={pni.title}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
                     }}
-                    onClick={() => noteMove({ values: item, notebook: nb })}
+                    onClick={() => {
+                      if (note)
+                        noteMove({ values: note, parent_note_id: pni.id });
+                    }}
                   />
                 ))
               )}

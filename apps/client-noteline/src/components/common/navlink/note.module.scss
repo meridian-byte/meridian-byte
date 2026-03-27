@@ -1,0 +1,64 @@
+.root {
+  border-radius: var(--mantine-radius-md);
+  padding: calc(var(--mantine-spacing-xs) / 2)
+    calc(var(--mantine-spacing-xs) / 1.5);
+
+  @include mantine.hover {
+    background-color: var(--mantine-color-pri-light);
+  }
+}
+
+.label {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: normal;
+}
+
+.section {
+  display: none;
+}
+
+.children {
+  margin-top: 1;
+}
+
+.box {
+  @include mantine.hover {
+    .menu {
+      opacity: 1;
+    }
+
+    .theme {
+      display: none;
+    }
+
+    .action {
+      display: inline-block;
+    }
+  }
+}
+
+.boxChild {
+  @include mantine.hover {
+    .menuChild {
+      opacity: 1;
+    }
+  }
+}
+
+.theme {
+  display: inline-block;
+}
+
+.action {
+  display: none;
+}
+
+.menu {
+  opacity: 0;
+  transition: 0.25s all ease;
+}
+
+.menuChild {
+  opacity: 0;
+  transition: 0.25s all ease;
+}
