@@ -17,10 +17,6 @@
   display: none;
 }
 
-.children {
-  margin-top: 1;
-}
-
 .box {
   @include mantine.hover {
     .menu {

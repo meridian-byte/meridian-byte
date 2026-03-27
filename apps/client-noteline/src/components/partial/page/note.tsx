@@ -29,7 +29,7 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
 
   return (
     <>
-      <HeaderAppNoteDetails props={note} />
+      <HeaderAppNoteDetails props={{ noteId: note?.id }} />
 
       {notes === undefined ? (
         <Center py={SECTION_SPACING * 2} mih={'75vh'}>
