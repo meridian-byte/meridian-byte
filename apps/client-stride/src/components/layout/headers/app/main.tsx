@@ -25,7 +25,6 @@ import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import NavbarAppMainParent from '../../navbars/app/parent/main';
 import { useMediaQuery } from '@mantine/hooks';
-import { useAppshellNavbar } from '@repo/hooks/app-shell';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 import MenuUser from '@repo/components/common/menus/user';
 import AvatarMain from '@repo/components/common/avatars/main';
@@ -46,7 +45,7 @@ export default function Main() {
           <></>
         ) : (
           <DrawerAppNavbar>
-            <ButtonAppshellNavbar props={{ options: { mobile } }} />
+            <ButtonAppshellNavbar />
           </DrawerAppNavbar>
         )}
 
@@ -72,7 +71,7 @@ export default function Main() {
           <></>
         ) : (
           <Tooltip
-            label={appshell.child.aside ? 'Collapse' : 'Expand'}
+            label={appshell?.child?.aside ? 'Collapse' : 'Expand'}
             position="left"
           >
             <DrawerAppAside>
@@ -80,7 +79,7 @@ export default function Main() {
                 <ActionIcon
                   variant="subtle"
                   color="pri.5"
-                  aria-label={appshell.child.aside ? 'Collapse' : 'Expand'}
+                  aria-label={appshell?.child?.aside ? 'Collapse' : 'Expand'}
                   onClick={() => {
                     if (mobile) return;
                     if (!appshell) return;
@@ -89,7 +88,7 @@ export default function Main() {
                       ...appshell,
                       child: {
                         ...appshell.child,
-                        aside: !appshell?.child.aside,
+                        aside: !appshell?.child?.aside,
                       },
                     });
                   }}

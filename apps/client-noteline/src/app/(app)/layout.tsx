@@ -27,7 +27,7 @@ export default async function LayoutApp({
             appShellChild: {
               appShell: { headerHeight: APPSHELL.HEADER_HEIGHT },
               leftSection: { component: <TabNavbarLeft /> },
-              rightSection: { component: <TabNavbarRight /> },
+              // rightSection: { component: <TabNavbarRight /> },
             },
           }}
         >

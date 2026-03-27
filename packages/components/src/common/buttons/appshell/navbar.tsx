@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useAppshellNavbar } from '@repo/hooks/app-shell';
 import {
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
@@ -14,47 +13,34 @@ import {
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
+import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 
-export default function Navbar({
-  props,
-}: {
-  props?: { options?: { mobile?: boolean } };
-}) {
-  const { appshell, handleAppshellChange } = useAppshellNavbar();
+export default function Navbar() {
+  // ATOMIC: Only re-renders when this specific boolean changes
+  // Do this in both Navbar components
+  const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const asideChild = useStoreAppShell((s) => s.appshell?.child?.aside);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   const states = {
-    iconLeft: !appshell?.child.navbar
+    iconLeft: !navbarChild
       ? IconLayoutSidebarLeftExpand
       : IconLayoutSidebarLeftCollapse,
-    iconRight: !appshell?.child.aside
+    iconRight: !asideChild
       ? IconLayoutSidebarRightExpand
       : IconLayoutSidebarRightCollapse,
   };
 
   return (
-    <Group display={!props?.options?.mobile ? 'none' : undefined}>
-      <Tooltip
-        label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
-        position="right"
-      >
+    <Group>
+      <Tooltip label={navbarChild ? 'Collapse' : 'Expand'} position="right">
         <Group>
           <ActionIcon
             variant="subtle"
             color="dark"
-            aria-label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
+            aria-label={navbarChild ? 'Collapse' : 'Expand'}
             size={ICON_WRAPPER_SIZE}
-            onClick={() => {
-              if (!props?.options?.mobile) return;
-              if (!appshell) return;
-
-              handleAppshellChange({
-                ...appshell,
-                child: {
-                  ...appshell.child,
-                  navbar: !appshell?.child.navbar,
-                },
-              });
-            }}
+            onClick={toggleNavbarChild}
           >
             <states.iconLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>

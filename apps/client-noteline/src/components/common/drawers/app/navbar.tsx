@@ -22,61 +22,20 @@ import { setCookieClient } from '@repo/utilities/cookie-client';
 import TabNavbarLeft from '../../tabs/navbar/left';
 import { IconLayoutSidebarLeftCollapse } from '@tabler/icons-react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 
-export default function Navbar({
-  options,
-  children,
-}: {
-  options?: { hover?: true };
-  children: React.ReactNode;
-}) {
-  const mobile = useMediaQuery('(max-width: 36em)');
-  const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
-  const [opened, { open, close }] = useDisclosure(false);
-
-  const handleAppshellChange = (params: AppShell) => {
-    if (!mobile) return;
-    if (!appshell) return;
-
-    setAppShell(params);
-
-    // To defer this operation and prevent blocking the main thread, wrap it in setTimeout or use scheduler.postTask
-    setTimeout(() => {
-      setCookieClient(COOKIE_NAME.APP_SHELL, params, {
-        expiryInSeconds: WEEK,
-      });
-    }, 0);
-  };
-
-  const handleClose = () => {
-    if (!mobile) return;
-    if (!appshell) return;
-
-    handleAppshellChange({
-      ...appshell,
-      child: {
-        ...appshell.child,
-        navbar: false,
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (options?.hover && appshell?.child.navbar && opened && !mobile) close();
-  }, [appshell?.child.navbar, opened]);
+export default function Navbar({ children }: { children: React.ReactNode }) {
+  const navbarChild = useStoreAppShell((s) => s.appshell?.child?.navbar);
 
   return (
     <>
       <Drawer
-        size={options?.hover ? 'xs' : undefined}
-        hiddenFrom={!options?.hover ? 'xs' : undefined}
+        hiddenFrom={'xs'}
         keepMounted
-        opened={!mobile ? opened : (appshell?.child.navbar ?? false)}
+        opened={navbarChild ?? false}
         padding={0}
-        transitionProps={{ enterDelay: 400, duration: 250 }}
         withCloseButton={false}
-        onClose={handleClose}
+        onClose={() => {}}
         styles={{
           content: {
             backgroundColor:
@@ -86,73 +45,17 @@ export default function Navbar({
             overflow: 'hidden',
           },
         }}
-        display={
-          mobile || (options?.hover && !appshell?.child.navbar)
-            ? undefined
-            : 'none'
-        }
       >
-        <ScrollArea
-          h="100vh"
-          onMouseLeave={() => {
-            if (mobile) return;
-            close();
-          }}
-          display={
-            mobile || (options?.hover && !appshell?.child.navbar)
-              ? !opened && !mobile
-                ? 'none'
-                : undefined
-              : 'none'
-          }
-        >
+        <ScrollArea h="100vh">
           <Group p={'xs'} justify="end">
-            <Tooltip
-              label={
-                (options?.hover ? opened : appshell?.child.navbar)
-                  ? 'Collapse'
-                  : 'Expand'
-              }
-              position="right"
-            >
-              <ActionIcon
-                size={ICON_WRAPPER_SIZE}
-                variant={'subtle'}
-                onClick={options?.hover && !mobile ? close : handleClose}
-              >
-                <IconLayoutSidebarLeftCollapse
-                  size={ICON_SIZE}
-                  stroke={ICON_STROKE_WIDTH}
-                />
-              </ActionIcon>
-            </Tooltip>
+            <ButtonAppshellNavbar />
           </Group>
 
           <TabNavbarLeft />
         </ScrollArea>
       </Drawer>
 
-      <span
-        onMouseEnter={() => {
-          if (mobile) return;
-          if (!appshell) return;
-          if (!appshell.child.navbar && !opened) open();
-        }}
-        onClick={() => {
-          if (!mobile) return;
-          if (!appshell) return;
-
-          handleAppshellChange({
-            ...appshell,
-            child: {
-              ...appshell.child,
-              navbar: !appshell?.child.navbar,
-            },
-          });
-        }}
-      >
-        {children}
-      </span>
+      <span>{children}</span>
     </>
   );
 }

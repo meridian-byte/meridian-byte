@@ -13,6 +13,11 @@
   font-weight: normal;
 }
 
+.children {
+  contain: layout; /* Prevents global reflow when children expand */
+  overflow: hidden;
+}
+
 .section {
   display: none;
 }
