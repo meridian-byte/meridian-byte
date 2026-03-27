@@ -7,7 +7,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/libraries/supabase/server';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { profileCreate } from '@/services/database/profile';
 import { getEmailLocalPart } from '@repo/utilities/string';
 import { emailSendOnboarding } from '@/libraries/wrappers/email';

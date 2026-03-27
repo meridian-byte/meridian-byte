@@ -1,5 +1,5 @@
-import { useStoreEat } from '@/libraries/zustand/stores/eat';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { EatGet, EatRelations } from '@repo/types/models/eat';
 import { EatTime, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

@@ -1,5 +1,5 @@
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { ServingGet } from '@repo/types/models/serving';
 import { Status, SyncStatus, WeightUnitType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

@@ -10,7 +10,7 @@ import { Metadata } from 'next';
 import { Stack, Text } from '@mantine/core';
 import LayoutPage from '@repo/components/layout/page';
 import FormAuth from '@/components/form/auth';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { AuthAction } from '@repo/types/enums';
 import AnchorNextLink from '@repo/components/common/anchor/next-link';
 

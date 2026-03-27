@@ -2,7 +2,7 @@
 
 import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
 import {
   ActionIcon,
   Box,
@@ -35,14 +35,14 @@ import {
 } from '@tabler/icons-react';
 import ModalEatCrud from '@/components/common/modals/eat/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
-import { useStoreEat } from '@/libraries/zustand/stores/eat';
+import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
 import { useEatTotals } from '@/hooks/nutrients';
 import { useEntryDate, EntryDateReturnType } from '@repo/hooks/entries';
 import { DateInput } from '@mantine/dates';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
-import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
+import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 import { COLOR_CODES } from '@repo/constants/other';
-import { useStoreMass } from '@/libraries/zustand/stores/mass';
+import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
 import { calculateMacros } from '@/utilities/weight';
 import { useMediaQuery } from '@mantine/hooks';
 

@@ -1,7 +1,7 @@
 import { defaultBackupConfig } from '@/libraries/fsa';
 import { config } from '@/libraries/indexed-db';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStorePost } from '@/libraries/zustand/stores/post';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import { useStorePost } from '@repo/libraries/zustand/stores/post';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { createFileSyncAdapter } from '@repo/libraries/fsa/handler';
 import { openDatabase } from '@repo/libraries/indexed-db/actions';

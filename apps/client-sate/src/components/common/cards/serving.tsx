@@ -10,7 +10,7 @@ import {
   Title,
 } from '@mantine/core';
 import { ServingGet } from '@repo/types/models/serving';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { getUnitShorts } from '@/hooks/nutrients';
 import { getFoodServingTotals } from '@/hooks/nutrients';
 import { COLOR_CODES } from '@repo/constants/other';

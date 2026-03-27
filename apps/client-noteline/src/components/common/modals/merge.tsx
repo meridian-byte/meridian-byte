@@ -15,7 +15,7 @@ import LayoutModalMain from '@repo/components/layout/modal';
 import { useNoteActions } from '@/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Merge({
   item,

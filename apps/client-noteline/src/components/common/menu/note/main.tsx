@@ -25,7 +25,7 @@ import { NoteGet } from '@repo/types/models/note';
 import { useNoteActions } from '@/hooks/actions/note';
 import ModalConfirm from '@repo/components/common/modals/confirm';
 import { APP_NAME } from '@/data/constants';
-import { useStoreUserStates } from '@/libraries/zustand/stores/user-states';
+import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import ModalMerge from '../../modals/merge';
 import ModalMove from '../../modals/move';
 

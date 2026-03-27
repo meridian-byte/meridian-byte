@@ -3,8 +3,8 @@ import { openDatabase } from '@repo/libraries/indexed-db/actions';
 import { SyncStatus } from '@repo/types/models/enums';
 import { SyncItem, SyncParams } from '@repo/types/sync';
 import { DatabaseError } from '@repo/libraries/indexed-db/transactions';
-import { SyncStatusValue } from '@/libraries/zustand/stores/sync-status';
-import { SessionValue } from '@/libraries/zustand/stores/session';
+import { SyncStatusValue } from '@repo/libraries/zustand/stores/sync-status';
+import { SessionValue } from '@repo/libraries/zustand/stores/session';
 import { UserNetworkReturnValue } from '@mantine/hooks';
 
 export const syncToServerAfterDelay = async (

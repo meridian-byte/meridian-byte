@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { setRedirectUrl } from '@repo/utilities/url';
 import { Box, LoadingOverlay } from '@mantine/core';
-import { AUTH_URLS } from '@/data/constants';
 import { signOut } from '@repo/handlers/requests/auth';
-import { config } from '@/libraries/indexed-db';
 import { deleteDatabase } from '@repo/libraries/indexed-db/actions';
 import { AuthAction } from '@repo/types/enums';
+import { DBConfig } from '@repo/types/indexed-db';
+import { AUTH_URLS } from '@repo/constants/paths';
 
-export function Auth({
+export function SignIn({
   children,
   options,
 }: {
@@ -39,7 +39,13 @@ export function Auth({
   );
 }
 
-export function SignOut({ children }: { children: React.ReactNode }) {
+export function SignOut({
+  props,
+  children,
+}: {
+  props: { baseUrl: string; dbConfig: DBConfig };
+  children: React.ReactNode;
+}) {
   const [clicked, setClicked] = useState(false);
 
   return (
@@ -50,13 +56,13 @@ export function SignOut({ children }: { children: React.ReactNode }) {
         setClicked(true);
 
         // Delete local database
-        await deleteDatabase(config.name);
+        await deleteDatabase(props.dbConfig.name);
 
         // Clear storage (optional)
         localStorage.clear();
         sessionStorage.clear();
 
-        await signOut();
+        await signOut({ options: { baseUrl: '' } });
       }}
     >
       <LoadingOverlay

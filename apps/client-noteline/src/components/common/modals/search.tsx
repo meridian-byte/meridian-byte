@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Divider, Modal, NavLink, ScrollArea } from '@mantine/core';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useRouter } from 'next/navigation';
 import { IconFile } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';

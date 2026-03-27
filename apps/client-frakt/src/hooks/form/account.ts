@@ -2,7 +2,7 @@ import { hasLength } from '@mantine/form';
 import { useAccountActions } from '../actions/account';
 import { useFormBase } from '../form';
 import { AccountGet } from '@repo/types/models/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
+import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
 import { AccountType } from '@repo/types/models/enums';
 
 export const useFormAccount = (params?: {

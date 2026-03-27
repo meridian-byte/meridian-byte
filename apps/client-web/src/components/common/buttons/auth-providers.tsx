@@ -6,7 +6,7 @@ import { images } from '@/assets/images';
 import { capitalizeWords } from '@repo/utilities/string';
 import ImageDefault from '@repo/components/common/images/default';
 import { API_URL } from '@repo/constants/paths';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { PARAM_NAME } from '@repo/constants/names';
 import { createClient } from '@/libraries/supabase/client';
 import { getUrlParam } from '@repo/utilities/url';

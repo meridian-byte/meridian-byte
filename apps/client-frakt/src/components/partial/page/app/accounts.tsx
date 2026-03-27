@@ -2,7 +2,7 @@
 
 import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { Center, Divider, Loader, Stack, Text } from '@mantine/core';
 import CardAccount from '@/components/common/cards/account';
 import { SECTION_SPACING } from '@repo/constants/sizes';

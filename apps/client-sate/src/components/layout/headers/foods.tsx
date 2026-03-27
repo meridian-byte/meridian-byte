@@ -11,7 +11,7 @@ import {
 import { IconPlus } from '@tabler/icons-react';
 import ModalFoodCrud from '@/components/common/modals/food/crud';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
-import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
+import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
 
 export default function Foods() {
   const { syncStatus } = useStoreSyncStatus();

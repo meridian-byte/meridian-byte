@@ -4,7 +4,7 @@ import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import { Center, Divider, Loader, Stack, Text } from '@mantine/core';
 import { SECTION_SPACING } from '@repo/constants/sizes';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
+import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
 import CardAccountGroup from '@/components/common/cards/account-group';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';

@@ -2,7 +2,7 @@
 
 import { Flex, Skeleton, Stack, Text, Title } from '@mantine/core';
 import AvatarMain from '@/components/common/avatars/main';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export default function User({
   options,

@@ -13,7 +13,9 @@ import LayoutSection from '@repo/components/layout/section';
 import Link from 'next/link';
 import { IconArrowRight } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
-import { SignOut as WrapperSignOut } from '@/components/wrapper/auth';
+import { SignOut as WrapperSignOut } from '@repo/components/wrappers/auth/actions';
+import { BASE_URL_CLIENT } from '@/data/constants';
+import { config } from '@/libraries/indexed-db';
 
 type NotifySectionProps = {
   id: string;
@@ -97,7 +99,9 @@ export const NotifySignOut = () => {
       subtitle="Are you sure you want to sign out?"
       actions={
         <>
-          <WrapperSignOut>
+          <WrapperSignOut
+            props={{ baseUrl: BASE_URL_CLIENT, dbConfig: config }}
+          >
             <Button>Sign Out</Button>
           </WrapperSignOut>
 

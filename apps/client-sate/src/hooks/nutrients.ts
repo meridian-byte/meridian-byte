@@ -1,5 +1,5 @@
-import { useStoreFood } from '@/libraries/zustand/stores/food';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
 import { formatNumber } from '@/utilities/number';
 import { EatGet } from '@repo/types/models/eat';
 import { WeightUnitType } from '@repo/types/models/enums';

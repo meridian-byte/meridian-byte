@@ -19,15 +19,15 @@ import {
   SECTION_SPACING,
 } from '@repo/constants/sizes';
 import { sortArray } from '@repo/utilities/array';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { Order, Variant } from '@repo/types/enums';
 import ModalServingCrud from '../modals/serving/crud';
 import CardFood from '../cards/food';
-import { useStoreMeal } from '@/libraries/zustand/stores/meal';
+import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
 import CardMeal from '../cards/meal';
 import { FormEat } from '@/hooks/form/eat';
 import { useServingActions } from '@/hooks/actions/serving';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
 import { useNotification } from '@repo/hooks/notification';
 import { generateUUID } from '@repo/utilities/generators';
 

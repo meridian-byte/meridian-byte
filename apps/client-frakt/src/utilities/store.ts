@@ -10,7 +10,7 @@ import { config } from '@/libraries/indexed-db';
 import { SyncStatus } from '@repo/types/models/enums';
 import { RefObject } from 'react';
 import { FileSyncAdapter } from '@repo/types/fsa';
-import { SessionValue } from '@/libraries/zustand/stores/session';
+import { SessionValue } from '@repo/libraries/zustand/stores/session';
 
 // Helper function to merge local and server items
 export const mergeItems = async (

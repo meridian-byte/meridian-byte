@@ -1,4 +1,5 @@
-import { APP_DESC, APP_NAME, AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
+import { APP_DESC, APP_NAME } from '@/data/constants';
 import { linkify } from '@repo/utilities/url';
 
 export const dynamic = 'force-static';

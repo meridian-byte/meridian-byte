@@ -10,7 +10,9 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@repo/types": "workspace:*"
+    "@repo/types": "workspace:*",
+    "@supabase/supabase-js": "^2.89.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

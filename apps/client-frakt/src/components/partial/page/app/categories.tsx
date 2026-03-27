@@ -4,7 +4,7 @@ import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
 import { Center, Divider, Loader, Stack, Text } from '@mantine/core';
 import { SECTION_SPACING } from '@repo/constants/sizes';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import CardCategory from '@/components/common/cards/category';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';

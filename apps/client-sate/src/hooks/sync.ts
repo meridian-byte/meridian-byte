@@ -9,16 +9,16 @@ import { useCallback, useEffect } from 'react';
 import { STORE_NAME } from '@repo/constants/names';
 import { SyncParams } from '@repo/types/sync';
 // import { categoriesUpdate } from '@repo/handlers/requests/database/category';
-// import { useStoreCategory } from '@/libraries/zustand/stores/category';
+// import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { foodsUpdate } from '@repo/handlers/requests/database/foods';
 import { mealsUpdate } from '@repo/handlers/requests/database/meals';
 import { servingsUpdate } from '@repo/handlers/requests/database/servings';
 import { eatsUpdate } from '@repo/handlers/requests/database/eats';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
-import { useStoreMeal } from '@/libraries/zustand/stores/meal';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import { useStoreEat } from '@/libraries/zustand/stores/eat';
-import { useStoreMass } from '@/libraries/zustand/stores/mass';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
+import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
+import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
+import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
 import { massesUpdate } from '@repo/handlers/requests/database/masses';
 
 // export const useSyncCategories = (params: {

@@ -19,7 +19,7 @@ import { getOSTheme } from '@repo/utilities/misc';
 import { useCallback, useEffect } from 'react';
 import { ColorScheme } from '@repo/types/enums';
 import { removeFromLocalStorage } from '@repo/utilities/storage';
-import { useStoreTheme } from '@/libraries/zustand/stores/theme';
+import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 
 export const useColorSchemeHandler = () => {
   const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });

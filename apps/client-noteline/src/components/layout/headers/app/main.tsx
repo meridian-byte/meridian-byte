@@ -16,13 +16,13 @@ import {
   IconLayoutSidebarRightCollapse,
   IconLayoutSidebarRightExpand,
 } from '@tabler/icons-react';
-import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
+import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { AppShell } from '@repo/types/components';
 import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import DrawerAppAside from '@/components/common/drawers/app/aside';
 import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
-import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
-import { useStoreTheme } from '@/libraries/zustand/stores/theme';
+import { useStoreSyncStatus } from '@repo/libraries/zustand/stores/sync-status';
+import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import NavbarAppMainParent from '../../navbars/app/main/parent';
 

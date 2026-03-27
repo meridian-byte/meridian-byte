@@ -21,7 +21,7 @@ import { IconEdit, IconTrash } from '@tabler/icons-react';
 import ModalAccountGroupCrud from '../modals/account-group/crud';
 import ModalConfirm from '@repo/components/common/modals/confirm';
 import { useAccountGroupActions } from '@/hooks/actions/account-group';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 
 export default function AccountGroup({ props }: { props: AccountGroupGet }) {
   const { accountGroupDelete } = useAccountGroupActions();

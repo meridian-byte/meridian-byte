@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ActionIcon, Drawer, Group } from '@mantine/core';
-import { useStoreAppShell } from '@/libraries/zustand/stores/shell';
+import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { AppShell } from '@repo/types/components';
 import { COOKIE_NAME } from '@repo/constants/names';
 import {

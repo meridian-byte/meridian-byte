@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/libraries/supabase/server';
 import { profileCreate } from '@/services/database/profile';
 import { segmentFullName } from '@repo/utilities/string';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
 import { emailSendOnboarding } from '@/libraries/wrappers/email';
 import { emailContactAdd } from '@/services/api/email/contacts';
 import { companyName } from '@repo/constants/app';

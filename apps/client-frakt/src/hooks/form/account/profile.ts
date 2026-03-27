@@ -10,7 +10,7 @@ import { capitalizeWords, segmentFullName } from '@repo/utilities/string';
 import { createClient } from '@/libraries/supabase/client';
 import { profileUpdate } from '@repo/handlers/requests/database/profiles';
 import { useFormBase } from '@/hooks/form';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export const useFormUserProfile = () => {
   const supabase = createClient();

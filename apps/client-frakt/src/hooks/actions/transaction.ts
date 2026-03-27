@@ -1,9 +1,9 @@
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { TransactionGet } from '@repo/types/models/transaction';
 import { Status, SyncStatus, TransactionType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { AccountGet } from '@repo/types/models/account';
 import { useAccountActions } from './account';
 

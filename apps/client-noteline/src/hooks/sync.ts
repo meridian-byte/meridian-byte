@@ -9,14 +9,14 @@ import { useCallback, useEffect } from 'react';
 import { STORE_NAME } from '@repo/constants/names';
 import { postsUpdate } from '@repo/handlers/requests/database/posts';
 import { categoriesUpdate } from '@repo/handlers/requests/database/category';
-import { useStorePost } from '@/libraries/zustand/stores/post';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
+import { useStorePost } from '@repo/libraries/zustand/stores/post';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { SyncParams } from '@repo/types/sync';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { notesUpdate } from '@repo/handlers/requests/database/notes';
-import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 import { notebooksUpdate } from '@repo/handlers/requests/database/notebooks';
-import { useStoreLink } from '@/libraries/zustand/stores/link';
+import { useStoreLink } from '@repo/libraries/zustand/stores/link';
 import { linksUpdate } from '@repo/handlers/requests/database/links';
 
 export const useSyncPosts = (params: {

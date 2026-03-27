@@ -15,7 +15,7 @@ import LayoutModalMain from '@repo/components/layout/modal';
 import { useNoteActions } from '@/hooks/actions/note';
 import { NoteGet } from '@repo/types/models/note';
 import InputTextSearch from '../inputs/text/search';
-import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
+import { useStoreNotebook } from '@repo/libraries/zustand/stores/notebook';
 
 export default function Move({
   item,

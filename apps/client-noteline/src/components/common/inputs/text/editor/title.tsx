@@ -6,7 +6,7 @@ import { TextInput } from '@mantine/core';
 import { NoteGet } from '@repo/types/models/note';
 import classes from './title.module.scss';
 import { useNoteActions } from '@/hooks/actions/note';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 
 export default function Title({ item }: { item: NoteGet }) {
   const { notes } = useStoreNote();

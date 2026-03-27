@@ -8,7 +8,8 @@
  */
 
 import { API_URL } from '@repo/constants/paths';
-import { AUTH_URLS } from '@/data/constants';
+import { AUTH_URLS } from '@repo/constants/paths';
+import { BASE_URL_CLIENT } from '@/data/constants';
 import { PARAM_NAME } from '@repo/constants/names';
 import { AuthAction } from '@repo/types/enums';
 import { profileDelete } from '@repo/handlers/requests/database/profiles';
@@ -16,7 +17,7 @@ import { getUrlParam } from '@repo/utilities/url';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { signOut } from '@repo/handlers/requests/auth';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export type ConfirmStatus = {
   state: 'loading' | 'error' | 'success' | null;
@@ -122,7 +123,7 @@ export const useConfirmDeleteAccount = () => {
 
       setStatus({ state: 'success', message: result.message });
 
-      await signOut();
+      await signOut({ options: { baseUrl: BASE_URL_CLIENT } });
     } catch (error) {
       setStatus({ state: 'error', message: (error as Error).message });
     }

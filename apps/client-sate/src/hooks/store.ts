@@ -19,7 +19,7 @@ import {
   getFromLocalStorage,
   saveToLocalStorage,
 } from '@repo/utilities/storage';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { generateUUID } from '@repo/utilities/generators';
 import { createClient } from '@/libraries/supabase/client';
 import { usePathname, useRouter } from 'next/navigation';
@@ -31,23 +31,26 @@ import { Role } from '@repo/types/models/enums';
 import { WEEK } from '@repo/constants/sizes';
 import { ProfileGet } from '@repo/types/models/profile';
 import { profileGet } from '@repo/handlers/requests/database/profiles';
-import { RoleValue, useStoreRole } from '@/libraries/zustand/stores/role';
+import { RoleValue, useStoreRole } from '@repo/libraries/zustand/stores/role';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   AppShellValue,
   useStoreAppShell,
-} from '@/libraries/zustand/stores/shell';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
-import { useStoreMeal } from '@/libraries/zustand/stores/meal';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import { useStoreEat } from '@/libraries/zustand/stores/eat';
+} from '@repo/libraries/zustand/stores/shell';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
+import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
+import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
 import { foodsGet } from '@repo/handlers/requests/database/foods';
 import { mealsGet } from '@repo/handlers/requests/database/meals';
 import { servingsGet } from '@repo/handlers/requests/database/servings';
 import { eatsGet } from '@repo/handlers/requests/database/eats';
-import { useStoreMass } from '@/libraries/zustand/stores/mass';
+import { useStoreMass } from '@repo/libraries/zustand/stores/mass';
 import { massesGet } from '@repo/handlers/requests/database/masses';
-import { ThemeValue, useStoreTheme } from '@/libraries/zustand/stores/theme';
+import {
+  ThemeValue,
+  useStoreTheme,
+} from '@repo/libraries/zustand/stores/theme';
 import { ColorScheme } from '@repo/types/enums';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 

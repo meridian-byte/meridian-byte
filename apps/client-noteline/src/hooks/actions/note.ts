@@ -1,5 +1,5 @@
-import { useStoreNote } from '@/libraries/zustand/stores/note';
-import { useStoreSession } from '@/libraries/zustand/stores/session';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { NoteGet } from '@repo/types/models/note';
 import { Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';

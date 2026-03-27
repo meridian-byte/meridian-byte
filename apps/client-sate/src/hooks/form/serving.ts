@@ -3,7 +3,7 @@ import { useServingActions } from '../actions/serving';
 import { useFormBase } from '../form';
 import { ServingGet } from '@repo/types/models/serving';
 import { WeightUnitType } from '@repo/types/models/enums';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { FormEat } from './eat';
 
 export const useFormServing = (params?: {

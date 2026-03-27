@@ -16,8 +16,8 @@ import {
 import { TransactionGet } from '@repo/types/models/transaction';
 import { TransactionType } from '@repo/types/models/enums';
 import ModalTransactionCrud from '../modals/transaction/crud';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import classes from './transaction.module.scss';
 
 export default function Transaction({ props }: { props: TransactionGet }) {

@@ -1,9 +1,9 @@
 import { defaultBackupConfig } from '@/libraries/fsa';
 import { config } from '@/libraries/indexed-db';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
-import { useStoreMeal } from '@/libraries/zustand/stores/meal';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import { useStoreEat } from '@/libraries/zustand/stores/eat';
+import { useStoreFood } from '@repo/libraries/zustand/stores/food';
+import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
+import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { createFileSyncAdapter } from '@repo/libraries/fsa/handler';
 import { openDatabase } from '@repo/libraries/indexed-db/actions';

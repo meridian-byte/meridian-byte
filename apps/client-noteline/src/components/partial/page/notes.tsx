@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useStoreNote } from '@/libraries/zustand/stores/note';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useSearchParams } from 'next/navigation';
 import PartialPageHome from './home';
 import PartialPageNote from './note';

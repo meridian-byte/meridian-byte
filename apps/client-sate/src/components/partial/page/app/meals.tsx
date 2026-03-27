@@ -2,7 +2,7 @@
 
 import React from 'react';
 import LayoutSection from '@repo/components/layout/section';
-import { useStoreMeal } from '@/libraries/zustand/stores/meal';
+import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
 import { Center, Divider, Loader, Stack, Text } from '@mantine/core';
 import CardMeal from '@/components/common/cards/meal';
 import { SECTION_SPACING } from '@repo/constants/sizes';

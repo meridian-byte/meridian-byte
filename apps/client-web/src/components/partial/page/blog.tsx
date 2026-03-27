@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useStorePost } from '@/libraries/zustand/stores/post';
+import { useStorePost } from '@repo/libraries/zustand/stores/post';
 import LayoutSection from '@repo/components/layout/section';
 
 export default function Blog() {

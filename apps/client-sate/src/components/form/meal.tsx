@@ -25,7 +25,7 @@ import {
 import { MealGet } from '@repo/types/models/meal';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconAlignJustified, IconLetterCase } from '@tabler/icons-react';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreServing } from '@repo/libraries/zustand/stores/serving';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
 import ModalServingCrud from '../common/modals/serving/crud';
