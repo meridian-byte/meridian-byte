@@ -40,7 +40,7 @@ import BadgeUpdatedTimestamp from '@repo/components/common/badges/updated-timest
 export default function NoteDetails({
   props,
 }: {
-  props?: { noteId?: string };
+  props?: { noteId?: string | null };
 }) {
   const notes = useStoreNote((s) => s.notes);
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
@@ -50,6 +50,7 @@ export default function NoteDetails({
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
     scrolledStyles: useMemo(() => ({ opacity: 1 }), []),
   });
+
   // const searchParams = useSearchParams();
   // const userStates = useStoreUserStates((s) => s.userStates);
   // const setUserStates = useStoreUserStates((s) => s.setUserStates);

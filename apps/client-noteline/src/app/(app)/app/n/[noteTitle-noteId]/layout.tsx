@@ -6,6 +6,7 @@ import { NoteGet } from '@repo/types/models/note';
 import { extractUuidFromParam } from '@repo/utilities/url';
 import { notesGet } from '@repo/handlers/requests/database/notes';
 import { createClient } from '@repo/libraries/supabase/server';
+import HeaderAppNoteDetails from '@/components/layout/headers/app/note-details';
 
 export const generateMetadata = async ({
   params,
@@ -27,12 +28,19 @@ export const generateMetadata = async ({
   };
 };
 
-export default function LayoutNote({
+export default async function LayoutNote({
   children,
-  // params,
+  params,
 }: {
   children: React.ReactNode;
-  // params: typeParams;
+  params: Promise<typeParams>;
 }) {
-  return <LayoutBody>{children}</LayoutBody>;
+  const noteId = extractUuidFromParam((await params)['noteTitle-noteId']);
+
+  return (
+    <LayoutBody>
+      <HeaderAppNoteDetails props={{ noteId: noteId }} />
+      {children}
+    </LayoutBody>
+  );
 }
