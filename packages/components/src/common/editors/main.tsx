@@ -31,6 +31,7 @@ import {
   Group,
   ScrollArea,
   Title,
+  Transition,
   Typography,
 } from '@mantine/core';
 import WrapperUnderlayGlass from '../../wrappers/underlays/glass';
@@ -119,7 +120,10 @@ export default function Main({ item }: { item?: NoteGet }) {
           }}
         >
           <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-            <LayoutSection id={`note-editor-toolbar`} containerized={'md'}>
+            <LayoutSection
+              id={`note-editor-toolbar`}
+              containerized={!item ? false : 'md'}
+            >
               <Box
                 style={{ ...styles, transition: '0.25s all ease' }}
                 hiddenFrom="xs"
@@ -203,33 +207,36 @@ export default function Main({ item }: { item?: NoteGet }) {
           display={userStateEditing == true ? 'none' : undefined}
           mt={60 - 1}
         >
-          <LayoutSection id={`note-editor-parser`} containerized={'md'}>
+          <LayoutSection
+            id={`note-editor-parser`}
+            containerized={!item ? false : 'md'}
+          >
             <ParserHtml props={{ html: content }} />
           </LayoutSection>
         </Box>
 
         <LayoutSection
           id={`note-editor-content`}
-          containerized={'md'}
+          containerized={!item ? false : 'md'}
           display={userStateEditing == true ? undefined : 'none'}
         >
           <RichTextEditor.Content p={0} mt={'xs'} />
         </LayoutSection>
       </RichTextEditor>
 
-      <Group
-        gap={'xs'}
-        mt={'md'}
-        style={{
-          opacity: content.length > 7 ? 1 : 0,
-          transition: '.25s all ease',
-          display: item ? 'none' : undefined,
-        }}
-      >
-        <Button onClick={() => noteCreate({ content })} size="xs">
-          Save
-        </Button>
-      </Group>
+      <Box mih={30} mt={'md'}>
+        <Transition mounted={!item && content.length > 7}>
+          {(styles) => (
+            <div style={styles}>
+              <Group gap={'xs'}>
+                <Button onClick={() => noteCreate({ content })} size="xs">
+                  Save
+                </Button>
+              </Group>
+            </div>
+          )}
+        </Transition>
+      </Box>
     </Typography>
   );
 }

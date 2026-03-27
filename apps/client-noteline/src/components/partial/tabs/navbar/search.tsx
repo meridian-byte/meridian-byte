@@ -65,6 +65,7 @@ export default function Search() {
         >
           <InputTextSearch
             props={{ value, setValue }}
+            data-autofocus
             styles={{
               input: {
                 backgroundColor:

@@ -22,7 +22,12 @@ import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navba
 
 export default function Left() {
   return (
-    <Tabs defaultValue="folders" variant="pills" classNames={classes}>
+    <Tabs
+      defaultValue="folders"
+      variant="pills"
+      keepMounted={false}
+      classNames={classes}
+    >
       <TabsList
         style={{ gap: 5, zIndex: 1 }}
         pos={'sticky'}

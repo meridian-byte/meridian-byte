@@ -56,11 +56,12 @@ export default function Main({
           : { height: props.appShell.footerHeight }
       }
       withBorder={false}
-      bg={
-        !navbarActive
+      style={{
+        backgroundColor: !navbarActive
           ? 'var(--mantine-color-body)'
-          : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
-      }
+          : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+        transition: `${!navbarActive ? '.3s' : '.1s'} all ease`,
+      }}
     >
       {props.header?.component && (
         <AppShellHeader
@@ -83,6 +84,7 @@ export default function Main({
             borderTopRightRadius: 'var(--mantine-radius-lg)',
             borderBottomRightRadius: 'var(--mantine-radius-lg)',
             overflow: 'hidden',
+            transition: `${!navbarActive ? '.3s' : '.1s'} all ease`,
           }}
         >
           {props.navbar.component}

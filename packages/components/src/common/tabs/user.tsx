@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { startTransition } from 'react';
 import {
   ActionIcon,
-  Avatar,
   Box,
   Button,
   Divider,
+  Flex,
   Group,
+  MantineColorScheme,
   ScrollArea,
   Select,
   Stack,
@@ -25,10 +26,8 @@ import {
 import {
   IconAlertTriangle,
   IconApps,
-  IconChevronRight,
   IconDatabaseCog,
   IconLogout2,
-  IconMessageCircle,
   IconSettings,
   IconTrash,
   IconUserEdit,
@@ -42,40 +41,45 @@ import {
 import { colors } from '@repo/constants/colors';
 import Link from 'next/link';
 import { AUTH_URLS } from '@repo/constants/paths';
-import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { ColorScheme } from '@repo/types/enums';
 import { capitalizeWords } from '@repo/utilities/string';
-import { useColorSchemeHandler } from '@repo/hooks/color-scheme';
 import { useFormUserProfile } from '@repo/hooks/form/account/profile';
 import AvatarMain from '../avatars/main';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function User({ props }: { props?: { close?: () => void } }) {
+  const mobile = useMediaQuery('(max-width: 36em)');
+
   return (
     <Tabs
+      keepMounted={false}
       defaultValue={tabs[0].value}
-      orientation="vertical"
+      orientation={mobile ? 'horizontal' : 'vertical'}
       variant="pills"
       styles={{
         panel: {
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
-          width: '66%',
+          width: mobile ? undefined : '66%',
+        },
+        tab: {
+          border:
+            '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
         },
       }}
     >
-      <TabsList
+      <Stack
+        gap={8}
+        py={'md'}
+        px={'xs'}
         bg={
           'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
         }
-        py={'md'}
-        px={'xs'}
-        mih={TAB_HEIGHT}
-        styles={{ list: { gap: 2 } }}
-        w={'33%'}
       >
-        <Group mb={8}>
+        <Group px={8}>
           <ActionIcon
-            size={ICON_WRAPPER_SIZE}
+            size={ICON_SIZE}
+            radius={'sm'}
             variant="subtle"
             onClick={props?.close}
             color="dark"
@@ -84,22 +88,29 @@ export default function User({ props }: { props?: { close?: () => void } }) {
           </ActionIcon>
         </Group>
 
-        {tabs.map((tt) => (
-          <TabsTab
-            key={tt.label}
-            value={tt.value}
-            leftSection={
-              <tt.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-            styles={{
-              tab: { padding: '8px 8px' },
-              tabLabel: { textAlign: 'start' },
-            }}
-          >
-            {tt.label}
-          </TabsTab>
-        ))}
-      </TabsList>
+        <TabsList
+          mih={mobile ? undefined : TAB_HEIGHT}
+          styles={{ list: { gap: 2 } }}
+          w={mobile ? undefined : '33%'}
+          // style={{ flexDirection: mobile ? 'column' : 'row' }}
+        >
+          {tabs.map((tt) => (
+            <TabsTab
+              key={tt.label}
+              value={tt.value}
+              leftSection={
+                <tt.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              styles={{
+                tab: { padding: '8px 8px' },
+                tabLabel: { textAlign: 'start' },
+              }}
+            >
+              {tt.label}
+            </TabsTab>
+          ))}
+        </TabsList>
+      </Stack>
 
       {tabs.map((tt) => (
         <TabsPanel key={tt.label} value={tt.value}>
@@ -118,7 +129,7 @@ export default function User({ props }: { props?: { close?: () => void } }) {
 
               <Divider />
 
-              {tt.content}
+              <tt.content />
             </Stack>
           </ScrollArea>
         </TabsPanel>
@@ -134,25 +145,25 @@ const tabs = [
     icon: IconApps,
     value: 'app',
     label: 'App Settings',
-    content: <App />,
+    content: App,
   },
   {
     icon: IconUserEdit,
     value: 'profile',
     label: 'Edit Profile',
-    content: <UserEdit />,
+    content: UserEdit,
   },
   {
     icon: IconDatabaseCog,
     value: 'data',
     label: 'My Data',
-    content: <Data />,
+    content: Data,
   },
   {
     icon: IconSettings,
     value: 'account',
     label: 'Account Settings',
-    content: <Account />,
+    content: Account,
   },
 ];
 
@@ -167,17 +178,10 @@ function App() {
     keepTransitions: false,
   });
 
-  const { handleChange } = useColorSchemeHandler({
-    schemeState: colorScheme,
-    setSchemeState: setColorScheme,
-    setMantineScheme: setColorScheme,
-  });
-
-  // const [value, setValue] = useState<string | null>('');
-
   const themes = [
     { label: capitalizeWords(ColorScheme.DARK), value: ColorScheme.DARK },
     { label: capitalizeWords(ColorScheme.LIGHT), value: ColorScheme.LIGHT },
+    { label: capitalizeWords(ColorScheme.AUTO), value: ColorScheme.AUTO },
   ];
 
   return (
@@ -194,12 +198,8 @@ function App() {
           w={120}
           data={themes}
           value={colorScheme}
-          onChange={() =>
-            handleChange(
-              colorScheme == ColorScheme.LIGHT
-                ? ColorScheme.DARK
-                : ColorScheme.LIGHT
-            )
+          onChange={(value) =>
+            startTransition(() => setColorScheme(value as MantineColorScheme))
           }
         />
       </Group>

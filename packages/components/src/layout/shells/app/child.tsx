@@ -1,9 +1,13 @@
 'use client';
 
-import { Box, Group, ScrollArea } from '@mantine/core';
-import React, { useMemo, useRef } from 'react';
+import { Box, Group, ScrollArea, Transition } from '@mantine/core';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
-import { useMediaQuery } from '@mantine/hooks';
+import {
+  useDebouncedValue,
+  useElementSize,
+  useMediaQuery,
+} from '@mantine/hooks';
 import { ScrollContext } from '@repo/hooks/contexts/scroll';
 import { ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 
@@ -23,6 +27,12 @@ export default function Child({
   props: PropsAppShellChild;
   children: React.ReactNode;
 }) {
+  const { ref: refNavbar, width: widthNavbar } = useElementSize();
+  const [debouncedWidthNavbar] = useDebouncedValue(widthNavbar, 250);
+  const { ref: refAside, width: widthAside } = useElementSize();
+  const [debouncedWidthAside] = useDebouncedValue(widthAside, 250);
+  const [absoluteWidths, setAbsoluteWidths] = useState({ navbar: 0, aside: 0 });
+
   const viewportRef = useRef<HTMLDivElement | null>(null);
   // Memoize the context value to prevent sub-tree thrashing
   const contextValue = useMemo(() => viewportRef, []);
@@ -45,6 +55,17 @@ export default function Child({
     MemoizedChildren;
   }
 
+  useEffect(() => {
+    setAbsoluteWidths((prev) => {
+      const newNavbarWidth =
+        widthNavbar < prev.navbar ? prev.navbar : debouncedWidthNavbar;
+      const newAsideWidth =
+        widthAside < prev.aside ? prev.aside : debouncedWidthAside;
+
+      return { navbar: newNavbarWidth, aside: newAsideWidth };
+    });
+  }, [debouncedWidthNavbar]);
+
   return (
     <Group
       wrap="nowrap"
@@ -52,31 +73,35 @@ export default function Child({
       gap={0}
       bg={'var(--mantine-color-body)'}
     >
+      {/* LEFT SECTION */}
       <Box
+        visibleFrom="md"
         style={{
-          display: navbarActive ? 'block' : 'none',
-          flex: `0 0 ${widths.navbarLeft}%`, // Fixed basis
+          flex: `0 0 ${navbarActive ? widths.navbarLeft : 0}%`,
+          transition: `all .1s ease`,
+          overflow: 'hidden',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
           borderTopRightRadius: 'var(--mantine-radius-lg)',
           borderBottomRightRadius: 'var(--mantine-radius-lg)',
-          overflow: 'hidden',
         }}
-        visibleFrom="md"
       >
         <ScrollArea
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
-          type="auto"
           scrollbars={'y'}
+          ref={refNavbar}
         >
-          {props.leftSection?.component}
+          <div style={{ minWidth: absoluteWidths.navbar, overflow: 'hidden' }}>
+            {props.leftSection?.component}
+          </div>
         </ScrollArea>
       </Box>
 
+      {/* MAIN CONTENT */}
       <Box
         style={{
-          flex: 1, // Take up all remaining space
-          minWidth: 0, // Crucial for flex children with overflow
+          flex: 1,
+          minWidth: 0,
           zIndex: 1,
         }}
       >
@@ -84,30 +109,32 @@ export default function Child({
           <ScrollArea
             viewportRef={contextValue}
             h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
-            type="auto"
             scrollbars={'y'}
-            styles={{ thumb: { zIndex: 1 } }}
           >
             {MemoizedChildren}
           </ScrollArea>
         </ScrollContext.Provider>
       </Box>
 
+      {/* RIGHT SECTION */}
       <Box
+        visibleFrom="md"
         style={{
-          display: asideActive ? 'block' : 'none',
-          flex: `0 0 ${widths.navbarRight}%`,
+          flex: `0 0 ${asideActive ? widths.navbarRight : 0}%`,
+          transition: `all .1s ease`,
+          overflow: 'hidden',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}
-        visibleFrom="md"
       >
         <ScrollArea
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
-          type="auto"
           scrollbars={'y'}
+          ref={refAside}
         >
-          {props.rightSection?.component}
+          <div style={{ minWidth: absoluteWidths.aside, overflow: 'hidden' }}>
+            {props.rightSection?.component}
+          </div>
         </ScrollArea>
       </Box>
     </Group>

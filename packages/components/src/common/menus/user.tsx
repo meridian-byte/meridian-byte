@@ -17,12 +17,11 @@ import PartialUser from '../../partial/user';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { navLinkItems } from '@repo/constants/links';
 import ModalUser from '../modals/user';
+import { IconSettings } from '@tabler/icons-react';
 
 export default function User({ children }: { children: React.ReactNode }) {
   const session = useStoreSession((s) => s.session);
-
   const mobile = useMediaQuery('(max-width: 48em)');
-  const desktop = useMediaQuery('(min-width: 62em)');
 
   return (
     <Menu
@@ -31,10 +30,7 @@ export default function User({ children }: { children: React.ReactNode }) {
       trigger="click"
       openDelay={50}
       closeDelay={200}
-      opened={desktop ? undefined : false}
       transitionProps={{ transition: 'pop-bottom-left', duration: 100 }}
-      withArrow
-      arrowOffset={16}
       disabled={!session?.email}
       keepMounted
     >
@@ -51,19 +47,15 @@ export default function User({ children }: { children: React.ReactNode }) {
 
         <MenuDivider />
 
-        {navLinkItems.user.account.map((item) => (
-          <div key={item.label}>
-            <ModalUser>
-              <MenuItem
-                leftSection={
-                  <item.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                }
-              >
-                {item.label}
-              </MenuItem>
-            </ModalUser>
-          </div>
-        ))}
+        <ModalUser>
+          <MenuItem
+            leftSection={
+              <IconSettings size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+          >
+            Settings
+          </MenuItem>
+        </ModalUser>
 
         <MenuDivider />
 

@@ -1,5 +1,6 @@
 'use server';
 
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 /**
  * @template-source next-template
  * @template-sync auto
@@ -50,17 +51,18 @@ export const getCookieServer = async <T = string>(
 export const setCookieServer = async (
   name: string,
   value: any,
-  options: CookieServerOptions
+  options: CookieServerOptions,
+  cookieStoreProp?: ReadonlyRequestCookies
 ): Promise<void> => {
   try {
     const cookieValue =
-      typeof value === 'object'
+      value && typeof value === 'object'
         ? encodeURIComponent(JSON.stringify(value))
         : encodeURIComponent(value);
 
     const expires = new Date(Date.now() + options.expiryInSeconds * 1000);
 
-    const cookieStore = await cookies();
+    const cookieStore = cookieStoreProp || (await cookies());
     cookieStore.set({
       name,
       value: cookieValue,
@@ -78,8 +80,12 @@ export const setCookieServer = async (
 /**
  * Deletes a server-side cookie by name.
  */
-export const deleteCookieServer = async (name: string, path: string = '/') => {
-  const cookieStore = await cookies();
+export const deleteCookieServer = async (
+  name: string,
+  path: string = '/',
+  cookieStoreProp?: ReadonlyRequestCookies
+) => {
+  const cookieStore = cookieStoreProp || (await cookies());
   cookieStore.set({
     name,
     value: '',
