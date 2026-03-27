@@ -25,7 +25,7 @@ export default function Theme({
     setColorScheme: (colorScheme: ColorScheme) => void;
   };
 }) {
-  const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });
+  const { setColorScheme } = useMantineColorScheme({ keepTransitions: false });
 
   const { handleChange } = useColorSchemeHandler({
     schemeState: props.colorScheme,
@@ -49,9 +49,7 @@ export default function Theme({
     action:
       props.colorScheme == ColorScheme.LIGHT
         ? ColorScheme.DARK
-        : props.colorScheme == ColorScheme.DARK
-          ? ColorScheme.AUTO
-          : ColorScheme.LIGHT,
+        : ColorScheme.LIGHT,
   };
 
   return (

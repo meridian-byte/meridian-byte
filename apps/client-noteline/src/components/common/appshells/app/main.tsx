@@ -44,7 +44,7 @@ export default function Main({ children }: { children: React.ReactNode }) {
         bg={
           !appshell?.child.navbar
             ? 'var(--mantine-color-body)'
-            : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7))'
+            : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
         }
       >
         <AppShellSection id="navbar-main" grow>
