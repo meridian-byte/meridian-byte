@@ -16,6 +16,7 @@ export const formValuesInitialInquiry = {
   subject: '',
   phone: '',
   message: '',
+  appName: '',
 };
 
 export type FormValuesInquiry = typeof formValuesInitialInquiry;

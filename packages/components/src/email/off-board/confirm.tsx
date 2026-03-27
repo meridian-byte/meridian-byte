@@ -1,13 +1,23 @@
 import * as React from 'react';
 import { Hr, Link, Section, Text } from '@react-email/components';
-import { appName, emails } from '@repo/constants/app';
+import { emails } from '@repo/constants/app';
 import { dimmedText, Email as LayoutEmail, text } from '../layout';
 
-export const Confirm = (props: { link: string; userName: string }) => {
-  const message = `We want to make sure it's really you. Please click the following link to confirm the account deletion request. If you didn't request to delete your ${appName} account, you can ignore this message.`;
+export const Confirm = (props: {
+  link: string;
+  userName: string;
+  appName: string;
+}) => {
+  const message = `We want to make sure it's really you. Please click the following link to confirm the account deletion request. If you didn't request to delete your ${props.appName} account, you can ignore this message.`;
 
   return (
-    <LayoutEmail props={{ preview: message, title: 'Account Deletion' }}>
+    <LayoutEmail
+      props={{
+        preview: message,
+        title: 'Account Deletion',
+        appName: props.appName,
+      }}
+    >
       <Section>
         <Text style={{ marginTop: 0 }}>Hi {props.userName || 'John'},</Text>
         <Text style={text}>{message}</Text>
@@ -45,9 +55,9 @@ export const Confirm = (props: { link: string; userName: string }) => {
 
       <Section style={{ marginTop: '2rem' }}>
         <Text style={dimmedText}>
-          If you didn&apos;t request to delete your {appName} account, you can
-          safely ignore this email. If you are concerned about the security of
-          your account, please{' '}
+          If you didn&apos;t request to delete your {props.appName} account, you
+          can safely ignore this email. If you are concerned about the security
+          of your account, please{' '}
           <Link
             href={`mailto:${emails.info}`}
             style={{

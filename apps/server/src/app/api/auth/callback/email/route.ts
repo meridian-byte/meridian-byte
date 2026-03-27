@@ -15,6 +15,7 @@ import { emailSendOnboardSignUp } from '@/libraries/wrappers/email';
 import { segmentFullName } from '@repo/utilities/string';
 import { emailContactAdd } from '@/services/api/email/contacts';
 import { getSafeRedirectUrl } from '@repo/utilities/url';
+import { companyName } from '@repo/constants/app';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,6 +68,7 @@ export async function GET(request: NextRequest) {
         to: userData.email,
         userName:
           segmentFullName(userData?.user_metadata.name).first || userData.email,
+        appName: companyName,
       });
 
       await emailContactAdd(

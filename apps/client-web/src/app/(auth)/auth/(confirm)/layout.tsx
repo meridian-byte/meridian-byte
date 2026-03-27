@@ -11,12 +11,12 @@ import LayoutBody from '@repo/components/layout/body';
 import LayoutSection from '@repo/components/layout/section';
 import { Stack } from '@mantine/core';
 import { SECTION_SPACING } from '@repo/constants/sizes';
-import { appName } from '@repo/constants/app';
+import { companyName } from '@repo/constants/app';
 
 export const metadata: Metadata = {
   title: {
     default: 'Confirm',
-    template: `%s - Authentication - ${appName}`,
+    template: `%s - Authentication - ${companyName}`,
   },
 };
 
