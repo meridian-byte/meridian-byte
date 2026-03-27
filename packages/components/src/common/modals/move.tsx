@@ -36,10 +36,7 @@ export default function Move({
   const { noteMove } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
-    list: getValidParentNotes(
-      props?.noteId || '',
-      (notes || []).filter((n) => n.id != props?.noteId)
-    ),
+    list: getValidParentNotes(props?.noteId || '', notes || []),
     searchValue: searchValue,
   });
 
@@ -141,5 +138,11 @@ function getValidParentNotes(noteId: string, notes: NoteGet[]): NoteGet[] {
 
   collect(noteId);
 
-  return notes.filter((n) => n.id !== noteId && !descendants.has(n.id));
+  // Find the immediate parent of the note
+  const note = notes.find((n) => n.id === noteId);
+  const parentId = note?.parent_note_id;
+
+  return notes.filter(
+    (n) => n.id !== noteId && !descendants.has(n.id) && n.id !== parentId
+  );
 }
