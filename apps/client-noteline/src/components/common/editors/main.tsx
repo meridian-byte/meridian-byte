@@ -77,7 +77,7 @@ export default function Main({ item }: { item: NoteGet }) {
         },
       }}
     >
-      <RichTextEditor.Toolbar sticky stickyOffset={51}>
+      <RichTextEditor.Toolbar sticky stickyOffset={48}>
         <RichTextEditorControlsGroup>
           {controlGroups.basic}
         </RichTextEditorControlsGroup>
