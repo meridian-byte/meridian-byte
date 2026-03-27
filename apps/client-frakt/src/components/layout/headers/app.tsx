@@ -16,6 +16,7 @@ export default function App() {
             alt={`${APP_NAME} Icon`}
             width={40}
             height={40}
+            fit="contain"
           />
         </NextLink>
       </Group>

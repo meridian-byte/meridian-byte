@@ -7,16 +7,15 @@ import { APP_NAME } from '@/data/constants';
 
 export default function Main() {
   return (
-    <LayoutSection id={'error-404'}>
+    <LayoutSection id={'loading-main'}>
       <Center mih={'100vh'}>
         <Stack align="center">
           <ImageDefault
             src={images.brand.icon.default}
             alt={APP_NAME}
-            height={56}
-            width={104}
+            height={48}
+            width={48}
             fit="contain"
-            mode="grid"
           />
 
           <LoaderMain />

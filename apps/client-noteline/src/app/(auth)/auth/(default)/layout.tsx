@@ -9,7 +9,7 @@ import React from 'react';
 import LayoutBody from '@repo/components/layout/body';
 import LayoutSection from '@repo/components/layout/section';
 import ImageDefault from '@repo/components/common/images/default';
-import { Stack, Card } from '@mantine/core';
+import { Stack, Card, Group } from '@mantine/core';
 import { images } from '@/assets/images';
 import { companyName } from '@repo/constants/app';
 import { SECTION_SPACING } from '@repo/constants/sizes';
@@ -44,15 +44,17 @@ export default function LayoutDefault({
             p={{ base: 'xl', xs: 40 }}
           >
             <Stack gap={'xl'}>
-              <AnchorNextLink href={'/'}>
-                <ImageDefault
-                  src={images.brand.icon.default}
-                  alt={companyName}
-                  height={{ base: 28 }}
-                  fit="contain"
-                  mode="grid"
-                />
-              </AnchorNextLink>
+              <Group justify="center">
+                <AnchorNextLink href={'/'}>
+                  <ImageDefault
+                    src={images.brand.icon.default}
+                    alt={companyName}
+                    height={48}
+                    width={48}
+                    fit="contain"
+                  />
+                </AnchorNextLink>
+              </Group>
 
               {children}
             </Stack>

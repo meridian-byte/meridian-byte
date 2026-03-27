@@ -47,9 +47,9 @@ export default function LayoutNotify({
                 <ImageDefault
                   src={images.brand.icon.default}
                   alt={APP_NAME}
-                  height={48}
-                  width={160}
-                  mode="grid"
+                  height={96}
+                  width={96}
+                  fit="contain"
                 />
               </AnchorNextLink>
             </Center>
