@@ -1,11 +1,9 @@
 import { createClient } from '@repo/libraries/supabase/server';
 import { profileCreate } from '@repo/services/database/profile';
-import { getEmailLocalPart, segmentFullName } from '@repo/utilities/string';
+import { segmentFullName } from '@repo/utilities/string';
 import { AUTH_URLS } from '@repo/constants/paths';
-import { emailSendOnboarding } from '@repo/libraries/wrappers/email';
-import { emailContactAdd } from '@repo/services/api/email/contacts';
-import { COMPANY_NAME } from '@repo/constants/app';
 import { linkify } from '@repo/utilities/url';
+import { sharedUserHandle } from './shared';
 
 export const authOauth = async (params: { searchParams: URLSearchParams }) => {
   const { searchParams } = params;
@@ -36,38 +34,7 @@ export const authOauth = async (params: { searchParams: URLSearchParams }) => {
     avatar: data.user.user_metadata.avatar_url || '',
   });
 
-  const name =
-    `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim();
-
-  // update user
-  const {
-    data: { user: userData },
-    error: updateError,
-  } = await supabase.auth.updateUser({
-    data: {
-      name,
-      full_name: name,
-      picture: profile?.avatar,
-      avatar_url: profile?.avatar,
-      userName: profile?.user_name,
-    },
-  });
-
-  if (updateError) throw updateError;
-
-  if (!existed && userData && userData.email) {
-    await emailSendOnboarding({
-      to: userData.email,
-      userName:
-        segmentFullName(userData?.user_metadata.name).first || userData.email,
-      appName: COMPANY_NAME,
-    });
-
-    await emailContactAdd(
-      { email: userData.email, name: userData.user_metadata.name },
-      false
-    );
-  }
+  sharedUserHandle({ supabase, profile, existed });
 
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? AUTH_URLS.REDIRECT.DEFAULT;

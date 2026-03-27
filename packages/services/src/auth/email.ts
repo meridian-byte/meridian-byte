@@ -1,11 +1,9 @@
 import { AUTH_URLS } from '@repo/constants/paths';
 import { createClient } from '@repo/libraries/supabase/server';
 import { profileCreate } from '../database/profile';
-import { getEmailLocalPart, segmentFullName } from '@repo/utilities/string';
-import { emailSendOnboarding } from '@repo/libraries/wrappers/email';
-import { emailContactAdd } from '../api/email/contacts';
-import { COMPANY_NAME } from '@repo/constants/app';
+import { getEmailLocalPart } from '@repo/utilities/string';
 import { linkify } from '@repo/utilities/url';
+import { sharedUserHandle } from './shared';
 
 export const authEmail = async (params: {
   searchParams: URLSearchParams;
@@ -49,37 +47,7 @@ export const authEmail = async (params: {
     user_name: linkify(session.user?.email || ''),
   });
 
-  const name = `${profile?.first_name} ${profile?.last_name || ''}`.trim();
-
-  // update user
-  const {
-    data: { user: userData },
-    error: updateError,
-  } = await supabase.auth.updateUser({
-    data: {
-      name,
-      full_name: name,
-      picture: profile?.avatar,
-      avatar_url: profile?.avatar,
-      userName: profile?.user_name,
-    },
-  });
-
-  if (updateError) throw updateError;
-
-  if (!existed && userData && userData.email) {
-    await emailSendOnboarding({
-      to: userData.email,
-      userName:
-        segmentFullName(userData?.user_metadata.name).first || userData.email,
-      appName: COMPANY_NAME,
-    });
-
-    await emailContactAdd(
-      { email: userData.email, name: userData.user_metadata.name },
-      false
-    );
-  }
+  sharedUserHandle({ supabase, profile, existed });
 
   return `${baseUrl + `${redirectUrl || AUTH_URLS.REDIRECT}`}`;
 };
