@@ -2,6 +2,8 @@
   border-radius: var(--mantine-radius-md);
   padding: calc(var(--mantine-spacing-xs) / 2)
     calc(var(--mantine-spacing-xs) / 1.5);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 
   @include mantine.hover {
     background-color: var(--mantine-color-pri-light);
