@@ -1,10 +1,9 @@
 import { defaultBackupConfig } from '@/libraries/fsa';
 import { config } from '@/libraries/indexed-db';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreBudget } from '@/libraries/zustand/stores/budget';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
+import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { useStoreMeal } from '@/libraries/zustand/stores/meal';
+import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreEat } from '@/libraries/zustand/stores/eat';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { createFileSyncAdapter } from '@repo/libraries/fsa/handler';
 import { openDatabase } from '@repo/libraries/indexed-db/actions';
@@ -89,20 +88,18 @@ export function useFileSyncAdapter() {
 
 export function useBundledBackupSync({ clientOnly }: { clientOnly: boolean }) {
   const { fileSyncAdapter, hasHandle, hasAccess } = useFileSyncAdapter();
-  const { accounts } = useStoreAccount();
-  const { accountGroups } = useStoreAccountGroup();
-  const { budgets } = useStoreBudget();
-  const { categories } = useStoreCategory();
-  const { transactions } = useStoreTransaction();
+  const { foods } = useStoreFood();
+  const { meals } = useStoreMeal();
+  const { servings } = useStoreServing();
+  const { eats } = useStoreEat();
 
   const debouncedFsWrite = useDebouncedCallback(async () => {
     if (!fileSyncAdapter) return;
     const bundle = {
-      accounts,
-      accountGroups,
-      budgets,
-      categories,
-      transactions,
+      foods,
+      meals,
+      servings,
+      eats,
     };
     await fileSyncAdapter.writeBackup(bundle); // atomic write internally
   }, 3000);
@@ -118,10 +115,9 @@ export function useBundledBackupSync({ clientOnly }: { clientOnly: boolean }) {
     debouncedFsWrite,
     hasAccess,
     hasHandle,
-    accounts,
-    accountGroups,
-    budgets,
-    categories,
-    transactions,
+    foods,
+    meals,
+    servings,
+    eats,
   ]);
 }

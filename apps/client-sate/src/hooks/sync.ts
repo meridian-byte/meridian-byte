@@ -7,178 +7,164 @@
 
 import { useCallback, useEffect } from 'react';
 import { STORE_NAME } from '@repo/constants/names';
-import { postsUpdate } from '@repo/handlers/requests/database/posts';
-import { budgetsUpdate } from '@repo/handlers/requests/database/budgets';
-import { accountsUpdate } from '@repo/handlers/requests/database/accounts';
-import { accountGroupsUpdate } from '@repo/handlers/requests/database/account-groups';
-import { transactionsUpdate } from '@repo/handlers/requests/database/transactions';
-import { categoriesUpdate } from '@repo/handlers/requests/database/category';
-import { useStoreCategory } from '@/libraries/zustand/stores/category';
-import { useStoreBudget } from '@/libraries/zustand/stores/budget';
-import { useStoreAccount } from '@/libraries/zustand/stores/account';
-import { useStoreAccountGroup } from '@/libraries/zustand/stores/account-group';
-import { useStoreTransaction } from '@/libraries/zustand/stores/transaction';
 import { SyncParams } from '@repo/types/sync';
+// import { categoriesUpdate } from '@repo/handlers/requests/database/category';
+// import { useStoreCategory } from '@/libraries/zustand/stores/category';
+import { foodsUpdate } from '@repo/handlers/requests/database/foods';
+import { mealsUpdate } from '@repo/handlers/requests/database/meals';
+import { servingsUpdate } from '@repo/handlers/requests/database/servings';
+import { eatsUpdate } from '@repo/handlers/requests/database/eats';
+import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { useStoreMeal } from '@/libraries/zustand/stores/meal';
+import { useStoreServing } from '@/libraries/zustand/stores/serving';
+import { useStoreEat } from '@/libraries/zustand/stores/eat';
 
-export const useSyncCategories = (params: {
+// export const useSyncCategories = (params: {
+//   syncFunction: (input: SyncParams) => void;
+//   online: boolean;
+// }) => {
+//   const { syncFunction, online } = params;
+
+//   const {
+//     categories,
+//     deleted: deletedCategories,
+//     setCategories,
+//     clearDeletedCategories,
+//   } = useStoreCategory();
+
+//   const syncCategories = useCallback(() => {
+//     syncFunction({
+//       items: categories || [],
+//       deletedItems: deletedCategories,
+//       dataStore: STORE_NAME.CATEGORIES,
+//       stateUpdateFunctionDeleted: () => clearDeletedCategories(),
+//       stateUpdateFunction: (i) => setCategories(i),
+//       serverUpdateFunction: async (i, di) => await categoriesUpdate(i, di),
+//     });
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [categories, deletedCategories, setCategories, clearDeletedCategories]);
+
+//   useEffect(() => syncCategories(), [categories, syncCategories, online]);
+
+//   return { syncCategories };
+// };
+
+export const useSyncFoods = (params: {
   syncFunction: (input: SyncParams) => void;
   online: boolean;
 }) => {
   const { syncFunction, online } = params;
 
   const {
-    categories,
-    deleted: deletedCategories,
-    setCategories,
-    clearDeletedCategories,
-  } = useStoreCategory();
+    foods,
+    deleted: deletedFoods,
+    setFoods,
+    clearDeletedFoods,
+  } = useStoreFood();
 
-  const syncCategories = useCallback(() => {
+  const syncFoods = useCallback(() => {
     syncFunction({
-      items: categories || [],
-      deletedItems: deletedCategories,
-      dataStore: STORE_NAME.CATEGORIES,
-      stateUpdateFunctionDeleted: () => clearDeletedCategories(),
-      stateUpdateFunction: (i) => setCategories(i),
-      serverUpdateFunction: async (i, di) => await categoriesUpdate(i, di),
+      items: foods || [],
+      deletedItems: deletedFoods,
+      dataStore: STORE_NAME.FOODS,
+      stateUpdateFunctionDeleted: () => clearDeletedFoods(),
+      stateUpdateFunction: (i) => setFoods(i),
+      serverUpdateFunction: async (i, di) => await foodsUpdate(i, di),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories, deletedCategories, setCategories, clearDeletedCategories]);
+  }, [foods, deletedFoods, setFoods, clearDeletedFoods]);
 
-  useEffect(() => syncCategories(), [categories, syncCategories, online]);
+  useEffect(() => syncFoods(), [foods, syncFoods, online]);
 
-  return { syncCategories };
+  return { syncFoods };
 };
 
-export const useSyncBudgets = (params: {
+export const useSyncMeals = (params: {
   syncFunction: (input: SyncParams) => void;
   online: boolean;
 }) => {
   const { syncFunction, online } = params;
 
   const {
-    budgets,
-    deleted: deletedBudgets,
-    setBudgets,
-    clearDeletedBudgets,
-  } = useStoreBudget();
+    meals,
+    deleted: deletedMeals,
+    setMeals,
+    clearDeletedMeals,
+  } = useStoreMeal();
 
-  const syncBudgets = useCallback(() => {
+  const syncMeals = useCallback(() => {
     syncFunction({
-      items: budgets || [],
-      deletedItems: deletedBudgets,
-      dataStore: STORE_NAME.BUDGETS,
-      stateUpdateFunctionDeleted: () => clearDeletedBudgets(),
-      stateUpdateFunction: (i) => setBudgets(i),
-      serverUpdateFunction: async (i, di) => await budgetsUpdate(i, di),
+      items: meals || [],
+      deletedItems: deletedMeals,
+      dataStore: STORE_NAME.MEALS,
+      stateUpdateFunctionDeleted: () => clearDeletedMeals(),
+      stateUpdateFunction: (i) => setMeals(i),
+      serverUpdateFunction: async (i, di) => await mealsUpdate(i, di),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [budgets, deletedBudgets, setBudgets, clearDeletedBudgets]);
+  }, [meals, deletedMeals, setMeals, clearDeletedMeals]);
 
-  useEffect(() => syncBudgets(), [budgets, syncBudgets, online]);
+  useEffect(() => syncMeals(), [meals, syncMeals, online]);
 
-  return { syncBudgets };
+  return { syncMeals };
 };
 
-export const useSyncAccounts = (params: {
+export const useSyncServings = (params: {
   syncFunction: (input: SyncParams) => void;
   online: boolean;
 }) => {
   const { syncFunction, online } = params;
 
   const {
-    accounts,
-    deleted: deletedAccounts,
-    setAccounts,
-    clearDeletedAccounts,
-  } = useStoreAccount();
+    servings,
+    deleted: deletedServings,
+    setServings,
+    clearDeletedServings,
+  } = useStoreServing();
 
-  const syncAccounts = useCallback(() => {
+  const syncServings = useCallback(() => {
     syncFunction({
-      items: accounts || [],
-      deletedItems: deletedAccounts,
-      dataStore: STORE_NAME.ACCOUNTS,
-      stateUpdateFunctionDeleted: () => clearDeletedAccounts(),
-      stateUpdateFunction: (i) => setAccounts(i),
-      serverUpdateFunction: async (i, di) => await accountsUpdate(i, di),
+      items: servings || [],
+      deletedItems: deletedServings,
+      dataStore: STORE_NAME.SERVINGS,
+      stateUpdateFunctionDeleted: () => clearDeletedServings(),
+      stateUpdateFunction: (i) => setServings(i),
+      serverUpdateFunction: async (i, di) => await servingsUpdate(i, di),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, deletedAccounts, setAccounts, clearDeletedAccounts]);
+  }, [servings, deletedServings, setServings, clearDeletedServings]);
 
-  useEffect(() => syncAccounts(), [accounts, syncAccounts, online]);
+  useEffect(() => syncServings(), [servings, syncServings, online]);
 
-  return { syncAccounts };
+  return { syncServings };
 };
 
-export const useSyncAccountGroups = (params: {
+export const useSyncEats = (params: {
   syncFunction: (input: SyncParams) => void;
   online: boolean;
 }) => {
   const { syncFunction, online } = params;
 
   const {
-    accountGroups,
-    deleted: deletedAccountGroups,
-    setAccountGroups,
-    clearDeletedAccountGroups,
-  } = useStoreAccountGroup();
+    eats,
+    deleted: deletedEats,
+    setEats,
+    clearDeletedEats,
+  } = useStoreEat();
 
-  const syncAccountGroups = useCallback(() => {
+  const syncEats = useCallback(() => {
     syncFunction({
-      items: accountGroups || [],
-      deletedItems: deletedAccountGroups,
-      dataStore: STORE_NAME.ACCOUNT_GROUPS,
-      stateUpdateFunctionDeleted: () => clearDeletedAccountGroups(),
-      stateUpdateFunction: (i) => setAccountGroups(i),
-      serverUpdateFunction: async (i, di) => await accountGroupsUpdate(i, di),
+      items: eats || [],
+      deletedItems: deletedEats,
+      dataStore: STORE_NAME.SERVINGS,
+      stateUpdateFunctionDeleted: () => clearDeletedEats(),
+      stateUpdateFunction: (i) => setEats(i),
+      serverUpdateFunction: async (i, di) => await eatsUpdate(i, di),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    accountGroups,
-    deletedAccountGroups,
-    setAccountGroups,
-    clearDeletedAccountGroups,
-  ]);
+  }, [eats, deletedEats, setEats, clearDeletedEats]);
 
-  useEffect(
-    () => syncAccountGroups(),
-    [accountGroups, syncAccountGroups, online]
-  );
+  useEffect(() => syncEats(), [eats, syncEats, online]);
 
-  return { syncAccountGroups };
-};
-
-export const useSyncTransactions = (params: {
-  syncFunction: (input: SyncParams) => void;
-  online: boolean;
-}) => {
-  const { syncFunction, online } = params;
-
-  const {
-    transactions,
-    deleted: deletedTransactions,
-    setTransactions,
-    clearDeletedTransactions,
-  } = useStoreTransaction();
-
-  const syncTransactions = useCallback(() => {
-    syncFunction({
-      items: transactions || [],
-      deletedItems: deletedTransactions,
-      dataStore: STORE_NAME.TRANSACTIONS,
-      stateUpdateFunctionDeleted: () => clearDeletedTransactions(),
-      stateUpdateFunction: (i) => setTransactions(i),
-      serverUpdateFunction: async (i, di) => await transactionsUpdate(i, di),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    transactions,
-    deletedTransactions,
-    setTransactions,
-    clearDeletedTransactions,
-  ]);
-
-  useEffect(() => syncTransactions(), [transactions, syncTransactions, online]);
-
-  return { syncTransactions };
+  return { syncEats };
 };
