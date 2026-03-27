@@ -66,6 +66,12 @@ enum WeightUnitType {
   GRAMS
 }
 
+enum EatTime {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
 enum RecurringFrequency {
   DAILY
   WEEKLY
@@ -340,8 +346,8 @@ model Serving {
   food_id    String
   meal       Meal?   @relation(fields: [meal_id], references: [id], onDelete: Cascade)
   meal_id    String?
-
-  eats Eat[]
+  eat        Eat?    @relation(fields: [eat_id], references: [id], onDelete: Cascade)
+  eat_id     String?
 
   status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
@@ -353,7 +359,8 @@ model Serving {
 }
 
 model Eat {
-  id String @id @default(cuid())
+  id   String  @id @default(cuid())
+  time EatTime
 
   profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id String

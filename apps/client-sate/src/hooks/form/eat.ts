@@ -1,6 +1,16 @@
+import { EatTime } from '@repo/types/models/enums';
 import { useEatActions } from '../actions/eat';
 import { useFormBase } from '../form';
 import { EatRelations } from '@repo/types/models/eat';
+import { ServingGet } from '@repo/types/models/serving';
+import { UseFormReturnType } from '@mantine/form';
+
+export type FormEatValues = {
+  id: string;
+  servings: ServingGet[];
+};
+
+export type FormEat = UseFormReturnType<Partial<FormEatValues>>;
 
 export const useFormEat = (params?: {
   defaultValues?: Partial<EatRelations>;
@@ -9,6 +19,8 @@ export const useFormEat = (params?: {
 
   const { form, submitted, handleSubmit } = useFormBase<Partial<EatRelations>>(
     {
+      id: params?.defaultValues?.id || '',
+      time: params?.defaultValues?.time || EatTime.BREAKFAST,
       servings: params?.defaultValues?.servings || [],
     },
     {
@@ -25,9 +37,10 @@ export const useFormEat = (params?: {
           ...rawValues,
         };
 
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.created_at) {
           eatCreate({
             ...submitObject,
+            ...params?.defaultValues,
           });
         } else {
           eatUpdate({
