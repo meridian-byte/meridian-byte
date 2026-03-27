@@ -31,6 +31,7 @@ export default function Main({
 }) {
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const mobile = useMediaQuery('(max-width: 36em)');
+  const desktop = useMediaQuery('(min-width: 62em)');
 
   return (
     <AppShell
@@ -75,9 +76,10 @@ export default function Main({
       {props.navbar?.component && (
         <AppShellNavbar
           style={{
-            backgroundColor: !navbarActive
-              ? 'var(--mantine-color-body)'
-              : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+            backgroundColor:
+              !desktop || !navbarActive
+                ? 'var(--mantine-color-body)'
+                : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
             borderTopRightRadius: 'var(--mantine-radius-lg)',
             borderBottomRightRadius: 'var(--mantine-radius-lg)',
             overflow: 'hidden',

@@ -214,10 +214,12 @@ export const useAppshellStore = () => {
   useEffect(() => {
     if (appShell === undefined) return;
     if (appShell === null) return;
+    if (!desktop && !appShell?.child?.navbar) return;
+    if (desktop && !!appShell?.child?.navbar) return;
 
     const newAppshell: AppShellValue = {
       ...appShell,
-      child: { navbar: desktop ? appShell.child?.navbar : false, aside: false },
+      child: { navbar: desktop ? true : false, aside: false },
     };
 
     setAppShell(newAppshell);

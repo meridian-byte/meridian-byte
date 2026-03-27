@@ -28,12 +28,14 @@ export default function Child({
   const contextValue = useMemo(() => viewportRef, []);
 
   const mobile = useMediaQuery('(max-width: 36em)');
+  const desktop = useMediaQuery('(min-width: 62em)');
+  const desktopLg = useMediaQuery('(min-width: 75em)');
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
 
   const widths = {
-    navbarLeft: 22.5,
-    navbarRight: 22.5,
+    navbarLeft: desktopLg ? 22.5 : desktop ? 30 : 22.5,
+    navbarRight: desktopLg ? 22.5 : desktop ? 30 : 22.5,
   };
 
   const MemoizedChildren = useMemo(() => children, [children]);
@@ -59,7 +61,7 @@ export default function Child({
           borderBottomRightRadius: 'var(--mantine-radius-lg)',
           overflow: 'hidden',
         }}
-        visibleFrom="xs"
+        visibleFrom="md"
       >
         <ScrollArea
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
@@ -99,7 +101,7 @@ export default function Child({
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
         }}
-        visibleFrom="xs"
+        visibleFrom="md"
       >
         <ScrollArea
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}

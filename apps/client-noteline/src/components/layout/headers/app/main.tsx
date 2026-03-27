@@ -32,23 +32,12 @@ import AvatarMain from '@repo/components/common/avatars/main';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export default function Main() {
-  const appshell = useStoreAppShell((s) => s.appshell);
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
   const session = useStoreSession((s) => s.session);
 
   return (
     <Group justify="space-between" h={'100%'} px={'xs'}>
       <Group gap={5}>
-        {appshell === undefined ? (
-          <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
-        ) : !appshell ? (
-          <></>
-        ) : (
-          <DrawerAppNavbar>
-            <ButtonAppshellNavbar />
-          </DrawerAppNavbar>
-        )}
-
         <Group gap={5} hiddenFrom="xs">
           <NavbarAppMainParent props={{ options: { mobile: true } }} />
         </Group>
