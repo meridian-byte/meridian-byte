@@ -115,7 +115,6 @@ export default function Transaction({
             label={mobile ? 'Amount' : undefined}
             aria-label="Amount"
             placeholder="Amount"
-            data-autofocus
             min={0}
             leftSection={
               <IconCoins size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
