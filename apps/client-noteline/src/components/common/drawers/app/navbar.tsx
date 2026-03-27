@@ -81,6 +81,9 @@ export default function Navbar({
           content: {
             backgroundColor:
               'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+            borderTopRightRadius: 'var(--mantine-radius-lg)',
+            borderBottomRightRadius: 'var(--mantine-radius-lg)',
+            overflow: 'hidden',
           },
         }}
         display={
