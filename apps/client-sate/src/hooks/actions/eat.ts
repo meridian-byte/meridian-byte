@@ -1,14 +1,14 @@
 import { useStoreEat } from '@/libraries/zustand/stores/eat';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import { useStoreSession } from '@/libraries/zustand/stores/session';
 import { EatGet, EatRelations } from '@repo/types/models/eat';
 import { EatTime, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
+import { useServingActions } from './serving';
 
 export const useEatActions = () => {
   const { session } = useStoreSession();
   const { addEat, updateEat, deleteEat } = useStoreEat();
-  const { servings, setServings } = useStoreServing();
+  const { servingCreate } = useServingActions();
 
   const eatCreate = (params: Partial<EatRelations>) => {
     if (!session) return;
@@ -28,7 +28,7 @@ export const useEatActions = () => {
     };
 
     addEat(newEat);
-    setServings([...(servings || []), ...(params.servings || [])]);
+    servingCreate(params.servings || []);
   };
 
   const eatUpdate = (params: EatRelations) => {

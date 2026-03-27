@@ -15,7 +15,7 @@ export const useFormMass = (params?: { defaultValues?: Partial<MassGet> }) => {
       lean_weight: params?.defaultValues?.lean_weight || 0,
       muscle: params?.defaultValues?.muscle || 0,
       bone: params?.defaultValues?.bone || 0,
-      water: params?.defaultValues?.water || 0,
+      // water: params?.defaultValues?.water || 0,
       bmi: params?.defaultValues?.bmi || 0,
       bmr: params?.defaultValues?.bmr || 0,
     },
@@ -30,7 +30,7 @@ export const useFormMass = (params?: { defaultValues?: Partial<MassGet> }) => {
       muscle: (value) =>
         (value || 0) < 1 ? 'Muscle value required' : undefined,
       bone: (value) => ((value || 0) < 1 ? 'Bone value required' : undefined),
-      water: (value) => ((value || 0) < 1 ? 'Water value required' : undefined),
+      // water: (value) => ((value || 0) < 1 ? 'Water value required' : undefined),
       bmi: (value) => ((value || 0) < 1 ? 'BMI value required' : undefined),
       bmr: (value) => ((value || 0) < 1 ? 'BMR value required' : undefined),
     },
