@@ -24,7 +24,6 @@ import {
   useStoreSession,
 } from '@repo/libraries/zustand/stores/session';
 import { generateUUID } from '@repo/utilities/generators';
-import { createClient } from '@repo/libraries/supabase/client';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   getCookieClient,
@@ -79,25 +78,22 @@ import { useStoreCustomization } from '@repo/libraries/zustand/stores/customizat
 import { customizationsGet } from '@repo/handlers/requests/database/customizations';
 import { useStoreChatTemporary } from '@repo/libraries/zustand/stores/chat-temporary';
 import { SAMPLE_CHAT } from '@repo/constants/chat';
+import { User } from '@supabase/supabase-js';
 
 export const useSessionStore = (params?: {
+  sessionUser: User | null;
   options?: { clientOnly?: boolean };
 }) => {
   const { options } = params || {};
   const { clientOnly } = options || {};
 
   const setSession = useStoreSession((s) => s.setSession);
-  const supabase = createClient();
 
   useEffect(() => {
     const getUserSession = async () => {
-      const { data: userSession } = await supabase.auth.getUser();
-
-      const { user: session } = userSession;
-
       const localId = getFromLocalStorage(LOCAL_STORAGE_NAME.TEMPID);
 
-      if (!session) {
+      if (!params?.sessionUser) {
         if (!clientOnly) {
           setSession(null);
         }
@@ -115,16 +111,16 @@ export const useSessionStore = (params?: {
           }
         }
       } else {
-        setSession(session);
+        setSession(params.sessionUser);
 
-        if (!localId || localId !== session.id) {
-          saveToLocalStorage(LOCAL_STORAGE_NAME.TEMPID, session.id);
+        if (!localId || localId !== params.sessionUser.id) {
+          saveToLocalStorage(LOCAL_STORAGE_NAME.TEMPID, params.sessionUser.id);
         }
       }
     };
 
     getUserSession();
-  }, [setSession, supabase.auth, clientOnly]);
+  }, [setSession, clientOnly]);
 };
 
 export const useUserRoleStore = () => {

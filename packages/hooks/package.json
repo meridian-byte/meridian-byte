@@ -20,6 +20,7 @@
     "@mantine/form": "^8.3.6",
     "@mantine/hooks": "^8.3.6",
     "@mantine/notifications": "^8.3.6",
+    "@supabase/supabase-js": "^2.89.0",
     "next": "16.0.10",
     "react": "^19.2.0"
   },
