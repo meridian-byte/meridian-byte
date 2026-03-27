@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { updateSession } from '@repo/libraries/supabase/middleware';
 import { setCorsHeaders } from '@repo/utilities/middeware';
 import { CROSS_ORIGINS } from '@repo/constants/hosts';
+import { BASE_URL_CLIENT } from '@repo/constants/paths';
 
 export async function proxy(request: NextRequest) {
   // Handle preflight
@@ -10,10 +12,13 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  const response = NextResponse.next({ request });
+  let response = NextResponse.next({ request });
 
   // Set CORS headers for the response
   setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
+
+  // Update the session in the response
+  response = await updateSession(request, response, BASE_URL_CLIENT.NOTELINE);
 
   return response;
 }

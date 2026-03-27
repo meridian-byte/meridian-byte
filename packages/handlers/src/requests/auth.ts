@@ -6,11 +6,10 @@
  */
 
 import { SignIn, SignOut } from '@repo/types/auth';
-import { API_URL } from '@repo/constants/paths';
 
-export const signIn = async (params: SignIn) => {
+export const signIn = async (params: SignIn & { apiUrl: string }) => {
   try {
-    const response = await fetch(`${API_URL}/auth/sign-in`, {
+    const response = await fetch(`${params.apiUrl}/auth/sign-in`, {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -28,14 +27,17 @@ export const signIn = async (params: SignIn) => {
 
 export const signOut = async (params: SignOut) => {
   try {
-    const response = await fetch(`${API_URL}/auth/sign-out`, {
-      method: 'POST',
-      body: JSON.stringify(params),
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${params.options.baseUrl}/api/auth/sign-out`,
+      {
+        method: 'POST',
+        body: JSON.stringify(params),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }
+    );
 
     return response;
   } catch (error) {
