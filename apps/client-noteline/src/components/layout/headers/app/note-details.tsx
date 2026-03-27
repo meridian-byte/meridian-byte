@@ -35,6 +35,7 @@ import { useScroll } from '@repo/hooks/scroll';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { getRegionalDate, getRelativeTime } from '@repo/utilities/date-time';
 import BreadcrumbAppNote from '@repo/components/common/breadcrumbs/app/note';
+import BadgeUpdatedTimestamp from '@repo/components/common/badges/updated-timestamp';
 
 export default function NoteDetails({
   props,
@@ -86,23 +87,9 @@ export default function NoteDetails({
                 {notes === undefined ? (
                   <Skeleton h={24} w={80} />
                 ) : !note ? null : (
-                  <Badge
-                    tt={'none'}
-                    variant="light"
-                    color="dark"
-                    size="lg"
-                    fw={'normal'}
-                    h={ICON_WRAPPER_SIZE}
-                    radius={'md'}
-                  >
-                    Edited{' '}
-                    <Text component="span" inherit>
-                      {getRelativeTime(note.updated_at, 'en-GB', {
-                        hideSeconds: true,
-                        format: 'narrow',
-                      })}
-                    </Text>
-                  </Badge>
+                  <BadgeUpdatedTimestamp
+                    props={{ updatedAt: note.updated_at }}
+                  />
                 )}
               </Group>
 
