@@ -5,13 +5,15 @@ export const useSearchCriteria = (params: {
   searchValue: string;
   list: any[];
   limit?: number;
+  options?: { showNoneOnEmpty?: boolean };
 }) => {
   const { searchValue, list, limit } = params;
 
   const getSearchCriteriaItems = () => {
-    if (!searchValue.trim()) return list;
+    if (!searchValue.trim()) return params.options?.showNoneOnEmpty ? [] : list;
 
     const searchTerm = searchValue.trim().toLowerCase();
+
     const notesSorted = sortArray(list, (i) => i.created_at, Order.DESCENDING);
 
     const listFiltered = notesSorted

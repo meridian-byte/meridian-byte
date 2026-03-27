@@ -18,15 +18,22 @@ import InputTextSearch from '../inputs/text/search';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Merge({
   props,
+  options,
   children,
 }: {
   props?: { noteId?: string };
+  options?: { global?: boolean };
   children: React.ReactNode;
 }) {
-  const [opened, { open, close }] = useDisclosure(false);
+  const activeNote = useStoreActiveItems((s) => s.activeItems?.note);
+  const addActiveNote = useStoreActiveItems((s) => s.addActiveNote);
+  const removeActiveNote = useStoreActiveItems((s) => s.removeActiveNote);
+  const resolvedOpened = !!activeNote && !!activeNote.merge;
+
   const [searchValue, setSearchValue] = useState('');
 
   const notes = useStoreNote((s) => s.notes);
@@ -41,13 +48,13 @@ export default function Merge({
 
   const handleClose = () => {
     setSearchValue('');
-    close();
+    removeActiveNote();
   };
 
   return (
     <>
       <Modal
-        opened={opened}
+        opened={resolvedOpened}
         onClose={handleClose}
         withCloseButton={false}
         centered
@@ -100,7 +107,17 @@ export default function Merge({
         </LayoutModalMain>
       </Modal>
 
-      <span onClick={open}>{children}</span>
+      <span
+        onClick={
+          options?.global
+            ? undefined
+            : () => {
+                if (note) addActiveNote(note);
+              }
+        }
+      >
+        {children}
+      </span>
     </>
   );
 }

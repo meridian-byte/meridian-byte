@@ -39,8 +39,11 @@ export default function LayoutDefault({
         >
           <Card
             shadow="xs"
-            withBorder
-            bg={'transparent'}
+            // withBorder
+            // bg={'transparent'}
+            bg={
+              'light-dark(var(--mantine-color-pri-light), var(--mantine-color-dark-8))'
+            }
             p={{ base: 'xl', xs: 40 }}
           >
             <Stack gap={'xl'}>

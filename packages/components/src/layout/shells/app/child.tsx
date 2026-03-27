@@ -27,12 +27,6 @@ export default function Child({
   props: PropsAppShellChild;
   children: React.ReactNode;
 }) {
-  const { ref: refNavbar, width: widthNavbar } = useElementSize();
-  const [debouncedWidthNavbar] = useDebouncedValue(widthNavbar, 250);
-  const { ref: refAside, width: widthAside } = useElementSize();
-  const [debouncedWidthAside] = useDebouncedValue(widthAside, 250);
-  const [absoluteWidths, setAbsoluteWidths] = useState({ navbar: 0, aside: 0 });
-
   const viewportRef = useRef<HTMLDivElement | null>(null);
   // Memoize the context value to prevent sub-tree thrashing
   const contextValue = useMemo(() => viewportRef, []);
@@ -44,27 +38,14 @@ export default function Child({
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
 
-  const widths = {
-    navbarLeft: desktopXl ? 22.5 : desktopLg ? 25 : desktop ? 30 : 22.5,
-    navbarRight: desktopXl ? 22.5 : desktopLg ? 25 : desktop ? 30 : 22.5,
-  };
+  // 1. Calculate the target width in VW to match your percentage logic
+  const targetVw = desktopXl ? 20 : desktopLg ? 22.5 : desktop ? 27.5 : 22.5;
 
   const MemoizedChildren = useMemo(() => children, [children]);
   // ... inside return
   {
     MemoizedChildren;
   }
-
-  useEffect(() => {
-    setAbsoluteWidths((prev) => {
-      const newNavbarWidth =
-        widthNavbar < prev.navbar ? prev.navbar : debouncedWidthNavbar;
-      const newAsideWidth =
-        widthAside < prev.aside ? prev.aside : debouncedWidthAside;
-
-      return { navbar: newNavbarWidth, aside: newAsideWidth };
-    });
-  }, [debouncedWidthNavbar]);
 
   return (
     <Group
@@ -77,8 +58,8 @@ export default function Child({
       <Box
         visibleFrom="md"
         style={{
-          flex: `0 0 ${navbarActive ? widths.navbarLeft : 0}%`,
-          transition: `all .1s ease`,
+          flex: `0 0 ${navbarActive ? targetVw : 0}vw`,
+          transition: `flex-basis .1s ease`,
           overflow: 'hidden',
           backgroundColor:
             'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
@@ -89,9 +70,8 @@ export default function Child({
         <ScrollArea
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
           scrollbars={'y'}
-          ref={refNavbar}
         >
-          <div style={{ minWidth: absoluteWidths.navbar, overflow: 'hidden' }}>
+          <div style={{ minWidth: `${targetVw}vw` }}>
             {props.leftSection?.component}
           </div>
         </ScrollArea>
@@ -120,7 +100,7 @@ export default function Child({
       <Box
         visibleFrom="md"
         style={{
-          flex: `0 0 ${asideActive ? widths.navbarRight : 0}%`,
+          flex: `0 0 ${asideActive ? targetVw : 0}vw`,
           transition: `all .1s ease`,
           overflow: 'hidden',
           backgroundColor:
@@ -130,9 +110,8 @@ export default function Child({
         <ScrollArea
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
           scrollbars={'y'}
-          ref={refAside}
         >
-          <div style={{ minWidth: absoluteWidths.aside, overflow: 'hidden' }}>
+          <div style={{ minWidth: `${targetVw}vw` }}>
             {props.rightSection?.component}
           </div>
         </ScrollArea>

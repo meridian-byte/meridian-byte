@@ -5,7 +5,13 @@ import {
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
-import { ActionIcon, TextInput, TextInputProps, Tooltip } from '@mantine/core';
+import {
+  ActionIcon,
+  TextInput,
+  TextInputProps,
+  ThemeIcon,
+  Tooltip,
+} from '@mantine/core';
 import { IconSearch, IconX } from '@tabler/icons-react';
 import React, { useState } from 'react';
 import { useDebouncedCallback } from '@mantine/hooks';
@@ -15,7 +21,7 @@ export default function Search({
   props,
   ...restProps
 }: {
-  props: { value: string; setValue: any };
+  props: { value: string; setValue: any; close?: () => void };
 } & TextInputProps) {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(props.value);
@@ -37,26 +43,35 @@ export default function Search({
       onChange={(e) => handleChange(e.currentTarget.value)}
       variant="filled"
       aria-label="Search notes"
-      placeholder="Search notes"
+      placeholder="Search notes..."
+      leftSection={<IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
       rightSection={
         loading ? (
           <SpinnerApp props={{ size: ICON_SIZE - 4 }} />
-        ) : !props.value.trim().length ? (
-          <IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         ) : (
-          <Tooltip label={'Clear Search'}>
-            <ActionIcon
-              size={ICON_WRAPPER_SIZE - 2}
-              variant="light"
-              color="dark"
-              onClick={() => {
-                setValue('');
-                props.setValue('');
-              }}
+          (props.close || !!props.value.trim().length) && (
+            <Tooltip
+              label={
+                !props.value.trim().length ? 'Close modal' : 'Clear Search'
+              }
             >
-              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </Tooltip>
+              <ActionIcon
+                size={ICON_WRAPPER_SIZE - 4}
+                variant="subtle"
+                color="dark"
+                onClick={() => {
+                  if (!props.value.trim().length) {
+                    if (props.close) props.close();
+                  } else {
+                    setValue('');
+                    props.setValue('');
+                  }
+                }}
+              >
+                <IconX size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          )
         )
       }
       styles={{

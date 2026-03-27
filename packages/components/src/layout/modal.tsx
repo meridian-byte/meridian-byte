@@ -18,11 +18,13 @@ export default function Modal({
   children,
   props,
   variant,
+  withoutPadding,
 }: {
   children: React.ReactNode;
-  props: { title: string; close: () => void };
+  props?: { title?: string; close?: () => void };
   variant?: Alert;
   size?: string;
+  withoutPadding?: boolean;
 }) {
   let options: {
     icon: Icon | null;
@@ -47,41 +49,51 @@ export default function Modal({
   }
 
   return (
-    <Stack pos={'relative'} gap={!variant ? 'md' : 'xl'} p={'md'}>
-      <Group justify={!options.icon ? 'end' : 'space-between'} align="start">
-        {options.icon && (
-          <Group>
-            <ThemeIcon
-              size={ICON_WRAPPER_SIZE * 2}
-              variant="light"
-              color={options.color || undefined}
-            >
-              <options.icon size={ICON_SIZE * 2} stroke={ICON_STROKE_WIDTH} />
-            </ThemeIcon>
-          </Group>
-        )}
+    <Stack
+      pos={'relative'}
+      gap={!variant ? 'md' : 'xl'}
+      p={withoutPadding ? 0 : 'md'}
+    >
+      {(options.icon || props?.close) && (
+        <Group justify={!options.icon ? 'end' : 'space-between'} align="start">
+          {options.icon && (
+            <Group>
+              <ThemeIcon
+                size={ICON_WRAPPER_SIZE * 2}
+                variant="light"
+                color={options.color || undefined}
+              >
+                <options.icon size={ICON_SIZE * 2} stroke={ICON_STROKE_WIDTH} />
+              </ThemeIcon>
+            </Group>
+          )}
 
-        <ActionIcon
-          size={ICON_WRAPPER_SIZE}
-          onClick={props.close}
-          variant="light"
-          color="dark"
-        >
-          <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-        </ActionIcon>
-      </Group>
+          {props?.close && (
+            <ActionIcon
+              size={ICON_WRAPPER_SIZE}
+              onClick={props.close}
+              variant="light"
+              color="dark"
+            >
+              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          )}
+        </Group>
+      )}
 
       <Stack>
-        <Group>
-          <Title
-            order={1}
-            fz={'xl'}
-            lh={1}
-            ta={{ base: 'center', xs: 'start' }}
-          >
-            {props.title}
-          </Title>
-        </Group>
+        {props?.title && (
+          <Group>
+            <Title
+              order={1}
+              fz={'xl'}
+              lh={1}
+              ta={{ base: 'center', xs: 'start' }}
+            >
+              {props.title}
+            </Title>
+          </Group>
+        )}
 
         {children}
       </Stack>

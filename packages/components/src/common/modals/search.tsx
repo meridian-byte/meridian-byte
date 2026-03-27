@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import {
+  Box,
   Center,
   Divider,
   Modal,
   NavLink,
   ScrollArea,
   Text,
+  Transition,
 } from '@mantine/core';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useRouter } from 'next/navigation';
-import { IconFile } from '@tabler/icons-react';
+import { IconFile, IconNote } from '@tabler/icons-react';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
@@ -31,13 +33,14 @@ export default function Search({ children }: { children: React.ReactNode }) {
   const { searchCriteriaItems } = useSearchCriteria({
     list: notes || [],
     searchValue: searchValue,
+    options: { showNoneOnEmpty: true },
   });
 
   const items = searchCriteriaItems.map((n) => {
     return {
       id: n.id,
       label: n.title,
-      leftSection: <IconFile size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
+      leftSection: <IconNote size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       onClick: () => {
         router.push(`/app/n/${linkify(n.title)}-${n.id}`);
         close();
@@ -52,36 +55,58 @@ export default function Search({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Modal opened={opened} onClose={handleClose}>
-        <LayoutModal props={{ close: handleClose, title: 'Search note' }}>
-          <InputTextSearch
-            props={{ value: searchValue, setValue: setSearchValue }}
-          />
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        centered={false}
+        size={'lg'}
+        padding={0}
+      >
+        <LayoutModal withoutPadding={true}>
+          <Box p={'md'} pb={searchValue.trim().length ? 0 : 'md'}>
+            <InputTextSearch
+              props={{
+                value: searchValue,
+                setValue: setSearchValue,
+                close: handleClose,
+              }}
+            />
+          </Box>
 
-          <div>
-            <Divider />
+          <Transition mounted={!!searchValue.trim().length} duration={0}>
+            {(styles) => (
+              <div style={styles}>
+                <Divider />
 
-            <ScrollArea h={280}>
-              {!searchCriteriaItems.length ? (
-                <Center ta={'center'} py={SECTION_SPACING}>
-                  <Text inherit fz={'sm'} c={'dimmed'}>
-                    No notes found...
-                  </Text>
-                </Center>
-              ) : (
-                items.map((a) => (
-                  <div key={a.id}>
-                    <NavLink
-                      label={a.label}
-                      leftSection={a.leftSection}
-                      onClick={a.onClick}
-                      style={{ borderRadius: 'var(--mantine-radius-md)' }}
-                    />
-                  </div>
-                ))
-              )}
-            </ScrollArea>
-          </div>
+                <ScrollArea
+                  mah={searchValue.trim().length ? 280 : 0}
+                  p={'md'}
+                  pt={0}
+                >
+                  {!searchCriteriaItems.length ? (
+                    <Center ta={'center'} py={SECTION_SPACING / 2}>
+                      <Text inherit fz={'sm'} c={'dimmed'}>
+                        No notes found...
+                      </Text>
+                    </Center>
+                  ) : (
+                    <Box pt={'xs'}>
+                      {items.map((a) => (
+                        <div key={a.id}>
+                          <NavLink
+                            label={a.label}
+                            leftSection={a.leftSection}
+                            onClick={a.onClick}
+                            style={{ borderRadius: 'var(--mantine-radius-md)' }}
+                          />
+                        </div>
+                      ))}
+                    </Box>
+                  )}
+                </ScrollArea>
+              </div>
+            )}
+          </Transition>
         </LayoutModal>
       </Modal>
 

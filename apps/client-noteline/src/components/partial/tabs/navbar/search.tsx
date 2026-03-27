@@ -9,6 +9,7 @@ import {
   Skeleton,
   Stack,
   Text,
+  ThemeIcon,
 } from '@mantine/core';
 import InputTextSearch from '@repo/components/common/inputs/text/search';
 import Link from 'next/link';
@@ -18,8 +19,14 @@ import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { getUrlParam, linkify } from '@repo/utilities/url';
 import { useSearchParams } from 'next/navigation';
-import { SECTION_SPACING } from '@repo/constants/sizes';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+  SECTION_SPACING,
+} from '@repo/constants/sizes';
 import { useSearchCriteria } from '@repo/hooks/search';
+import { IconFileSearch } from '@tabler/icons-react';
 
 export default function Search() {
   const searchParams = useSearchParams();
@@ -43,6 +50,7 @@ export default function Search() {
   const { searchCriteriaItems } = useSearchCriteria({
     list: notes || [],
     searchValue: value,
+    options: { showNoneOnEmpty: true },
   });
 
   return (
@@ -94,9 +102,24 @@ export default function Search() {
           </Stack>
         ) : !searchCriteriaItems.length ? (
           <Center ta={'center'} py={SECTION_SPACING}>
-            <Text inherit fz={'sm'} c={'dimmed'}>
-              No notes found...
-            </Text>
+            {!value.trim().length ? (
+              <ThemeIcon
+                size={ICON_WRAPPER_SIZE * 2}
+                variant="light"
+                color="dark"
+                c={'dimmed'}
+                radius={'xl'}
+              >
+                <IconFileSearch
+                  size={ICON_SIZE * 1.75}
+                  stroke={ICON_STROKE_WIDTH}
+                />
+              </ThemeIcon>
+            ) : (
+              <Text inherit fz={'sm'} c={'dimmed'}>
+                No notes found...
+              </Text>
+            )}
           </Center>
         ) : (
           searchCriteriaItems?.map((n) => {
