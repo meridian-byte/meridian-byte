@@ -7,18 +7,16 @@
 
 import {
   IconBellRinging,
-  IconBowl,
   IconCarrot,
-  IconCategory,
   IconHeart,
   IconHelpCircle,
   IconInfoCircle,
-  IconLabel,
   IconLicense,
   IconLock,
   IconLogout,
   IconPackage,
   IconSettings,
+  IconSoup,
   IconStar,
   IconUser,
 } from '@tabler/icons-react';
@@ -121,7 +119,7 @@ export const navLinkApp = [
   {
     link: '/app/meals',
     label: 'Meals',
-    icon: IconBowl,
+    icon: IconSoup,
   },
   {
     label: 'Settings',

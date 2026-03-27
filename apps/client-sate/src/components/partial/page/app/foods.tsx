@@ -31,12 +31,12 @@ export default function Foods() {
             foods,
             (i) => new Date(i.updated_at),
             Order.DESCENDING
-          ).map((acc, i) => (
-            <Stack gap={0} key={acc.id}>
+          ).map((f, i) => (
+            <Stack gap={0} key={f.id}>
               {i > 0 && <Divider />}
 
-              <ModalFoodCrud props={acc}>
-                <CardFood props={acc} />
+              <ModalFoodCrud props={f}>
+                <CardFood props={f} />
               </ModalFoodCrud>
             </Stack>
           ))}
