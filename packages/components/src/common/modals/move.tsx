@@ -32,7 +32,7 @@ export default function Move({
   const notes = useStoreNote((s) => s.notes);
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
 
-  const { noteMove } = useNoteActions();
+  const { noteMove, noteUpdate } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
     list: (notes || []).filter((n) => n.id != props?.noteId),
@@ -74,14 +74,14 @@ export default function Move({
               ) : (
                 <>
                   <NavLink
-                    key={'root'}
                     label={'Root'}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
                     }}
                     onClick={() => {
-                      if (note)
-                        noteMove({ values: note, parent_note_id: undefined });
+                      if (note) {
+                        noteUpdate({ ...note, parent_note_id: '' });
+                      }
                     }}
                   />
 
@@ -93,8 +93,9 @@ export default function Move({
                         borderRadius: 'var(--mantine-radius-sm)',
                       }}
                       onClick={() => {
-                        if (note)
+                        if (note) {
                           noteMove({ values: note, parent_note_id: pni.id });
+                        }
                       }}
                     />
                   ))}
