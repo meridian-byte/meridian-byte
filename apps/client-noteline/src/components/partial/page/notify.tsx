@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { IconArrowRight } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import { SignOut as WrapperSignOut } from '@/components/wrapper/auth';
+import { getUrlParam } from '@repo/utilities/url';
 
 type NotifySectionProps = {
   id: string;
@@ -25,6 +26,56 @@ type NotifySectionProps = {
   containerized?: boolean;
   margined?: boolean;
   titleBold?: boolean;
+};
+
+export const NotifyError = () => {
+  const error = getUrlParam('error');
+  const errorMessage = getUrlParam('message');
+
+  return (
+    <NotifySection
+      id="page-notify-error"
+      containerized={false}
+      margined
+      title={(error as string) ?? 'Authentication Error'}
+      subtitle="An authentication error has occured."
+      message={
+        (errorMessage as string) ??
+        'Perhaps it’s a temporary issue... Try again later.'
+      }
+    />
+  );
+};
+
+export const NotifySignOut = () => {
+  return (
+    <NotifySection
+      id="page-notify-sign-out"
+      containerized={false}
+      margined
+      title="Sign Out"
+      titleBold
+      subtitle="Are you sure you want to sign out?"
+      actions={
+        <>
+          <WrapperSignOut>
+            <Button>Sign Out</Button>
+          </WrapperSignOut>
+
+          <Button
+            component={Link}
+            href="/"
+            variant="light"
+            rightSection={
+              <IconArrowRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+          >
+            Go Home
+          </Button>
+        </>
+      }
+    />
+  );
 };
 
 export function NotifySection({
@@ -70,66 +121,3 @@ export function NotifySection({
     </LayoutSection>
   );
 }
-
-export const NotifyError = ({ props }: { props?: { message?: string } }) => {
-  return (
-    <NotifySection
-      id="page-notify-error"
-      containerized={false}
-      margined
-      title="Authentication Error"
-      subtitle="Seems we can’t sign you in."
-      message={
-        props?.message ?? 'Perhaps it’s a temporary issue... Try again later.'
-      }
-    />
-  );
-};
-
-export const NotifySignOut = () => {
-  return (
-    <NotifySection
-      id="page-notify-sign-out"
-      containerized={false}
-      margined
-      title="Sign Out"
-      titleBold
-      subtitle="Are you sure you want to sign out?"
-      actions={
-        <>
-          <WrapperSignOut>
-            <Button>Sign Out</Button>
-          </WrapperSignOut>
-
-          <Button
-            component={Link}
-            href="/"
-            variant="light"
-            rightSection={
-              <IconArrowRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            }
-          >
-            Go Home
-          </Button>
-        </>
-      }
-    />
-  );
-};
-
-export const NotifyCheckEmail = ({
-  props,
-}: {
-  props?: { message?: string };
-}) => {
-  return (
-    <NotifySection
-      id={'page-notify-verify-request'}
-      containerized={false}
-      padded
-      title="Check Your Email"
-      titleBold
-      message={`${props?.message || ''} Remember to check the spam/junk folder(s).`}
-    />
-  );
-};

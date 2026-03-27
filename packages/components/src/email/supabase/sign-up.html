@@ -1,22 +1,16 @@
-<table
-  style="
+<table style="
     width: 100%;
-    max-width: 560px;
-    border: 1px solid #e4e6ed;
-    border-radius: 0.25rem;
+    max-width: 840px;
     padding: 3rem;
+    border: 1px solid #e4e6ed;
+    border-radius: 0.5rem;
     margin: 0 auto;
     font-family: 'Calibri', Arial, sans-serif;
-  "
->
+  ">
   <tr>
     <td style="text-align: center">
-      <a href="https://example.com">
-        <img
-          src="https://spewyluxhudgxpuhjjam.supabase.co/storage/v1/object/public/avatars/brand/icon/icon-light.png"
-          alt="Next Template"
-          style="width: 40px; height: auto"
-        />
+      <a href="https://meridian-byte.vercel.app">
+        <img src="https://kevon.net/images/brand/icon/light.png" alt="MeridianByte" style="width: 40px; height: auto" />
       </a>
     </td>
   </tr>
@@ -29,10 +23,10 @@
 
   <tr>
     <td style="padding-top: 2rem">
-      <p>Hello,</p>
+      <p>Hi,</p>
       <p style="margin: 0">
-        This is an email containing a magic link to sign you up. We're just
-        making sure this is your email. Click the link below to access your
+        This is an email containing an OTP to sign you up. We're just
+        making sure this is your email. Enter the code below to access your
         personalized experience.
       </p>
     </td>
@@ -40,21 +34,9 @@
 
   <tr>
     <td style="text-align: center; padding-top: 2rem">
-      <a
-        href="{{ .SiteURL }}/auth/confirm/sign-up?token_hash={{ .TokenHash }}&type=signup&redirect={{ .RedirectTo }}"
-        style="
-          background-color: #e4e6ed;
-          color: black;
-          padding: 0.5rem;
-          border-radius: 0.25rem;
-          text-decoration: none;
-          font-weight: bold;
-          display: inline-block;
-          width: 100%;
-        "
-      >
-        Confirm Signup
-      </a>
+      <p style="font-weight: bold; font-size: 2rem; color: #b08e67;">
+        {{ .Token }}
+      </p>
     </td>
   </tr>
 
@@ -66,10 +48,9 @@
 
   <tr>
     <td style="font-size: small; color: dimgray; margin: 0; padding-top: 2rem">
-      If you didn't request this confirmation link, you can safely ignore this
+      If you didn't request this confirmation OTP, you can safely ignore this
       email. If you are concerned about the security of your account, please
-      <a href="mailto:info@example.com" style="color: black">contact support</a
-      >.
+      <a href="mailto:support@meridianbyte.com" style="color: black">contact support</a>.
     </td>
   </tr>
 </table>

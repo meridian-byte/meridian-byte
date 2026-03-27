@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { setRedirectUrl } from '@repo/utilities/url';
 import { Box, LoadingOverlay } from '@mantine/core';
-import { AUTH_URLS } from '@/data/constants';
-import { signOut } from '@repo/handlers/requests/auth';
+import { AUTH_URLS, BASE_URL_CLIENT } from '@/data/constants';
 import { config } from '@/libraries/indexed-db';
 import { deleteDatabase } from '@repo/libraries/indexed-db/actions';
 import { AuthAction } from '@repo/types/enums';
+import { createClient } from '@/libraries/supabase/client';
 
 export function Auth({
   children,
@@ -40,6 +40,7 @@ export function Auth({
 }
 
 export function SignOut({ children }: { children: React.ReactNode }) {
+  const supabase = createClient();
   const [clicked, setClicked] = useState(false);
 
   return (
@@ -49,14 +50,26 @@ export function SignOut({ children }: { children: React.ReactNode }) {
       onClick={async () => {
         setClicked(true);
 
-        // Delete local database
-        await deleteDatabase(config.name);
+        await supabase.auth.signOut();
 
         // Clear storage (optional)
         localStorage.clear();
         sessionStorage.clear();
 
-        await signOut();
+        // delete client cookies
+        document.cookie.split(';').forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, '')
+            .replace(
+              /=.*/,
+              '=;expires=' + new Date().toUTCString() + ';path=/'
+            );
+        });
+
+        // Delete local database
+        await deleteDatabase(config.name);
+
+        window.location.href = BASE_URL_CLIENT;
       }}
     >
       <LoadingOverlay

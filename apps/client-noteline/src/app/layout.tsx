@@ -19,10 +19,12 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
 import ProviderStore from '@/components/provider/store';
+import ProviderSync from '@/components/provider/sync';
 import { mantine } from '@/assets/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { companyName } from '@repo/constants/app';
 import { APP_NAME } from '@/data/constants';
+import RouteProtection from '@/components/wrapper/auth/route-protection';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -86,7 +88,11 @@ export default async function RootLayout({
           appThemeProps={{ styleSheets: { ...mantine } }}
           colorScheme={DEFAULT_COLOR_SCHEME}
         >
-          <ProviderStore>{children}</ProviderStore>
+          <RouteProtection>
+            <ProviderStore>
+              <ProviderSync>{children}</ProviderSync>
+            </ProviderStore>
+          </RouteProtection>
         </ProviderMantine>
       </body>
     </html>

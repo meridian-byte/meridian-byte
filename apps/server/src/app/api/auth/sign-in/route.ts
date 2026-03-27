@@ -15,11 +15,11 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body: SignIn = await request.json();
-    const { redirect } = await signIn(body);
+    const signInResult = await signIn(body);
 
     return NextResponse.json(
-      { redirect },
-      { status: 200, statusText: 'Signed In' }
+      { data: signInResult },
+      { status: 200, statusText: 'Sign In Request Accepted' }
     );
   } catch (error) {
     console.error('---> route handler error (sign in):', error);
