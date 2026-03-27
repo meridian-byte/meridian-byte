@@ -39,10 +39,20 @@ export default function Merge({
     searchValue: searchValue,
   });
 
+  const handleClose = () => {
+    setSearchValue('');
+    close();
+  };
+
   return (
     <>
-      <Modal opened={opened} onClose={close} withCloseButton={false} centered>
-        <LayoutModalMain props={{ close, title: 'Merge Note' }}>
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        withCloseButton={false}
+        centered
+      >
+        <LayoutModalMain props={{ close: handleClose, title: 'Merge Note' }}>
           <InputTextSearch
             props={{ value: searchValue, setValue: setSearchValue }}
           />

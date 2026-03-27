@@ -45,10 +45,15 @@ export default function Search({ children }: { children: React.ReactNode }) {
     };
   });
 
+  const handleClose = () => {
+    setSearchValue('');
+    close();
+  };
+
   return (
     <>
-      <Modal opened={opened} onClose={close}>
-        <LayoutModal props={{ close, title: 'Search note' }}>
+      <Modal opened={opened} onClose={handleClose}>
+        <LayoutModal props={{ close: handleClose, title: 'Search note' }}>
           <InputTextSearch
             props={{ value: searchValue, setValue: setSearchValue }}
           />
