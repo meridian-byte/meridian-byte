@@ -114,52 +114,23 @@ export default function Main({ item }: { item: NoteGet }) {
               <RichTextEditor.Toolbar
                 style={{ flexWrap: 'nowrap', backgroundColor: 'transparent' }}
               >
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.basic}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.basic2}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.alignment}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.headings}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.lists}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
+                {controlGroups.tasks}
+                {divider}
                 {controlGroups.blocks}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.links}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
-
-                {/* <RichTextEditorControlsGroup> */}
                 {controlGroups.actions}
-                {/* </RichTextEditorControlsGroup> */}
-
                 {divider}
 
                 {editor && (

@@ -39,24 +39,24 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
     scrolledStyles: useMemo(() => ({ opacity: 1 }), []),
   });
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const router = useRouter();
-  const userStates = useStoreUserStates((s) => s.userStates);
-  const setUserStates = useStoreUserStates((s) => s.setUserStates);
+  // const userStates = useStoreUserStates((s) => s.userStates);
+  // const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
-  const toogleProperties = {
-    view: userStates?.editing == true ? 'Editing' : 'Reading',
-    label: userStates?.editing == true ? 'read' : 'edit',
-    icon: userStates?.editing == true ? IconBook : IconWriting,
-  };
+  // const toogleProperties = {
+  //   view: userStates?.editing == true ? 'Editing' : 'Reading',
+  //   label: userStates?.editing == true ? 'read' : 'edit',
+  //   icon: userStates?.editing == true ? IconBook : IconWriting,
+  // };
 
-  useEffect(() => {
-    if (!userStates) return;
-    if (!props) return;
-    if (!props.content) return;
+  // useEffect(() => {
+  //   if (!userStates) return;
+  //   if (!props) return;
+  //   if (!props.content) return;
 
-    if (!userStates.editing) setUserStates({ ...userStates, editing: true });
-  }, [searchParams]);
+  //   if (!userStates.editing) setUserStates({ ...userStates, editing: true });
+  // }, [searchParams]);
 
   return (
     <Box
@@ -108,7 +108,7 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
                 <ButtonsFullscreen />
               </Box>
 
-              {userStates === undefined ? (
+              {/* {userStates === undefined ? (
                 <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
               ) : (
                 <Tooltip
@@ -137,7 +137,7 @@ export default function NoteDetails({ props }: { props?: NoteGet }) {
                     />
                   </ActionIcon>
                 </Tooltip>
-              )}
+              )} */}
 
               {props && (
                 <MenuNoteMain item={props}>
