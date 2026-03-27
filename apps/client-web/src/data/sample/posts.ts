@@ -1,5 +1,6 @@
 import { PostRelations } from '@repo/types/models/post';
 import { sampleCategories } from './categories';
+import { Status, SyncStatus } from '@repo/types/models/enums';
 
 export const samplePosts: PostRelations[] = [
   {
@@ -17,11 +18,13 @@ export const samplePosts: PostRelations[] = [
     category_id: 'ea3cc2b6-1e82-4b28-a7cc-60f8c4994f7f',
     created_at: new Date('2025-11-10T09:35:35.462141'),
     updated_at: new Date('2025-11-10T09:35:35.462141'),
-    status: 'DRAFT',
     category: sampleCategories.find(
       (c) => c.id == 'ea3cc2b6-1e82-4b28-a7cc-60f8c4994f7f'
     )!,
     _count: { comments: 1 },
+    profile: null,
+    status: Status.ACTIVE,
+    sync_status: SyncStatus.SYNCED,
   },
   {
     id: '755682bc-f240-446a-aaac-91cbca4b7976',
@@ -38,11 +41,13 @@ export const samplePosts: PostRelations[] = [
     category_id: 'd3dec6f0-a6dd-400b-a633-a102a1d00683',
     created_at: new Date('2025-11-10T09:35:35.462154'),
     updated_at: new Date('2025-11-10T09:35:35.462154'),
-    status: 'DRAFT',
     category: sampleCategories.find(
       (c) => c.id == 'd3dec6f0-a6dd-400b-a633-a102a1d00683'
     )!,
     _count: { comments: 1 },
+    profile: null,
+    status: Status.DRAFT,
+    sync_status: SyncStatus.SYNCED,
   },
   {
     id: '9819649d-b763-40ff-b84f-28e438178b01',
@@ -59,11 +64,13 @@ export const samplePosts: PostRelations[] = [
     category_id: 'ee589009-db4e-4af6-9262-cdb88b985ac5',
     created_at: new Date('2025-11-10T09:35:35.462169'),
     updated_at: new Date('2025-11-10T09:35:35.462169'),
-    status: 'DRAFT',
     category: sampleCategories.find(
       (c) => c.id == 'ee589009-db4e-4af6-9262-cdb88b985ac5'
     )!,
     _count: { comments: 1 },
+    profile: null,
+    status: Status.DRAFT,
+    sync_status: SyncStatus.SYNCED,
   },
   {
     id: 'd05b42cc-674b-4f43-a0a2-fa28aeb913d6',
@@ -80,11 +87,13 @@ export const samplePosts: PostRelations[] = [
     category_id: '7bfa16e8-c63e-4dcc-a9ba-20f3a11e3705',
     created_at: new Date('2025-11-10T09:35:35.462179'),
     updated_at: new Date('2025-11-10T09:35:35.462179'),
-    status: 'DRAFT',
     category: sampleCategories.find(
       (c) => c.id == '7bfa16e8-c63e-4dcc-a9ba-20f3a11e3705'
     )!,
     _count: { comments: 1 },
+    profile: null,
+    status: Status.ACTIVE,
+    sync_status: SyncStatus.SYNCED,
   },
   {
     id: '21bab263-af61-4129-babf-b359f25b62e5',
@@ -101,10 +110,12 @@ export const samplePosts: PostRelations[] = [
     category_id: 'ec718446-1302-4a37-a752-4442cffc75cd',
     created_at: new Date('2025-11-10T09:35:35.462191'),
     updated_at: new Date('2025-11-10T09:35:35.462191'),
-    status: 'DRAFT',
     category: sampleCategories.find(
       (c) => c.id == 'ec718446-1302-4a37-a752-4442cffc75cd'
     )!,
     _count: { comments: 1 },
+    profile: null,
+    status: Status.ACTIVE,
+    sync_status: SyncStatus.SYNCED,
   },
 ];
