@@ -108,7 +108,7 @@ export default function Main({
           Rename
         </MenuItem>
 
-        <ModalMove item={item}>
+        <ModalMove props={{ noteId: item.id }}>
           <MenuItem
             leftSection={
               <IconSortAscendingSmallBig
@@ -122,7 +122,7 @@ export default function Main({
           </MenuItem>
         </ModalMove>
 
-        <ModalMerge item={item}>
+        <ModalMerge props={{ noteId: item.id }}>
           <MenuItem
             leftSection={
               <IconGitMerge size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
