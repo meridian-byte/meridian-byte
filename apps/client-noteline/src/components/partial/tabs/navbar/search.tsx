@@ -10,6 +10,8 @@ import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { getUrlParam } from '@repo/utilities/url';
 import { useSearchParams } from 'next/navigation';
+import { sortArray } from '@repo/utilities/array';
+import { Order } from '@repo/types/enums';
 
 export default function Search() {
   const searchParams = useSearchParams();
@@ -34,7 +36,13 @@ export default function Search() {
   const getSearchCriteriaItems = (params: { options: { limit: number } }) => {
     const searchTerm = value.trim().toLowerCase();
 
-    const notesLimited = notes
+    const notesSorted = sortArray(
+      notes || [],
+      (i) => i.created_at,
+      Order.DESCENDING
+    );
+
+    const notesLimited = notesSorted
       ?.filter((n) => n.title.toLowerCase().includes(searchTerm))
       .slice(0, params.options.limit);
 

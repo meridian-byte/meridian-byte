@@ -34,6 +34,8 @@ import { AppShell } from '@repo/types/components';
 import { setCookieClient } from '@repo/utilities/cookie-client';
 import { COOKIE_NAME } from '@repo/constants/names';
 import { getUrlParam } from '@repo/utilities/url';
+import { sortArray } from '@repo/utilities/array';
+import { Order } from '@repo/types/enums';
 
 export default function Folders() {
   const searchParams = useSearchParams();
@@ -268,15 +270,17 @@ export default function Folders() {
               }}
             />
 
-            {notes
-              ?.filter((n) => !n.notebook_id)
-              .map((n) => {
-                return (
-                  <div key={n.id}>
-                    <NoteComponent props={{ noteId: n.id }} />
-                  </div>
-                );
-              })}
+            {sortArray(
+              (notes || []).filter((n) => !n.notebook_id),
+              (i) => i.created_at,
+              Order.DESCENDING
+            ).map((n) => {
+              return (
+                <div key={n.id}>
+                  <NoteComponent props={{ noteId: n.id }} />
+                </div>
+              );
+            })}
           </>
         )}
       </Stack>
