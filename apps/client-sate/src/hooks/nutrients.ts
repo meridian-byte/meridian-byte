@@ -122,10 +122,10 @@ export const getFoodServingTotals = (params: {
   const perUnit = food.per;
   const totalUnit = serving?.serving_size || food.per;
 
-  const totalCarbs = getTotalunit(food.carbs, perUnit, totalUnit);
-  const totalProtein = getTotalunit(food.protein, perUnit, totalUnit);
-  const totalFat = getTotalunit(food.fat, perUnit, totalUnit);
-  const totalKcal = getTotalunit(food.kcal, perUnit, totalUnit);
+  const totalCarbs = (totalUnit / perUnit) * food.carbs;
+  const totalProtein = (totalUnit / perUnit) * food.protein;
+  const totalFat = (totalUnit / perUnit) * food.fat;
+  const totalKcal = (totalUnit / perUnit) * food.kcal;
 
   if (params.options?.round) {
     return {
@@ -142,8 +142,4 @@ export const getFoodServingTotals = (params: {
     totalFat: formatNumber(totalFat),
     totalKcal: formatNumber(totalKcal),
   };
-};
-
-const getTotalunit = (value: number, unitSize: number, servingSize: number) => {
-  return (servingSize / unitSize) * value;
 };
