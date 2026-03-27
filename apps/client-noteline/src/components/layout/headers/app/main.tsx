@@ -26,33 +26,15 @@ import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
 import IndicatorTheme from '@repo/components/common/indicators/theme';
 import NavbarAppMainParent from '../../navbars/app/main/parent';
 import { useMediaQuery } from '@mantine/hooks';
+import { useAppshellNavbar } from '@repo/hooks/app-shell';
+import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 
 export default function Main() {
   const appshell = useStoreAppShell((s) => s.appshell);
-  const setAppShell = useStoreAppShell((s) => s.setAppShell);
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
   const theme = useStoreTheme((s) => s.theme);
   const setTheme = useStoreTheme((s) => s.setTheme);
   const mobile = useMediaQuery('(max-width: 36em)');
-
-  const states = {
-    iconLeft: !appshell?.child.navbar
-      ? IconLayoutSidebarLeftExpand
-      : IconLayoutSidebarLeftCollapse,
-    iconRight: !appshell?.child.aside
-      ? IconLayoutSidebarRightExpand
-      : IconLayoutSidebarRightCollapse,
-  };
-
-  const handleAppshellChange = (params: AppShell) => {
-    if (!appshell) return;
-
-    setAppShell(params);
-
-    setCookieClient(COOKIE_NAME.APP_SHELL, params, {
-      expiryInSeconds: WEEK,
-    });
-  };
 
   return (
     <Group justify="space-between">
@@ -62,38 +44,9 @@ export default function Main() {
         ) : !appshell ? (
           <></>
         ) : (
-          <Tooltip
-            label={appshell.child.navbar ? 'Collapse' : 'Expand'}
-            position="right"
-          >
-            <DrawerAppNavbar>
-              <Group>
-                <ActionIcon
-                  variant="subtle"
-                  color="pri.5"
-                  aria-label={appshell.child.navbar ? 'Collapse' : 'Expand'}
-                  onClick={() => {
-                    if (mobile) return;
-                    if (!appshell) return;
-
-                    handleAppshellChange({
-                      ...appshell,
-                      child: {
-                        ...appshell.child,
-                        navbar: !appshell?.child.navbar,
-                      },
-                    });
-                  }}
-                  size={ICON_WRAPPER_SIZE}
-                >
-                  <states.iconLeft
-                    size={ICON_SIZE}
-                    stroke={ICON_STROKE_WIDTH}
-                  />
-                </ActionIcon>
-              </Group>
-            </DrawerAppNavbar>
-          </Tooltip>
+          <DrawerAppNavbar>
+            <ButtonAppshellNavbar props={{ options: { mobile } }} />
+          </DrawerAppNavbar>
         )}
 
         <Group gap={5} hiddenFrom="xs">
