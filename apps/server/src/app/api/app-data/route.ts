@@ -7,6 +7,7 @@
 
 import prisma from '@repo/libraries/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { SyncStatus } from '@repo/types/models/enums';
 
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
@@ -125,11 +126,15 @@ export async function POST(request: NextRequest) {
 
       const startIdx = allOperations.length;
 
-      // Handle Deletions
+      // Handle Soft Deletions
       if (data.deletedIds?.length) {
         allOperations.push(
-          model.deleteMany({
+          model.updateMany({
             where: { id: { in: data.deletedIds } },
+            data: {
+              sync_status: SyncStatus.DELETED, // Ensure this matches your SyncStatus enum string
+              updated_at: new Date(), // Critical: must be "now" to override other devices
+            },
           })
         );
       }
