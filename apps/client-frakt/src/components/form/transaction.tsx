@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import {
   IconArrowsTransferUpDown,
-  IconCalendarClock,
+  IconCalendar,
   IconCashBanknote,
   IconCoins,
   IconLabel,
@@ -88,6 +88,19 @@ export default function Transaction({
               },
             ]}
             {...form.getInputProps('type')}
+          />
+        </GridCol>
+
+        <GridCol span={12}>
+          <DateTimePicker
+            required
+            label={mobile ? 'Entry date' : undefined}
+            aria-label="Entry date"
+            placeholder="Entry date"
+            leftSection={
+              <IconCalendar size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            }
+            {...form.getInputProps('created_at')}
           />
         </GridCol>
 

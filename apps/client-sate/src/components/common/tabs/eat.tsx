@@ -34,7 +34,7 @@ import { generateUUID } from '@repo/utilities/generators';
 export default function Eat({
   props,
 }: {
-  props: { form: FormEat; diaryDate?: string };
+  props: { form: FormEat; diaryDate?: Date };
 }) {
   return (
     <Tabs defaultValue="foods">
@@ -74,7 +74,7 @@ export default function Eat({
 function FoodsPartial({
   props,
 }: {
-  props: { formEat: FormEat; diaryDate?: string };
+  props: { formEat: FormEat; diaryDate?: Date };
 }) {
   const { foods } = useStoreFood();
 
@@ -95,7 +95,7 @@ function FoodsPartial({
           <Stack gap={0}>
             {sortArray(
               foods,
-              (i) => new Date(i.updated_at),
+              (i) => new Date(i.created_at),
               Order.DESCENDING
             ).map((f, i) => (
               <Stack gap={0} key={f.id}>
@@ -125,7 +125,7 @@ function FoodsPartial({
 function MealsPartial({
   props,
 }: {
-  props: { formEat: FormEat; diaryDate?: string };
+  props: { formEat: FormEat; diaryDate?: Date };
 }) {
   const { meals } = useStoreMeal();
   const { servings } = useStoreServing();
@@ -151,7 +151,7 @@ function MealsPartial({
           <Stack gap={0}>
             {sortArray(
               meals,
-              (i) => new Date(i.updated_at),
+              (i) => new Date(i.created_at),
               Order.DESCENDING
             ).map((m, i) => (
               <Stack gap={0} key={m.id}>

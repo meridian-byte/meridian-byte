@@ -28,7 +28,7 @@ export default function Accounts() {
         <Stack gap={0}>
           {sortArray(
             accounts,
-            (i) => new Date(i.updated_at),
+            (i) => new Date(i.created_at),
             Order.DESCENDING
           ).map((acc, i) => (
             <Stack gap={0} key={acc.id}>

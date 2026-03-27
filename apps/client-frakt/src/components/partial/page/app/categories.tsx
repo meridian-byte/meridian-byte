@@ -28,7 +28,7 @@ export default function Categories() {
         <Stack gap={0}>
           {sortArray(
             categories,
-            (i) => new Date(i.updated_at),
+            (i) => new Date(i.created_at),
             Order.DESCENDING
           ).map((c, i) => (
             <Stack gap={0} key={c.id}>

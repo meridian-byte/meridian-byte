@@ -64,7 +64,7 @@ export default function Transactions() {
           <Stack gap={0}>
             {sortArray(
               todaysTransactions,
-              (i) => new Date(i.updated_at),
+              (i) => new Date(i.created_at),
               Order.DESCENDING
             ).map((acc, i) => (
               <Stack gap={5} key={acc.id}>

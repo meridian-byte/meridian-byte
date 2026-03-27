@@ -34,6 +34,19 @@ export default function Crud({
 
   const { servingDelete } = useServingActions();
 
+  const now = new Date();
+  const inputDate = new Date(props?.created_at || now);
+
+  // retain day and date but update to current time
+  const computedDate = new Date(
+    inputDate.getFullYear(),
+    inputDate.getMonth(),
+    inputDate.getDate(),
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds()
+  );
+
   return (
     <>
       <Modal opened={opened} onClose={close}>
@@ -45,7 +58,17 @@ export default function Crud({
           <ScrollAreaAutosize mah={400} scrollbars={'y'}>
             <Box p={'sm'}>
               <FormServing
-                props={{ defaultValues: props, options, close, formEat }}
+                props={{
+                  defaultValues: {
+                    ...props,
+                    created_at: props?.updated_at
+                      ? props.created_at
+                      : computedDate,
+                  },
+                  options,
+                  close,
+                  formEat,
+                }}
               />
             </Box>
           </ScrollAreaAutosize>

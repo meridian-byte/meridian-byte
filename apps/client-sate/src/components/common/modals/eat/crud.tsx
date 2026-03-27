@@ -47,8 +47,25 @@ export default function Crud({
 
   const eatId = useRef<string>(generateUUID());
 
+  const now = new Date();
+  const inputDate = new Date(props?.created_at || now);
+
+  // retain day and date but update to current time
+  const computedDate = new Date(
+    inputDate.getFullYear(),
+    inputDate.getMonth(),
+    inputDate.getDate(),
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds()
+  );
+
   const { form, submitted, handleSubmit } = useFormEat({
-    defaultValues: { ...props, id: eatId.current },
+    defaultValues: {
+      ...props,
+      created_at: props?.updated_at ? props?.created_at : computedDate,
+      id: eatId.current,
+    },
   });
 
   const eatenServings = form.values.servings;
@@ -84,7 +101,7 @@ export default function Crud({
                 <Stack gap={0}>
                   {sortArray(
                     eatenServings,
-                    (i) => new Date(i.updated_at),
+                    (i) => new Date(i.created_at),
                     Order.DESCENDING
                   ).map((s, i) => (
                     <Stack gap={0} key={s.id}>
@@ -108,7 +125,9 @@ export default function Crud({
               submitted,
               handleSubmit,
               close: handleClose,
-              diaryDate: props?.created_at as any,
+              diaryDate: new Date(
+                props?.updated_at ? props?.created_at || '' : computedDate
+              ),
             }}
           />
 

@@ -111,7 +111,7 @@ export default function Meal({
                   <Stack gap={0}>
                     {sortArray(
                       mealServings,
-                      (i) => new Date(i.updated_at),
+                      (i) => new Date(i.created_at),
                       Order.DESCENDING
                     ).map((s, i) => (
                       <Stack gap={0} key={s.id}>

@@ -24,7 +24,6 @@ export const useTransactionActions = () => {
     const newTransaction: TransactionGet = {
       id: params.id || id,
       type: (params.type || '') as any,
-      date: new Date(params.date || '').toISOString() as any,
       transfer: params.transfer || false,
       amount: Number(params.amount || 0).toFixed(2) as any,
       fees: Number(params.fees || 0).toFixed(2) as any,
@@ -66,7 +65,6 @@ export const useTransactionActions = () => {
 
     const newTransactionObject: TransactionGet = {
       ...newTransaction,
-      date: new Date(newTransaction.date || '').toISOString() as any,
       amount: Number(newTransaction.amount || 0).toFixed(2) as any,
       fees: Number(newTransaction.fees || 0).toFixed(2) as any,
       sync_status: SyncStatus.PENDING,

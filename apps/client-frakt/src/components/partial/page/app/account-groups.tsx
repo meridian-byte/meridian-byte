@@ -28,7 +28,7 @@ export default function AccountGroups() {
         <Stack gap={0}>
           {sortArray(
             accountGroups,
-            (i) => new Date(i.updated_at),
+            (i) => new Date(i.created_at),
             Order.DESCENDING
           ).map((ag, i) => (
             <Stack gap={0} key={ag.id}>
