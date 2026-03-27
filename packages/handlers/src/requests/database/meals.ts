@@ -11,12 +11,15 @@ import { MealCreate, MealRelations, MealUpdate } from '@repo/types/models/meal';
 
 const baseRequestUrl = `${API_URL}/meals`;
 
-export const mealsGet = async () => {
+export const mealsGet = async (params?: { userId?: string }) => {
   try {
-    const request = new Request(baseRequestUrl, {
-      method: 'GET',
-      headers: HEADERS.WITHOUT_BODY,
-    });
+    const request = new Request(
+      `${baseRequestUrl}?userId=${params?.userId || ''}`,
+      {
+        method: 'GET',
+        headers: HEADERS.WITHOUT_BODY,
+      }
+    );
 
     const response = await fetch(request);
 

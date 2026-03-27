@@ -11,12 +11,15 @@ import { CategoryRelations } from '@repo/types/models/category';
 
 const baseRequestUrl = `${API_URL}/categories`;
 
-export const categoriesGet = async () => {
+export const categoriesGet = async (params?: { userId?: string }) => {
   try {
-    const request = new Request(baseRequestUrl, {
-      method: 'GET',
-      headers: HEADERS.WITHOUT_BODY,
-    });
+    const request = new Request(
+      `${baseRequestUrl}?userId=${params?.userId || ''}`,
+      {
+        method: 'GET',
+        headers: HEADERS.WITHOUT_BODY,
+      }
+    );
 
     const response = await fetch(request);
 

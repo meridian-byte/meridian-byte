@@ -11,12 +11,15 @@ import { EatCreate, EatRelations, EatUpdate } from '@repo/types/models/eat';
 
 const baseRequestUrl = `${API_URL}/eats`;
 
-export const eatsGet = async () => {
+export const eatsGet = async (params?: { userId?: string }) => {
   try {
-    const request = new Request(baseRequestUrl, {
-      method: 'GET',
-      headers: HEADERS.WITHOUT_BODY,
-    });
+    const request = new Request(
+      `${baseRequestUrl}?userId=${params?.userId || ''}`,
+      {
+        method: 'GET',
+        headers: HEADERS.WITHOUT_BODY,
+      }
+    );
 
     const response = await fetch(request);
 

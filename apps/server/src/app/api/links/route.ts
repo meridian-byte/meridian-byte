@@ -12,9 +12,12 @@ import { LinkGet } from '@repo/types/models/link';
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const userId = request.nextUrl.searchParams.get('userId');
+
     const linkRecords = await prisma.link.findMany({
+      where: !userId ? undefined : { profile_id: userId },
       orderBy: { created_at: 'desc' },
     });
 

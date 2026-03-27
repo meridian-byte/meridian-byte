@@ -11,12 +11,15 @@ import { NoteCreate, NoteGet, NoteUpdate } from '@repo/types/models/note';
 
 const baseRequestUrl = `${API_URL}/notes`;
 
-export const notesGet = async () => {
+export const notesGet = async (params?: { userId?: string }) => {
   try {
-    const request = new Request(baseRequestUrl, {
-      method: 'GET',
-      headers: HEADERS.WITHOUT_BODY,
-    });
+    const request = new Request(
+      `${baseRequestUrl}?userId=${params?.userId || ''}`,
+      {
+        method: 'GET',
+        headers: HEADERS.WITHOUT_BODY,
+      }
+    );
 
     const response = await fetch(request);
 

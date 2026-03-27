@@ -262,7 +262,7 @@ export const useUserStatesStore = () => {
 type LoadStoreConfig<TItems = any, THookReturn = any> = {
   dataStore: (typeof STORE_NAME)[keyof typeof STORE_NAME];
   useStoreHook: () => THookReturn;
-  fetchItems: () => Promise<{ items: TItems[] }>;
+  fetchItems: (id?: string) => Promise<{ items: TItems[] }>;
   setState: (store: THookReturn, items: TItems[]) => void;
 };
 
@@ -270,79 +270,79 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
   categories: {
     dataStore: STORE_NAME.CATEGORIES,
     useStoreHook: useStoreCategory,
-    fetchItems: categoriesGet,
+    fetchItems: (id) => categoriesGet({ userId: id }),
     setState: (store, items) => store.setCategories(items),
   },
   budgets: {
     dataStore: STORE_NAME.BUDGETS,
     useStoreHook: useStoreBudget,
-    fetchItems: budgetsGet,
+    fetchItems: (id) => budgetsGet({ userId: id }),
     setState: (store, items) => store.setBudgets(items),
   },
   accounts: {
     dataStore: STORE_NAME.ACCOUNTS,
     useStoreHook: useStoreAccount,
-    fetchItems: accountsGet,
+    fetchItems: (id) => accountsGet({ userId: id }),
     setState: (store, items) => store.setAccounts(items),
   },
   accountGroups: {
     dataStore: STORE_NAME.ACCOUNT_GROUPS,
     useStoreHook: useStoreAccountGroup,
-    fetchItems: accountGroupsGet,
+    fetchItems: (id) => accountGroupsGet({ userId: id }),
     setState: (store, items) => store.setAccountGroups(items),
   },
   transactions: {
     dataStore: STORE_NAME.TRANSACTIONS,
     useStoreHook: useStoreTransaction,
-    fetchItems: transactionsGet,
+    fetchItems: (id) => transactionsGet({ userId: id }),
     setState: (store, items) => store.setTransactions(items),
   },
   notebooks: {
     dataStore: STORE_NAME.NOTEBOOKS,
     useStoreHook: useStoreNotebook,
-    fetchItems: notebooksGet,
+    fetchItems: (id) => notebooksGet({ userId: id }),
     setState: (store, items) => store.setNotebooks(items),
   },
   notes: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
-    fetchItems: notesGet,
+    fetchItems: (id) => notesGet({ userId: id }),
     setState: (store, items) => store.setNotes(items),
   },
   links: {
     dataStore: STORE_NAME.LINKS,
     useStoreHook: useStoreLink,
-    fetchItems: linksGet,
+    fetchItems: (id) => linksGet({ userId: id }),
     setState: (store, items) => store.setLinks(items),
   },
   foods: {
     dataStore: STORE_NAME.FOODS,
     useStoreHook: useStoreFood,
-    fetchItems: foodsGet,
+    fetchItems: (id) => foodsGet({ userId: id }),
     setState: (store, items) => store.setFoods(items),
   },
   meals: {
     dataStore: STORE_NAME.MEALS,
     useStoreHook: useStoreMeal,
-    fetchItems: mealsGet,
+    fetchItems: (id) => mealsGet({ userId: id }),
     setState: (store, items) => store.setMeals(items),
   },
   servings: {
     dataStore: STORE_NAME.SERVINGS,
     useStoreHook: useStoreServing,
-    fetchItems: servingsGet,
+    fetchItems: (id) => servingsGet({ userId: id }),
     setState: (store, items) => store.setServings(items),
   },
   eats: {
     dataStore: STORE_NAME.EATS,
     useStoreHook: useStoreEat,
-    fetchItems: eatsGet,
+    fetchItems: (id) => eatsGet({ userId: id }),
     setState: (store, items) => store.setEats(items),
   },
   masses: {
     dataStore: STORE_NAME.MASSES,
     useStoreHook: useStoreMass,
-    fetchItems: massesGet,
+    fetchItems: (id) => massesGet({ userId: id }),
     setState: (store, items) => store.setMasses(items),
   },
 } as const;
@@ -369,7 +369,7 @@ const useGenericLoader = <K extends LoadStoreKey>(params: {
         ? { items: [] }
         : noSession
           ? { items: [] }
-          : await config.fetchItems();
+          : await config.fetchItems(session.id);
 
       await loadInitialData({
         prevItemsRef,

@@ -12,9 +12,12 @@ import { NotebookGet } from '@repo/types/models/notebook';
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const userId = request.nextUrl.searchParams.get('userId');
+
     const notebookRecords = await prisma.notebook.findMany({
+      where: !userId ? undefined : { profile_id: userId },
       orderBy: { created_at: 'desc' },
     });
 

@@ -11,12 +11,15 @@ import { PostCreate, PostRelations, PostUpdate } from '@repo/types/models/post';
 
 const baseRequestUrl = `${API_URL}/posts`;
 
-export const postsGet = async () => {
+export const postsGet = async (params?: { userId?: string }) => {
   try {
-    const request = new Request(baseRequestUrl, {
-      method: 'GET',
-      headers: HEADERS.WITHOUT_BODY,
-    });
+    const request = new Request(
+      `${baseRequestUrl}?userId=${params?.userId || ''}`,
+      {
+        method: 'GET',
+        headers: HEADERS.WITHOUT_BODY,
+      }
+    );
 
     const response = await fetch(request);
 
