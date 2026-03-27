@@ -43,7 +43,7 @@ export default function Crud({
             </Box>
           </ScrollAreaAutosize>
 
-          {props?.created_at && (
+          {props?.updated_at && (
             <Box px={'sm'} pb={'sm'}>
               <Divider mb={'md'} />
 

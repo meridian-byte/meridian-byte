@@ -58,6 +58,7 @@ export default function Crud({
       <Modal
         opened={opened}
         onClose={() => {
+          form.setFieldValue('servings', []);
           form.reset();
           close();
         }}
@@ -111,7 +112,7 @@ export default function Crud({
             }}
           />
 
-          {props?.created_at && (
+          {props?.updated_at && (
             <Box px={'sm'} pb={'sm'}>
               <Divider mb={'md'} />
 
@@ -123,7 +124,7 @@ export default function Crud({
                 <ModalConfirm
                   props={{
                     onConfirm: () => {
-                      if (props.created_at) {
+                      if (props.updated_at) {
                         eatDelete(props as EatGet);
                         close();
                       }
