@@ -5,6 +5,7 @@
     { "mode": "auto" },
 
     { "directory": "packages/client-web", "changeProcessCWD": true },
+    { "directory": "packages/client-frakt", "changeProcessCWD": true },
 
     { "directory": "packages/components", "changeProcessCWD": true },
     { "directory": "packages/constants", "changeProcessCWD": true },
@@ -15,5 +16,6 @@
     { "directory": "packages/services", "changeProcessCWD": true },
     { "directory": "packages/types", "changeProcessCWD": true },
     { "directory": "packages/utilities", "changeProcessCWD": true }
-  ]
+  ],
+  "prisma.pinToPrisma6": true
 }

@@ -1,0 +1,8 @@
+.card {
+  border-radius: var(--mantine-radius-md);
+  transition: 0.25s all ease;
+
+  @include mantine.hover {
+    background-color: var(--mantine-color-dark-light) !important;
+  }
+}

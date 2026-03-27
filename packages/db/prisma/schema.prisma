@@ -44,6 +44,32 @@ enum SyncStatus {
   DELETED
 }
 
+enum TransactionType {
+  CREDIT
+  DEBIT
+  TRANSFER
+}
+
+enum AccountType {
+  ASSET
+  LIABILITY
+}
+
+enum CategoryType {
+  BLOG
+  CREDIT
+  DEBIT
+}
+
+enum RecurringFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUALLY
+  ANNUALLY
+}
+
 // models
 
 model Profile {
@@ -56,8 +82,13 @@ model Profile {
   phone      String?
   role       Role    @default(USER)
 
-  posts    Post[]
-  comments Comment[]
+  posts         Post[]
+  comments      Comment[]
+  categories    Category[]
+  accountGroups AccountGroup[]
+  accounts      Account[]
+  transactions  Transaction[]
+  budgets       Budget[]
 
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
@@ -75,8 +106,6 @@ model Post {
   allow_comments Boolean @default(true)
   view_count     Int     @default(0)
 
-  status Status @default(DRAFT)
-
   profile     Profile?  @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id  String?
   category    Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
@@ -84,25 +113,33 @@ model Post {
 
   comments Comment[]
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(DRAFT)
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@unique([profile_id, title])
   @@map(name: "posts")
 }
 
 model Category {
-  id    String @id @default(uuid())
+  id    String       @id @default(uuid())
   title String
+  type  CategoryType @default(BLOG)
 
-  status Status @default(ACTIVE)
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
 
-  posts Post[]
+  posts        Post[]
+  transactions Transaction[]
+  budgets      Budget[]
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@unique([title])
   @@map(name: "categories")
@@ -114,17 +151,127 @@ model Comment {
   content    String
   comment_id String?
 
-  status Status @default(ACTIVE)
-
   post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
   post_id    String
   profile    Profile? @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id String?
 
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([name, content, post_id, profile_id])
+  @@map(name: "comments")
+}
+
+model AccountGroup {
+  id   String @id @default(cuid())
+  name String // e.g., 'Bank Accounts', 'Savings', 'Credit Cards'
+
+  status Status @default(DRAFT)
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  accounts Account[]
+
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
   sync_status SyncStatus @default(SYNCED)
 
-  @@unique([name, content, post_id, profile_id])
-  @@map(name: "comments")
+  @@unique([profile_id, name])
+  @@map(name: "account_groups")
+}
+
+model Account {
+  id            String      @id @default(cuid())
+  name          String // e.g., 'Chase Checking', 'Wallet Cash'
+  type          AccountType @default(ASSET)
+  balance       Decimal     @default("0.00") @db.Decimal(18, 2)
+  currency      String? // eg. Dollars, Euros, Shillings
+  currency_code String? // eg. USD, EUR, KES
+  description   String?
+
+  status Status @default(DRAFT)
+
+  profile    Profile      @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+  group      AccountGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  group_id   String
+
+  transactions Transaction[]
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@unique([profile_id, name, group_id])
+  @@map(name: "accounts")
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  type        TransactionType @default(DEBIT)
+  date        DateTime        @default(now())
+  amount      Decimal         @default("0.00") @db.Decimal(8, 2)
+  fees        Decimal         @default("0.00") @db.Decimal(8, 2)
+  description String?
+
+  status Status @default(DRAFT)
+
+  profile           Profile        @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id        String
+  account           Account        @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  account_id        String
+  category          Category       @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  category_id       String
+  recurring_rule    RecurringRule? @relation(fields: [recurring_rule_id], references: [id], onDelete: Cascade)
+  recurring_rule_id String?
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@map(name: "transactions")
+}
+
+model RecurringRule {
+  id        String              @id @default(cuid())
+  frequency RecurringFrequency?
+  weekdays  String? // 0 - monday, 6 - sunday. comma separated for multiples. eg. 0,4,6
+  months    String? // 0 - january, 12 - december. comma separated for multiples. eg. 5,7,11
+  interval  Int                 @default(1)
+  end       DateTime?
+
+  status Status @default(DRAFT)
+
+  transactions Transaction[]
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@map(name: "recurring_rules")
+}
+
+model Budget {
+  id    String   @id @default(cuid())
+  limit Decimal  @default("0.00") @db.Decimal(8, 2)
+  start DateTime // Start of the budget period (e.g., 2025-11-01)
+  end   DateTime // End of the budget period (e.g., 2025-11-30)
+
+  status Status @default(DRAFT)
+
+  profile     Profile  @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id  String
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  category_id String
+
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sync_status SyncStatus @default(SYNCED)
+
+  @@map(name: "budgets")
 }
