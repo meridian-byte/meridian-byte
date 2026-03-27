@@ -5,7 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-export const companyName = 'MetidianByte';
+export const companyName = 'MeridianByte';
 
 export const phones = {
   main: '(254) 123 456-789',
