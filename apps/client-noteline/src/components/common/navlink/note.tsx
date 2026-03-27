@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import Link from 'next/link';
-import { linkify } from '@repo/utilities/url';
+import { extractUuidFromParam, linkify } from '@repo/utilities/url';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
 import { NoteGet } from '@repo/types/models/note';
@@ -38,16 +38,15 @@ export default function Note({ props }: { props: { noteId?: string } }) {
   const desktop = useMediaQuery('(min-width: 62em)');
   const notes = useStoreNote((s) => s.notes);
 
-  const item = notes?.find((n) => n.id === props.noteId);
+  const note = notes?.find((n) => n.id === props.noteId);
   const childNotes = (notes || []).filter(
-    (cni) => cni.parent_note_id == props.noteId
+    (ni) => ni.parent_note_id == props.noteId
   );
 
   const pathname = usePathname();
   const router = useRouter();
 
-  const parentLink = `/app/n/${linkify(item?.title || '')}-${item?.id}`;
-  const [opened, setOpened] = useState(false);
+  const parentLink = `/app/n/${linkify(note?.title || '')}-${note?.id}`;
 
   function handleNavigate() {
     router.push(parentLink);
@@ -60,19 +59,27 @@ export default function Note({ props }: { props: { noteId?: string } }) {
     }
   }
 
+  const activeId = extractUuidFromParam(pathname);
+
+  const shouldBeOpen =
+    !!note?.id && !!activeId && isAncestor(note.id, activeId, notes || []);
+
+  const [opened, setOpened] = useState(shouldBeOpen);
+
   return (
-    <MenuNoteSide props={{ noteId: item?.id, options: { context: true } }}>
+    <MenuNoteSide props={{ noteId: note?.id, options: { context: true } }}>
       <NavLink
         component={Link}
         href={parentLink}
         onClick={(e) => e.preventDefault()}
         opened={childNotes.length ? opened : undefined}
-        active={!item ? false : pathname.includes(item.id)}
+        active={!note ? false : pathname.includes(note.id)}
         childrenOffset={8}
+        mt={2}
         classNames={classes}
         label={
           <NoteLabel
-            item={item}
+            item={note}
             link={parentLink}
             hasChildren={!!childNotes.length}
             opened={opened}
@@ -201,4 +208,19 @@ function NoteLabel({
       </GridCol>
     </Grid>
   );
+}
+
+function isAncestor(
+  noteId: string,
+  activeId: string,
+  notes: NoteGet[]
+): boolean {
+  let current = notes.find((n) => n.id === activeId);
+
+  while (current?.parent_note_id) {
+    if (current.parent_note_id === noteId) return true;
+    current = notes.find((n) => n.id === current?.parent_note_id);
+  }
+
+  return false;
 }
