@@ -63,17 +63,23 @@ export default function Meal({ props }: { props: MealGet }) {
           <Group fz={'sm'} c={'dimmed'}>
             <Text inherit lineClamp={1}>
               <Text component="span" inherit>
-                C: <NumberFormatter value={totalMealNutrients.totalCarbs} />{' '}
+                <Text component="span" inherit c={'blue.6'}>
+                  <NumberFormatter value={totalMealNutrients.totalCarbs} />
+                </Text>{' '}
                 {getUnitShorts(WeightUnitType.GRAMS)}
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                P: <NumberFormatter value={totalMealNutrients.totalProtein} />{' '}
+                <Text component="span" inherit c={'green.6'}>
+                  <NumberFormatter value={totalMealNutrients.totalProtein} />
+                </Text>{' '}
                 {getUnitShorts(WeightUnitType.GRAMS)}
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                F: <NumberFormatter value={totalMealNutrients.totalFat} />{' '}
+                <Text component="span" inherit c={'yellow.6'}>
+                  <NumberFormatter value={totalMealNutrients.totalFat} />
+                </Text>{' '}
                 {getUnitShorts(WeightUnitType.GRAMS)}
               </Text>
             </Text>
