@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActionIcon,
   Box,
@@ -11,7 +11,7 @@ import {
   Stack,
   Tooltip,
 } from '@mantine/core';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMediaQuery } from '@mantine/hooks';
 import Link from 'next/link';
 import {
@@ -33,9 +33,10 @@ import { useStoreNotebook } from '@/libraries/zustand/stores/notebook';
 import { AppShell } from '@repo/types/components';
 import { setCookieClient } from '@repo/utilities/cookie-client';
 import { COOKIE_NAME } from '@repo/constants/names';
+import { getUrlParam } from '@repo/utilities/url';
 
 export default function Folders() {
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { appshell, setAppShell } = useStoreAppShell();
   const desktop = useMediaQuery('(min-width: 62em)');
   const { notes } = useStoreNote();
@@ -61,6 +62,17 @@ export default function Folders() {
     setNotebookEditingState,
   } = useNotebookActions();
 
+  const [paramNoteId, setParamNoteId] = useState('');
+
+  useEffect(() => {
+    if (!notebooks || !notes) return;
+
+    const paramNoteId = getUrlParam('noteId');
+    if (!paramNoteId) return;
+
+    setParamNoteId(paramNoteId as string);
+  }, [notebooks, notes, searchParams]);
+
   const handleAppshellChange = (params: AppShell) => {
     if (!appshell) return;
 
@@ -84,7 +96,7 @@ export default function Folders() {
         <NavLink
           component={Link}
           href={`/app?noteId=${item.id}`}
-          active={pathname.includes(item.id)}
+          active={paramNoteId === item.id}
           label={
             <InputTextRename
               ref={(el) => {
@@ -191,6 +203,7 @@ export default function Folders() {
           <>
             <AccordionNotebooks
               props={{
+                editing: notebookEditing,
                 noteComponent: (note) => <NoteComponent item={note} />,
                 inputComponent: (notebook) => (
                   <InputTextRename

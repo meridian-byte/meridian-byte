@@ -15,6 +15,12 @@ export default function Search({
       value={props.value}
       onChange={(e) => props.setValue(e.currentTarget.value)}
       variant="filled"
+      styles={{
+        input: {
+          backgroundColor: 'var(--mantine-color-dark-9)',
+          fontWeight: 500,
+        },
+      }}
       aria-label="Search notes"
       placeholder="Search notes"
       rightSection={
