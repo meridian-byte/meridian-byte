@@ -1,0 +1,18 @@
+/**
+ * @template-source next-template
+ * @template-sync auto
+ * @description This file originates from the base template repository.
+ * Do not modify unless you intend to backport changes to the template.
+ */
+
+.root {
+  max-width: var(--mantine-breakpoint-xl) !important;
+
+  @include mantine.larger-than(mantine.$mantine-breakpoint-sm) {
+    padding: 0 var(--mantine-spacing-xl) !important;
+  }
+
+  @include mantine.larger-than(mantine.$mantine-breakpoint-xl) {
+    padding: 0 calc(var(--mantine-spacing-xl) * 2) !important;
+  }
+}
