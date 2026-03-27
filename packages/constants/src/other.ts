@@ -19,3 +19,17 @@ const WITH_BODY: HeadersInit = {
 };
 
 export const HEADERS = { WITHOUT_BODY, WITH_BODY };
+
+export const COLOR_CODES = {
+  FOOD: {
+    CARBS: 'blue',
+    PROTEINS: 'green',
+    FATS: 'yellow',
+    KCAL: 'violet',
+  },
+  MASSES: {
+    FAT: 'yellow',
+    MUSCLE: 'grape',
+    BMI: 'cyan',
+  },
+};

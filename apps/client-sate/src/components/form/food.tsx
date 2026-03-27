@@ -29,6 +29,7 @@ import { capitalizeWords } from '@repo/utilities/string';
 import { FoodGet } from '@repo/types/models/food';
 import { useMediaQuery } from '@mantine/hooks';
 import { WeightUnitType } from '@repo/types/models/enums';
+import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Food({
   props,
@@ -139,7 +140,7 @@ export default function Food({
             placeholder="Carbs"
             leftSection={
               <Tooltip label="Carbs">
-                <Group c="blue.6">
+                <Group c={`${COLOR_CODES.FOOD.CARBS}.6`}>
                   <IconWheat size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>
@@ -156,7 +157,7 @@ export default function Food({
             placeholder="Protein"
             leftSection={
               <Tooltip label="Protein">
-                <Group c="green.6">
+                <Group c={`${COLOR_CODES.FOOD.PROTEINS}.6`}>
                   <IconEggs size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>
@@ -173,7 +174,7 @@ export default function Food({
             placeholder="Fat"
             leftSection={
               <Tooltip label="Fat">
-                <Group c="yellow.6">
+                <Group c={`${COLOR_CODES.FOOD.FATS}.6`}>
                   <IconDroplet size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>
@@ -190,7 +191,7 @@ export default function Food({
             placeholder="Kcal"
             leftSection={
               <Tooltip label="Calories (Kcal)">
-                <Group c={'red.6'}>
+                <Group c={`${COLOR_CODES.FOOD.KCAL}.6`}>
                   <IconFlame size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </Group>
               </Tooltip>

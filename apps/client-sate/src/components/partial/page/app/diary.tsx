@@ -138,23 +138,26 @@ function DiaryOverview({
   const overview = [
     {
       value: totalEatenNutrients.totalCarbs,
+      color: `${COLOR_CODES.FOOD.CARBS}.6`,
       label: 'Carbs',
       color: 'blue',
     },
     {
       value: totalEatenNutrients.totalProtein,
+      color: `${COLOR_CODES.FOOD.PROTEINS}.6`,
       label: 'Protein',
       color: 'green',
     },
     {
       value: totalEatenNutrients.totalFat,
+      color: `${COLOR_CODES.FOOD.FATS}.6`,
       label: 'Fat',
       color: 'yellow',
     },
     {
       value: totalEatenNutrients.totalKcal,
       label: 'Calories',
-      color: 'red',
+      color: `${COLOR_CODES.FOOD.KCAL}.6`,
     },
   ];
 

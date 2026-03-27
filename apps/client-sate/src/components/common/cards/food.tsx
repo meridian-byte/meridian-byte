@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import { FoodGet } from '@repo/types/models/food';
 import { getFoodServingTotals, getUnitShorts } from '@/utilities/string';
+import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Food({ props }: { props: FoodGet }) {
   const totalNutrients = getFoodServingTotals({
@@ -33,21 +34,29 @@ export default function Food({ props }: { props: FoodGet }) {
           <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
             <Text inherit lineClamp={1}>
               <Text component="span" inherit>
-                <Text component="span" inherit c={'blue.6'}>
+                <Text
+                  component="span"
+                  inherit
+                  c={`${COLOR_CODES.FOOD.CARBS}.6`}
+                >
                   <NumberFormatter value={totalNutrients.totalCarbs} />
                 </Text>{' '}
                 {getUnitShorts(props.per_unit)}
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                <Text component="span" inherit c={'green.6'}>
+                <Text
+                  component="span"
+                  inherit
+                  c={`${COLOR_CODES.FOOD.PROTEINS}.6`}
+                >
                   <NumberFormatter value={totalNutrients.totalProtein} />
                 </Text>{' '}
                 {getUnitShorts(props.per_unit)}
               </Text>
               ,{' '}
               <Text component="span" inherit>
-                <Text component="span" inherit c={'yellow.6'}>
+                <Text component="span" inherit c={`${COLOR_CODES.FOOD.FATS}.6`}>
                   <NumberFormatter value={totalNutrients.totalFat} />
                 </Text>{' '}
                 {getUnitShorts(props.per_unit)}
