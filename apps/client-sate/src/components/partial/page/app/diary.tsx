@@ -5,6 +5,7 @@ import LayoutSection from '@repo/components/layout/section';
 import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import {
   ActionIcon,
+  Box,
   Center,
   Divider,
   Group,
@@ -72,7 +73,7 @@ export default function Diary() {
             </Text>
           </Center>
         ) : (
-          <Stack gap={0}>
+          <Stack gap={0} mih={'200vh'}>
             {sortArray(
               eatenServings,
               (i) => new Date(i.updated_at),
@@ -97,32 +98,45 @@ function DiaryHeader({ props }: { props: { entryDate: EntryDateReturnType } }) {
   const { syncStatus } = useStoreSyncStatus();
 
   return (
-    <LayoutSection id="layout-header-diarys" containerized={'xs'} padded={'xs'}>
-      <Group justify="space-between">
-        <Title order={1} fz={'md'} fw={500}>
-          Food Entries
-        </Title>
+    <Box
+      bg={'var(--mantine-color-body)'}
+      pos={'sticky'}
+      top={0}
+      style={{ zIndex: 1 }}
+    >
+      <LayoutSection
+        id="layout-header-diarys"
+        containerized={'xs'}
+        padded={'xs'}
+      >
+        <Group justify="space-between">
+          <Title order={1} fz={'md'} fw={500}>
+            Food Entries
+          </Title>
 
-        <Group justify="end" wrap="nowrap" gap={5}>
-          <IndicatorNetworkStatus props={{ syncStatus }} />
+          <Group justify="end" wrap="nowrap" gap={5}>
+            <IndicatorNetworkStatus props={{ syncStatus }} />
 
-          <ModalEatCrud
-            props={{
-              created_at: (props.entryDate.date ||
-                new Date().toISOString()) as any,
-            }}
-          >
-            <Group>
-              <Tooltip label={'Add Food Entry'}>
-                <ActionIcon size={ICON_WRAPPER_SIZE} variant="light">
-                  <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </ModalEatCrud>
+            <ModalEatCrud
+              props={{
+                created_at: (props.entryDate.date ||
+                  new Date().toISOString()) as any,
+              }}
+            >
+              <Group>
+                <Tooltip label={'Add Food Entry'}>
+                  <ActionIcon size={ICON_WRAPPER_SIZE} variant="light">
+                    <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </ModalEatCrud>
+          </Group>
         </Group>
-      </Group>
-    </LayoutSection>
+      </LayoutSection>
+
+      <Divider />
+    </Box>
   );
 }
 

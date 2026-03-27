@@ -80,7 +80,7 @@ function FoodsPartial({
 
   return (
     <ScrollAreaAutosize h={200} scrollbars={'y'}>
-      <Box px={'xs'}>
+      <Box>
         {foods === undefined ? (
           <Center py={SECTION_SPACING / 2}>
             <Loader />
@@ -136,7 +136,7 @@ function MealsPartial({
 
   return (
     <ScrollAreaAutosize h={200} scrollbars={'y'}>
-      <Box px={'xs'}>
+      <Box>
         {meals === undefined ? (
           <Center py={SECTION_SPACING / 2}>
             <Loader />

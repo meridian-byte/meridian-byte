@@ -6,6 +6,7 @@ import {
   AppShellFooter,
   AppShellHeader,
   AppShellMain,
+  ScrollArea,
 } from '@mantine/core';
 import HeaderApp from '../headers/app';
 import FooterApp from '../footers/app';
@@ -17,7 +18,15 @@ export default function App({ children }: { children: React.ReactNode }) {
         <HeaderApp />
       </AppShellHeader>
 
-      <AppShellMain>{children}</AppShellMain>
+      <AppShellMain>
+        <ScrollArea
+          h={`calc(100vh - ${60 + 72}px)`}
+          scrollbars={'y'}
+          styles={{ thumb: { zIndex: 1 } }}
+        >
+          {children}
+        </ScrollArea>
+      </AppShellMain>
 
       <AppShellFooter>
         <FooterApp />

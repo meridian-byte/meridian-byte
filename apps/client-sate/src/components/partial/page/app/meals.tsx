@@ -14,7 +14,7 @@ export default function Meals() {
   const { meals } = useStoreMeal();
 
   return (
-    <LayoutSection id="app-home" containerized={'xs'} padded={'md'}>
+    <LayoutSection id="app-home" containerized={'xs'}>
       {meals === undefined ? (
         <Center py={SECTION_SPACING}>
           <Loader />
