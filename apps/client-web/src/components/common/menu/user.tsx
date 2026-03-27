@@ -36,7 +36,7 @@ export default function User({ children }: { children: React.ReactNode }) {
       transitionProps={{ transition: 'pop-top-right', duration: 100 }}
       withArrow
       arrowOffset={16}
-      disabled={!session}
+      disabled={!session?.email}
       styles={{ dropdown: { overflow: 'hidden' } }}
     >
       <MenuTarget>

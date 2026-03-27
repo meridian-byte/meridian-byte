@@ -15,8 +15,9 @@ export default function Store({ children }: { children: React.ReactNode }) {
 
   useSessionStore({ options: { clientOnly: true } });
   // useUserRoleStore();
+  // useThemeStore()
   // useAppshellStore();
-  useStoreData();
+  useStoreData({ options: { clientOnly: true } });
 
   return <div>{children}</div>;
 }

@@ -8,13 +8,19 @@
  */
 
 import React from 'react';
-import { useAppshellStore, useSessionStore, useStoreData } from '@/hooks/store';
+import {
+  useAppshellStore,
+  useSessionStore,
+  useStoreData,
+  useThemeStore,
+} from '@/hooks/store';
 
 export default function Store({ children }: { children: React.ReactNode }) {
   // initialize stores
 
   useSessionStore({ options: { clientOnly: true } });
   // useUserRoleStore();
+  useThemeStore();
   useAppshellStore();
   useStoreData({ options: { clientOnly: true } });
 
