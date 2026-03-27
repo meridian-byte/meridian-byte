@@ -192,7 +192,7 @@ export default function Folders() {
         </Group>
       </Box>
 
-      <Stack mt={`xs`} gap={5} style={{ zIndex: 0 }}>
+      <Stack gap={5} style={{ zIndex: 0 }}>
         {notes === undefined || notebooks === undefined ? (
           <>
             <Skeleton h={35} />

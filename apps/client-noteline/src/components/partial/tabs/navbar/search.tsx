@@ -47,7 +47,7 @@ export default function Search() {
         </Box>
       </Box>
 
-      <Stack mt={`xs`} gap={5} style={{ zIndex: 0 }}>
+      <Stack gap={5} style={{ zIndex: 0 }}>
         {notes === undefined ? (
           <>
             <Skeleton h={35} />
