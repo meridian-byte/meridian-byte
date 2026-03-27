@@ -79,7 +79,6 @@ export default function Notebooks({
   return (
     <Accordion
       multiple
-      transitionDuration={0.25}
       styles={{
         content: { padding: 0 },
         item: { padding: 0, borderWidth: 0 },
