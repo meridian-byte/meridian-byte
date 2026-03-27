@@ -56,4 +56,8 @@ export const STORE_NAME = {
   CHATS: 'chats',
   CHAT_MESSAGES: 'chat-messages',
   CUSTOMIZATIONS: 'customizations',
+  TASKS: 'tasks',
+  REMINDERS: 'reminders',
+  VIEWS: 'views',
+  NOTIFICATIONS: 'notifications',
 };

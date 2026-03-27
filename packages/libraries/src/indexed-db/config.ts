@@ -78,5 +78,21 @@ export const config: DBConfig = {
       name: STORE_NAME.CUSTOMIZATIONS,
       keyPath: 'id',
     },
+    {
+      name: STORE_NAME.TASKS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.REMINDERS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.VIEWS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.NOTIFICATIONS,
+      keyPath: 'id',
+    },
   ],
 };

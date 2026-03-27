@@ -57,6 +57,7 @@ export const APP_NAME = {
   MAI: 'Meridian AI',
   NOTELINE: 'Noteline',
   SATE: 'Sate',
+  STRIDE: 'Stride',
   WEB: COMPANY_NAME,
 };
 

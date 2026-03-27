@@ -72,7 +72,19 @@ enum EatTime {
   DINNER
 }
 
-enum RecurringFrequency {
+enum ChatMessageRole {
+  USER
+  ASSISTANT
+}
+
+enum Priority {
+  URGENT_IMPORTANT
+  NOT_URGENT_IMPORTANT
+  URGENT_UNIMPORTANT
+  NOT_URGENT_UNIMPORTANT
+}
+
+enum Frequency {
   DAILY
   WEEKLY
   MONTHLY
@@ -81,9 +93,21 @@ enum RecurringFrequency {
   ANNUALLY
 }
 
-enum ChatMessageRole {
-  USER
-  ASSISTANT
+enum ViewType {
+  LIST
+  BOARD
+  CALENDAR
+}
+
+enum GroupSort {
+  PRIORITY
+  CATEGORY
+  DATE
+}
+
+enum SortDirection {
+  ASCENDING
+  DESCENDING
 }
 
 // models
@@ -98,23 +122,28 @@ model Profile {
   phone      String?
   role       Role    @default(USER)
 
-  posts          Post[]
-  comments       Comment[]
-  categories     Category[]
-  accountGroups  AccountGroup[]
-  accounts       Account[]
-  transactions   Transaction[]
-  budgets        Budget[]
-  food           Food[]
-  meals          Meal[]
-  servings       Serving[]
-  eats           Eat[]
-  masses         Mass[]
-  notes          Note[]
-  links          Link[]
-  chats          Chat[]
-  chat_messages  ChatMessage[]
-  customizations Customization[]
+  posts           Post[]
+  comments        Comment[]
+  categories      Category[]
+  accountGroups   AccountGroup[]
+  accounts        Account[]
+  transactions    Transaction[]
+  budgets         Budget[]
+  food            Food[]
+  meals           Meal[]
+  servings        Serving[]
+  eats            Eat[]
+  masses          Mass[]
+  notes           Note[]
+  links           Link[]
+  chats           Chat[]
+  chat_messages   ChatMessage[]
+  customizations  Customization[]
+  tasks           Task[]
+  reminders       Reminder[]
+  views           View[]
+  notifications   Notification[]
+  recurring_rules RecurringRule[]
 
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
@@ -150,9 +179,10 @@ model Post {
 }
 
 model Category {
-  id    String       @id @default(uuid())
-  title String
-  type  CategoryType @default(BLOG)
+  id                 String       @id @default(uuid())
+  title              String
+  parent_category_id String?
+  type               CategoryType @default(BLOG)
 
   profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id String
@@ -166,6 +196,7 @@ model Category {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  tasks      Task[]
 
   @@unique([title])
   @@map(name: "categories")
@@ -264,14 +295,19 @@ model Transaction {
 }
 
 model RecurringRule {
-  id        String              @id @default(cuid())
-  frequency RecurringFrequency?
-  weekdays  String? // 0 - monday, 6 - sunday. comma separated for multiples. eg. 0,4,6
-  months    String? // 0 - january, 12 - december. comma separated for multiples. eg. 5,7,11
-  interval  Int                 @default(1)
+  id        String    @id @default(uuid())
+  frequency Frequency
+  interval  Int       @default(1)
+  end_date  DateTime?
+  weekdays  String[] // 0 - monday, 6 - sunday. comma separated for multiples. eg. 0,4,6
+  months    String[] // 0 - january, 12 - december. comma separated for multiples. eg. 5,7,11
   end       DateTime?
 
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
   transactions Transaction[]
+  tasks        Task[]
 
   status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
@@ -512,4 +548,91 @@ model Customization {
   updated_at DateTime @updatedAt
 
   @@map("customizations")
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  title       String
+  complete    Boolean   @default(false)
+  description String?
+  due_date    DateTime?
+  priority    Priority  @default(NOT_URGENT_UNIMPORTANT)
+
+  profile           Profile        @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id        String
+  category          Category?      @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  category_id       String?
+  recurring_rule    RecurringRule? @relation(fields: [recurring_rule_id], references: [id])
+  recurring_rule_id String?
+
+  reminders Reminder[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "tasks")
+}
+
+model Reminder {
+  id        String   @id @default(uuid())
+  remind_at DateTime
+  sent      Boolean  @default(false)
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+  task       Task    @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  task_id    String
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "reminders")
+}
+
+model View {
+  id              String         @id @default(uuid())
+  title           String
+  view            ViewType?      @default(LIST)
+  sort_by         GroupSort?     @default(DATE)
+  sort_direction  SortDirection? @default(DESCENDING)
+  group_by        GroupSort?
+  category_filter String?
+  priority_filter Priority?
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "views")
+}
+
+model Notification {
+  id             String  @id @default(uuid())
+  endpoint       String
+  endpointId     String
+  expirationTime BigInt?
+  p256dh         String
+  auth           String
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "notifications")
 }
