@@ -1,41 +1,80 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useSearchParams } from 'next/navigation';
 import PartialPageHome from './home';
 import PartialPageNote from './note';
-import { NoteGet } from '@repo/types/models/note';
 import HeaderAppNoteDetails from '@/components/layout/headers/app/note-details';
+import {
+  Button,
+  Center,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  SECTION_SPACING,
+} from '@repo/constants/sizes';
+import { IconArrowLeft } from '@tabler/icons-react';
+import NextLink from '@repo/components/common/anchor/next-link';
 
 export default function Home() {
   const searchParams = useSearchParams();
   const noteId = searchParams.get('noteId');
 
-  const notes = useStoreNote((s) => s.notes);
-
-  const [activeNote, setActiveNote] = useState<NoteGet | undefined>(undefined);
-
-  useEffect(() => {
-    if (!notes) return;
-    if (!noteId) return;
-
-    const note = notes.find((n) => n.id == noteId);
-    if (note) setActiveNote(note);
-  }, [notes, noteId, searchParams]);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id == noteId));
 
   return (
     <>
-      <HeaderAppNoteDetails props={noteId ? activeNote : undefined} />
+      {note && <HeaderAppNoteDetails props={note} />}
 
       {!noteId ? (
         <PartialPageHome />
-      ) : notes === undefined ? (
-        <>loading</>
-      ) : !activeNote ? (
-        <>note not found</>
+      ) : note === undefined ? (
+        <Center py={SECTION_SPACING * 2} mih={'75vh'}>
+          <Stack align="center" ta={'center'}>
+            <Loader size={'sm'} />
+          </Stack>
+        </Center>
+      ) : !note ? (
+        <Center py={SECTION_SPACING * 2} mih={'75vh'}>
+          <Stack align="center" ta={'center'}>
+            <div>
+              <Title order={3} fz={'md'} fw={500}>
+                Note Not Found
+              </Title>
+
+              <Text inherit c={'dimmed'} fz={'sm'}>
+                The note has been moved or deleted.
+              </Text>
+            </div>
+
+            <Group>
+              <NextLink href="/app">
+                <Button
+                  size="xs"
+                  color="dark"
+                  variant="light"
+                  leftSection={
+                    <IconArrowLeft
+                      size={ICON_SIZE - 4}
+                      stroke={ICON_STROKE_WIDTH}
+                    />
+                  }
+                >
+                  Back to Home
+                </Button>
+              </NextLink>
+            </Group>
+          </Stack>
+        </Center>
       ) : (
-        <PartialPageNote props={{ note: activeNote }} />
+        <PartialPageNote props={{ note }} />
       )}
     </>
   );

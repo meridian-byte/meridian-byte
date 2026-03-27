@@ -5,10 +5,11 @@ import {
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
-import { ActionIcon, Flex, Group, Tooltip } from '@mantine/core';
+import { ActionIcon, Flex, Group, Skeleton, Tooltip } from '@mantine/core';
 import {
   IconCalendarEvent,
   IconFileSearch,
+  IconHome,
   IconTerminal,
 } from '@tabler/icons-react';
 import React from 'react';
@@ -20,6 +21,9 @@ import { useRouter } from 'next/navigation';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 import { useMediaQuery } from '@mantine/hooks';
+import NextLink from '@repo/components/common/anchor/next-link';
+import { useStoreTheme } from '@repo/libraries/zustand/stores/theme';
+import IndicatorTheme from '@repo/components/common/indicators/theme';
 
 export default function Main({
   props,
@@ -30,6 +34,8 @@ export default function Main({
   const notes = useStoreNote((s) => s.notes);
   const { noteCreate } = useNoteActions();
   const mobile = useMediaQuery('(max-width: 36em)');
+  const theme = useStoreTheme((s) => s.theme);
+  const setTheme = useStoreTheme((s) => s.setTheme);
 
   const handleCreate = () => {
     if (!notes) return;
@@ -59,6 +65,14 @@ export default function Main({
     >
       <ButtonAppshellNavbar props={{ options: { mobile: !mobile } }} />
 
+      <NextLink href="/app">
+        <Tooltip label={'Go to home page'} position={'right'}>
+          <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+            <IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </Tooltip>
+      </NextLink>
+
       <ModalSearch>
         <Group>
           <Tooltip label={'Open quick switcher'} position={'right'}>
@@ -69,15 +83,19 @@ export default function Main({
         </Group>
       </ModalSearch>
 
-      <Tooltip
-        label={"Open today's daily note"}
-        position={'right'}
-        onClick={handleCreate}
-      >
-        <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
-          <IconCalendarEvent size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-        </ActionIcon>
-      </Tooltip>
+      {notes === undefined ? (
+        <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
+      ) : (
+        <Tooltip
+          label={"Open today's daily note"}
+          position={'right'}
+          onClick={handleCreate}
+        >
+          <ActionIcon variant="subtle" size={ICON_WRAPPER_SIZE}>
+            <IconCalendarEvent size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </Tooltip>
+      )}
 
       <ModalCommands>
         <Group>
@@ -88,6 +106,16 @@ export default function Main({
           </Tooltip>
         </Group>
       </ModalCommands>
+
+      {theme === undefined ? (
+        <Skeleton w={ICON_WRAPPER_SIZE} h={ICON_WRAPPER_SIZE} />
+      ) : !theme ? (
+        <></>
+      ) : (
+        <IndicatorTheme
+          props={{ colorScheme: theme, setColorScheme: setTheme }}
+        />
+      )}
     </Flex>
   );
 }

@@ -2,12 +2,13 @@
 
 import React from 'react';
 import { SECTION_SPACING } from '@repo/constants/sizes';
-import { Stack } from '@mantine/core';
+import { Box } from '@mantine/core';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import LayoutSection from '@repo/components/layout/section';
 import EditorMain from '@repo/components/common/editors/main';
 import ParserHtml from '@repo/components/parsers/html';
 import { NoteGet } from '@repo/types/models/note';
+import InputTextEditorTitle from '@repo/components/common/inputs/text/editor/title';
 
 export default function Note({ props }: { props: { note: NoteGet } }) {
   const userStates = useStoreUserStates((s) => s.userStates);
@@ -18,19 +19,24 @@ export default function Note({ props }: { props: { note: NoteGet } }) {
       padded={SECTION_SPACING / 2}
       containerized={'md'}
     >
-      <Stack>
-        {userStates?.editing == true ? (
-          <EditorMain item={props.note} />
-        ) : (
-          <ParserHtml
-            props={{
-              html: props.note.content || '',
-              item: props.note,
-              options: { withTitle: true },
-            }}
-          />
-        )}
-      </Stack>
+      <div>
+        <InputTextEditorTitle item={props.note} />
+
+        <div>
+          {userStates?.editing == true ? (
+            <EditorMain item={props.note} />
+          ) : (
+            <Box p={'1rem'} mt={48 + 10}>
+              <ParserHtml
+                props={{
+                  html: props.note.content || '',
+                  item: props.note,
+                }}
+              />
+            </Box>
+          )}
+        </div>
+      </div>
     </LayoutSection>
   );
 }
