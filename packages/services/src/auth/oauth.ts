@@ -24,14 +24,13 @@ export const authOauth = async (params: { searchParams: URLSearchParams }) => {
   if (exchangeError) throw exchangeError;
 
   const nameSegments = segmentFullName(data.user.user_metadata.name || '');
-  const nameFromEmail = getEmailLocalPart(data.user.email || '');
 
   // create profile if doesn't exist
   const { profile, existed } = await profileCreate({
     id: data.user?.id,
     first_name: nameSegments.first,
     last_name: nameSegments.last,
-    user_name: linkify(`${nameFromEmail || ''}-${data.user.id}`),
+    user_name: linkify(data.user.email || ''),
     phone: data.user.phone || '',
     email: data.user.email || '',
     avatar: data.user.user_metadata.avatar_url || '',

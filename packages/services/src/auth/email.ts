@@ -46,7 +46,7 @@ export const authEmail = async (params: {
     id: session.user?.id || '',
     email: session.user?.email || '',
     first_name: nameFromEmail,
-    user_name: linkify(`${nameFromEmail || ''}-${session.user?.id || ''}`),
+    user_name: linkify(session.user?.email || ''),
   });
 
   const name = `${profile?.first_name} ${profile?.last_name || ''}`.trim();
