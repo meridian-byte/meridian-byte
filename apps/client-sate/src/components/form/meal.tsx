@@ -137,14 +137,14 @@ export default function Meal({
                 props={{ meal_id: props.defaultValues.id || '' }}
               >
                 <Group justify="end">
-                  <Button fullWidth variant="light">
+                  <Button fullWidth variant="light" size="xs">
                     Add Servings
                   </Button>
                 </Group>
               </ModalServingCrud>
             )}
 
-            <Button fullWidth type="submit" loading={submitted}>
+            <Button fullWidth type="submit" loading={submitted} size="xs">
               {submitted ? 'Saving' : 'Save'}
             </Button>
           </Group>

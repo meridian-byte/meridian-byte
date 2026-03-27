@@ -19,18 +19,18 @@ export default function Meal({ props }: { props: MealGet }) {
 
   return (
     <Card radius={0} bg={'transparent'} padding={0} py={5}>
-      <Group justify="space-between">
+      <Group justify="space-between" wrap="nowrap">
         <Stack gap={2}>
           <div>
-            <Title order={3} fz={'md'} fw={'normal'}>
+            <Title order={3} fz={'md'} fw={'normal'} lineClamp={1}>
               {props.name}
             </Title>
-            <Text component="span" inherit c={'dimmed'}>
+            <Text component="span" inherit c={'dimmed'} lineClamp={1}>
               {props.description}
             </Text>
           </div>
 
-          <Group fz={'sm'} c={'dimmed'}>
+          <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
             <Text inherit lineClamp={1}>
               <Text component="span" inherit>
                 <Text component="span" inherit c={'blue.6'}>
@@ -57,8 +57,17 @@ export default function Meal({ props }: { props: MealGet }) {
         </Stack>
 
         <Stack gap={0} align="end" ta={'end'}>
-          <Text inherit>
-            <NumberFormatter value={totalMealNutrients.totalKcal} /> Kcal
+          <Text inherit fz={{ base: 'sm', xs: 'md' }}>
+            <NumberFormatter value={totalMealNutrients.totalKcal} />
+          </Text>
+
+          <Text
+            inherit
+            fz={{ base: 'xs', xs: 'sm' }}
+            c={'dimmed'}
+            lineClamp={1}
+          >
+            Kcal
           </Text>
         </Stack>
       </Group>
