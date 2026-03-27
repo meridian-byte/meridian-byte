@@ -9,9 +9,13 @@ import {
   MenuDivider,
 } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
-import ModalAccountGroupList from '../modals/account-group/list';
-import ModalCategoryList from '../modals/category/list';
 import { navLinks } from '@/data/links';
+import ModalAccountGroupList from '@repo/components/common/modals/account-group/list';
+import ModalCategoryList from '@repo/components/common/modals/category/list';
+import HeaderCategories from '@/components/layout/headers/categories';
+import PartialCategories from '@/components/partial/page/app/categories';
+import HeaderAccountGroups from '@/components/layout/headers/accounts-groups';
+import PartialAccountGroups from '@/components/partial/page/app/account-groups';
 
 export default function Nav({ children }: { children: React.ReactNode }) {
   const accountGroupProps = {
@@ -31,7 +35,12 @@ export default function Nav({ children }: { children: React.ReactNode }) {
       </MenuTarget>
 
       <MenuDropdown>
-        <ModalAccountGroupList>
+        <ModalAccountGroupList
+          props={{
+            headerAccountGroups: <HeaderAccountGroups />,
+            partialAccountGroups: <PartialAccountGroups />,
+          }}
+        >
           <MenuItem
             leftSection={
               <accountGroupProps.icon
@@ -44,7 +53,12 @@ export default function Nav({ children }: { children: React.ReactNode }) {
           </MenuItem>
         </ModalAccountGroupList>
 
-        <ModalCategoryList>
+        <ModalCategoryList
+          props={{
+            headerCategories: <HeaderCategories />,
+            partialCategories: <PartialCategories />,
+          }}
+        >
           <MenuItem
             leftSection={
               <categoryProps.icon size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />

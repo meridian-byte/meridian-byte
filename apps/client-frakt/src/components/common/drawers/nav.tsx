@@ -4,8 +4,12 @@ import { useDisclosure } from '@mantine/hooks';
 import { Divider, Drawer, NavLink } from '@mantine/core';
 import { navLinks } from '@/data/links';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
-import ModalAccountGroupList from '../modals/account-group/list';
-import ModalCategoryList from '../modals/category/list';
+import ModalAccountGroupList from '@repo/components/common/modals/account-group/list';
+import ModalCategoryList from '@repo/components/common/modals/category/list';
+import HeaderCategories from '@/components/layout/headers/categories';
+import PartialCategories from '@/components/partial/page/app/categories';
+import HeaderAccountGroups from '@/components/layout/headers/accounts-groups';
+import PartialAccountGroups from '@/components/partial/page/app/account-groups';
 
 export default function Nav({ children }: { children: React.ReactNode }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -34,7 +38,12 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
 
   return (
     <div>
-      <ModalAccountGroupList>
+      <ModalAccountGroupList
+        props={{
+          headerAccountGroups: <HeaderAccountGroups />,
+          partialAccountGroups: <PartialAccountGroups />,
+        }}
+      >
         <NavLink
           label={accountGroupProps.label}
           onClick={props?.close}
@@ -47,7 +56,12 @@ export function NavComponent({ props }: { props?: { close?: () => void } }) {
         />
       </ModalAccountGroupList>
 
-      <ModalCategoryList>
+      <ModalCategoryList
+        props={{
+          headerCategories: <HeaderCategories />,
+          partialCategories: <PartialCategories />,
+        }}
+      >
         <NavLink
           label={categoryProps.label}
           onClick={props?.close}

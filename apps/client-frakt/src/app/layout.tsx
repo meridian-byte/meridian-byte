@@ -18,8 +18,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
-import { APP_NAME } from '@/data/constants';
-import { mantine } from '@/assets/styles';
+import { APP_DESC, APP_NAME } from '@repo/constants/app';
+import { mantine } from '@repo/constants/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 
 const geistSans = Geist({
@@ -33,8 +33,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: APP_NAME,
-  description: '',
+  title: APP_NAME.FRAKT,
+  description: APP_DESC.FRAKT,
 };
 
 export default async function RootLayout({
@@ -53,13 +53,13 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         {/* General Web App Metadata */}
-        <meta name="application-name" content={APP_NAME} />
+        <meta name="application-name" content={APP_NAME.FRAKT} />
         <meta name="theme-color" content="#b08e67" />
 
         {/* Apple Web App Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content={APP_NAME} />
+        <meta name="apple-mobile-web-app-title" content={APP_NAME.FRAKT} />
 
         {/* Misc. Mobile Enhancements */}
         <meta name="format-detection" content="telephone=no" />

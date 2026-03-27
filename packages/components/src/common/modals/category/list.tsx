@@ -10,8 +10,8 @@ export default function List({
   children,
 }: {
   props: {
-    headerCategory: React.ReactNode;
-    partialCategory: React.ReactNode;
+    headerCategories: React.ReactNode;
+    partialCategories: React.ReactNode;
   };
   children: React.ReactNode;
 }) {
@@ -21,11 +21,11 @@ export default function List({
     <>
       <Modal opened={opened} onClose={close}>
         <LayoutModal props={{ title: ``, close }}>
-          {props.headerCategory}
+          {props.headerCategories}
 
           <Divider />
 
-          <ScrollArea h={320}>{props.partialCategory}</ScrollArea>
+          <ScrollArea h={320}>{props.partialCategories}</ScrollArea>
         </LayoutModal>
       </Modal>
 

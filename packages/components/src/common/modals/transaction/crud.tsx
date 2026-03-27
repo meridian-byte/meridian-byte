@@ -67,9 +67,10 @@ export default function Crud({
     <>
       <Modal opened={opened} onClose={close}>
         <LayoutModal
-          title={`${!props?.updated_at ? 'Create' : 'Edit'} Transaction`}
-          close={close}
-          options={{ padding: null }}
+          props={{
+            title: `${!props?.updated_at ? 'Create' : 'Edit'} Transaction`,
+            close,
+          }}
         >
           <ScrollAreaAutosize mah={400} scrollbars={'y'}>
             <Box p={'sm'}>
