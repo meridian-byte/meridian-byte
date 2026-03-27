@@ -1,7 +1,14 @@
 'use client';
 
-import React from 'react';
-import { Box, ActionIcon, Drawer, Group } from '@mantine/core';
+import React, { useEffect } from 'react';
+import {
+  Box,
+  ActionIcon,
+  Drawer,
+  Group,
+  ScrollArea,
+  Tooltip,
+} from '@mantine/core';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { AppShell } from '@repo/types/components';
 import { COOKIE_NAME } from '@repo/constants/names';
@@ -13,13 +20,20 @@ import {
 } from '@repo/constants/sizes';
 import { setCookieClient } from '@repo/utilities/cookie-client';
 import TabNavbarLeft from '../../tabs/navbar/left';
-import { IconX } from '@tabler/icons-react';
-import { useMediaQuery } from '@mantine/hooks';
+import { IconLayoutSidebarLeftCollapse } from '@tabler/icons-react';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
-export default function Navbar({ children }: { children: React.ReactNode }) {
+export default function Navbar({
+  options,
+  children,
+}: {
+  options?: { hover?: true };
+  children: React.ReactNode;
+}) {
   const mobile = useMediaQuery('(max-width: 36em)');
   const appshell = useStoreAppShell((s) => s.appshell);
   const setAppShell = useStoreAppShell((s) => s.setAppShell);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const handleAppshellChange = (params: AppShell) => {
     if (!mobile) return;
@@ -36,7 +50,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
   };
 
   const handleClose = () => {
-    if (!mobile) return;
+    if (!mobile && !options?.hover) return;
     if (!appshell) return;
 
     handleAppshellChange({
@@ -48,14 +62,20 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
     });
   };
 
+  useEffect(() => {
+    if (!appshell?.child.navbar) close();
+  }, [appshell?.child.navbar]);
+
   return (
     <>
-      {mobile && (
+      {(options?.hover || mobile) && !appshell?.child.navbar && (
         <Drawer
-          hiddenFrom="xs"
+          size={options?.hover ? 'xs' : undefined}
+          hiddenFrom={!options?.hover ? 'xs' : undefined}
           keepMounted
-          opened={appshell?.child.navbar ?? false}
+          opened={!mobile ? opened : (appshell?.child.navbar ?? false)}
           padding={0}
+          transitionProps={{ enterDelay: 1000 }}
           withCloseButton={false}
           onClose={handleClose}
           styles={{
@@ -65,24 +85,52 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
             },
           }}
         >
-          <Group p={'xs'}>
-            <ActionIcon
-              size={ICON_WRAPPER_SIZE}
-              variant={'transparent'}
-              onClick={handleClose}
-            >
-              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </Group>
+          <ScrollArea
+            h="100vh"
+            onMouseLeave={() => {
+              if (mobile) return;
+              close();
+            }}
+          >
+            <Group p={'xs'} justify="end">
+              <Tooltip
+                label={
+                  (options?.hover ? opened : appshell?.child.navbar)
+                    ? 'Collapse'
+                    : 'Expand'
+                }
+                position="right"
+              >
+                <ActionIcon
+                  size={ICON_WRAPPER_SIZE}
+                  variant={'subtle'}
+                  onClick={options?.hover ? close : handleClose}
+                >
+                  <IconLayoutSidebarLeftCollapse
+                    size={ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
 
-          <TabNavbarLeft />
+            <TabNavbarLeft />
+          </ScrollArea>
         </Drawer>
       )}
 
       <span
+        onMouseEnter={() => {
+          if (mobile) return;
+          if (!appshell) return;
+          if (!appshell.child.navbar) open();
+        }}
         onClick={() => {
           if (!mobile) return;
           if (!appshell) return;
+
+          // close hover drawer if it exists
+          if (options?.hover) close();
 
           handleAppshellChange({
             ...appshell,

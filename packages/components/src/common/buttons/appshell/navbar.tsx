@@ -32,11 +32,11 @@ export default function Navbar({
   };
 
   return (
-    <Group display={!props.options?.mobile ? 'none' : undefined}>
-      <Tooltip
-        label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
-        position="right"
-      >
+    <Tooltip
+      label={appshell?.child.navbar ? 'Collapse' : 'Expand'}
+      position="right"
+    >
+      <Group display={!props.options?.mobile ? 'none' : undefined}>
         <ActionIcon
           variant="subtle"
           color="pri.5"
@@ -57,7 +57,7 @@ export default function Navbar({
         >
           <states.iconLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
-      </Tooltip>
-    </Group>
+      </Group>
+    </Tooltip>
   );
 }

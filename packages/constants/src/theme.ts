@@ -144,6 +144,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
             exitDuration: 100,
             exitDelay: 0,
           },
+          overlayProps: { backgroundOpacity: 0.5, blur: 4 },
         },
         // classNames: classesMenu,
       }),
