@@ -53,19 +53,20 @@ export default function Crud({
 
   const eatenServings = form.values.servings;
 
+  const handleClose = () => {
+    eatId.current = generateUUID();
+    form.setFieldValue('servings', []);
+    form.reset();
+    close();
+  };
+
   return (
     <>
-      <Modal
-        opened={opened}
-        onClose={() => {
-          form.setFieldValue('servings', []);
-          form.reset();
-          close();
-        }}
-      >
+      <Modal opened={opened} onClose={handleClose}>
+        {JSON.stringify(eatId)}
         <LayoutModal
           title={`${!props?.created_at ? 'Create' : 'Edit'} Entry`}
-          close={close}
+          close={handleClose}
           options={{ padding: 'xs' }}
         >
           <ScrollAreaAutosize h={160} scrollbars={'y'}>
@@ -107,7 +108,7 @@ export default function Crud({
               form,
               submitted,
               handleSubmit,
-              close,
+              close: handleClose,
               diaryDate: props?.created_at as any,
             }}
           />
@@ -126,7 +127,7 @@ export default function Crud({
                     onConfirm: () => {
                       if (props.updated_at) {
                         eatDelete(props as EatGet);
-                        close();
+                        handleClose();
                       }
                     },
                   }}

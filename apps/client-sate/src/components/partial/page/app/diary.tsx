@@ -149,14 +149,14 @@ export function DiaryOverview({
 
   const { eats } = useStoreEat();
 
-  const dayEats = eats?.filter((e) => {
+  const dayEats = eats?.find((e) => {
     return areSameDay(
       e.created_at,
       props?.entryDate?.date ? props.entryDate.date : new Date().toISOString()
     );
   });
 
-  const { totalEatenNutrients } = useEatTotals({ eats: dayEats || [] });
+  const { totalEatenNutrients } = useEatTotals({ eat: dayEats });
 
   const { masses } = useStoreMass();
 
