@@ -11,25 +11,28 @@ import {
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useRouter } from 'next/navigation';
 import { IconFile } from '@tabler/icons-react';
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  SECTION_SPACING,
+} from '@repo/constants/sizes';
 import LayoutModal from '@repo/components/layout/modal';
 import InputTextSearch from '../inputs/text/search';
+import { useSearchCriteria } from '@repo/hooks/search';
 
 export default function Search({ children }: { children: React.ReactNode }) {
   const [opened, { open, close }] = useDisclosure(false);
-  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
 
   const notes = useStoreNote((s) => s.notes);
   const router = useRouter();
 
-  const noteList = notes?.filter((n) => {
-    const inSearch = n.title
-      .toLowerCase()
-      .includes(search.trim().toLowerCase());
-    return inSearch;
+  const { searchCriteriaItems } = useSearchCriteria({
+    list: notes || [],
+    searchValue: searchValue,
   });
 
-  const actions = (noteList || []).map((n) => {
+  const items = searchCriteriaItems.map((n) => {
     return {
       id: n.id,
       label: n.title,
@@ -46,7 +49,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
       <Modal opened={opened} onClose={close}>
         <LayoutModal props={{ close, title: 'Search note' }}>
           <InputTextSearch
-            props={{ value: search, setValue: setSearch }}
+            props={{ value: searchValue, setValue: setSearchValue }}
             styles={{
               input: {
                 backgroundColor:
@@ -60,14 +63,14 @@ export default function Search({ children }: { children: React.ReactNode }) {
             <Divider />
 
             <ScrollArea h={280}>
-              {!actions.length ? (
-                <Center ta={'center'}>
+              {!searchCriteriaItems.length ? (
+                <Center ta={'center'} py={SECTION_SPACING}>
                   <Text inherit fz={'sm'} c={'dimmed'}>
-                    Nothing found...
+                    No notes found...
                   </Text>
                 </Center>
               ) : (
-                actions.map((a, i) => (
+                items.map((a, i) => (
                   <div key={i}>
                     <NavLink
                       label={a.label}

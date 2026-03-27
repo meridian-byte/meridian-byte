@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, NavLink, Skeleton, Stack, Text } from '@mantine/core';
+import {
+  Box,
+  Center,
+  Divider,
+  NavLink,
+  Skeleton,
+  Stack,
+  Text,
+} from '@mantine/core';
 import InputTextSearch from '@repo/components/common/inputs/text/search';
 import Link from 'next/link';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
@@ -12,6 +20,8 @@ import { getUrlParam } from '@repo/utilities/url';
 import { useSearchParams } from 'next/navigation';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
+import { SECTION_SPACING } from '@repo/constants/sizes';
+import { useSearchCriteria } from '@repo/hooks/search';
 
 export default function Search() {
   const searchParams = useSearchParams();
@@ -33,23 +43,10 @@ export default function Search() {
     setParamNoteId(paramNoteId as string);
   }, [notes, searchParams]);
 
-  const getSearchCriteriaItems = (params: { options: { limit: number } }) => {
-    const searchTerm = value.trim().toLowerCase();
-
-    const notesSorted = sortArray(
-      notes || [],
-      (i) => i.created_at,
-      Order.DESCENDING
-    );
-
-    const notesLimited = notesSorted
-      ?.filter((n) => n.title.toLowerCase().includes(searchTerm))
-      .slice(0, params.options.limit);
-
-    return { notesLimited };
-  };
-
-  const { notesLimited } = getSearchCriteriaItems({ options: { limit: 20 } });
+  const { searchCriteriaItems } = useSearchCriteria({
+    list: notes || [],
+    searchValue: value,
+  });
 
   return (
     <div>
@@ -84,8 +81,14 @@ export default function Search() {
             <Skeleton h={35} />
             <Skeleton h={35} />
           </>
+        ) : !searchCriteriaItems.length ? (
+          <Center ta={'center'} py={SECTION_SPACING}>
+            <Text inherit fz={'sm'} c={'dimmed'}>
+              No notes found...
+            </Text>
+          </Center>
         ) : (
-          notesLimited?.map((n, i) => {
+          searchCriteriaItems?.map((n, i) => {
             const category = categories?.find((c) => c.id == n.notebook_id);
             const active = paramNoteId == n.id;
 
