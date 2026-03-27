@@ -189,6 +189,7 @@ export const useUserRoleStore = () => {
 export const useAppshellStore = () => {
   const desktop = useMediaQuery('(min-width: 62em)');
 
+  const appShell = useStoreAppShell((s) => s.appshell);
   const setAppShell = useStoreAppShell((s) => s.setAppShell);
 
   useEffect(() => {
@@ -208,17 +209,30 @@ export const useAppshellStore = () => {
           expiryInSeconds: WEEK,
         });
       } else {
-        defaultValue = {
-          ...appShellCookie,
-          child: { ...appShellCookie.child, navbar: desktop ? true : false },
-        };
+        defaultValue = appShellCookie;
       }
 
       setAppShell(defaultValue);
     };
 
     initializeAppShell();
-  }, [setAppShell, desktop]);
+  }, []);
+
+  useEffect(() => {
+    if (appShell === undefined) return;
+    if (appShell === null) return;
+
+    const newAppshell: AppShellValue = {
+      ...appShell,
+      child: { navbar: desktop ? appShell.child.navbar : false, aside: false },
+    };
+
+    setAppShell(newAppshell);
+
+    setCookieClient(COOKIE_NAME.APP_SHELL, newAppshell, {
+      expiryInSeconds: WEEK,
+    });
+  }, [desktop]);
 };
 
 export const useThemeStore = () => {
