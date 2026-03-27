@@ -35,8 +35,8 @@ export const useServingActions = (params?: { formEat?: FormEat }) => {
         eat_id: item.eat_id || '',
         status: item.status || Status.ACTIVE,
         sync_status: SyncStatus.PENDING,
-        created_at: (item.created_at || now.toISOString()) as any,
-        updated_at: now.toISOString() as any,
+        created_at: new Date(item.created_at || now).toISOString() as any,
+        updated_at: new Date(item.updated_at || now).toISOString() as any,
       };
 
       newServings.push(newServing);
@@ -60,7 +60,8 @@ export const useServingActions = (params?: { formEat?: FormEat }) => {
     const newServing: ServingGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateServing(newServing);
@@ -74,7 +75,8 @@ export const useServingActions = (params?: { formEat?: FormEat }) => {
     deleteServing({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 

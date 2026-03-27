@@ -21,8 +21,8 @@ export const useAccountGroupActions = () => {
       profile_id: session.id || params.profile_id || '',
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at || now).toISOString() as any,
+      updated_at: new Date(params.updated_at || now).toISOString() as any,
     };
 
     addAccountGroup(newAccountGroup);
@@ -36,7 +36,8 @@ export const useAccountGroupActions = () => {
     const newAccountGroup: AccountGroupGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateAccountGroup(newAccountGroup);
@@ -50,7 +51,8 @@ export const useAccountGroupActions = () => {
     deleteAccountGroup({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 

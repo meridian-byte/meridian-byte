@@ -23,8 +23,8 @@ export const useEatActions = () => {
       servings: [],
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: (params.created_at || now.toISOString()) as any,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at || now).toISOString() as any,
+      updated_at: new Date(params.updated_at || now).toISOString() as any,
     };
 
     addEat(newEat);
@@ -39,7 +39,8 @@ export const useEatActions = () => {
     const newEat: EatRelations = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateEat(newEat);
@@ -53,7 +54,8 @@ export const useEatActions = () => {
     deleteEat({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 

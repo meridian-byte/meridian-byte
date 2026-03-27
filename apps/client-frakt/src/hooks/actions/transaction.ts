@@ -35,8 +35,8 @@ export const useTransactionActions = () => {
       profile_id: session.id || params.profile_id || '',
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: (params.created_at || now).toISOString() as any,
-      updated_at: (params.updated_at || now).toISOString() as any,
+      created_at: new Date(params.created_at || now).toISOString() as any,
+      updated_at: new Date(params.updated_at || now).toISOString() as any,
     };
 
     const newAccountBalance = getNewAccountBalance({
@@ -66,10 +66,12 @@ export const useTransactionActions = () => {
 
     const newTransactionObject: TransactionGet = {
       ...newTransaction,
-      amount: Number(newTransaction.amount).toFixed(2) as any,
       date: new Date(newTransaction.date || '').toISOString() as any,
+      amount: Number(newTransaction.amount || 0).toFixed(2) as any,
+      fees: Number(newTransaction.fees || 0).toFixed(2) as any,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(newTransaction.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     const newAccountBalance = getNewAccountBalance({
@@ -108,7 +110,8 @@ export const useTransactionActions = () => {
     deleteTransaction({
       ...params,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
   };
 

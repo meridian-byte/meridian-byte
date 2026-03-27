@@ -30,8 +30,8 @@ export const useNoteActions = () => {
       notebook_id: params?.notebook_id || '',
       status: params?.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
-      created_at: now.toISOString() as any,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params?.created_at || now).toISOString() as any,
+      updated_at: new Date(params?.updated_at || now).toISOString() as any,
     };
 
     addNote(newNote);
@@ -49,7 +49,8 @@ export const useNoteActions = () => {
     const newNote: NoteGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     updateNote(newNote);
@@ -109,7 +110,8 @@ export const useNoteActions = () => {
     deleteNote({
       ...params.values,
       sync_status: SyncStatus.DELETED,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.values.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     });
 
     // check if current note is in view
@@ -140,7 +142,8 @@ export const useNoteActions = () => {
         params.from.content || ''
       ),
       sync_status: SyncStatus.PENDING,
-      updated_at: now.toISOString() as any,
+      created_at: new Date(params.to.created_at).toISOString() as any,
+      updated_at: new Date(now).toISOString() as any,
     };
 
     // add to note to state
