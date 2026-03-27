@@ -41,7 +41,7 @@ export default function Search() {
         }
         style={{ zIndex: 1 }}
       >
-        <Divider />
+        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
 
         <Box pos={'sticky'} top={48} py={'xs'}>
           <InputTextSearch
@@ -49,7 +49,7 @@ export default function Search() {
             styles={{
               input: {
                 backgroundColor:
-                  'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-9))',
+                  'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
                 fontWeight: 500,
               },
             }}

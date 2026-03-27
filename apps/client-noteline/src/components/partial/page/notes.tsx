@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <>
-      {note && <HeaderAppNoteDetails props={note} />}
+      <HeaderAppNoteDetails props={note} />
 
       {!noteId ? (
         <PartialPageHome />

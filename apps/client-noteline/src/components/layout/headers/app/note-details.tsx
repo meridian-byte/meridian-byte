@@ -28,8 +28,9 @@ import { useRouter } from 'next/navigation';
 import MenuNoteMain from '@repo/components/common/menus/note/main';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import WrapperUnderlayGlass from '@repo/components/wrappers/underlays/glass';
+import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
 
-export default function NoteDetails({ props }: { props: NoteGet }) {
+export default function NoteDetails({ props }: { props?: NoteGet }) {
   const router = useRouter();
   const userStates = useStoreUserStates((s) => s.userStates);
   const setUserStates = useStoreUserStates((s) => s.setUserStates);
@@ -47,6 +48,7 @@ export default function NoteDetails({ props }: { props: NoteGet }) {
       pos={'sticky'}
       top={0}
       style={{ zIndex: 1 }}
+      display={!props ? 'none' : undefined}
     >
       <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.6 }}>
         <Group p={'xs'} justify="space-between" wrap="nowrap">
@@ -80,7 +82,7 @@ export default function NoteDetails({ props }: { props: NoteGet }) {
               ta={'center'}
               lineClamp={1}
             >
-              {props.title}
+              {props?.title}
             </Title>
           </Group>
 
@@ -118,18 +120,20 @@ export default function NoteDetails({ props }: { props: NoteGet }) {
               </Tooltip>
             )}
 
-            <MenuNoteMain item={props}>
-              <Group>
-                <Tooltip label={'More options'}>
-                  <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
-                    <IconDotsVertical
-                      size={ICON_SIZE}
-                      stroke={ICON_STROKE_WIDTH}
-                    />
-                  </ActionIcon>
-                </Tooltip>
-              </Group>
-            </MenuNoteMain>
+            {props && (
+              <MenuNoteMain item={props}>
+                <Group>
+                  <Tooltip label={'More options'}>
+                    <ActionIcon size={ICON_WRAPPER_SIZE} variant={'subtle'}>
+                      <IconDotsVertical
+                        size={ICON_SIZE}
+                        stroke={ICON_STROKE_WIDTH}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
+              </MenuNoteMain>
+            )}
           </Group>
         </Group>
       </WrapperUnderlayGlass>

@@ -50,7 +50,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
             styles={{
               input: {
                 backgroundColor:
-                  'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))',
+                  'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
                 fontWeight: 500,
               },
             }}
