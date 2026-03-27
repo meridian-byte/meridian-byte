@@ -10,9 +10,12 @@ import {
 } from '@repo/constants/sizes';
 import { IconPlus } from '@tabler/icons-react';
 import ModalFoodCrud from '@/components/common/modals/food/crud';
-import IndicatorNetworkStatus from '@/components/common/indicators/network-status';
+import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
+import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 
 export default function Foods() {
+  const { syncStatus } = useStoreSyncStatus();
+
   return (
     <LayoutSection
       id="layout-header-foods"
@@ -25,8 +28,8 @@ export default function Foods() {
           Foods
         </Title>
 
-        <Group justify="end" wrap="nowrap">
-          <IndicatorNetworkStatus />
+        <Group justify="end" wrap="nowrap" gap={5}>
+          <IndicatorNetworkStatus props={{ syncStatus }} />
 
           <ModalFoodCrud>
             <Group>

@@ -32,12 +32,13 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 import ModalEatCrud from '@/components/common/modals/eat/crud';
-import IndicatorNetworkStatus from '@/components/common/indicators/network-status';
+import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
 import { useStoreEat } from '@/libraries/zustand/stores/eat';
 import { useEatTotals } from '@/hooks/nutrients';
 import { DiaryDateReturnType, useDiaryDate } from '@/hooks/diary';
 import { DateInput } from '@mantine/dates';
 import { areSameDay, isToday, isYesterday } from '@repo/utilities/date-time';
+import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 
 export default function Diary() {
   const { servings } = useStoreServing();
@@ -88,6 +89,8 @@ export default function Diary() {
 }
 
 function DiaryHeader({ props }: { props: { diaryDate: DiaryDateReturnType } }) {
+  const { syncStatus } = useStoreSyncStatus();
+
   return (
     <LayoutSection id="layout-header-diarys" containerized={'xs'} padded={'xs'}>
       <Group justify="space-between">
@@ -95,8 +98,8 @@ function DiaryHeader({ props }: { props: { diaryDate: DiaryDateReturnType } }) {
           Diary
         </Title>
 
-        <Group justify="end" wrap="nowrap">
-          <IndicatorNetworkStatus />
+        <Group justify="end" wrap="nowrap" gap={5}>
+          <IndicatorNetworkStatus props={{ syncStatus }} />
 
           <ModalEatCrud
             props={{

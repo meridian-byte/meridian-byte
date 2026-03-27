@@ -10,9 +10,12 @@ import {
 } from '@repo/constants/sizes';
 import { IconPlus } from '@tabler/icons-react';
 import ModalAccountCrud from '@/components/common/modals/account/crud';
-import IndicatorNetworkStatus from '@/components/common/indicators/network-status';
+import IndicatorNetworkStatus from '@repo/components/common/indicators/network-status';
+import { useStoreSyncStatus } from '@/libraries/zustand/stores/sync-status';
 
 export default function Accounts() {
+  const { syncStatus } = useStoreSyncStatus();
+
   return (
     <LayoutSection
       id="layout-header-accounts"
@@ -25,7 +28,7 @@ export default function Accounts() {
         </Title>
 
         <Group justify="end" wrap="nowrap">
-          <IndicatorNetworkStatus />
+          <IndicatorNetworkStatus props={{ syncStatus }} />
 
           <ModalAccountCrud>
             <Group>
