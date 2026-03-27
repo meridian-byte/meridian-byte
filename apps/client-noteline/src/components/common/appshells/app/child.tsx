@@ -1,14 +1,16 @@
 'use client';
 
 import { Box, Group, ScrollArea } from '@mantine/core';
-import React from 'react';
+import React, { useRef } from 'react';
 import { APPSHELL } from '@/data/constants';
 import TabNavbarLeft from '@/components/common/tabs/navbar/left';
 import TabNavbarRight from '@/components/common/tabs/navbar/right';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useMediaQuery } from '@mantine/hooks';
+import { ScrollContext } from '@repo/hooks/contexts/scroll';
 
 export default function Child({ children }: { children: React.ReactNode }) {
+  const viewportRef = useRef<HTMLDivElement | null>(null);
   const mobile = useMediaQuery('(max-width: 36em)');
   const appshell = useStoreAppShell((s) => s.appshell);
 
@@ -49,15 +51,18 @@ export default function Child({ children }: { children: React.ReactNode }) {
       </Box>
 
       <Box style={{ width: `${widthPercentage}%`, zIndex: 1 }}>
-        <ScrollArea
-          h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
-          type="auto"
-          scrollbars={'y'}
-          scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
-          styles={{ thumb: { zIndex: 1 } }}
-        >
-          {children}
-        </ScrollArea>
+        <ScrollContext.Provider value={viewportRef}>
+          <ScrollArea
+            viewportRef={viewportRef}
+            h={`calc(100vh - ${mobile ? APPSHELL.HEADER_HEIGHT : 0}px)`}
+            type="auto"
+            scrollbars={'y'}
+            scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
+            styles={{ thumb: { zIndex: 1 } }}
+          >
+            {children}
+          </ScrollArea>
+        </ScrollContext.Provider>
       </Box>
 
       <Box
