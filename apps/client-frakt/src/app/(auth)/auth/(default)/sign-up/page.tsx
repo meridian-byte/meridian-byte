@@ -10,7 +10,7 @@ import { Metadata } from 'next';
 import { Stack, Text } from '@mantine/core';
 import LayoutPage from '@repo/components/layout/page';
 import FormAuth from '@repo/components/form/auth';
-import { AUTH_URLS } from '@repo/constants/paths';
+import { AUTH_URLS, BASE_URL_CLIENT } from '@repo/constants/paths';
 import { AuthAction } from '@repo/types/enums';
 import AnchorNextLink from '@repo/components/common/anchor/next-link';
 
@@ -26,6 +26,7 @@ export default function SignUp() {
             title: 'Create Your Account!',
             desc: 'Join us and start your journey today.',
           }}
+          baseUrl={BASE_URL_CLIENT.FRAKT}
         />
 
         <Text fz={'xs'} ta={'center'}>
