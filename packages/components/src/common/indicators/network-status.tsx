@@ -59,45 +59,49 @@ export default function NetworkStatus({
     mobile,
   });
 
-  return context == Context.NETWORK ? (
-    <Transition
-      mounted={offline}
-      transition="fade"
-      duration={250}
-      enterDelay={2000}
-      exitDelay={2000}
-      timingFunction="ease"
-      keepMounted
-    >
-      {(styles) => (
-        <div style={styles}>
-          <Tooltip
-            label={!networkStatus.online ? 'Working Offline' : 'Back Online'}
-          >
-            <Group>
-              <ThemeIcon
-                size={ICON_WRAPPER_SIZE}
-                variant="transparent"
-                color={!networkStatus.online ? 'yellow.6' : 'green.6'}
-              >
-                {!networkStatus.online ? (
-                  <IconWifiOff size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                ) : (
-                  <IconWifi size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                )}
-              </ThemeIcon>
-            </Group>
-          </Tooltip>
-        </div>
-      )}
-    </Transition>
-  ) : (
+  if (context == Context.NETWORK) {
+    return (
+      <Transition
+        mounted={offline}
+        transition="fade"
+        duration={100}
+        enterDelay={ENTER_DELAY}
+        exitDelay={EXIT_DELAY}
+        timingFunction="ease"
+        keepMounted
+      >
+        {(styles) => (
+          <div style={styles}>
+            <Tooltip
+              label={!networkStatus.online ? 'Working Offline' : 'Back Online'}
+            >
+              <Group>
+                <ThemeIcon
+                  size={ICON_WRAPPER_SIZE}
+                  variant="transparent"
+                  color={!networkStatus.online ? 'yellow.6' : 'green.6'}
+                >
+                  {!networkStatus.online ? (
+                    <IconWifiOff size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                  ) : (
+                    <IconWifi size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                  )}
+                </ThemeIcon>
+              </Group>
+            </Tooltip>
+          </div>
+        )}
+      </Transition>
+    );
+  }
+
+  return (
     <Transition
       mounted={(props?.itemSyncStatus || props.syncStatus) != SyncStatus.SYNCED}
       transition="fade"
-      duration={250}
-      enterDelay={2000}
-      exitDelay={2000}
+      duration={100}
+      enterDelay={ENTER_DELAY}
+      exitDelay={EXIT_DELAY}
       timingFunction="ease"
       keepMounted
     >
@@ -120,6 +124,9 @@ export default function NetworkStatus({
     </Transition>
   );
 }
+
+const ENTER_DELAY = 50;
+const EXIT_DELAY = 100;
 
 const getSycnStatusProps = (params: {
   syncStatus: SyncStatus;
