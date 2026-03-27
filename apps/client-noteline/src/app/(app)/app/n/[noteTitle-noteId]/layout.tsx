@@ -28,11 +28,11 @@ export const generateMetadata = async ({
 };
 
 export default function LayoutNote({
-  children, // will be a page or nested layout
+  children,
   // params,
 }: {
   children: React.ReactNode;
-  params: typeParams;
+  // params: typeParams;
 }) {
   return <LayoutBody>{children}</LayoutBody>;
 }
