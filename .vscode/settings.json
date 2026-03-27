@@ -6,6 +6,8 @@
 
     { "directory": "packages/client-web", "changeProcessCWD": true },
     { "directory": "packages/client-frakt", "changeProcessCWD": true },
+    { "directory": "packages/client-sate", "changeProcessCWD": true },
+    { "directory": "packages/client-noteline", "changeProcessCWD": true },
 
     { "directory": "packages/components", "changeProcessCWD": true },
     { "directory": "packages/constants", "changeProcessCWD": true },
