@@ -145,6 +145,27 @@ export const getAppTheme = (params?: AppThemeProps) => {
             exitDelay: 0,
           },
           overlayProps: { backgroundOpacity: 0.5, blur: 4 },
+          shadow: 'xs',
+        },
+        styles: {
+          dropdown: {
+            overflow: 'hidden',
+            padding: 5,
+            backgroundColor:
+              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
+            borderColor:
+              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+          },
+          item: {
+            padding: '3px 6px',
+            overflow: 'hidden',
+            borderRadius: 'var(--mantine-radius-md)',
+          },
+          itemLabel: { fontSize: 'var(--mantine-font-size-sm)' },
+          divider: {
+            borderColor:
+              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+          },
         },
         // classNames: classesMenu,
       }),

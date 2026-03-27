@@ -50,17 +50,6 @@ export default function Side({
         withinPortal
         width={menuWidth}
         keepMounted
-        styles={{
-          dropdown: {
-            padding: 5,
-          },
-          item: {
-            padding: '2.5px 10px',
-          },
-          itemLabel: {
-            fontSize: 'var(--mantine-font-size-sm)',
-          },
-        }}
       >
         <MenuTarget>
           <div {...anchorProps} />

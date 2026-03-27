@@ -8,14 +8,12 @@ import {
   MenuDropdown,
   MenuItem,
   MenuTarget,
-  MenuLabel,
-  Stack,
   Group,
+  Box,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
 import PartialUser from '../../partial/user';
-import classes from './user.module.scss';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 import { navLinkItems } from '@repo/constants/links';
 
@@ -32,28 +30,24 @@ export default function User({ children }: { children: React.ReactNode }) {
       trigger="click"
       openDelay={50}
       closeDelay={200}
-      classNames={classes}
       opened={desktop ? undefined : false}
       transitionProps={{ transition: 'pop-bottom-left', duration: 100 }}
       withArrow
       arrowOffset={16}
       disabled={!session?.email}
-      styles={{ dropdown: { overflow: 'hidden' } }}
     >
       <MenuTarget>
-        <Group component={'span'} className={classes.target}>
+        <Group component={'span'} style={{ cursor: 'pointer' }}>
           {children}
         </Group>
       </MenuTarget>
 
       <MenuDropdown>
-        <Stack p={'md'}>
+        <Box pb={5}>
           <PartialUser />
-        </Stack>
+        </Box>
 
-        <MenuDivider m={0} />
-
-        <MenuLabel>Account</MenuLabel>
+        <MenuDivider />
 
         {navLinkItems.user.account.map((item) => (
           <MenuItem
@@ -63,13 +57,12 @@ export default function User({ children }: { children: React.ReactNode }) {
             }
             component={Link}
             href={item.link}
-            className={classes.item}
           >
             {item.label}
           </MenuItem>
         ))}
 
-        <MenuDivider m={0} />
+        <MenuDivider />
 
         {navLinkItems.user.danger.map((item) => (
           <MenuItem
@@ -79,7 +72,7 @@ export default function User({ children }: { children: React.ReactNode }) {
             }
             component={Link}
             href={item.link}
-            className={classes.itemDanger}
+            color="red.6"
           >
             {item.label}
           </MenuItem>

@@ -35,13 +35,13 @@ export default function Main({
   item: NoteGet;
   children: React.ReactNode;
 }) {
-  const userStates = useStoreUserStates((s) => s.userStates);
-  const setUserStates = useStoreUserStates((s) => s.setUserStates);
+  // const userStates = useStoreUserStates((s) => s.userStates);
+  // const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
-  const toogleProperties = {
-    label: userStates?.editing == true ? 'Reading' : 'Editing',
-    icon: userStates?.editing == true ? IconBook : IconWriting,
-  };
+  // const toogleProperties = {
+  //   label: userStates?.editing == true ? 'Reading' : 'Editing',
+  //   icon: userStates?.editing == true ? IconBook : IconWriting,
+  // };
 
   const { noteDelete } = useNoteActions();
 
@@ -80,16 +80,7 @@ export default function Main({
       </MenuTarget>
 
       <MenuDropdown>
-        <MenuItem
-          leftSection={
-            <IconSwipeLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          }
-          onClick={() => {}}
-        >
-          Backlinks in document
-        </MenuItem>
-
-        <MenuItem
+        {/* <MenuItem
           leftSection={
             <toogleProperties.icon
               size={ICON_SIZE}
@@ -106,9 +97,7 @@ export default function Main({
           }}
         >
           {toogleProperties.label} view
-        </MenuItem>
-
-        <MenuDivider />
+        </MenuItem> */}
 
         <MenuItem
           leftSection={
@@ -144,6 +133,17 @@ export default function Main({
           </MenuItem>
         </ModalMerge>
 
+        <MenuDivider />
+
+        <MenuItem
+          leftSection={
+            <IconSwipeLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => {}}
+        >
+          Backlinks in document
+        </MenuItem>
+
         <MenuItem
           leftSection={
             <IconListDetails size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
@@ -151,15 +151,6 @@ export default function Main({
           onClick={() => {}}
         >
           Add file property
-        </MenuItem>
-
-        <MenuItem
-          leftSection={
-            <IconFileTypePdf size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-          }
-          onClick={() => {}}
-        >
-          Export to PDF
         </MenuItem>
 
         <MenuDivider />
@@ -183,6 +174,17 @@ export default function Main({
           onClick={() => {}}
         >
           Copy relative path
+        </MenuItem>
+
+        <MenuDivider />
+
+        <MenuItem
+          leftSection={
+            <IconFileTypePdf size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => {}}
+        >
+          Export to PDF
         </MenuItem>
 
         <MenuDivider />
