@@ -33,7 +33,7 @@ export default function Meals() {
 
           <ModalMealCrud>
             <Group>
-              <Tooltip label={'Create Meal'}>
+              <Tooltip label={'Add Meal'}>
                 <ActionIcon size={ICON_WRAPPER_SIZE} variant="light">
                   <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>

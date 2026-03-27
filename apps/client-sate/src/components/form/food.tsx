@@ -59,8 +59,6 @@ export default function Food({
             label={mobile ? 'Name' : undefined}
             aria-label="Name"
             placeholder="Name"
-            variant="filled"
-            data-autofocus
             leftSection={
               <IconLetterCase size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }
