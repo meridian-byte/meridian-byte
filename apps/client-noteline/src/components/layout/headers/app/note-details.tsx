@@ -74,7 +74,7 @@ export default function NoteDetails({
       pos={'sticky'}
       top={0}
       style={{ zIndex: 1 }}
-      display={!props ? 'none' : undefined}
+      display={!props?.noteId ? 'none' : undefined}
     >
       <LayoutSection id={`note-details-header`} containerized={false}>
         <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
