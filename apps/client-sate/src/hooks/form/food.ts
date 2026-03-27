@@ -42,7 +42,7 @@ export const useFormFood = (params?: { defaultValues?: Partial<FoodGet> }) => {
           ...rawValues,
         };
 
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.created_at) {
           foodCreate({
             ...submitObject,
           });

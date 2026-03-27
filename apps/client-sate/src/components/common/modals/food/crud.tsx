@@ -33,7 +33,7 @@ export default function Crud({
     <>
       <Modal opened={opened} onClose={close}>
         <LayoutModal
-          title={`${!props ? 'Create' : 'Edit'} Food`}
+          title={`${!props?.created_at ? 'Create' : 'Edit'} Food`}
           close={close}
           options={{ padding: null }}
         >
@@ -43,7 +43,7 @@ export default function Crud({
             </Box>
           </ScrollAreaAutosize>
 
-          {props && (
+          {props?.created_at && (
             <Box px={'sm'} pb={'sm'}>
               <Divider mb={'md'} />
 
