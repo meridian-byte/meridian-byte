@@ -3,6 +3,7 @@ import React, {
   useRef,
   useImperativeHandle,
   useEffect,
+  useMemo,
 } from 'react';
 import { TextInput } from '@mantine/core';
 import { useField } from '@mantine/form';
@@ -57,12 +58,15 @@ function RenameInner<T extends { id: string; title: string }>(
   };
 
   useEffect(() => {
-    if (!item.title) {
-      field.setValue(renameProps.placeholder ?? 'Untitled');
-    } else {
-      field.setValue(item.title);
+    if (field.getValue() !== item.title) {
+      field.setValue((item.title || renameProps.placeholder) ?? 'Untitled');
     }
   }, [item.title]);
+
+  const inputStyles = useMemo(
+    () => ({ input: { cursor: renameProps.editing ? undefined : 'pointer' } }),
+    [renameProps.editing]
+  );
 
   return (
     <TextInput
@@ -75,11 +79,7 @@ function RenameInner<T extends { id: string; title: string }>(
       onKeyDown={handleKeyDown}
       classNames={classes}
       size="xs"
-      styles={{
-        input: {
-          cursor: renameProps.editing ? undefined : 'pointer',
-        },
-      }}
+      styles={inputStyles}
     />
   );
 }

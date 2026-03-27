@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActionIcon,
   Box,
@@ -9,6 +9,7 @@ import {
   NavLink,
   Skeleton,
   Stack,
+  Text,
   Tooltip,
 } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -24,7 +25,6 @@ import { IconFilePlus, IconFolderPlus } from '@tabler/icons-react';
 import { useNotebookActions } from '@repo/hooks/actions/notebook';
 import MenuNoteSide from '@repo/components/common/menus/note/side';
 import InputTextRename from '@repo/components/common/inputs/text/rename';
-import { NoteGet } from '@repo/types/models/note';
 import AccordionNotebooks from '@repo/components/common/accordions/notebooks';
 import { useStoreAppShell } from '@repo/libraries/zustand/stores/shell';
 import { useNoteActions } from '@repo/hooks/actions/note';
@@ -37,10 +37,11 @@ import { getUrlParam } from '@repo/utilities/url';
 
 export default function Folders() {
   const searchParams = useSearchParams();
-  const { appshell, setAppShell } = useStoreAppShell();
+  const appshell = useStoreAppShell((s) => s.appshell);
+  const setAppShell = useStoreAppShell((s) => s.setAppShell);
   const desktop = useMediaQuery('(min-width: 62em)');
-  const { notes } = useStoreNote();
-  const { notebooks } = useStoreNotebook();
+  const notes = useStoreNote((s) => s.notes);
+  const notebooks = useStoreNotebook((s) => s.notebooks);
   const router = useRouter();
 
   const {
@@ -51,6 +52,7 @@ export default function Folders() {
     startNoteRename,
     noteInputRefs,
     noteEditing,
+    noteEditingId,
     setNoteEditingState,
   } = useNoteActions();
 
@@ -83,33 +85,71 @@ export default function Folders() {
     });
   };
 
-  const NoteComponent = ({ item }: { item: NoteGet }) => {
-    return (
-      <MenuNoteSide
-        item={item}
-        menuProps={{
-          copyNote: noteCopy,
-          deleteNote: noteDelete,
-          startRename: startNoteRename,
-        }}
-      >
+  const NoteComponent = React.memo(function NoteComponent({
+    props,
+  }: {
+    props: { noteId: string };
+  }) {
+    const item = useStoreNote((s) =>
+      s.notes?.find((n) => n.id === props.noteId)
+    );
+
+    const menuProps = useMemo(
+      () => ({
+        copyNote: noteCopy,
+        deleteNote: noteDelete,
+        startRename: startNoteRename,
+      }),
+      [noteCopy, noteDelete, startNoteRename]
+    );
+
+    const navLinkStyles = {
+      root: {
+        borderRadius: 'var(--mantine-radius-md)',
+        padding:
+          'calc(var(--mantine-spacing-xs) / 4) var(--mantine-spacing-xs)',
+      },
+      label: {
+        fontSize: 'var(--mantine-font-size-sm)',
+        fontWeight: 'normal',
+      },
+    };
+
+    const RenameMemo = React.memo(InputTextRename) as typeof InputTextRename;
+
+    const renameProps = useMemo(
+      () => ({
+        editing: noteEditing,
+        editingId: noteEditingId,
+        setEditing: setNoteEditingState,
+        updateItem: noteUpdate,
+        placeholder: 'New Note',
+      }),
+      [noteEditing, noteUpdate]
+    );
+
+    return !item ? null : (
+      <MenuNoteSide item={item} menuProps={menuProps}>
         <NavLink
           component={Link}
           href={`/app?noteId=${item.id}`}
           active={paramNoteId === item.id}
           label={
-            <InputTextRename
-              ref={(el) => {
-                noteInputRefs.current[item.id] = el;
-              }}
-              item={item}
-              renameProps={{
-                editing: noteEditing,
-                setEditing: setNoteEditingState,
-                updateItem: noteUpdate,
-                placeholder: 'New Note',
-              }}
-            />
+            !renameProps.editing || renameProps.editingId !== item.id ? (
+              <Group mih={30}>
+                <Text component="span" inherit lineClamp={1}>
+                  {item.title}
+                </Text>
+              </Group>
+            ) : (
+              <RenameMemo
+                ref={(el) => {
+                  noteInputRefs.current[item.id] = el;
+                }}
+                item={item}
+                renameProps={renameProps}
+              />
+            )
           }
           onClick={(e) => {
             if (noteEditing) e.preventDefault();
@@ -122,21 +162,32 @@ export default function Folders() {
               child: { ...appshell.child, navbar: false },
             });
           }}
-          styles={{
-            root: {
-              borderRadius: 'var(--mantine-radius-md)',
-              padding:
-                'calc(var(--mantine-spacing-xs) / 4) var(--mantine-spacing-xs)',
-            },
-            label: {
-              fontSize: 'var(--mantine-font-size-sm)',
-              fontWeight: 'normal',
-            },
-          }}
+          styles={navLinkStyles}
         />
       </MenuNoteSide>
     );
-  };
+  });
+
+  const notebookRenameProps = useMemo(
+    () => ({
+      editing: notebookEditing,
+      setEditing: setNotebookEditingState,
+      updateItem: notebookUpdate,
+      placeholder: 'New Folder',
+    }),
+    [notebookEditing, notebookUpdate]
+  );
+
+  const notebookRefCallback = useCallback(
+    (id: string) => (el: HTMLInputElement | null) => {
+      notebookInputRefs.current[id] = el;
+    },
+    []
+  );
+
+  const InputTextRenameMemo = React.memo(
+    InputTextRename
+  ) as typeof InputTextRename;
 
   return (
     <div>
@@ -204,19 +255,14 @@ export default function Folders() {
             <AccordionNotebooks
               props={{
                 editing: notebookEditing,
-                noteComponent: (note) => <NoteComponent item={note} />,
+                noteComponent: (note) => (
+                  <NoteComponent props={{ noteId: note.id }} />
+                ),
                 inputComponent: (notebook) => (
-                  <InputTextRename
-                    ref={(el) => {
-                      notebookInputRefs.current[notebook.id] = el;
-                    }}
+                  <InputTextRenameMemo
+                    ref={notebookRefCallback(notebook.id)}
                     item={notebook}
-                    renameProps={{
-                      editing: notebookEditing,
-                      setEditing: setNotebookEditingState,
-                      updateItem: notebookUpdate,
-                      placeholder: 'New Folder',
-                    }}
+                    renameProps={notebookRenameProps}
                   />
                 ),
               }}
@@ -227,7 +273,7 @@ export default function Folders() {
               .map((n) => {
                 return (
                   <div key={n.id}>
-                    <NoteComponent item={n} />
+                    <NoteComponent props={{ noteId: n.id }} />
                   </div>
                 );
               })}

@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { IconFolder } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useNotebookActions } from '@repo/hooks/actions/notebook';
 import { NoteGet } from '@repo/types/models/note';
@@ -32,7 +32,7 @@ export default function Notebooks({
   };
 }) {
   const searchParams = useSearchParams();
-  const { notes } = useStoreNote();
+  const notes = useStoreNote((s) => s.notes);
   const { notebooks } = useStoreNotebook();
   const { noteCreate } = useNoteActions();
   const { notebookCopy, notebookDelete, startNotebookRename } =
@@ -56,12 +56,30 @@ export default function Notebooks({
     if (!currentNoteNotebook) return;
     if (value.includes(currentNoteNotebook)) return;
 
-    setValue([...value, currentNoteNotebook]);
+    setValue((prev) =>
+      prev.includes(currentNoteNotebook) ? prev : [...prev, currentNoteNotebook]
+    );
   }, [notebooks, notes, searchParams]);
+
+  const notesByNotebook = useMemo(() => {
+    const map = new Map<string, NoteGet[]>();
+
+    for (const note of notes ?? []) {
+      if (note.notebook_id) {
+        if (!map.has(note.notebook_id)) {
+          map.set(note.notebook_id, []);
+        }
+        map.get(note.notebook_id)!.push(note);
+      }
+    }
+
+    return map;
+  }, [notes]);
 
   return (
     <Accordion
       multiple
+      transitionDuration={0.25}
       styles={{
         content: { padding: 0 },
         item: { padding: 0, borderWidth: 0 },
@@ -77,7 +95,7 @@ export default function Notebooks({
       onChange={setValue}
     >
       {notebooks?.map((c, i) => {
-        const notebookNotes = notes?.filter((n) => n.notebook_id == c.id);
+        const notebookNotes = notesByNotebook.get(c.id) ?? [];
         const active = !paramNoteId
           ? false
           : notebookNotes?.map((nn) => nn.id).includes(paramNoteId as string);
