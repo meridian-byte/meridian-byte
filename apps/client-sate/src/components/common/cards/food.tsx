@@ -32,34 +32,54 @@ export default function Food({ props }: { props: FoodGet }) {
 
           <Group fz={{ base: 'xs', xs: 'sm' }} c={'dimmed'}>
             <Text inherit lineClamp={1}>
-              <Text component="span" inherit>
-                <Text
-                  component="span"
-                  inherit
-                  c={`${COLOR_CODES.FOOD.CARBS}.6`}
-                >
-                  <NumberFormatter value={totalNutrients.totalCarbs} />
-                </Text>{' '}
-                {getUnitShorts(props.per_unit)}
-              </Text>
-              ,{' '}
-              <Text component="span" inherit>
-                <Text
-                  component="span"
-                  inherit
-                  c={`${COLOR_CODES.FOOD.PROTEINS}.6`}
-                >
-                  <NumberFormatter value={totalNutrients.totalProtein} />
-                </Text>{' '}
-                {getUnitShorts(props.per_unit)}
-              </Text>
-              ,{' '}
-              <Text component="span" inherit>
-                <Text component="span" inherit c={`${COLOR_CODES.FOOD.FATS}.6`}>
-                  <NumberFormatter value={totalNutrients.totalFat} />
-                </Text>{' '}
-                {getUnitShorts(props.per_unit)}
-              </Text>
+              {totalNutrients.totalCarbs > 0 && (
+                <>
+                  <Text component="span" inherit>
+                    <Text
+                      component="span"
+                      inherit
+                      c={`${COLOR_CODES.FOOD.CARBS}.6`}
+                    >
+                      <NumberFormatter value={totalNutrients.totalCarbs} />
+                    </Text>{' '}
+                    {getUnitShorts(props.per_unit)}
+                  </Text>
+                </>
+              )}
+
+              {totalNutrients.totalProtein > 0 && (
+                <>
+                  {totalNutrients.totalCarbs > 0 && ', '}
+                  <Text component="span" inherit>
+                    <Text
+                      component="span"
+                      inherit
+                      c={`${COLOR_CODES.FOOD.PROTEINS}.6`}
+                    >
+                      <NumberFormatter value={totalNutrients.totalProtein} />
+                    </Text>{' '}
+                    {getUnitShorts(props.per_unit)}
+                  </Text>
+                </>
+              )}
+
+              {totalNutrients.totalFat > 0 && (
+                <>
+                  {(totalNutrients.totalCarbs > 0 ||
+                    totalNutrients.totalProtein > 0) &&
+                    ', '}
+                  <Text component="span" inherit>
+                    <Text
+                      component="span"
+                      inherit
+                      c={`${COLOR_CODES.FOOD.FATS}.6`}
+                    >
+                      <NumberFormatter value={totalNutrients.totalFat} />
+                    </Text>{' '}
+                    {getUnitShorts(props.per_unit)}
+                  </Text>
+                </>
+              )}
             </Text>
           </Group>
         </Stack>
