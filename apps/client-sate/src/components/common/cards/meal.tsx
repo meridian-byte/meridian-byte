@@ -10,7 +10,7 @@ import {
   Title,
 } from '@mantine/core';
 import { MealGet } from '@repo/types/models/meal';
-import { getUnitShorts } from '@/utilities/string';
+import { getUnitShorts } from '@/hooks/nutrients';
 import { WeightUnitType } from '@repo/types/models/enums';
 import { useMealTotals } from '@/hooks/nutrients';
 import { COLOR_CODES } from '@repo/constants/other';

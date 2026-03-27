@@ -3,8 +3,6 @@
 import React from 'react';
 import {
   Card,
-  Grid,
-  GridCol,
   Group,
   NumberFormatter,
   Stack,
@@ -12,7 +10,8 @@ import {
   Title,
 } from '@mantine/core';
 import { FoodGet } from '@repo/types/models/food';
-import { getFoodServingTotals, getUnitShorts } from '@/utilities/string';
+import { getUnitShorts } from '@/hooks/nutrients';
+import { getFoodServingTotals } from '@/hooks/nutrients';
 import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Food({ props }: { props: FoodGet }) {

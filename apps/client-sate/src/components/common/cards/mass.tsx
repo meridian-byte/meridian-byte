@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { MassGet } from '@repo/types/models/mass';
 import { getRegionalDate } from '@repo/utilities/date-time';
-import { formatNumber } from '@/utilities/string';
+import { formatNumber } from '@/utilities/number';
 import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Mass({ props }: { props: MassGet }) {
@@ -42,7 +42,7 @@ export default function Mass({ props }: { props: MassGet }) {
                 </Text>{' '}
                 Kg{' '}
                 <Text component="span" inherit fz={'xs'}>
-                  ({massPercentages.fat}%)
+                  ({formatNumber(massPercentages.fat)}%)
                 </Text>
               </Text>
               ,{' '}
@@ -56,7 +56,7 @@ export default function Mass({ props }: { props: MassGet }) {
                 </Text>{' '}
                 Kg{' '}
                 <Text component="span" inherit fz={'xs'}>
-                  ({massPercentages.muscle}%)
+                  ({formatNumber(massPercentages.muscle)}%)
                 </Text>
               </Text>
             </Text>
@@ -86,8 +86,8 @@ export default function Mass({ props }: { props: MassGet }) {
 }
 
 const getMassPercentages = (params: MassGet) => {
-  const fat = formatNumber((params.fat / params.weight) * 100);
-  const muscle = formatNumber((params.muscle / params.weight) * 100);
+  const fat = (params.fat / params.weight) * 100;
+  const muscle = (params.muscle / params.weight) * 100;
 
   return { fat, muscle };
 };

@@ -11,8 +11,8 @@ import {
 } from '@mantine/core';
 import { ServingGet } from '@repo/types/models/serving';
 import { useStoreFood } from '@/libraries/zustand/stores/food';
-import { capitalizeWords } from '@repo/utilities/string';
-import { getFoodServingTotals, getUnitShorts } from '@/utilities/string';
+import { getUnitShorts } from '@/hooks/nutrients';
+import { getFoodServingTotals } from '@/hooks/nutrients';
 import { COLOR_CODES } from '@repo/constants/other';
 
 export default function Serving({ props }: { props: ServingGet }) {

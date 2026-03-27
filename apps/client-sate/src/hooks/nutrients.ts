@@ -1,11 +1,9 @@
 import { useStoreFood } from '@/libraries/zustand/stores/food';
 import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import {
-  formatNumber,
-  getFoodServingTotals,
-  ServingTotals,
-} from '@/utilities/string';
+import { formatNumber } from '@/utilities/number';
 import { EatGet } from '@repo/types/models/eat';
+import { WeightUnitType } from '@repo/types/models/enums';
+import { FoodGet } from '@repo/types/models/food';
 import { MealGet } from '@repo/types/models/meal';
 import { ServingGet } from '@repo/types/models/serving';
 
@@ -16,58 +14,42 @@ export const useServingTotals = (params?: {
   const { servings } = useStoreServing();
   const { foods } = useStoreFood();
 
-  const totalServingsNutrients: ServingTotals = {
-    totalCarbs: '0',
-    totalProtein: '0',
-    totalFat: '0',
-    totalKcal: '0',
-  };
+  const totals: { carbs: number; protein: number; fat: number; kcal: number } =
+    {
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+      kcal: 0,
+    };
 
   (params?.servings || servings || []).forEach((s) => {
     const servingFood = foods?.find((f) => f.id == s.food_id);
 
-    if (servingFood) {
-      const totalNutrients = getFoodServingTotals({
-        food: servingFood,
-        serving: s,
-      });
+    if (!servingFood) return;
 
-      totalServingsNutrients.totalCarbs = formatNumber(
-        Number(totalServingsNutrients.totalCarbs) +
-          Number(totalNutrients.totalCarbs)
-      );
+    const nutrientTotals = getFoodServingTotals({
+      food: servingFood,
+      serving: s,
+    });
 
-      totalServingsNutrients.totalProtein = formatNumber(
-        Number(totalServingsNutrients.totalProtein) +
-          Number(totalNutrients.totalProtein)
-      );
-
-      totalServingsNutrients.totalFat = formatNumber(
-        Number(totalServingsNutrients.totalFat) +
-          Number(totalNutrients.totalFat)
-      );
-
-      totalServingsNutrients.totalKcal = Math.round(
-        Number(totalServingsNutrients.totalKcal) +
-          Number(totalNutrients.totalKcal)
-      ).toString();
-    }
+    totals.carbs += Number(nutrientTotals.totalCarbs);
+    totals.protein += Number(nutrientTotals.totalProtein);
+    totals.fat += Number(nutrientTotals.totalFat);
+    totals.kcal += Number(nutrientTotals.totalKcal);
   });
 
-  if (params?.options?.round) {
-    return {
-      ...totalServingsNutrients,
-      totalCarbs: Math.round(
-        Number(totalServingsNutrients.totalCarbs)
-      ).toString(),
-      totalProtein: Math.round(
-        Number(totalServingsNutrients.totalProtein)
-      ).toString(),
-      totalFat: Math.round(Number(totalServingsNutrients.totalFat)).toString(),
-    };
-  }
-
-  return { ...totalServingsNutrients };
+  return {
+    totalCarbs: params?.options?.round
+      ? Math.round(totals.carbs)
+      : formatNumber(totals.carbs),
+    totalProtein: params?.options?.round
+      ? Math.round(totals.protein)
+      : formatNumber(totals.protein),
+    totalFat: params?.options?.round
+      ? Math.round(totals.fat)
+      : formatNumber(totals.fat),
+    totalKcal: Math.round(totals.kcal),
+  };
 };
 
 export const useMealTotals = (params: { meal: MealGet }) => {
@@ -105,4 +87,59 @@ export const useEatTotals = (params: { eats: EatGet[] }) => {
   return {
     totalEatenNutrients: servingTotals,
   };
+};
+
+export const getUnitShorts = (unit: string) => {
+  switch (unit) {
+    case WeightUnitType.GRAMS:
+      return 'g';
+
+    case WeightUnitType.MILLIGRAMS:
+      return 'mg';
+
+    default:
+      return 'unit';
+  }
+};
+
+export type ServingTotals = {
+  totalCarbs: number;
+  totalProtein: number;
+  totalFat: number;
+  totalKcal: number;
+};
+
+export const getFoodServingTotals = (params: {
+  food: FoodGet;
+  serving?: ServingGet;
+  options?: { round?: boolean };
+}): ServingTotals => {
+  const { food, serving } = params;
+  const perUnit = food.per;
+  const totalUnit = serving?.serving_size || food.per;
+
+  const totalCarbs = getTotalunit(food.carbs, perUnit, totalUnit);
+  const totalProtein = getTotalunit(food.protein, perUnit, totalUnit);
+  const totalFat = getTotalunit(food.fat, perUnit, totalUnit);
+  const totalKcal = getTotalunit(food.kcal, perUnit, totalUnit);
+
+  if (params.options?.round) {
+    return {
+      totalCarbs: Math.round(Number(totalCarbs)),
+      totalProtein: Math.round(Number(totalProtein)),
+      totalFat: Math.round(Number(totalFat)),
+      totalKcal: Math.round(Number(totalKcal)),
+    };
+  }
+
+  return {
+    totalCarbs: formatNumber(totalCarbs),
+    totalProtein: formatNumber(totalProtein),
+    totalFat: formatNumber(totalFat),
+    totalKcal: formatNumber(totalKcal),
+  };
+};
+
+const getTotalunit = (value: number, unitSize: number, servingSize: number) => {
+  return (servingSize / unitSize) * value;
 };
