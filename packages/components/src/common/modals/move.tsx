@@ -72,19 +72,33 @@ export default function Move({
                   </Center>
                 </>
               ) : (
-                searchCriteriaItems.map((pni) => (
+                <>
                   <NavLink
-                    key={pni.id}
-                    label={pni.title}
+                    key={'root'}
+                    label={'Root'}
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
                     }}
                     onClick={() => {
                       if (note)
-                        noteMove({ values: note, parent_note_id: pni.id });
+                        noteMove({ values: note, parent_note_id: undefined });
                     }}
                   />
-                ))
+
+                  {searchCriteriaItems.map((pni) => (
+                    <NavLink
+                      key={pni.id}
+                      label={pni.title}
+                      style={{
+                        borderRadius: 'var(--mantine-radius-sm)',
+                      }}
+                      onClick={() => {
+                        if (note)
+                          noteMove({ values: note, parent_note_id: pni.id });
+                      }}
+                    />
+                  ))}
+                </>
               )}
             </Stack>
           </ScrollArea>
