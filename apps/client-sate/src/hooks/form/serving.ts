@@ -43,8 +43,9 @@ export const useFormServing = (params?: {
           ...rawValues,
         };
 
-        if (!params?.defaultValues?.created_at) {
+        if (!params?.defaultValues?.updated_at) {
           servingCreate({
+            ...params?.defaultValues,
             ...submitObject,
           });
         } else {

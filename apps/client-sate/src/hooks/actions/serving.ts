@@ -35,7 +35,7 @@ export const useServingActions = (params?: { formEat?: FormEat }) => {
         eat_id: item.eat_id || '',
         status: item.status || Status.ACTIVE,
         sync_status: SyncStatus.PENDING,
-        created_at: now.toISOString() as any,
+        created_at: (item.created_at || now.toISOString()) as any,
         updated_at: now.toISOString() as any,
       };
 

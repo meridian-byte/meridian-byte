@@ -32,8 +32,9 @@ export const useFormMeal = (params?: {
           ...rawValues,
         };
 
-        if (!params?.defaultValues?.created_at) {
+        if (!params?.defaultValues?.updated_at) {
           mealCreate({
+            ...params?.defaultValues,
             ...submitObject,
           });
         } else {
