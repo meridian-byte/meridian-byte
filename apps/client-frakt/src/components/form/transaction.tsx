@@ -82,10 +82,10 @@ export default function Transaction({
                 label: capitalizeWords(TransactionType.DEBIT),
                 value: TransactionType.DEBIT,
               },
-              // {
-              //   label: capitalizeWords(TransactionType.TRANSFER),
-              //   value: TransactionType.TRANSFER,
-              // },
+              {
+                label: capitalizeWords(TransactionType.TRANSFER),
+                value: TransactionType.TRANSFER,
+              },
             ]}
             {...form.getInputProps('type')}
           />
