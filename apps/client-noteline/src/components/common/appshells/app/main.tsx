@@ -13,11 +13,15 @@ import NavbarAppFooterParent from '@/components/layout/navbars/app/footer/parent
 import NavbarAppMainParent from '@/components/layout/navbars/app/main/parent';
 import AppshellAppChild from './child';
 import HeaderAppMain from '@/components/layout/headers/app/main';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Main({ children }: { children: React.ReactNode }) {
+  const mobile = useMediaQuery('(max-width: 36em)');
+
   return (
     <AppShell
-      header={{ height: APPSHELL.HEADER_HEIGHT }}
+      layout="alt"
+      header={{ height: mobile ? APPSHELL.HEADER_HEIGHT : 0 }}
       navbar={{
         width: APPSHELL.NAVBAR_WIDTH,
         breakpoint: 'xs',
@@ -25,6 +29,7 @@ export default function Main({ children }: { children: React.ReactNode }) {
       }}
     >
       <AppShellHeader
+        display={mobile ? undefined : 'none'}
         bg={
           'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
         }
