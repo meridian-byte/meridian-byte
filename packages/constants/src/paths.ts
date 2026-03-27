@@ -52,7 +52,3 @@ export const PRODUCTION_BASE_URL_CLIENT_WEB = {
 };
 
 export const API_URL = `${BASE_URL_SERVER}/api`;
-
-export const GEO_DATA_URL = {
-  COUNTRIES: `${process.env.NEXT_PUBLIC_REST_COUNTRIES_API_URL}`,
-};
