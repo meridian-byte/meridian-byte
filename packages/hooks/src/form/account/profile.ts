@@ -19,40 +19,37 @@ export const useFormUserProfile = () => {
   const setSession = useStoreSession((s) => s.setSession);
 
   const { form, submitted, handleSubmit } = useFormBase<{
-    firstName: string;
-    lastName: string;
-    phone: string;
+    name: string;
+    // user_name: string;
   }>(
     {
-      firstName: segmentFullName(session?.user_metadata.name || '').first,
-      lastName: segmentFullName(session?.user_metadata.name || '').last,
-      phone: session?.user_metadata.phone || '',
+      name: session?.user_metadata.name || 'Set Name',
+      // user_name: session?.user_metadata.user_name || 'Set username',
     },
     {
-      firstName: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
-      lastName: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
-      phone: (v) =>
-        v.trim().length > 0 && (v.trim().length < 7 || v.trim().length > 15),
+      name: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
+      // user_name: hasLength({ min: 0, max: 24 }, 'Max 24 characters'),
     },
     {
+      hideSuccessNotification: true,
       onSubmit: async (rawValues) => {
         if (!session) throw new Error('You must be signed in');
         if (!form.isDirty()) throw new Error('Update at least one form field');
 
+        const segment = segmentFullName(rawValues.name || '');
+
         const cleanValues = {
-          name: capitalizeWords(
-            `${rawValues.firstName.trim()} ${rawValues.lastName.trim()}`
-          ),
-          firstName: rawValues.firstName.trim(),
-          lastName: rawValues.lastName.trim(),
-          phone: rawValues.phone.trim(),
+          name: capitalizeWords(rawValues.name.trim()),
+          firstName: segment.first.trim(),
+          lastName: segment.last.trim(),
+          // userName: rawValues.user_name.trim(),
         };
 
         const response = await profileUpdate({
           id: session.id,
           first_name: cleanValues.firstName,
           last_name: cleanValues.lastName,
-          phone: cleanValues.phone,
+          // user_name: cleanValues.userName,
         });
 
         if (!response) throw new Error('No response from server');
@@ -68,7 +65,7 @@ export const useFormUserProfile = () => {
             ...session.user_metadata,
             name: cleanValues.name,
             full_name: cleanValues.name,
-            phone: cleanValues.phone,
+            // user_name: cleanValues.userName,
           },
         });
 
