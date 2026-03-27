@@ -81,7 +81,7 @@ export default function Crud({
     <>
       <Modal opened={opened} onClose={handleClose}>
         <LayoutModal
-          title={`${!props?.created_at ? 'Create' : 'Edit'} Entry`}
+          title={`${!props?.updated_at ? 'Add' : 'Edit'} Entry`}
           close={handleClose}
           options={{ padding: 'xs' }}
         >
