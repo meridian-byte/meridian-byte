@@ -6,9 +6,9 @@
  */
 
 import React from 'react';
-import LoadingMain from '@/components/partial/loading/main';
+import LoadingMain from '@repo/components/partial/loading/main';
 import ProviderMantine from '@repo/components/provider/mantine';
-import { mantine } from '@/assets/styles';
+import { mantine } from '@repo/constants/styles';
 
 export default function Loading() {
   return (
