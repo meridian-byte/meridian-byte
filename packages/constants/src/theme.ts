@@ -111,7 +111,10 @@ export const getAppTheme = (params?: AppThemeProps) => {
       ScrollArea: ScrollArea.extend({
         defaultProps: {
           type: 'auto',
-          scrollbarSize: 8,
+          scrollbarSize: 6,
+        },
+        styles: {
+          scrollbar: { zIndex: 100 },
         },
       }),
 

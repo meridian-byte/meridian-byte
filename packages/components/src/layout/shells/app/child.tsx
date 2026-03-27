@@ -68,7 +68,6 @@ export default function Child({
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
           type="auto"
           scrollbars={'y'}
-          scrollbarSize={ICON_STROKE_WIDTH * 3}
         >
           {props.leftSection?.component}
         </ScrollArea>
@@ -87,7 +86,6 @@ export default function Child({
             h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
             type="auto"
             scrollbars={'y'}
-            scrollbarSize={ICON_STROKE_WIDTH * 3}
             styles={{ thumb: { zIndex: 1 } }}
           >
             {MemoizedChildren}
@@ -108,7 +106,6 @@ export default function Child({
           h={`calc(100vh - ${(props.appShell.footerHeight || 0) + (mobile ? props.appShell.headerHeight || 0 : 0)}px)`}
           type="auto"
           scrollbars={'y'}
-          scrollbarSize={ICON_STROKE_WIDTH * 3}
         >
           {props.rightSection?.component}
         </ScrollArea>

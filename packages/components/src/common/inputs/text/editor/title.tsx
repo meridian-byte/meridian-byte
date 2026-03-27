@@ -7,6 +7,7 @@ import { NoteGet } from '@repo/types/models/note';
 import classes from './title.module.scss';
 import { useNoteActions } from '@repo/hooks/actions/note';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import LayoutSection from '../../../../layout/section';
 
 export default function Title({ item }: { item: NoteGet }) {
   const notes = useStoreNote((s) => s.notes);
@@ -59,16 +60,18 @@ export default function Title({ item }: { item: NoteGet }) {
   }, []); // empty dependency array ensures it runs once after mount
 
   return (
-    <TextInput
-      {...field.getInputProps()}
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-      classNames={classes}
-      placeholder="Title"
-      variant={'unstyled'}
-      size="md"
-      ref={inputRef}
-      id={'note-title-input'}
-    />
+    <LayoutSection id={`note-details`} containerized={'md'}>
+      <TextInput
+        {...field.getInputProps()}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        classNames={classes}
+        placeholder="Title"
+        variant={'unstyled'}
+        size="md"
+        ref={inputRef}
+        id={'note-title-input'}
+      />
+    </LayoutSection>
   );
 }

@@ -161,7 +161,6 @@ export default function Crud({ children }: { children: React.ReactNode }) {
           {tablet ? (
             <ScrollAreaAutosize
               type="auto"
-              // scrollbarSize={APPSHELL.SCROLLBAR_WIDTH}
               // h={MODAL_HEIGHT.TASK_VIEW}
               scrollbars={'y'}
             >
