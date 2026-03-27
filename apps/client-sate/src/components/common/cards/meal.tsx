@@ -10,42 +10,12 @@ import {
   Title,
 } from '@mantine/core';
 import { MealGet } from '@repo/types/models/meal';
-import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import {
-  getFoodServingTotals,
-  getUnitShorts,
-  ServingTotals,
-} from '@/utilities/string';
-import { useStoreFood } from '@/libraries/zustand/stores/food';
+import { getUnitShorts } from '@/utilities/string';
 import { WeightUnitType } from '@repo/types/models/enums';
+import { useMealTotals } from '@/hooks/nutrients';
 
 export default function Meal({ props }: { props: MealGet }) {
-  const { servings } = useStoreServing();
-  const { foods } = useStoreFood();
-  const mealServings = servings?.filter((s) => s.meal_id == props.id);
-
-  const totalMealNutrients: ServingTotals = {
-    totalCarbs: 0,
-    totalProtein: 0,
-    totalFat: 0,
-    totalKcal: 0,
-  };
-
-  mealServings?.forEach((s) => {
-    const servingFood = foods?.find((f) => f.id == s.food_id);
-
-    if (servingFood) {
-      const totalNutrients = getFoodServingTotals({
-        food: servingFood,
-        serving: s,
-      });
-
-      totalMealNutrients.totalCarbs += totalNutrients.totalCarbs;
-      totalMealNutrients.totalProtein += totalNutrients.totalProtein;
-      totalMealNutrients.totalFat += totalNutrients.totalFat;
-      totalMealNutrients.totalKcal += totalNutrients.totalKcal;
-    }
-  });
+  const { totalMealNutrients } = useMealTotals({ meal: props });
 
   return (
     <Card radius={0} bg={'transparent'} padding={0} py={5}>
