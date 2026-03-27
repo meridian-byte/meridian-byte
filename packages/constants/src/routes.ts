@@ -15,3 +15,9 @@ export const protectedRoutes = [
   '/app',
   // Add other protected routes
 ];
+
+export const protectedDeadEndRoutes = [
+  '/auth/sign-out',
+  '/auth/confirm/delete-account',
+  // Add other protected dead-end routes
+];

@@ -7,6 +7,11 @@
 
 import { PARAM_NAME } from '@repo/constants/names';
 import { capitalizeWords } from './string';
+import {
+  authRoutes,
+  protectedDeadEndRoutes,
+  protectedRoutes,
+} from '@repo/constants/routes';
 
 /**
  * Appends a redirect query parameter to a target URL
@@ -221,4 +226,40 @@ export const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary);
+};
+
+/**
+ * Validates access for a given route based on user authentication state
+ */
+export const validateRoute = (params: {
+  request: Request;
+  user: any | null;
+  pathname: string;
+}) => {
+  const { user, pathname } = params;
+
+  const actions = {
+    redirectToAuth: false,
+    redirectFromAuth: false,
+    redirectToHome: false,
+  };
+
+  if (!user) {
+    const protectedDeadEnd = protectedDeadEndRoutes.some((r) =>
+      pathname.startsWith(r)
+    );
+
+    if (protectedDeadEnd) actions.redirectToHome = true;
+
+    const isProtectedRoute = protectedRoutes.some((r) =>
+      pathname.startsWith(r)
+    );
+
+    if (isProtectedRoute) actions.redirectToAuth = true;
+  } else {
+    const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
+    if (isAuthRoute) actions.redirectFromAuth = true;
+  }
+
+  return actions;
 };
