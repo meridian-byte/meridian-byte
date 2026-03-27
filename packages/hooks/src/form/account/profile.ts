@@ -66,7 +66,7 @@ export const useFormUserProfile = () => {
             ...session.user_metadata,
             name: cleanValues.name,
             full_name: cleanValues.name,
-            // user_name: cleanValues.userName,
+            user_name: cleanValues.userName,
           },
         });
 
