@@ -1,0 +1,36 @@
+.group {
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+
+  @include mantine.hover {
+    background-color: var(--mantine-color-gray-2);
+
+    .icon {
+      opacity: 1;
+    }
+  }
+}
+
+.root {
+  border-radius: var(--mantine-radius-md);
+  padding: 10px 0px;
+  padding-left: 7.5px;
+  padding-right: 24px;
+  line-height: 1;
+  z-index: 1;
+
+  @include mantine.hover {
+    background-color: transparent;
+  }
+}
+
+.overlay {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+}
+
+.icon {
+  opacity: 0;
+  transition: 0.25s all ease;
+}

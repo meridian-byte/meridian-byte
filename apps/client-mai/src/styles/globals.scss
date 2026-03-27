@@ -1,0 +1,54 @@
+/**
+ * @template-source next-template
+ * @template-sync auto
+ * @description This file originates from the base template repository.
+ * Do not modify unless you intend to backport changes to the template.
+ */
+
+:root {
+  --background: var(--mantine-color-body);
+  --foreground: var(--mantine-color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--mantine-color-body);
+    --foreground: var(--mantine-color-text);
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  // overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-geist-sans);
+  font-size: var(--mantine-font-size-md);
+  line-height: var(--mantine-line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: var(--mantine-webkit-font-smoothing);
+  -moz-osx-font-smoothing: var(--mantine-moz-font-smoothing);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
