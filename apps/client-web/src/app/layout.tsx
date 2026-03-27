@@ -18,7 +18,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
 import ProviderStore from '@/components/provider/store';
-import { mantine } from '@repo/constants/styles';
+import { mantine } from '@/data/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 

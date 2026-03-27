@@ -13,12 +13,14 @@
     "@mantine/core": "^8.3.6",
     "@repo/types": "workspace:*",
     "@tabler/icons-react": "^3.35.0",
-    "clsx": "^2.1.1"
+    "clsx": "^2.1.1",
+    "react": "^19.2.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
+    "@types/react": "^19",
     "typescript": "5.9.2"
   }
 }

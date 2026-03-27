@@ -6,9 +6,13 @@ export function createFileSyncAdapter(
   fileName: string
 ): FileSyncAdapter {
   async function ensureAccess(): Promise<boolean> {
-    const perm = await dirHandle.queryPermission({ mode: 'readwrite' });
+    const perm = ((await dirHandle) as any).queryPermission({
+      mode: 'readwrite',
+    });
     if (perm === 'granted') return true;
-    const req = await dirHandle.requestPermission({ mode: 'readwrite' });
+    const req = ((await dirHandle) as any).requestPermission({
+      mode: 'readwrite',
+    });
     return req === 'granted';
   }
 
@@ -16,7 +20,9 @@ export function createFileSyncAdapter(
     const tmpName = `${fileName}.tmp`;
 
     // --- 1. Write JSON to temp file -------------------------------------
-    const tmpHandle = await dirHandle.getFileHandle(tmpName, { create: true });
+    const tmpHandle = ((await dirHandle) as any).getFileHandle(tmpName, {
+      create: true,
+    });
     const tmpWritable = await tmpHandle.createWritable();
     const json = JSON.stringify(data, null, 2);
     await tmpWritable.write(json);
@@ -24,12 +30,12 @@ export function createFileSyncAdapter(
 
     // --- 2. Remove final file (if exists) --------------------------------
     try {
-      await dirHandle.removeEntry(fileName);
+      ((await dirHandle) as any).removeEntry(fileName);
       // eslint-disable-next-line no-empty, @typescript-eslint/no-unused-vars
     } catch (_) {}
 
     // --- 3. Copy temp → final -------------------------------------------
-    const finalHandle = await dirHandle.getFileHandle(fileName, {
+    const finalHandle = ((await dirHandle) as any).getFileHandle(fileName, {
       create: true,
     });
 
@@ -38,7 +44,7 @@ export function createFileSyncAdapter(
     await finalWritable.close();
 
     // --- 4. Cleanup temp -------------------------------------------------
-    await dirHandle.removeEntry(tmpName);
+    ((await dirHandle) as any).removeEntry(tmpName);
   }
 
   return {
@@ -61,7 +67,7 @@ export function createFileSyncAdapter(
       const ok = await ensureAccess();
       if (!ok) return null;
       try {
-        const fileHandle = await dirHandle.getFileHandle(fileName);
+        const fileHandle = ((await dirHandle) as any).getFileHandle(fileName);
         const file = await fileHandle.getFile();
         return JSON.parse(await file.text());
       } catch (err) {

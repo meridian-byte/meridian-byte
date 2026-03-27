@@ -10,7 +10,7 @@
 import React from 'react';
 import Error500 from '@repo/components/partial/errors/500';
 import ProviderMantine from '@repo/components/provider/mantine';
-import { mantine } from '@repo/constants/styles';
+import { mantine } from '@/data/styles';
 
 export default function GlobalError({ reset }: { reset: () => void }) {
   return (

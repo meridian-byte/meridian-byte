@@ -20,7 +20,7 @@ import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import ProviderMantine from '@repo/components/provider/mantine';
 import ProviderStore from '@/components/provider/store';
 import ProviderSync from '@/components/provider/sync';
-import { mantine } from '@repo/constants/styles';
+import { mantine } from '@/data/styles';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 import { AUTH_URLS } from '@repo/constants/paths';
