@@ -398,6 +398,9 @@ importers:
       postcss-simple-vars:
         specifier: ^7.0.1
         version: 7.0.1(postcss@8.5.6)
+      prisma:
+        specifier: 6.17.1
+        version: 6.17.1(typescript@5.9.2)
       sass-embedded:
         specifier: ^1.89.0
         version: 1.97.1
