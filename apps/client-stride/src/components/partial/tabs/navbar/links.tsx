@@ -1,27 +1,99 @@
 'use client';
 
-import { Divider, Skeleton, Stack } from '@mantine/core';
+import {
+  ActionIcon,
+  Divider,
+  Group,
+  Skeleton,
+  Stack,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import { sortArray } from '@repo/utilities/array';
 import { Order } from '@repo/types/enums';
 import NavlinkCategory from '@/components/common/navlink/note';
 import NavlinkAppMain from '@/components/common/navlink/app/main';
+import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import {
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+} from '@repo/constants/sizes';
 import {
   IconCalendarEvent,
   IconCircleCheck,
   IconClearAll,
   IconHome,
   IconInbox,
+  IconPlus,
   IconSun,
 } from '@tabler/icons-react';
-import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
+import ModalCategoryCrud from '@repo/components/common/modals/category/crud';
+import { APP_NAME } from '@repo/constants/app';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
+import { useMemo } from 'react';
+import { isToday, isWithinNext7Days } from '@repo/utilities/date-time';
 
 export default function Links() {
+  const tasks = useStoreTask((s) => s.tasks);
+  const incompleteTasks = useMemo(
+    () => tasks?.filter((ti) => !ti.complete),
+    [tasks]
+  );
+  const completeTasks = useMemo(
+    () => tasks?.filter((ti) => !!ti.complete),
+    [tasks]
+  );
   const categories = useStoreCategory((s) => s.categories);
   const ids = new Set((categories || []).map((n) => n.id));
 
+  const navLinks = [
+    {
+      icon: IconHome,
+      label: 'Home',
+      link: '/app',
+    },
+    {
+      icon: IconInbox,
+      label: 'Inbox',
+      link: '/app/inbox',
+      count: !incompleteTasks
+        ? undefined
+        : incompleteTasks.filter((ti) => !ti.category_id).length,
+    },
+    {
+      icon: IconSun,
+      label: 'Today',
+      link: '/app/today',
+      count: !incompleteTasks
+        ? undefined
+        : incompleteTasks.filter((ti) => isToday(ti.due_date || '')).length,
+    },
+    {
+      icon: IconCalendarEvent,
+      label: 'Upcoming',
+      link: '/app/upcoming',
+      count: !incompleteTasks
+        ? undefined
+        : incompleteTasks.filter((ti) => isWithinNext7Days(ti.due_date)).length,
+    },
+    {
+      icon: IconClearAll,
+      label: 'All',
+      link: '/app/all',
+      count: tasks?.length,
+    },
+    {
+      icon: IconCircleCheck,
+      label: 'Completed',
+      link: '/app/completed',
+      count: completeTasks?.length,
+    },
+  ];
+
   return (
     <div>
-      <Stack gap={0} style={{ zIndex: 0 }}>
+      <Stack gap={2} style={{ zIndex: 0 }} p={'xs'}>
         {navLinks.map((nl) => {
           return (
             <div key={nl.link}>
@@ -29,9 +101,34 @@ export default function Links() {
             </div>
           );
         })}
+      </Stack>
 
-        <Divider py={'md'} />
+      <Divider mb={'xs'} />
 
+      <Group
+        justify="space-between"
+        px={'calc(var(--mantine-spacing-xs) + 6.67px)'}
+      >
+        <div>
+          <Title order={2} fz={'md'} fw={500}>
+            Projects
+          </Title>
+        </div>
+
+        <Group justify={'end'} align={'end'}>
+          <ModalCategoryCrud source={APP_NAME.STRIDE}>
+            <Tooltip label={'Create Project'} withArrow>
+              <Group>
+                <ActionIcon size={ICON_WRAPPER_SIZE} variant="subtle">
+                  <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                </ActionIcon>
+              </Group>
+            </Tooltip>
+          </ModalCategoryCrud>
+        </Group>
+      </Group>
+
+      <Stack gap={2} style={{ zIndex: 0 }} p={'xs'}>
         {categories === undefined ? (
           <Stack gap={2}>
             <Skeleton h={31.7} />
@@ -61,36 +158,3 @@ export default function Links() {
     </div>
   );
 }
-
-export const navLinks = [
-  {
-    icon: IconHome,
-    label: 'Home',
-    link: '/app/home',
-  },
-  {
-    icon: IconInbox,
-    label: 'Inbox',
-    link: '/app/inbox',
-  },
-  {
-    icon: IconSun,
-    label: 'Today',
-    link: '/app/today',
-  },
-  {
-    icon: IconCalendarEvent,
-    label: 'Upcoming',
-    link: '/app/upcoming',
-  },
-  {
-    icon: IconClearAll,
-    label: 'All',
-    link: '/app/all',
-  },
-  {
-    icon: IconCircleCheck,
-    label: 'Completed',
-    link: '/app/completed',
-  },
-];

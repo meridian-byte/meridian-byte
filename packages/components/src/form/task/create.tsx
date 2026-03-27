@@ -29,6 +29,7 @@ export default function Create({ props }: { props: { form: FormTask } }) {
           {...props.form.getInputProps('title')}
           classNames={{ input: classes.title }}
           data-autofocus
+          styles={{ input: { borderRadius: 0 } }}
         />
 
         <Textarea
@@ -41,6 +42,7 @@ export default function Create({ props }: { props: { form: FormTask } }) {
           key={props.form.key('description')}
           {...props.form.getInputProps('description')}
           classNames={{ input: classes.desc }}
+          styles={{ input: { borderRadius: 0 } }}
         />
       </div>
 

@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
 
   // Update the session in the response
-  response = await updateSession(request, response, BASE_URL_CLIENT.NOTELINE);
+  response = await updateSession(request, response, BASE_URL_CLIENT.STRIDE);
 
   return response;
 }

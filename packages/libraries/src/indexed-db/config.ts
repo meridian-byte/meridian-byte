@@ -87,6 +87,10 @@ export const config: DBConfig = {
       keyPath: 'id',
     },
     {
+      name: STORE_NAME.RECURRING_RULES,
+      keyPath: 'id',
+    },
+    {
       name: STORE_NAME.VIEWS,
       keyPath: 'id',
     },

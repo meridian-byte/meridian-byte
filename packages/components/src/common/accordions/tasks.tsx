@@ -67,7 +67,7 @@ export default function Tasks({
         </AccordionControl>
 
         <AccordionPanel pt={'xs'}>
-          <Stack>
+          <Stack gap={0}>
             {group.tasks.map((item, i) => (
               <div
                 key={item.id}
@@ -84,22 +84,23 @@ export default function Tasks({
           </Stack>
 
           <CardTaskCreate
-          // props={{
-          //   defaultValues: {
-          //     category_id:
-          //       view?.group_by == GroupSort.CATEGORY
-          //         ? group.id
-          //         : props.defaultValues?.category_id,
-          //     due_date: (view?.group_by == GroupSort.DATE
-          //       ? group.id
-          //         ? new Date(group.id)
-          //         : undefined
-          //       : props.defaultValues?.dueDate) as any,
-          //     priority: (view?.group_by == GroupSort.PRIORITY
-          //       ? group.id
-          //       : props.defaultValues?.priority) as any,
-          //   },
-          // }}
+            props={{
+              defaultValues: {
+                category_id: props.defaultValues?.category_id,
+                // category_id:
+                //   view?.group_by == GroupSort.CATEGORY
+                //     ? group.id
+                //     : props.defaultValues?.category_id,
+                // due_date: (view?.group_by == GroupSort.DATE
+                //   ? group.id
+                //     ? new Date(group.id)
+                //     : undefined
+                //   : props.defaultValues?.dueDate) as any,
+                // priority: (view?.group_by == GroupSort.PRIORITY
+                //   ? group.id
+                //   : props.defaultValues?.priority) as any,
+              },
+            }}
           />
         </AccordionPanel>
       </AccordionItem>

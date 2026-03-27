@@ -2,6 +2,7 @@ import { hasLength, UseFormReturnType } from '@mantine/form';
 import { useTaskActions } from '../actions/task';
 import { useFormBase } from '../form';
 import { TaskGet } from '@repo/types/models/task';
+import { Priority } from '@repo/types/models/enums';
 
 export type FormTask = UseFormReturnType<
   Partial<TaskGet>,
@@ -14,6 +15,14 @@ export const useFormTask = (params?: { defaultValues?: Partial<TaskGet> }) => {
   const { form, submitted, handleSubmit } = useFormBase<Partial<TaskGet>>(
     {
       id: params?.defaultValues?.id || '',
+      title: params?.defaultValues?.title || '',
+      due_date: params?.defaultValues?.due_date || null,
+      category_id: params?.defaultValues?.category_id || 'inbox',
+      complete: params?.defaultValues?.complete || false,
+      description: params?.defaultValues?.description || '',
+      priority:
+        params?.defaultValues?.priority || Priority.NOT_URGENT_UNIMPORTANT,
+      recurring_rule_id: params?.defaultValues?.recurring_rule_id || '',
     },
     {
       title: hasLength(
@@ -27,7 +36,7 @@ export const useFormTask = (params?: { defaultValues?: Partial<TaskGet> }) => {
       clientOnly: true,
 
       onSubmit: async (rawValues) => {
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           taskCreate(rawValues);
         } else {
           taskUpdate({

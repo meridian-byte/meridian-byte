@@ -43,7 +43,7 @@ import { useStoreAccount } from '@repo/libraries/zustand/stores/account';
 import { useStoreAccountGroup } from '@repo/libraries/zustand/stores/account-group';
 import { useStoreBudget } from '@repo/libraries/zustand/stores/budget';
 import { useStoreTransaction } from '@repo/libraries/zustand/stores/transaction';
-import { categoriesGet } from '@repo/handlers/requests/database/category';
+import { categoriesGet } from '@repo/handlers/requests/database/categories';
 import { budgetsGet } from '@repo/handlers/requests/database/budgets';
 import { accountsGet } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsGet } from '@repo/handlers/requests/database/account-groups';
@@ -58,6 +58,10 @@ import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreLink } from '@repo/libraries/zustand/stores/link';
 import { linksGet } from '@repo/handlers/requests/database/links';
+import { tasksGet } from '@repo/handlers/requests/database/tasks';
+import { remindersGet } from '@repo/handlers/requests/database/reminders';
+import { recurringRulesGet } from '@repo/handlers/requests/database/recurring-rules';
+import { viewsGet } from '@repo/handlers/requests/database/views';
 import { notesGet } from '@repo/handlers/requests/database/notes';
 import { useStoreFood } from '@repo/libraries/zustand/stores/food';
 import { useStoreMeal } from '@repo/libraries/zustand/stores/meal';
@@ -79,6 +83,11 @@ import { customizationsGet } from '@repo/handlers/requests/database/customizatio
 import { useStoreChatTemporary } from '@repo/libraries/zustand/stores/chat-temporary';
 import { SAMPLE_CHAT } from '@repo/constants/chat';
 import { User } from '@supabase/supabase-js';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
+import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
+import { useStoreRecurringRule } from '@repo/libraries/zustand/stores/recurring-rule';
+import { useStoreView } from '@repo/libraries/zustand/stores/view';
+import { useStoreSelectedTask } from '@repo/libraries/zustand/stores/selected-task';
 
 export const useSessionStore = (params?: {
   sessionUser: User | null;
@@ -263,6 +272,18 @@ export const useThemeStore = () => {
   }, [setTheme]);
 };
 
+export const useSelectedTaskStore = () => {
+  const setSelectedTask = useStoreSelectedTask((s) => s.setSelectedTask);
+
+  useEffect(() => {
+    const initializeTheme = () => {
+      setSelectedTask(null);
+    };
+
+    initializeTheme();
+  }, [useStoreSelectedTask]);
+};
+
 export const useChatTemporaryStore = () => {
   const setChatTemporary = useStoreChatTemporary((s) => s.setChatTemporary);
 
@@ -384,6 +405,30 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     useStoreHook: useStoreCustomization,
     fetchItems: (id) => customizationsGet({ userId: id }),
     setState: (store, items) => store.setCustomizations(items),
+  },
+  tasks: {
+    dataStore: STORE_NAME.TASKS,
+    useStoreHook: useStoreTask,
+    fetchItems: (id) => tasksGet({ userId: id }),
+    setState: (store, items) => store.setTasks(items),
+  },
+  reminders: {
+    dataStore: STORE_NAME.REMINDERS,
+    useStoreHook: useStoreReminder,
+    fetchItems: (id) => remindersGet({ userId: id }),
+    setState: (store, items) => store.setReminders(items),
+  },
+  recurringRules: {
+    dataStore: STORE_NAME.RECURRING_RULES,
+    useStoreHook: useStoreRecurringRule,
+    fetchItems: (id) => recurringRulesGet({ userId: id }),
+    setState: (store, items) => store.setRecurringRules(items),
+  },
+  views: {
+    dataStore: STORE_NAME.VIEWS,
+    useStoreHook: useStoreView,
+    fetchItems: (id) => viewsGet({ userId: id }),
+    setState: (store, items) => store.setViews(items),
   },
 } as const;
 

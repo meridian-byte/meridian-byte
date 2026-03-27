@@ -50,10 +50,7 @@ export default function Priority({
       withinPortal={false}
       onOptionSubmit={(val) => {
         if (props.formTask) {
-          props.formTask?.setFieldValue(
-            'priority',
-            val as TaskPriority
-          );
+          props.formTask?.setFieldValue('priority', val as TaskPriority);
         }
 
         if (props.formTaskView) {

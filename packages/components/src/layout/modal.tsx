@@ -65,7 +65,7 @@ export default function Modal({
           size={ICON_WRAPPER_SIZE}
           onClick={props.close}
           variant="light"
-          color="gray"
+          color="dark"
         >
           <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>

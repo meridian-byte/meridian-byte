@@ -79,37 +79,54 @@ export default function Main({
             </Title>
 
             <Group gap={'xs'}>
-              {task?.due_date && (
-                <Group
-                  gap={5}
-                  c={
-                    isOverdue(task.due_date) && !task.complete
-                      ? 'red'
-                      : isToday(task.due_date)
-                        ? 'pri'
-                        : 'dimmed'
-                  }
-                >
-                  <IconCalendarEvent
+              <>
+                <Group gap={5} c={'dimmed'}>
+                  <IconCategory
                     size={ICON_SIZE / 1.5}
                     stroke={ICON_STROKE_WIDTH * 1.5}
                   />
 
                   <Text fz={'xs'} lineClamp={1}>
-                    {isToday(task.due_date)
-                      ? 'Today'
-                      : isTomorrow(task.due_date)
-                        ? 'Tomorrow'
-                        : `${isOverdue(task.due_date) ? 'Overdue, ' : ''}${getRegionalDate(task.due_date).date}`}
+                    {category?.title || 'Inbox'}
                   </Text>
+                </Group>
+              </>
 
-                  {task?.recurring_rule_id && (
-                    <IconRepeat
+              {task?.due_date && (
+                <>
+                  <IconCircleFilled size={3} color="gray" />
+
+                  <Group
+                    gap={5}
+                    c={
+                      isOverdue(task.due_date) && !task.complete
+                        ? 'red'
+                        : isToday(task.due_date)
+                          ? 'pri'
+                          : 'dimmed'
+                    }
+                  >
+                    <IconCalendarEvent
                       size={ICON_SIZE / 1.5}
                       stroke={ICON_STROKE_WIDTH * 1.5}
                     />
-                  )}
-                </Group>
+
+                    <Text fz={'xs'} lineClamp={1}>
+                      {isToday(task.due_date)
+                        ? 'Today'
+                        : isTomorrow(task.due_date)
+                          ? 'Tomorrow'
+                          : `${isOverdue(task.due_date) ? 'Overdue, ' : ''}${getRegionalDate(task.due_date).date}`}
+                    </Text>
+
+                    {task?.recurring_rule_id && (
+                      <IconRepeat
+                        size={ICON_SIZE / 1.5}
+                        stroke={ICON_STROKE_WIDTH * 1.5}
+                      />
+                    )}
+                  </Group>
+                </>
               )}
 
               {(taskReminders || [])[0]?.remind_at && (
@@ -158,27 +175,6 @@ export default function Main({
 
                     <Text fz={'xs'} lineClamp={1}>
                       Note
-                    </Text>
-                  </Group>
-                </>
-              )}
-
-              {task?.category_id && (
-                <>
-                  {task.due_date ||
-                  (taskReminders || [])[0]?.remind_at ||
-                  task.description ? (
-                    <IconCircleFilled size={3} color="gray" />
-                  ) : null}
-
-                  <Group gap={5} c={'dimmed'}>
-                    <IconCategory
-                      size={ICON_SIZE / 1.5}
-                      stroke={ICON_STROKE_WIDTH * 1.5}
-                    />
-
-                    <Text fz={'xs'} lineClamp={1}>
-                      {category?.title}
                     </Text>
                   </Group>
                 </>

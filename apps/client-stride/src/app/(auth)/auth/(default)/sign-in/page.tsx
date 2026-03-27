@@ -23,7 +23,7 @@ export default function SignIn() {
           title: 'Welcome Back!',
           desc: 'Sign in to access your personalized experience.',
         }}
-        baseUrl={BASE_URL_CLIENT.NOTELINE}
+        baseUrl={BASE_URL_CLIENT.STRIDE}
       />
     </LayoutPage>
   );

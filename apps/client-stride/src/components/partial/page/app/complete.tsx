@@ -17,7 +17,7 @@ export default function Complete() {
   );
 
   return (
-    <Container p={{ md: SECTION_SPACING }} py={SECTION_SPACING / 2}>
+    <div>
       {tasks == null ? (
         taskSkeleton
       ) : !completedTasks?.length ? (
@@ -32,6 +32,6 @@ export default function Complete() {
           props={{ tasks: completedTasks, completeTasks: true }}
         />
       )}
-    </Container>
+    </div>
   );
 }

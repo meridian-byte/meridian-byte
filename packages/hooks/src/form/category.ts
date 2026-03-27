@@ -12,7 +12,7 @@ export const useFormCategory = (params?: {
   const { form, submitted, handleSubmit } = useFormBase<Partial<CategoryGet>>(
     {
       title: params?.defaultValues?.title || '',
-      type: (params?.defaultValues?.type || CategoryType.DEBIT) as any,
+      type: (params?.defaultValues?.type || '') as any,
     },
     {
       title: hasLength(
@@ -23,10 +23,10 @@ export const useFormCategory = (params?: {
     {
       resetOnSuccess: true,
       hideSuccessNotification: true,
-      clientOnly: true,
+      clientOnly: false,
 
       onSubmit: async (rawValues) => {
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           categoryCreate(rawValues);
         } else {
           categoryUpdate({

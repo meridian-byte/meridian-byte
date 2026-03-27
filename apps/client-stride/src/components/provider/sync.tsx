@@ -44,7 +44,11 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     syncFunction: (i: SyncParams) => handleSync({ ...i, ...restProps }),
     online: networkStatus.online,
     storesToSync: {
-      notes: true,
+      tasks: true,
+      categories: true,
+      reminders: true,
+      recurringRules: true,
+      views: true,
     },
   });
 

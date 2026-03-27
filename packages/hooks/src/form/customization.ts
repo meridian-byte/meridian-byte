@@ -35,7 +35,7 @@ export const useFormCustomization = (params?: {
           ...rawValues,
         };
 
-        if (!params?.defaultValues) {
+        if (!params?.defaultValues?.updated_at) {
           customizationCreate({
             ...submitObject,
           });
