@@ -8,8 +8,7 @@ import { generateUUID } from '@repo/utilities/generators';
 export const useEatActions = () => {
   const { session } = useStoreSession();
   const { addEat, updateEat, deleteEat } = useStoreEat();
-  const { servings, setServings, updateServing, deleteServing } =
-    useStoreServing();
+  const { servings, setServings } = useStoreServing();
 
   const eatCreate = (params: Partial<EatRelations>) => {
     if (!session) return;

@@ -18,7 +18,7 @@ export const useServingActions = (params?: { formEat?: FormEat }) => {
       ? paramsCreate
       : [paramsCreate];
 
-    let newServings: ServingGet[] = [];
+    const newServings: ServingGet[] = [];
 
     const now = new Date();
 

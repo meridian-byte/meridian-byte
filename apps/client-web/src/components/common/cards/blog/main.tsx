@@ -37,7 +37,10 @@ export default function Main({ post }: { post: PostRelations }) {
             pos={'relative'}
           >
             <ImageDefault
-              src={processUrl(post.image, PRODUCTION_BASE_URL_CLIENT_WEB.DEFAULT)}
+              src={processUrl(
+                post.image,
+                PRODUCTION_BASE_URL_CLIENT_WEB.DEFAULT
+              )}
               alt={post.title}
               height={200}
               mode="grid"

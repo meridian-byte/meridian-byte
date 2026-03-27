@@ -25,6 +25,7 @@ export function createFileSyncAdapter(
     // --- 2. Remove final file (if exists) --------------------------------
     try {
       await dirHandle.removeEntry(fileName);
+      // eslint-disable-next-line no-empty, @typescript-eslint/no-unused-vars
     } catch (_) {}
 
     // --- 3. Copy temp → final -------------------------------------------

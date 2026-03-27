@@ -10,7 +10,6 @@ import {
   NativeSelect,
   NumberInput,
   Textarea,
-  TextInput,
 } from '@mantine/core';
 import {
   IconArrowsTransferUpDown,

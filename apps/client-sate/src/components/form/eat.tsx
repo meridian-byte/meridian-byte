@@ -1,22 +1,9 @@
 'use client';
 
 import React from 'react';
-import { FormEat, useFormEat } from '@/hooks/form/eat';
-import {
-  Button,
-  Grid,
-  GridCol,
-  Group,
-  NativeSelect,
-  NumberInput,
-  Tooltip,
-} from '@mantine/core';
-import { IconCarrot, IconRuler2, IconWeight } from '@tabler/icons-react';
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants/sizes';
-import { capitalizeWords } from '@repo/utilities/string';
-import { EatGet } from '@repo/types/models/eat';
+import { FormEat } from '@/hooks/form/eat';
+import { Button, Grid, GridCol, Group } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { WeightUnitType } from '@repo/types/models/enums';
 import TabsEat from '../common/tabs/eat';
 
 export default function Eat({

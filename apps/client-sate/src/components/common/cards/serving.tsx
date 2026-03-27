@@ -12,8 +12,6 @@ import {
 import { ServingGet } from '@repo/types/models/serving';
 import { useStoreFood } from '@/libraries/zustand/stores/food';
 import { capitalizeWords } from '@repo/utilities/string';
-import { FoodGet } from '@repo/types/models/food';
-import { WeightUnitType } from '@repo/types/models/enums';
 import { getFoodServingTotals, getUnitShorts } from '@/utilities/string';
 
 export default function Serving({ props }: { props: ServingGet }) {

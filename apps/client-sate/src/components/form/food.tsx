@@ -3,7 +3,6 @@
 import React from 'react';
 import { useFormFood } from '@/hooks/form/food';
 import {
-  Box,
   Button,
   Divider,
   Grid,
@@ -17,19 +16,11 @@ import {
 } from '@mantine/core';
 import {
   IconAlignJustified,
-  IconAtom2,
-  IconAtom2Filled,
-  IconBolt,
-  IconCoins,
-  IconDropCircle,
   IconDroplet,
-  IconEggCracked,
   IconEggs,
   IconFlame,
   IconLetterCase,
   IconRuler2,
-  IconSettingsQuestion,
-  IconToolsKitchen,
   IconWeight,
   IconWheat,
 } from '@tabler/icons-react';

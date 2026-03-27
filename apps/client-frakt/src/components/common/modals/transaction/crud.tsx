@@ -9,7 +9,6 @@ import {
   Flex,
   Group,
   Modal,
-  ScrollArea,
   ScrollAreaAutosize,
 } from '@mantine/core';
 import FormTransaction from '@/components/form/transaction';

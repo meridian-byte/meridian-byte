@@ -10,11 +10,9 @@ import {
 } from '@repo/constants/sizes';
 import {
   IconChartDots,
-  IconCoins,
   IconDots,
   IconLayout,
   IconNotebook,
-  IconTransfer,
 } from '@tabler/icons-react';
 import LayoutSection from '@repo/components/layout/section';
 import MenuNav from '@/components/common/menus/nav';

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   Box,
   Center,
@@ -27,7 +27,6 @@ import { useStoreMeal } from '@/libraries/zustand/stores/meal';
 import CardMeal from '../cards/meal';
 import { FormEat } from '@/hooks/form/eat';
 import { useServingActions } from '@/hooks/actions/serving';
-import { ServingGet } from '@repo/types/models/serving';
 import { useStoreServing } from '@/libraries/zustand/stores/serving';
 import { useNotification } from '@repo/hooks/notification';
 import { generateUUID } from '@repo/utilities/generators';
