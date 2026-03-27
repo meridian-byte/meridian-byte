@@ -44,7 +44,16 @@ export default function Search() {
         <Divider />
 
         <Box pos={'sticky'} top={48} py={'xs'}>
-          <InputTextSearch props={{ value, setValue }} />
+          <InputTextSearch
+            props={{ value, setValue }}
+            styles={{
+              input: {
+                backgroundColor:
+                  'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-9))',
+                fontWeight: 500,
+              },
+            }}
+          />
         </Box>
       </Box>
 
