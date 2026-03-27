@@ -1,19 +1,26 @@
 import { useStoreFood } from '@/libraries/zustand/stores/food';
 import { useStoreServing } from '@/libraries/zustand/stores/serving';
-import { getFoodServingTotals, ServingTotals } from '@/utilities/string';
+import {
+  formatNumber,
+  getFoodServingTotals,
+  ServingTotals,
+} from '@/utilities/string';
 import { EatGet } from '@repo/types/models/eat';
 import { MealGet } from '@repo/types/models/meal';
 import { ServingGet } from '@repo/types/models/serving';
 
-export const useServingTotals = (params?: { servings?: ServingGet[] }) => {
+export const useServingTotals = (params?: {
+  servings?: ServingGet[];
+  options?: { round?: boolean };
+}): ServingTotals => {
   const { servings } = useStoreServing();
   const { foods } = useStoreFood();
 
   const totalServingsNutrients: ServingTotals = {
-    totalCarbs: 0,
-    totalProtein: 0,
-    totalFat: 0,
-    totalKcal: 0,
+    totalCarbs: '0',
+    totalProtein: '0',
+    totalFat: '0',
+    totalKcal: '0',
   };
 
   (params?.servings || servings || []).forEach((s) => {
@@ -25,16 +32,42 @@ export const useServingTotals = (params?: { servings?: ServingGet[] }) => {
         serving: s,
       });
 
-      totalServingsNutrients.totalCarbs += totalNutrients.totalCarbs;
-      totalServingsNutrients.totalProtein += totalNutrients.totalProtein;
-      totalServingsNutrients.totalFat += totalNutrients.totalFat;
-      totalServingsNutrients.totalKcal += totalNutrients.totalKcal;
+      totalServingsNutrients.totalCarbs = formatNumber(
+        Number(totalServingsNutrients.totalCarbs) +
+          Number(totalNutrients.totalCarbs)
+      );
+
+      totalServingsNutrients.totalProtein = formatNumber(
+        Number(totalServingsNutrients.totalProtein) +
+          Number(totalNutrients.totalProtein)
+      );
+
+      totalServingsNutrients.totalFat = formatNumber(
+        Number(totalServingsNutrients.totalFat) +
+          Number(totalNutrients.totalFat)
+      );
+
+      totalServingsNutrients.totalKcal = Math.round(
+        Number(totalServingsNutrients.totalKcal) +
+          Number(totalNutrients.totalKcal)
+      ).toString();
     }
   });
 
-  return {
-    totalServingsNutrients,
-  };
+  if (params?.options?.round) {
+    return {
+      ...totalServingsNutrients,
+      totalCarbs: Math.round(
+        Number(totalServingsNutrients.totalCarbs)
+      ).toString(),
+      totalProtein: Math.round(
+        Number(totalServingsNutrients.totalProtein)
+      ).toString(),
+      totalFat: Math.round(Number(totalServingsNutrients.totalFat)).toString(),
+    };
+  }
+
+  return { ...totalServingsNutrients };
 };
 
 export const useMealTotals = (params: { meal: MealGet }) => {
@@ -42,12 +75,12 @@ export const useMealTotals = (params: { meal: MealGet }) => {
   const { servings } = useStoreServing();
   const mealServings = servings?.filter((s) => s.meal_id == meal.id);
 
-  const { totalServingsNutrients } = useServingTotals({
+  const servingTotals = useServingTotals({
     servings: mealServings,
   });
 
   return {
-    totalMealNutrients: totalServingsNutrients,
+    totalMealNutrients: servingTotals,
   };
 };
 
@@ -64,11 +97,12 @@ export const useEatTotals = (params: { eats: EatGet[] }) => {
     ];
   });
 
-  const { totalServingsNutrients } = useServingTotals({
+  const servingTotals = useServingTotals({
     servings: eatServings,
+    options: { round: true },
   });
 
   return {
-    totalEatenNutrients: totalServingsNutrients,
+    totalEatenNutrients: servingTotals,
   };
 };
