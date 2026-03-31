@@ -35,6 +35,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
     <>
       {notes !== undefined && desktop == false && (
         <Drawer
+          keepMounted
           opened={navbarChild ?? false}
           padding={0}
           withCloseButton={false}

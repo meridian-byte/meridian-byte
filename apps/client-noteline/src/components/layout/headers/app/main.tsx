@@ -52,7 +52,7 @@ export default function Main() {
           {userStateEditing === undefined ? (
             <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />
           ) : (
-            <BadgeNoteStatus />
+            <BadgeNoteStatus props={{ options: { hide: true } }} />
           )}
         </Group>
       </Group>
