@@ -44,7 +44,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
           styles={{
             content: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
               borderTopRightRadius: 'var(--mantine-radius-lg)',
               borderBottomRightRadius: 'var(--mantine-radius-lg)',
               overflow: 'hidden',

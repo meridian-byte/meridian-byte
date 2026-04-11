@@ -59,7 +59,7 @@ export default function Search() {
         pos={'sticky'}
         top={48}
         bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))'
         }
         style={{ zIndex: 1 }}
       >
@@ -77,7 +77,7 @@ export default function Search() {
             styles={{
               input: {
                 backgroundColor:
-                  'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+                  'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
                 fontWeight: 500,
               },
             }}
@@ -106,7 +106,7 @@ export default function Search() {
               <ThemeIcon
                 size={ICON_WRAPPER_SIZE * 2}
                 variant="light"
-                color="dark"
+                color="dark.3"
                 c={'dimmed'}
                 radius={'xl'}
               >

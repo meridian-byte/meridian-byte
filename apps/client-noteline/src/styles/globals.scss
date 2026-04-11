@@ -56,8 +56,8 @@ a {
 // scrollbars
 // variables
 $scrollbar-width: 2px;
-$scrollbar-track: var(--mantine-color-dark-8);
-$scrollbar-thumb: var(--mantine-color-dark-3);
+$scrollbar-track: var(--mantine-color-bgDark-6);
+$scrollbar-thumb: var(--mantine-color-bgDark-3);
 
 // Firefox
 * {
@@ -88,16 +88,13 @@ $scrollbar-thumb: var(--mantine-color-dark-3);
   padding: 0 !important;
 }
 
+hr {
+  border-color: var(--mantine-color-default-border) !important;
+}
+
 .tiptap {
   :first-child {
     margin-top: 0;
-  }
-
-  hr {
-    border-color: light-dark(
-      var(--mantine-color-gray-2),
-      var(--mantine-color-dark-7)
-    ) !important;
   }
 
   /* Table-specific styling */
@@ -114,8 +111,7 @@ $scrollbar-thumb: var(--mantine-color-dark-3);
 
     td,
     th {
-      border: 1px solid
-        light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-7));
+      border: 1px solid var(--mantine-color-default-border);
       box-sizing: border-box;
       min-width: 1em;
       padding: var(--mantine-spacing-xs);
@@ -218,8 +214,7 @@ $scrollbar-thumb: var(--mantine-color-dark-3);
 
     width: 1rem;
     height: 1rem;
-    border: 1.5px solid
-      light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-6));
+    border: 1.5px solid var(--mantine-color-default-border);
     border-radius: 4px;
     margin-top: 0.25rem;
 
@@ -242,7 +237,7 @@ $scrollbar-thumb: var(--mantine-color-dark-3);
 
   ul[data-type='taskList'] input[type='checkbox']:checked {
     background-color: var(--mantine-color-pri-4);
-    border-color: var(--mantine-color-pri-4);
+    border-color: var(--mantine-color-default-border);
   }
 
   ul[data-type='taskList'] input[type='checkbox']:checked::before {

@@ -36,15 +36,8 @@ export default function Notes() {
 
   return (
     <div>
-      <Box
-        pos={'sticky'}
-        top={48}
-        bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
-        }
-        style={{ zIndex: 1 }}
-      >
-        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))" />
+      <Box pos={'sticky'} top={48} style={{ zIndex: 1 }}>
+        <Divider />
       </Box>
 
       <Stack gap={0} style={{ zIndex: 0 }} pt={3.33333} pb={'xs'}>

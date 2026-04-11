@@ -22,8 +22,9 @@ export const getAppResolver = (params?: {
       },
 
       dark: {
-        '--mantine-color-body': `var(--mantine-color-dark-9)`,
+        '--mantine-color-body': `${theme.black}`,
         '--mantine-color-text': `var(--mantine-color-dark-0)`,
+        '--mantine-color-default-border': `light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8))`,
       },
     };
 

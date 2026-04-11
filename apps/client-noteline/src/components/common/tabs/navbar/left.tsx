@@ -34,9 +34,6 @@ export default function Left() {
         top={0}
         px={'xs'}
         // mr={'xs'}
-        bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
-        }
       >
         <TabsTab value="folders">
           <Tooltip label={'All notes'}>

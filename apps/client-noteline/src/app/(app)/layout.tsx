@@ -7,7 +7,7 @@ import HeaderAppMain from '@/components/layout/headers/app/main';
 import NavbarAppParentMain from '@/components/layout/navbars/app/parent/main';
 import TabNavbarLeft from '@/components/common/tabs/navbar/left';
 import TabNavbarRight from '@/components/common/tabs/navbar/right';
-import ProviderView from '../../../../../packages/components/src/provider/view';
+import ProviderView from '@repo/components/provider/view';
 
 export default async function LayoutApp({
   children, // will be a page or nested layout

@@ -42,12 +42,6 @@ export default function Aside({ children }: { children: React.ReactNode }) {
           position="right"
           withCloseButton={false}
           onClose={handleClose}
-          styles={{
-            content: {
-              backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
-            },
-          }}
         >
           <Group justify="end" p={'xs'}>
             <ActionIcon

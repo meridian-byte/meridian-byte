@@ -11,6 +11,7 @@ import {
   Anchor,
   Container,
   createTheme,
+  Divider,
   Drawer,
   Loader,
   MantineThemeOverride,
@@ -20,6 +21,8 @@ import {
   NumberFormatter,
   ScrollArea,
   ScrollAreaAutosize,
+  Select,
+  TextInput,
   Tooltip,
 } from '@mantine/core';
 import cx from 'clsx';
@@ -77,6 +80,18 @@ export const getAppTheme = (params?: AppThemeProps) => {
         '#876640',
         '#775732',
       ],
+      bgDark: [
+        '#1a1a1a',
+        '#181818',
+        '#161616',
+        '#141414',
+        '#121212',
+        '#101010',
+        '#0e0e0e',
+        '#0c0c0c',
+        '#0b0b0b',
+        '#0d0d0d',
+      ],
     },
 
     primaryColor: 'pri',
@@ -108,6 +123,16 @@ export const getAppTheme = (params?: AppThemeProps) => {
         },
       }),
 
+      Divider: Divider.extend({
+        defaultProps: {
+          styles: {
+            root: {
+              borderColor: 'var(--mantine-color-default-border)',
+            },
+          },
+        },
+      }),
+
       ScrollArea: ScrollArea.extend({
         defaultProps: {
           type: 'auto',
@@ -115,6 +140,10 @@ export const getAppTheme = (params?: AppThemeProps) => {
         },
         styles: {
           scrollbar: { zIndex: 100 },
+          thumb: {
+            backgroundColor:
+              'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+          },
         },
       }),
 
@@ -136,6 +165,42 @@ export const getAppTheme = (params?: AppThemeProps) => {
           transitionProps: {
             duration: 100,
           },
+          styles: {
+            content: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+            },
+          },
+        },
+      }),
+
+      TextInput: TextInput.extend({
+        defaultProps: {
+          variant: 'filled',
+          styles: {
+            input: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+              fontWeight: 500,
+            },
+          },
+        },
+      }),
+
+      Select: Select.extend({
+        defaultProps: {
+          variant: 'filled',
+          styles: {
+            input: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+            },
+            dropdown: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+              borderColor: 'transparent',
+            },
+          },
         },
       }),
 
@@ -155,9 +220,8 @@ export const getAppTheme = (params?: AppThemeProps) => {
             overflow: 'hidden',
             padding: 5,
             backgroundColor:
-              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
-            borderColor:
-              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
+            borderColor: 'transparent',
           },
           item: {
             padding: '3px 6px',
@@ -167,7 +231,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           itemLabel: { fontSize: 'var(--mantine-font-size-sm)' },
           divider: {
             borderColor:
-              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8))',
           },
         },
         // classNames: classesMenu,
@@ -214,6 +278,12 @@ export const getAppTheme = (params?: AppThemeProps) => {
           overlayProps: {
             backgroundOpacity: 0.33,
             blur: 3,
+          },
+          styles: {
+            content: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+            },
           },
         },
       }),

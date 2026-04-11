@@ -71,6 +71,11 @@ export default function Title({ item }: { item: NoteGet }) {
         size="md"
         ref={inputRef}
         id={'note-title-input'}
+        styles={{
+          input: {
+            backgroundColor: 'transparent',
+          },
+        }}
       />
     </LayoutSection>
   );

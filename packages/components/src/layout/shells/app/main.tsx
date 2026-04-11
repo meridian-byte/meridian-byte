@@ -59,7 +59,7 @@ export default function Main({
       style={{
         backgroundColor: !navbarActive
           ? 'var(--mantine-color-body)'
-          : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))',
+          : 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
         transition: `${!navbarActive ? '.3s' : '.1s'} all ease`,
       }}
     >
@@ -67,7 +67,7 @@ export default function Main({
         <AppShellHeader
           display={mobile ? undefined : 'none'}
           bg={
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))'
           }
         >
           {props.header.component}
@@ -80,7 +80,7 @@ export default function Main({
             backgroundColor:
               !desktop || !navbarActive
                 ? 'var(--mantine-color-body)'
-                : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+                : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
             borderTopRightRadius: 'var(--mantine-radius-lg)',
             borderBottomRightRadius: 'var(--mantine-radius-lg)',
             overflow: 'hidden',
@@ -100,7 +100,7 @@ export default function Main({
       {props.footer?.component && (
         <AppShellFooter
           bg={
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8))'
+            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))'
           }
         >
           {props.footer.component}
