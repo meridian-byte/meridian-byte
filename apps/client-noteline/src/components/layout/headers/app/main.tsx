@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ActionIcon, Group, Skeleton, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Group, Skeleton, Tooltip } from '@mantine/core';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
@@ -64,19 +64,24 @@ export default function Main() {
           </ModalUser>
         )}
 
-        <MenuNoteMain props={{ noteId: note?.id }}>
-          <Group>
-            <Tooltip label={'More options'}>
-              <ActionIcon
-                size={ICON_WRAPPER_SIZE}
-                variant={'subtle'}
-                color="dark"
-              >
-                <IconDotsVertical size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-        </MenuNoteMain>
+        <Box display={!noteId ? 'none' : undefined}>
+          <MenuNoteMain props={{ noteId: note?.id }}>
+            <Group>
+              <Tooltip label={'More options'}>
+                <ActionIcon
+                  size={ICON_WRAPPER_SIZE}
+                  variant={'subtle'}
+                  color="dark"
+                >
+                  <IconDotsVertical
+                    size={ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+          </MenuNoteMain>
+        </Box>
 
         {/* {appshell === undefined ? (
           <Skeleton h={ICON_WRAPPER_SIZE} w={ICON_WRAPPER_SIZE} />

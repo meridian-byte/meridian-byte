@@ -27,7 +27,10 @@ export default function Error500({ reset }: { reset: () => void }) {
                 <IconRefresh size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               }
               variant="light"
-              onClick={() => reset()}
+              onClick={() => {
+                // reset();
+                window.location.reload();
+              }}
             >
               Try Again
             </Button>

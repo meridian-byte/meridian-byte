@@ -63,7 +63,7 @@ export const HOSTED_BASE_URL = {
 };
 
 export const PRODUCTION_BASE_URL_CLIENT_WEB = {
-  DEFAULT: `https://template-next.com`,
+  DEFAULT: `https://meridianbyte.com`,
 };
 
 export const API_URL = `${BASE_URL_SERVER}/api`;

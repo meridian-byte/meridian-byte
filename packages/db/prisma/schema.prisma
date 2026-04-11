@@ -147,9 +147,10 @@ model Profile {
   notifications   Notification[]
   recurring_rules RecurringRule[]
 
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
   sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@unique([email])
   @@map("profiles")
