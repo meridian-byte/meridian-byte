@@ -19,6 +19,9 @@ export default function Providers({ props }: { props: { baseUrl: string } }) {
     const handleClick = async () => {
       setLoading(providerDetails.provider);
 
+      // hard reset local auth state
+      await supabase.auth.signOut({ scope: 'local' });
+
       await supabase.auth.signInWithOAuth({
         provider: providerDetails.provider.toLocaleLowerCase() as any,
         options: {
