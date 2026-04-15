@@ -42,7 +42,7 @@ export default function LayoutDefault({
             // withBorder
             // bg={'transparent'}
             bg={
-              'light-dark(var(--mantine-color-pri-light), var(--mantine-color-dark-8))'
+              'light-dark(var(--mantine-color-pri-light), var(--mantine-color-dark-9))'
             }
             p={{ base: 'xl', xs: 40 }}
           >

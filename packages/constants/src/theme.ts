@@ -19,6 +19,7 @@ import {
   Modal,
   Notification,
   NumberFormatter,
+  PasswordInput,
   ScrollArea,
   ScrollAreaAutosize,
   Select,
@@ -182,6 +183,19 @@ export const getAppTheme = (params?: AppThemeProps) => {
               backgroundColor:
                 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
               fontWeight: 500,
+            },
+          },
+        },
+      }),
+
+      PasswordInput: PasswordInput.extend({
+        defaultProps: {
+          variant: 'filled',
+          styles: {
+            input: {
+              backgroundColor:
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+              // fontWeight: 500,
             },
           },
         },

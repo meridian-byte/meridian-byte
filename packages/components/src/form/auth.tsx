@@ -91,7 +91,7 @@ export default function Auth({
                   input: {
                     textAlign: 'center',
                     backgroundColor:
-                      'light-dark(var(--mantine-color-body), var(--mantine-color-dark-7))',
+                      'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
                   },
                   error: { textAlign: 'center' },
                 }}
