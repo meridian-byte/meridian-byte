@@ -33,7 +33,7 @@ export const createClient = async () => {
                 ...options,
                 domain: isProdDomain ? '.meridianbyte.com' : undefined,
                 secure: !isLocalhost,
-                sameSite: isProdDomain ? 'none' : 'lax',
+                sameSite: 'lax',
                 path: '/',
               })
             );
