@@ -62,7 +62,7 @@ export default function Child({
           transition: `flex-basis .1s ease`,
           overflow: 'hidden',
           backgroundColor:
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
           borderTopRightRadius: 'var(--mantine-radius-lg)',
           borderBottomRightRadius: 'var(--mantine-radius-lg)',
         }}
@@ -104,7 +104,7 @@ export default function Child({
           transition: `all .1s ease`,
           overflow: 'hidden',
           backgroundColor:
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
         }}
       >
         <ScrollArea

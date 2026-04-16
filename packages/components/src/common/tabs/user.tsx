@@ -59,7 +59,7 @@ export default function User({ props }: { props?: { close?: () => void } }) {
       styles={{
         panel: {
           backgroundColor:
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
           width: mobile ? undefined : '66%',
         },
         tab: {
@@ -74,7 +74,7 @@ export default function User({ props }: { props?: { close?: () => void } }) {
         py={'md'}
         px={'xs'}
         bg={
-          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-4))'
+          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'
         }
       >
         <Group px={8}>

@@ -169,7 +169,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             content: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
             },
           },
         },
@@ -181,7 +181,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             input: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
               fontWeight: 500,
             },
           },
@@ -194,7 +194,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             input: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
               // fontWeight: 500,
             },
           },
@@ -207,11 +207,11 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             input: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
             },
             dropdown: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-bgDark-3))',
+                'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
               borderColor: 'transparent',
             },
           },
@@ -296,7 +296,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             content: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-bgDark-6))',
+                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
             },
           },
         },
