@@ -55,10 +55,6 @@ export default async function RootLayout({
   const supabase = await createClient();
   const { data: session } = await supabase.auth.getUser();
 
-  if (!session) {
-    await supabase.auth.signOut({ scope: 'local' });
-  }
-
   // 1. Get the CALCULATED theme from middleware (not the 'auto' state)
   const theme =
     (await getCookieServer(COOKIE_NAME.COLOR_SCHEME)) || DEFAULT_COLOR_SCHEME;
