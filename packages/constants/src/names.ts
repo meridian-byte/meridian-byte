@@ -37,13 +37,13 @@ export const FILE_NAME = {
 };
 
 export const STORE_NAME = {
-  COLOR_SCHEME: 'color-scheme',
+  COLOR_SCHEME: 'colorScheme',
   SESSION: 'session',
   SETTINGS: 'settings',
   POSTS: 'posts',
   CATEGORIES: 'categories',
   ACCOUNTS: 'accounts',
-  ACCOUNT_GROUPS: 'account-groups',
+  ACCOUNT_GROUPS: 'accountGroups',
   BUDGETS: 'budgets',
   TRANSACTIONS: 'transactions',
   FOODS: 'foods',
@@ -54,11 +54,11 @@ export const STORE_NAME = {
   NOTES: 'notes',
   LINKS: 'links',
   CHATS: 'chats',
-  CHAT_MESSAGES: 'chat-messages',
+  CHAT_MESSAGES: 'chatMessages',
   CUSTOMIZATIONS: 'customizations',
   TASKS: 'tasks',
   REMINDERS: 'reminders',
-  RECURRING_RULES: 'recurring-rules',
+  RECURRING_RULES: 'recurringRules',
   VIEWS: 'views',
   NOTIFICATIONS: 'notifications',
 };

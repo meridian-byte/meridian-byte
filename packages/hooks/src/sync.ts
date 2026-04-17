@@ -83,7 +83,7 @@ type SyncStoreConfig<TItems = any, THookReturn = any> = {
 };
 
 export const SYNC_STORES: Record<string, SyncStoreConfig> = {
-  categories: {
+  [STORE_NAME.CATEGORIES]: {
     dataStore: STORE_NAME.CATEGORIES,
     useStoreHook: useStoreCategory,
     serverUpdate: categoriesUpdate,
@@ -92,7 +92,7 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setCategories(items),
     clearDeleted: (store) => store.clearDeletedCategories(),
   },
-  notes: {
+  [STORE_NAME.NOTES]: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
     serverUpdate: notesUpdate,
@@ -101,7 +101,7 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setNotes(items),
     clearDeleted: (store) => store.clearDeletedNotes(),
   },
-  tasks: {
+  [STORE_NAME.TASKS]: {
     dataStore: STORE_NAME.TASKS,
     useStoreHook: useStoreTask,
     serverUpdate: tasksUpdate,
@@ -110,7 +110,7 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setTasks(items),
     clearDeleted: (store) => store.clearDeletedTasks(),
   },
-  reminders: {
+  [STORE_NAME.REMINDERS]: {
     dataStore: STORE_NAME.REMINDERS,
     useStoreHook: useStoreReminder,
     serverUpdate: remindersUpdate,
@@ -119,7 +119,7 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setReminders(items),
     clearDeleted: (store) => store.clearDeletedReminders(),
   },
-  recurringRules: {
+  [STORE_NAME.RECURRING_RULES]: {
     dataStore: STORE_NAME.RECURRING_RULES,
     useStoreHook: useStoreRecurringRule,
     serverUpdate: recurringRulesUpdate,
@@ -128,7 +128,7 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setRecurringRules(items),
     clearDeleted: (store) => store.clearDeletedRecurringRules(),
   },
-  views: {
+  [STORE_NAME.VIEWS]: {
     dataStore: STORE_NAME.VIEWS,
     useStoreHook: useStoreView,
     serverUpdate: viewsUpdate,
@@ -142,36 +142,36 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
 type SyncStoreKey = keyof typeof SYNC_STORES;
 
 const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
-  categories: {
+  [STORE_NAME.CATEGORIES]: {
     store: useStoreCategory,
     updateState: (items: any) =>
       useStoreCategory.getState().setCategories(items),
     clearDeleted: () => useStoreCategory.getState().clearDeletedCategories(),
   },
-  notes: {
+  [STORE_NAME.NOTES]: {
     store: useStoreNote,
     updateState: (items: any) => useStoreNote.getState().setNotes(items),
     clearDeleted: () => useStoreNote.getState().clearDeletedNotes(),
   },
-  tasks: {
+  [STORE_NAME.TASKS]: {
     store: useStoreTask,
     updateState: (items: any) => useStoreTask.getState().setTasks(items),
     clearDeleted: () => useStoreTask.getState().clearDeletedTasks(),
   },
-  reminders: {
+  [STORE_NAME.REMINDERS]: {
     store: useStoreReminder,
     updateState: (items: any) =>
       useStoreReminder.getState().setReminders(items),
     clearDeleted: () => useStoreReminder.getState().clearDeletedReminders(),
   },
-  recurringRules: {
+  [STORE_NAME.RECURRING_RULES]: {
     store: useStoreRecurringRule,
     updateState: (items: any) =>
       useStoreRecurringRule.getState().setRecurringRules(items),
     clearDeleted: () =>
       useStoreRecurringRule.getState().clearDeletedRecurringRules(),
   },
-  views: {
+  [STORE_NAME.VIEWS]: {
     store: useStoreView,
     updateState: (items: any) => useStoreView.getState().setViews(items),
     clearDeleted: () => useStoreView.getState().clearDeletedViews(),
@@ -180,12 +180,12 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
 
 // Define a shape for the payload
 export interface MergedSyncPayload {
-  categories?: { items: any[]; deleted: any[] };
-  notes?: { items: any[]; deleted: any[] };
-  tasks?: { items: any[]; deleted: any[] };
-  reminders?: { items: any[]; deleted: any[] };
-  recurringRules?: { items: any[]; deleted: any[] };
-  views?: { items: any[]; deleted: any[] };
+  [STORE_NAME.CATEGORIES]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.NOTES]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.TASKS]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.REMINDERS]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.RECURRING_RULES]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.VIEWS]?: { items: any[]; deleted: any[] };
 }
 
 // Update the MergedSyncParams to handle multiple datasets
@@ -210,8 +210,8 @@ export const useMergedSync = (params: {
   const noteStore = useStoreNote();
 
   const stores = {
-    categories: categoryStore,
-    notes: noteStore,
+    [STORE_NAME.CATEGORIES]: categoryStore,
+    [STORE_NAME.NOTES]: noteStore,
   };
 
   const sync = useCallback(async () => {
@@ -221,6 +221,15 @@ export const useMergedSync = (params: {
     // Build the payload dynamically based on what's active
     storesToSync.forEach((key) => {
       const config = SYNC_STORES[key];
+
+      // Safety Check: skip if config doesn't exist for this key
+      if (!config) {
+        console.warn(
+          `Sync config for hook key "${key}" is missing in SYNC_STORES.`
+        );
+        return;
+      }
+
       const store = (stores as any)[key];
       const items = config.getItems(store) ?? [];
       const deleted = config.getDeleted(store) ?? [];
@@ -275,15 +284,15 @@ export const handleMergedSync = async (
     const db = await openDatabase(config);
 
     // 1. Client-Side Batch Update
-    // We loop through the payload keys (e.g., ['notes', 'categories'])
+    // We loop through the payload keys (e.g., ['posts', 'categories'])
     for (const [storeKey, data] of Object.entries(payload)) {
       const config = SYNC_STORES[storeKey as SyncStoreKey];
       const registry = SYNC_REGISTRY[storeKey as SyncStoreKey];
 
       await syncToClientDB({
         ...data,
-        items: data.items,
-        deletedItems: data.deleted,
+        items: data?.items || [],
+        deletedItems: data?.deleted || [],
         dataStore: config.dataStore,
         stateUpdateFunction: registry.updateState,
         stateUpdateFunctionDeleted: registry.clearDeleted,
@@ -311,10 +320,11 @@ export const syncToServerDBMerged = async (payload: MergedSyncPayload) => {
   const finalPayload: Record<string, any> = {};
   const activeStores: string[] = [];
 
-  // Iterate through the keys (notes, categories, etc.)
+  // Iterate through the keys (posts, categories, etc.)
   (Object.keys(payload) as SyncStoreKey[]).forEach((key) => {
     const data = (payload as any)[key];
     if (data && (data.items.length > 0 || data.deleted.length > 0)) {
+      // This now contains { upserts: [...], deletedIds: [...] }
       finalPayload[key] = prepareStorePayload(key, data, now);
       activeStores.push(key);
     }
@@ -351,30 +361,27 @@ const prepareStorePayload = (
 ) => {
   if (!data) return null;
 
-  // const { items, deleted } = data;
-
-  // Filter for items that aren't already synced
-  const unsyncedItems = data.items
-    .filter((i) => i.sync_status !== SyncStatus.SYNCED)
+  // 1. Get items that need saving/updating
+  const upserts = data.items
+    .filter(
+      (i) =>
+        i.sync_status !== SyncStatus.SYNCED &&
+        i.sync_status !== SyncStatus.DELETED
+    )
+    // ... rest of map
     .map((item) => ({
       ...item,
       updated_at: now.toISOString(),
       sync_status: SyncStatus.SYNCED,
     }));
 
-  // 2. Map pending/saved items to SYNCED status for the server
-  const upserts = unsyncedItems.map((item) => ({
-    ...item,
-    updated_at: now.toISOString(),
-    sync_status: SyncStatus.SYNCED,
-  }));
-
-  // Extract just the IDs for deletion
+  // 2. Get the IDs of items marked for deletion
+  // This is where your cart items live after orderUpdate runs
   const deletedIds = data.deleted.map((i) => i.id);
 
   return {
-    [key]: upserts, // e.g., "notes": [...]
-    deletedIds: deletedIds,
+    upserts, // Changed from [key] to a fixed key for easier API parsing
+    deletedIds,
   };
 };
 
