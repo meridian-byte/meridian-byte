@@ -46,6 +46,7 @@ import { capitalizeWords } from '@repo/utilities/string';
 import { useFormUserProfile } from '@repo/hooks/form/account/profile';
 import AvatarMain from '../avatars/main';
 import { useMediaQuery } from '@mantine/hooks';
+import { useStoreSession } from '@repo/libraries/zustand/stores/session';
 
 export default function User({ props }: { props?: { close?: () => void } }) {
   const mobile = useMediaQuery('(max-width: 36em)');
@@ -384,19 +385,16 @@ function Data() {
 }
 
 function Account() {
+  const session = useStoreSession((s) => s.session);
+
   return (
     <>
       <Group justify="space-between">
         <Text fz={'sm'}>Email</Text>
 
-        <Button
-          size="compact-sm"
-          color="dark"
-          variant="transparent"
-          fw={'normal'}
-        >
-          {'work.kevon@gmail.com'}
-        </Button>
+        <Text inherit fz={'sm'} ta={'end'}>
+          {session?.email || 'No email associated'}
+        </Text>
       </Group>
 
       {divider}
