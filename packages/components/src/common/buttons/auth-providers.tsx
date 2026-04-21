@@ -19,40 +19,44 @@ export default function Providers({ props }: { props: { baseUrl: string } }) {
     const handleClick = async () => {
       setLoading(providerDetails.provider);
 
-      // Clear storage
-      localStorage.clear();
-      sessionStorage.clear();
+      setTimeout(() => {
+        // Clear storage
+        localStorage.clear();
+        sessionStorage.clear();
 
-      // clear client cookies
-      document.cookie.split(';').forEach((c) => {
-        document.cookie = c
-          .replace(/^ +/, '')
-          .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-      });
+        // clear client cookies
+        document.cookie.split(';').forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, '')
+            .replace(
+              /=.*/,
+              '=;expires=' + new Date().toUTCString() + ';path=/'
+            );
+        });
+      }, 0);
 
-      // hard reset local auth state
-      await supabase.auth.signOut({ scope: 'local' });
-
-      await supabase.auth.signInWithOAuth({
-        provider: providerDetails.provider.toLocaleLowerCase() as any,
-        options: {
-          redirectTo: `${props.baseUrl}/api/auth/callback/oauth?next=${encodeURIComponent((getUrlParam(PARAM_NAME.REDIRECT) as string) || AUTH_URLS.REDIRECT.DEFAULT)}`,
-
-          // The following options are commented out because they are not needed for most OAuth flows.
-          // These options can be uncommented if you need offline access or to prompt for consent.
-          // queryParams: {
-          //   access_type: 'offline',
-          //   prompt: 'consent',
-          // },
-        },
-      });
+      setTimeout(async () => {
+        await supabase.auth.signInWithOAuth({
+          provider: providerDetails.provider.toLocaleLowerCase() as any,
+          options: {
+            redirectTo: `${props.baseUrl}/api/auth/callback/oauth?next=${encodeURIComponent((getUrlParam(PARAM_NAME.REDIRECT) as string) || AUTH_URLS.REDIRECT.DEFAULT)}`,
+            // The following options are commented out because they are not needed for most OAuth flows.
+            // These options can be uncommented if you need offline access or to prompt for consent.
+            // queryParams: {
+            //   access_type: 'offline',
+            //   prompt: 'consent',
+            // },
+          },
+        });
+      }, 1000);
     };
 
     return (
       <Button
         key={providerDetails.provider}
         fullWidth
-        color="dark.7"
+        color="dark"
+        variant="light"
         onClick={handleClick}
         loading={loading == providerDetails.provider}
         leftSection={

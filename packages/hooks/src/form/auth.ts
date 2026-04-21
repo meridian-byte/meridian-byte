@@ -46,11 +46,6 @@ export const useFormAuth = (params: {
         const email = rawValues.email.trim().toLowerCase();
         const otp = rawValues.otp?.trim();
 
-        if (email && message && !options?.resent && otp?.length != 8) {
-          form.setErrors({ otp: 'Invalid OTP' });
-          return;
-        }
-
         if (!otp || options?.resent) {
           setError(undefined);
 
@@ -69,13 +64,6 @@ export const useFormAuth = (params: {
             });
           }
           if (options?.resent) setResent(false);
-        } else {
-          const redirect =
-            (getUrlParam(PARAM_NAME.REDIRECT) as string) ||
-            AUTH_URLS.REDIRECT.DEFAULT;
-          const redirectUrl = encodeURIComponent(redirect);
-          const callbackUrl = `${params.baseUrl}/api/auth/callback/email?email=${email}&otp=${otp}&redirectUrl=${redirectUrl}&baseUrl=${params.baseUrl}`;
-          window.location.href = callbackUrl;
         }
       },
     }

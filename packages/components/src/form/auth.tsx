@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ActionIcon,
   Alert,
@@ -38,7 +38,8 @@ import {
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
 import { setCookieClient } from '@repo/utilities/cookie-client';
-import { COOKIE_NAME } from '@repo/constants/names';
+import { COOKIE_NAME, PARAM_NAME } from '@repo/constants/names';
+import { getUrlParam } from '@repo/utilities/url';
 
 export default function Auth({
   action,
@@ -52,6 +53,8 @@ export default function Auth({
     desc: string;
   };
 }) {
+  const [redirecting, setRedirecting] = useState(false);
+
   const {
     form: formAuth,
     submitted: submittedAuth,
@@ -71,8 +74,8 @@ export default function Auth({
           {header && <AuthHeader title={header.title} desc={header.desc} />}
 
           <Box pos={'relative'}>
-            {submittedAuth && (
-              <Overlay zIndex={1000} radius={'lg'} backgroundOpacity={0.05} />
+            {redirecting && (
+              <Overlay zIndex={1000} radius={8} backgroundOpacity={0.3} />
             )}
 
             <AuthProviders props={{ baseUrl }} />
@@ -204,23 +207,40 @@ export default function Auth({
 
                 <GridCol span={12}>
                   <Group grow>
-                    {!submittedAuth && (
-                      <Button
-                        variant="light"
-                        loading={resentAuth}
-                        onClick={() => {
-                          setResentAuth(true);
-                          setMessageAuth('OTP resent successfully');
-                          formAuth.setFieldValue('otp', '');
-                          handleSubmitAuth({ options: { resent: true } });
-                        }}
-                      >
-                        {'Resend'}
-                      </Button>
-                    )}
+                    <Button
+                      variant="light"
+                      loading={resentAuth}
+                      disabled={redirecting}
+                      onClick={() => {
+                        setResentAuth(true);
+                        setMessageAuth('OTP resent successfully');
+                        formAuth.setFieldValue('otp', '');
+                        handleSubmitAuth({ options: { resent: true } });
+                      }}
+                    >
+                      {'Resend'}
+                    </Button>
 
                     {!resentAuth && (
-                      <Button type="submit" loading={submittedAuth}>
+                      <Button
+                        loading={redirecting}
+                        onClick={() => {
+                          const formValues = formAuth.values;
+
+                          if (formValues.otp?.length != 8) {
+                            formAuth.setErrors({ otp: 'Invalid OTP' });
+                          } else {
+                            setRedirecting(true);
+
+                            const redirect =
+                              (getUrlParam(PARAM_NAME.REDIRECT) as string) ||
+                              AUTH_URLS.REDIRECT.DEFAULT;
+                            const redirectUrl = encodeURIComponent(redirect);
+                            const callbackUrl = `${baseUrl}/api/auth/callback/email?email=${formValues.email}&otp=${formValues.otp}&redirectUrl=${redirectUrl}&baseUrl=${baseUrl}`;
+                            window.location.href = callbackUrl;
+                          }
+                        }}
+                      >
                         {'Confirm'}
                       </Button>
                     )}
