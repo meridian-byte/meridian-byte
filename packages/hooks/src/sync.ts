@@ -252,7 +252,13 @@ export const useMergedSync = (params: {
     if (hasDirtyData && params.syncStatus !== SyncStatus.PENDING) {
       await handleSync(payload);
     }
-  }, [storesToSync, categoryStore, noteStore, handleSync, params.syncStatus]);
+  }, [
+    storesToSync,
+    // categoryStore,
+    // noteStore,
+    handleSync,
+    params.syncStatus,
+  ]);
 
   useEffect(() => {
     if (!noSession && idle && online) {
