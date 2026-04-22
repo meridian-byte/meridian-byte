@@ -65,6 +65,7 @@ import { useStoreRecurringRule } from '@repo/libraries/zustand/stores/recurring-
 import { useStoreView } from '@repo/libraries/zustand/stores/view';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 import { API_URL } from '@repo/constants/paths';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
 
 export const useSessionStore = (params?: {
   sessionUser: User | null;
@@ -271,6 +272,11 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     useStoreHook: useStoreCategory,
     setState: (store, items) => store.setCategories(items),
   },
+  workspaces: {
+    dataStore: STORE_NAME.WORKSPACES,
+    useStoreHook: useStoreWorkspace,
+    setState: (store, items) => store.setWorkspaces(items),
+  },
   notes: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
@@ -373,6 +379,7 @@ export const useLoadAppData = (options: {
 
   const stores = {
     categories: useStoreCategory(),
+    workspaces: useStoreWorkspace(),
     notes: useStoreNote(),
     // budgets: useStoreBudget(),
     // accounts: useStoreAccount(),

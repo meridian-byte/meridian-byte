@@ -61,4 +61,5 @@ export const STORE_NAME = {
   RECURRING_RULES: 'recurringRules',
   VIEWS: 'views',
   NOTIFICATIONS: 'notifications',
+  WORKSPACES: 'workspaces',
 };

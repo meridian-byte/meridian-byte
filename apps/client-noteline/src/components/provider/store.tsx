@@ -37,6 +37,7 @@ export default function Store({
     clientOnly: false,
     storesToLoad: {
       notes: true,
+      workspaces: true,
     },
   });
 

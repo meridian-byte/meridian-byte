@@ -61,6 +61,11 @@ enum CategoryType {
   DEBIT
 }
 
+enum WorkspaceType {
+  NOTELINE
+  STRIDE
+}
+
 enum WeightUnitType {
   MILLIGRAMS
   GRAMS
@@ -146,6 +151,7 @@ model Profile {
   views           View[]
   notifications   Notification[]
   recurring_rules RecurringRule[]
+  workspaces      Workspace[]
 
   sync_status SyncStatus @default(SYNCED)
 
@@ -194,15 +200,34 @@ model Category {
   posts        Post[]
   transactions Transaction[]
   budgets      Budget[]
+  tasks        Task[]
 
   status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  tasks      Task[]
 
   @@map(name: "categories")
+}
+
+model Workspace {
+  id    String        @id @default(uuid())
+  title String
+  type  WorkspaceType
+
+  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id String
+
+  notes Note[]
+
+  status      Status     @default(ACTIVE)
+  sync_status SyncStatus @default(SYNCED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map(name: "workspaces")
 }
 
 model Comment {
@@ -454,8 +479,10 @@ model Note {
   content        String?
   parent_note_id String?
 
-  profile    Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
-  profile_id String
+  profile      Profile    @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id   String
+  workspace    Workspace? @relation(fields: [workspace_id], references: [id], onDelete: SetNull)
+  workspace_id String?
 
   links_from Link[] @relation("FromLinks") // outgoing links
   links_to   Link[] @relation("ToLinks") // incoming links (backlinks)
