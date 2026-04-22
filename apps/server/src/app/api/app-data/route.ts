@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
 
 const PRISMA_MODEL_MAP: Record<string, any> = {
   [STORE_NAME.CATEGORIES]: prisma.category,
-  [STORE_NAME.WORKSPACES]: prisma.view,
+  [STORE_NAME.WORKSPACES]: prisma.workspace,
   [STORE_NAME.NOTES]: prisma.note,
   [STORE_NAME.TASKS]: prisma.task,
   [STORE_NAME.REMINDERS]: prisma.reminder,

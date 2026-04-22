@@ -29,7 +29,7 @@ import {
   getCookieClient,
   setCookieClient,
 } from '@repo/utilities/cookie-client';
-import { Role } from '@repo/types/models/enums';
+import { Role, WorkspaceType } from '@repo/types/models/enums';
 import { WEEK } from '@repo/constants/sizes';
 import { ProfileGet } from '@repo/types/models/profile';
 import { profileGet } from '@repo/handlers/requests/database/profiles';
@@ -66,6 +66,8 @@ import { useStoreView } from '@repo/libraries/zustand/stores/view';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 import { API_URL } from '@repo/constants/paths';
 import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import { useWorkspaceActions } from './actions/workspace';
+import { WorkspaceGet } from '@repo/types/models/workspace';
 
 export const useSessionStore = (params?: {
   sessionUser: User | null;
@@ -258,6 +260,77 @@ export const useUserStatesStore = () => {
 
     initializeUserState();
   }, [setUserStates]);
+};
+
+export const useActiveItemStore = (params: {
+  workspaceType: WorkspaceType;
+}) => {
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const { workspaceCreate } = useWorkspaceActions();
+  const setActiveItems = useStoreActiveItems((s) => s.setActiveItems);
+
+  const isInitializing = useRef(false);
+
+  useEffect(() => {
+    const initializeUserState = () => {
+      if (isInitializing.current || !workspaces) return;
+      isInitializing.current = true;
+
+      // get active workspace
+      const getActiveWorkspace = (): WorkspaceGet | null => {
+        if (workspaces === undefined) return null;
+        if (workspaces === null) return null;
+
+        // get active workspace id from local storage
+        const activeLocalId = getFromLocalStorage(
+          LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE
+        );
+
+        if (!activeLocalId) {
+          let selectedWorkspace: WorkspaceGet | null = null;
+
+          if (!workspaces.length) {
+            // create default workspace
+            const newDefaultWorkspace = workspaceCreate({
+              title: 'Default Workspace',
+              type: params.workspaceType,
+            });
+
+            selectedWorkspace = newDefaultWorkspace || null;
+          } else {
+            // find default workspace
+            const oldestWorkspace = workspaces.reduce((oldest, current) => {
+              return new Date(current.created_at) < new Date(oldest.created_at)
+                ? current
+                : oldest;
+            });
+
+            selectedWorkspace = oldestWorkspace;
+          }
+
+          if (selectedWorkspace) {
+            saveToLocalStorage(
+              LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+              selectedWorkspace.id
+            );
+          }
+
+          return selectedWorkspace;
+        } else {
+          // find active local workspace from store
+          const activeLocalWorkspace = workspaces.find(
+            (wi) => wi.id == activeLocalId
+          );
+
+          return activeLocalWorkspace || null;
+        }
+      };
+
+      setActiveItems({ workspace: getActiveWorkspace() });
+    };
+
+    initializeUserState();
+  }, [setActiveItems, workspaces]);
 };
 
 type LoadStoreConfig<TItems = any, THookReturn = any> = {

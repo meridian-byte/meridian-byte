@@ -10,7 +10,7 @@ export const useWorkspaceActions = () => {
   const updateWorkspace = useStoreWorkspace((s) => s.updateWorkspace);
   const deleteWorkspace = useStoreWorkspace((s) => s.deleteWorkspace);
 
-  const accountCreate = (
+  const workspaceCreate = (
     params: Omit<Partial<WorkspaceGet>, 'type'> & { type: WorkspaceType }
   ) => {
     if (!session) return;
@@ -30,9 +30,11 @@ export const useWorkspaceActions = () => {
     };
 
     addWorkspace(newWorkspace);
+
+    return newWorkspace;
   };
 
-  const accountUpdate = (params: WorkspaceGet) => {
+  const workspaceUpdate = (params: WorkspaceGet) => {
     if (!session) return;
 
     const now = new Date();
@@ -47,7 +49,7 @@ export const useWorkspaceActions = () => {
     updateWorkspace(newWorkspace);
   };
 
-  const accountDelete = (params: WorkspaceGet) => {
+  const workspaceDelete = (params: WorkspaceGet) => {
     if (!session) return;
 
     const now = new Date();
@@ -60,5 +62,5 @@ export const useWorkspaceActions = () => {
     });
   };
 
-  return { accountCreate, accountUpdate, accountDelete };
+  return { workspaceCreate, workspaceUpdate, workspaceDelete };
 };

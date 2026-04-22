@@ -4,7 +4,7 @@ import type { WorkspaceGet } from '@repo/types/models/workspace';
 export type WorkspacesValue = WorkspaceGet[] | null | undefined;
 
 interface WorkspaceState {
-  posts: WorkspacesValue;
+  workspaces: WorkspacesValue;
   deleted: WorkspaceGet[];
   setWorkspaces: (data: WorkspacesValue) => void;
   setDeletedWorkspaces: (data: WorkspacesValue) => void;
@@ -16,11 +16,11 @@ interface WorkspaceState {
 }
 
 export const useStoreWorkspace = create<WorkspaceState>((set) => ({
-  posts: undefined,
+  workspaces: undefined,
   deleted: [],
 
   setWorkspaces: (data) => {
-    set({ posts: data });
+    set({ workspaces: data });
   },
 
   setDeletedWorkspaces: (data) => {
@@ -28,7 +28,7 @@ export const useStoreWorkspace = create<WorkspaceState>((set) => ({
   },
 
   clearWorkspaces: () => {
-    set({ posts: [] });
+    set({ workspaces: [] });
   },
 
   clearDeletedWorkspaces: () => {
@@ -37,14 +37,14 @@ export const useStoreWorkspace = create<WorkspaceState>((set) => ({
 
   addWorkspace: (data) => {
     set((state) => ({
-      posts: [...(state.posts ?? []), data],
+      workspaces: [...(state.workspaces ?? []), data],
     }));
   },
 
   updateWorkspace: (data) => {
     set((state) => ({
-      posts:
-        state.posts?.map((i) => (i.id === data.id ? { ...data } : i)) ??
+      workspaces:
+        state.workspaces?.map((i) => (i.id === data.id ? { ...data } : i)) ??
         undefined,
     }));
   },
@@ -52,7 +52,8 @@ export const useStoreWorkspace = create<WorkspaceState>((set) => ({
   deleteWorkspace: (data) => {
     set((state) => ({
       deleted: [...state.deleted, data],
-      posts: state.posts?.filter((i) => i.id !== data.id) ?? undefined,
+      workspaces:
+        state.workspaces?.filter((i) => i.id !== data.id) ?? undefined,
     }));
   },
 }));

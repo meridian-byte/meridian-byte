@@ -1,15 +1,18 @@
 import { create } from 'zustand';
 import { TaskGet } from '@repo/types/models/task';
 import { NoteGet } from '@repo/types/models/note';
+import { WorkspaceGet } from '@repo/types/models/workspace';
 
 export type ActiveTaskValue = TaskGet | null;
+export type ActiveWorkspaceValue = WorkspaceGet | null;
 type NoteActions = { move?: boolean; merge?: boolean };
 export type ActiveNoteValue = ({ item: NoteGet } & NoteActions) | null;
 export type ActiveItemsValue =
   | {
-      task: ActiveTaskValue;
-      note: ActiveNoteValue;
-      confirm: any;
+      confirm?: any;
+      workspace?: ActiveWorkspaceValue;
+      note?: ActiveNoteValue;
+      task?: ActiveTaskValue;
     }
   | null
   | undefined;
@@ -18,6 +21,8 @@ interface ActiveItemsState {
   activeItems: ActiveItemsValue;
   addActiveConfirm: (data: any) => void;
   removeActiveConfirm: () => void;
+  addActiveWorkspace: (data: WorkspaceGet) => void;
+  removeActiveWorkspace: () => void;
   addActiveNote: (data: NoteGet, actions?: NoteActions) => void;
   removeActiveNote: () => void;
   addActiveTask: (data: TaskGet) => void;
@@ -33,6 +38,7 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
     set((state) => ({
       activeItems: {
         task: state.activeItems?.task ?? null,
+        workspace: state.activeItems?.workspace ?? null,
         note: state.activeItems?.note ?? null,
         confirm: data,
       },
@@ -43,8 +49,31 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
     set((state) => ({
       activeItems: {
         task: state.activeItems?.task ?? null,
+        workspace: state.activeItems?.workspace ?? null,
         note: state.activeItems?.note ?? null,
         confirm: null,
+      },
+    }));
+  },
+
+  addActiveWorkspace: (data) => {
+    set((state) => ({
+      activeItems: {
+        confirm: state.activeItems?.task ?? null,
+        task: state.activeItems?.task ?? null,
+        note: state.activeItems?.note ?? null,
+        workspace: data,
+      },
+    }));
+  },
+
+  removeActiveWorkspace: () => {
+    set((state) => ({
+      activeItems: {
+        confirm: state.activeItems?.task ?? null,
+        task: state.activeItems?.task ?? null,
+        note: state.activeItems?.note ?? null,
+        workspace: null,
       },
     }));
   },
@@ -52,8 +81,9 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   addActiveNote: (data, actions?: NoteActions) => {
     set((state) => ({
       activeItems: {
-        task: state.activeItems?.task ?? null,
         confirm: state.activeItems?.task ?? null,
+        task: state.activeItems?.task ?? null,
+        workspace: state.activeItems?.workspace ?? null,
         note: { item: data, ...actions },
       },
     }));
@@ -62,8 +92,9 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   removeActiveNote: () => {
     set((state) => ({
       activeItems: {
-        task: state.activeItems?.task ?? null,
         confirm: state.activeItems?.confirm ?? null,
+        task: state.activeItems?.task ?? null,
+        workspace: state.activeItems?.workspace ?? null,
         note: null,
       },
     }));
@@ -72,9 +103,10 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   addActiveTask: (data) => {
     set((state) => ({
       activeItems: {
-        task: data,
         confirm: state.activeItems?.confirm ?? null,
+        workspace: state.activeItems?.workspace ?? null,
         note: state.activeItems?.note ?? null,
+        task: data,
       },
     }));
   },
@@ -82,9 +114,10 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   removeActiveTask: () => {
     set((state) => ({
       activeItems: {
-        task: null,
         confirm: state.activeItems?.confirm ?? null,
+        workspace: state.activeItems?.workspace ?? null,
         note: state.activeItems?.note ?? null,
+        task: null,
       },
     }));
   },
