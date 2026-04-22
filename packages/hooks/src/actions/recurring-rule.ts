@@ -29,7 +29,7 @@ export const useRecurringRuleActions = () => {
       interval: params.interval || 1,
       months: params.months || [],
       weekdays: params.weekdays || [],
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

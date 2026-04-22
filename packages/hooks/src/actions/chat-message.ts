@@ -21,7 +21,7 @@ export const useChatMessageActions = () => {
       chat_id: params.chat_id || '',
       content: params.content || '',
       error: params.error || '',
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       role: params.role || ChatMessageRole.USER,
       sources: params.sources || [],
       search: params.search || false,

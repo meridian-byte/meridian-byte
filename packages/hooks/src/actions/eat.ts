@@ -21,7 +21,7 @@ export const useEatActions = () => {
     const newEat: EatRelations = {
       id: params.id || id,
       time: params.time || EatTime.BREAKFAST,
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       servings: [],
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,

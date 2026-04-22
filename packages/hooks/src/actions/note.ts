@@ -37,6 +37,7 @@ export const useNoteActions = () => {
       content: params?.content || '<p></p>',
       parent_note_id: params?.parent_note_id || null,
       profile_id: session.id || params?.profile_id || '',
+      workspace_id: params?.workspace_id || null,
       status: params?.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params?.created_at || now).toISOString() as any,

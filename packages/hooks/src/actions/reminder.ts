@@ -21,7 +21,7 @@ export const useReminderActions = () => {
       remind_at: (params.remind_at || now).toISOString() as any,
       sent: params.sent || false,
       task_id: params.task_id || '',
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

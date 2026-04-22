@@ -22,7 +22,7 @@ export const useAccountActions = () => {
       currency: params.currency || null,
       currency_code: params.currency_code || null,
       group_id: params.group_id || '',
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       name: params.name || '',
       description: params.description || '',
       type: (params.type || '') as any,

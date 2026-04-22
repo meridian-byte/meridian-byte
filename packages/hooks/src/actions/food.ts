@@ -26,7 +26,7 @@ export const useFoodActions = () => {
       protein: params.protein || 0,
       fat: params.fat || 0,
       kcal: params.kcal || 0,
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,
