@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Group,
   Tabs,
   TabsList,
@@ -10,7 +11,12 @@ import {
   Tooltip,
 } from '@mantine/core';
 import classes from './left.module.scss';
-import { IconFolder, IconSearch } from '@tabler/icons-react';
+import {
+  IconCategory,
+  IconChevronDown,
+  IconFolder,
+  IconSearch,
+} from '@tabler/icons-react';
 import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
@@ -19,6 +25,8 @@ import {
 import PartialTabNavbarNotes from '@/components/partial/tabs/navbar/notes';
 import PartialTabNavbarSearch from '@/components/partial/tabs/navbar/search';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
+import MenuWorkspace from '@repo/components/common/menus/workspace';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Left() {
   return (
@@ -28,6 +36,10 @@ export default function Left() {
       keepMounted={false}
       classNames={classes}
     >
+      <Box pt={'xs'} pr={'xs'} pl={5}>
+        <MenuWorkspace />
+      </Box>
+
       <TabsList
         style={{ gap: 5, zIndex: 1 }}
         pos={'sticky'}

@@ -20,6 +20,7 @@ import {
   Notification,
   NumberFormatter,
   PasswordInput,
+  Popover,
   ScrollArea,
   ScrollAreaAutosize,
   Select,
@@ -234,7 +235,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
             overflow: 'hidden',
             padding: 5,
             backgroundColor:
-              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
+              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
             borderColor: 'transparent',
           },
           item: {
@@ -245,23 +246,31 @@ export const getAppTheme = (params?: AppThemeProps) => {
           itemLabel: { fontSize: 'var(--mantine-font-size-sm)' },
           divider: {
             borderColor:
-              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8))',
+              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
           },
         },
         // classNames: classesMenu,
       }),
 
-      // Popover: Popover.extend({
-      //   defaultProps: {
-      //     transitionProps: {
-      //       enterDelay: 0,
-      //       duration: 100,
-      //       exitDuration: 100,
-      //       exitDelay: 0,
-      //     },
-      //   },
-      //   // classNames: classesPopover,
-      // }),
+      Popover: Popover.extend({
+        defaultProps: {
+          transitionProps: {
+            enterDelay: 0,
+            duration: 100,
+            exitDuration: 100,
+            exitDelay: 0,
+          },
+        },
+        styles: {
+          dropdown: {
+            overflow: 'hidden',
+            padding: 'var(--mantine-spacing-xs)',
+            backgroundColor:
+              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
+            borderColor: 'transparent',
+          },
+        },
+      }),
 
       Tooltip: Tooltip.extend({
         defaultProps: {
