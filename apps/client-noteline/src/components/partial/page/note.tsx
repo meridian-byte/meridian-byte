@@ -37,6 +37,13 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
   const notes = useStoreNote((s) => s.notes);
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props.noteId));
 
+  // find default workspace
+  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
+    return new Date(current.created_at) < new Date(oldest.created_at)
+      ? current
+      : oldest;
+  });
+
   return notes === undefined || activeWorkspace === undefined ? (
     <Center py={SECTION_SPACING * 2} mih={'75vh'}>
       <Stack align="center" ta={'center'}>
@@ -67,7 +74,9 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
         </Group>
       </Stack>
     </Center>
-  ) : activeWorkspace?.id != note?.workspace_id ? (
+  ) : activeWorkspace?.id != oldestWorkspace?.id ? (
+    activeWorkspace?.id != note.workspace_id
+  ) : !!note.workspace_id && activeWorkspace?.id != note.workspace_id ? (
     <Center py={SECTION_SPACING * 2} mih={'75vh'}>
       <Stack align="center" ta={'center'} gap={'xl'}>
         <Stack align="center" gap={'xs'}>
@@ -98,16 +107,6 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
               let resolvedWorkspace: WorkspaceGet | null = null;
 
               if (!noteWorkspace) {
-                // find default workspace
-                const oldestWorkspace = workspaces?.reduce(
-                  (oldest, current) => {
-                    return new Date(current.created_at) <
-                      new Date(oldest.created_at)
-                      ? current
-                      : oldest;
-                  }
-                );
-
                 resolvedWorkspace = oldestWorkspace || null;
               } else {
                 resolvedWorkspace = noteWorkspace;
