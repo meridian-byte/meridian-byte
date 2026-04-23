@@ -12,6 +12,7 @@ import {
 } from '@mantine/core';
 import {
   IconBook,
+  IconCategory,
   IconCopy,
   IconFileTypePdf,
   IconGitMerge,
@@ -60,22 +61,7 @@ export default function Main({
   const { noteDelete } = useNoteActions();
 
   return (
-    <Menu
-      withinPortal
-      position="bottom-end"
-      width={220}
-      styles={{
-        dropdown: {
-          padding: 5,
-        },
-        item: {
-          padding: '2.5px 10px',
-        },
-        itemLabel: {
-          fontSize: 'var(--mantine-font-size-sm)',
-        },
-      }}
-    >
+    <Menu withinPortal position="bottom-end" width={undefined}>
       <MenuTarget>
         <span>{children}</span>
       </MenuTarget>
@@ -123,7 +109,7 @@ export default function Main({
             />
           }
           onClick={() => {
-            if (note) addActiveNote(note, { move: true });
+            if (note) addActiveNote(note, { move: { toNote: true } });
           }}
         >
           Move note to...
@@ -138,6 +124,17 @@ export default function Main({
           }}
         >
           Merge note with...
+        </MenuItem>
+
+        <MenuItem
+          leftSection={
+            <IconCategory size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={() => {
+            if (note) addActiveNote(note, { move: { toWorkspace: true } });
+          }}
+        >
+          Change note workspace to...
         </MenuItem>
 
         <MenuDivider />

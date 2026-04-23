@@ -94,3 +94,8 @@ export enum SortDirection {
   ASCENDING = 'ASCENDING',
   DESCENDING = 'DESCENDING',
 }
+
+export enum WorkspaceType {
+  NOTELINE = 'NOTELINE',
+  STRIDE = 'STRIDE',
+}

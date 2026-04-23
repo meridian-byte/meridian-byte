@@ -17,7 +17,9 @@ import {
 import { loadInitialData } from '@repo/libraries/store';
 import {
   getFromLocalStorage,
+  getFromSessionStorage,
   saveToLocalStorage,
+  saveToSessionStorage,
 } from '@repo/utilities/storage';
 import {
   SessionValue,
@@ -29,7 +31,7 @@ import {
   getCookieClient,
   setCookieClient,
 } from '@repo/utilities/cookie-client';
-import { Role } from '@repo/types/models/enums';
+import { Role, WorkspaceType } from '@repo/types/models/enums';
 import { WEEK } from '@repo/constants/sizes';
 import { ProfileGet } from '@repo/types/models/profile';
 import { profileGet } from '@repo/handlers/requests/database/profiles';
@@ -65,6 +67,9 @@ import { useStoreRecurringRule } from '@repo/libraries/zustand/stores/recurring-
 import { useStoreView } from '@repo/libraries/zustand/stores/view';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 import { API_URL } from '@repo/constants/paths';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import { useWorkspaceActions } from './actions/workspace';
+import { WorkspaceGet } from '@repo/types/models/workspace';
 
 export const useSessionStore = (params?: {
   sessionUser: User | null;
@@ -259,6 +264,97 @@ export const useUserStatesStore = () => {
   }, [setUserStates]);
 };
 
+export const useActiveItemStore = (params: {
+  workspaceType: WorkspaceType;
+}) => {
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const { workspaceCreate } = useWorkspaceActions();
+  const setActiveItems = useStoreActiveItems((s) => s.setActiveItems);
+
+  const isInitializing = useRef(false);
+
+  useEffect(() => {
+    const initializeUserState = () => {
+      if (isInitializing.current || !workspaces) return;
+      isInitializing.current = true;
+
+      // get active workspace
+      const getActiveWorkspace = (): WorkspaceGet | null => {
+        if (workspaces === undefined) return null;
+        if (workspaces === null) return null;
+
+        let workingId: string | null = null;
+
+        // get active workspace id from session storage
+        const activeSessionId = getFromSessionStorage(
+          LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE
+        );
+
+        if (!activeSessionId) {
+          // get active workspace id from local storage
+          const activeLocalId = getFromLocalStorage(
+            LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE
+          );
+
+          if (activeLocalId) {
+            workingId = activeLocalId;
+          }
+        } else {
+          workingId = activeSessionId;
+        }
+
+        if (!workingId) {
+          let selectedWorkspace: WorkspaceGet | null = null;
+
+          if (!workspaces.length) {
+            // create default workspace
+            const newDefaultWorkspace = workspaceCreate({
+              title: 'Default Workspace',
+              type: params.workspaceType,
+            });
+
+            selectedWorkspace = newDefaultWorkspace || null;
+          } else {
+            // find default workspace
+            const oldestWorkspace = workspaces.reduce((oldest, current) => {
+              return new Date(current.created_at) < new Date(oldest.created_at)
+                ? current
+                : oldest;
+            });
+
+            selectedWorkspace = oldestWorkspace;
+          }
+
+          if (selectedWorkspace) {
+            saveToSessionStorage(
+              LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+              selectedWorkspace.id
+            );
+
+            saveToLocalStorage(
+              LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+              selectedWorkspace.id
+            );
+          }
+
+          return selectedWorkspace;
+        } else {
+          // find active workspace from store
+          const activeLocalWorkspace = workspaces.find(
+            (wi) => wi.id == workingId
+          );
+
+          return activeLocalWorkspace || null;
+        }
+      };
+
+      setActiveItems({ workspace: getActiveWorkspace() });
+    };
+
+    initializeUserState();
+  }, [setActiveItems, workspaces]);
+};
+
 type LoadStoreConfig<TItems = any, THookReturn = any> = {
   dataStore: (typeof STORE_NAME)[keyof typeof STORE_NAME];
   useStoreHook: () => THookReturn;
@@ -270,6 +366,11 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     dataStore: STORE_NAME.CATEGORIES,
     useStoreHook: useStoreCategory,
     setState: (store, items) => store.setCategories(items),
+  },
+  workspaces: {
+    dataStore: STORE_NAME.WORKSPACES,
+    useStoreHook: useStoreWorkspace,
+    setState: (store, items) => store.setWorkspaces(items),
   },
   notes: {
     dataStore: STORE_NAME.NOTES,
@@ -373,6 +474,7 @@ export const useLoadAppData = (options: {
 
   const stores = {
     categories: useStoreCategory(),
+    workspaces: useStoreWorkspace(),
     notes: useStoreNote(),
     // budgets: useStoreBudget(),
     // accounts: useStoreAccount(),

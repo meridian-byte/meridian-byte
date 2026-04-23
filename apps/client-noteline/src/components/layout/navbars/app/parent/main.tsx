@@ -38,6 +38,13 @@ import DrawerAppNavbar from '@/components/common/drawers/app/navbar';
 import NavbarParentFooter from './footer';
 import { linkify } from '@repo/utilities/url';
 import ButtonsFullscreen from '@repo/components/common/buttons/fullscreen';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
+import {
+  saveToLocalStorage,
+  saveToSessionStorage,
+} from '@repo/utilities/storage';
+import { LOCAL_STORAGE_NAME } from '@repo/constants/names';
 
 export default function Main({
   props,
@@ -46,6 +53,9 @@ export default function Main({
 }) {
   const router = useRouter();
   const notes = useStoreNote((s) => s.notes);
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
+  const setActiveItems = useStoreActiveItems((s) => s.setActiveItems);
   const { noteCreate } = useNoteActions();
   const mobile = useMediaQuery('(max-width: 36em)');
 
@@ -53,6 +63,7 @@ export default function Main({
     if (notes === undefined) return;
 
     let regionalDate = null;
+    let resolvedWorkspaceId: string | undefined = undefined;
 
     if (params?.options?.today) {
       const now = new Date();
@@ -66,13 +77,47 @@ export default function Main({
 
       const exists = notes?.find((n) => n.title == currentDate);
 
-      if (exists) {
+      // find default workspace
+      const oldestWorkspace = workspaces?.reduce((oldest, current) => {
+        return new Date(current.created_at) < new Date(oldest.created_at)
+          ? current
+          : oldest;
+      });
+
+      if (oldestWorkspace) {
+        if (activeWorkspace?.id !== oldestWorkspace.id) {
+          // save new active workspace to local storage
+          saveToLocalStorage(
+            LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+            oldestWorkspace.id
+          );
+
+          // save new active workspace to session storage
+          saveToSessionStorage(
+            LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+            oldestWorkspace.id
+          );
+
+          // set new global active workspace state
+          setActiveItems({ workspace: oldestWorkspace });
+        }
+      }
+
+      if (!exists) {
+        if (oldestWorkspace) {
+          resolvedWorkspaceId = oldestWorkspace.id;
+        }
+      } else {
         router.push(`/app/n/${linkify(exists.title)}-${exists.id}`);
         return;
       }
     }
 
-    noteCreate(!regionalDate ? undefined : { title: regionalDate });
+    noteCreate(
+      !regionalDate
+        ? undefined
+        : { title: regionalDate, workspace_id: resolvedWorkspaceId }
+    );
   };
 
   return (
@@ -117,7 +162,10 @@ export default function Main({
           </ModalSearch>
 
           <Group>
-            <Tooltip label={'Create new note'} position={'right'}>
+            <Tooltip
+              label={`Create new note in ${activeWorkspace?.title}`}
+              position={'right'}
+            >
               <ActionIcon
                 variant="subtle"
                 color="dark"

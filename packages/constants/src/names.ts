@@ -19,6 +19,7 @@ export const LOCAL_STORAGE_NAME = {
   TEMPID: 'temp-id',
   COUNTRY: 'country',
   COUNTRIES: 'countries',
+  ACTIVE_WORKSPACE: 'active-workspace',
   MANTINE_COLOR_SCHEME_VALUE: 'mantine-color-scheme-value',
 };
 
@@ -61,4 +62,5 @@ export const STORE_NAME = {
   RECURRING_RULES: 'recurringRules',
   VIEWS: 'views',
   NOTIFICATIONS: 'notifications',
+  WORKSPACES: 'workspaces',
 };

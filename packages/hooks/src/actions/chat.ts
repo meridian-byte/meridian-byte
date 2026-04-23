@@ -27,7 +27,7 @@ export const useChatActions = () => {
     const newChat: ChatGet = {
       id: params.id || id,
       archived: params.archived || false,
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       temporary: params.temporary || false,
       title: params.title || 'New Chat',
       status: params.status || Status.ACTIVE,

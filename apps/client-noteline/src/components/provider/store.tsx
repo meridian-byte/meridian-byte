@@ -12,10 +12,12 @@ import {
   useAppshellStore,
   useSessionStore,
   useLoadAppData,
+  useActiveItemStore,
   useUserStatesStore,
 } from '@repo/hooks/store';
 import { User } from '@supabase/supabase-js';
 import { AppShellValue } from '@repo/libraries/zustand/stores/shell';
+import { WorkspaceType } from '@repo/types/models/enums';
 
 export default function Store({
   props,
@@ -32,10 +34,12 @@ export default function Store({
   });
   // useUserRoleStore();
   useAppshellStore();
+  useActiveItemStore({ workspaceType: WorkspaceType.NOTELINE });
 
   useLoadAppData({
     clientOnly: false,
     storesToLoad: {
+      workspaces: true,
       notes: true,
     },
   });

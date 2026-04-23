@@ -20,7 +20,7 @@ export const useMealActions = () => {
       id: params.id || id,
       name: params.name || '',
       description: params.description || '',
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       servings: params.servings || [],
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,

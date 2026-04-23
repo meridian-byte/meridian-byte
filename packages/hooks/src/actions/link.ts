@@ -18,7 +18,7 @@ export const useLinkActions = () => {
 
     const newLink: LinkGet = {
       id: params.id || id,
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       from_id: params.from_id || '',
       to_id: params.to_id || '',
       status: params.status || Status.ACTIVE,

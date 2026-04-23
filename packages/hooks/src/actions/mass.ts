@@ -27,7 +27,7 @@ export const useMassActions = () => {
       water: params.water || 0,
       bmi: params.bmi || 0,
       bmr: params.bmr || 0,
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

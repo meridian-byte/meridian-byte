@@ -36,6 +36,11 @@ export async function GET(request: NextRequest) {
           where: { profile_id: userId },
           orderBy: { created_at: 'desc' },
         }),
+      [STORE_NAME.WORKSPACES]: () =>
+        prisma.workspace.findMany({
+          where: { profile_id: userId },
+          orderBy: { created_at: 'desc' },
+        }),
       [STORE_NAME.NOTES]: () =>
         prisma.note.findMany({
           where: { profile_id: userId },
@@ -96,6 +101,7 @@ export async function GET(request: NextRequest) {
 
 const PRISMA_MODEL_MAP: Record<string, any> = {
   [STORE_NAME.CATEGORIES]: prisma.category,
+  [STORE_NAME.WORKSPACES]: prisma.workspace,
   [STORE_NAME.NOTES]: prisma.note,
   [STORE_NAME.TASKS]: prisma.task,
   [STORE_NAME.REMINDERS]: prisma.reminder,

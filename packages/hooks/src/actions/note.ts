@@ -6,7 +6,8 @@ import { generateUUID } from '@repo/utilities/generators';
 import { usePathname, useRouter } from 'next/navigation';
 import { useItemEditContext } from '../contexts/item-edit';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
-import { linkify } from '@repo/utilities/url';
+import { extractUuidFromParam, linkify } from '@repo/utilities/url';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export const useNoteActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -17,6 +18,8 @@ export const useNoteActions = () => {
   const updateNote = useStoreNote((s) => s.updateNote);
   const setNotes = useStoreNote((s) => s.setNotes);
   const deleteNote = useStoreNote((s) => s.deleteNote);
+  // const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
 
   const { editing, editingId, setEditingState, startRename, inputRefs } =
     useItemEditContext();
@@ -37,6 +40,7 @@ export const useNoteActions = () => {
       content: params?.content || '<p></p>',
       parent_note_id: params?.parent_note_id || null,
       profile_id: session.id || params?.profile_id || '',
+      workspace_id: params?.workspace_id || activeWorkspace?.id || null,
       status: params?.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params?.created_at || now).toISOString() as any,
@@ -197,13 +201,31 @@ export const useNoteActions = () => {
   // handler to move note
   const noteMove = (params: {
     values: NoteGet;
-    parent_note_id: string | null;
+    parent_note_id?: string | null;
+    workspace_id?: string;
   }) => {
-    // update note notebook id
-    noteUpdate({
-      ...params.values,
-      parent_note_id: params.parent_note_id,
-    });
+    if (params.parent_note_id !== undefined) {
+      // update note notebook id
+      noteUpdate({
+        ...params.values,
+        parent_note_id: params.parent_note_id,
+      });
+    }
+
+    if (params.workspace_id !== undefined) {
+      // update note workspace id
+      noteUpdate({
+        ...params.values,
+        parent_note_id: null,
+        workspace_id: params.workspace_id,
+      });
+
+      const noteInView = extractUuidFromParam(pathname);
+
+      if (noteInView) {
+        if (pathname != '/app') router.replace(`/app`);
+      }
+    }
   };
 
   return {

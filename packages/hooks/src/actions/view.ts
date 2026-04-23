@@ -25,7 +25,7 @@ export const useViewActions = () => {
       sort_direction: params.sort_direction || null,
       title: params.title || '',
       view: params.view || null,
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

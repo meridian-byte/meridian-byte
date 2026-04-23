@@ -45,7 +45,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
     syncStatus: restProps.syncStatus,
     online: networkStatus.online,
     // Use an array of keys for stability in the hook's dependency array
-    storesToSync: [STORE_NAME.CATEGORIES, STORE_NAME.NOTES],
+    storesToSync: [STORE_NAME.WORKSPACES, STORE_NAME.NOTES],
     // The payload (i) passed here is now the MergedSyncPayload { notes, categories }
     handleSync: (payload: MergedSyncPayload) =>
       handleMergedSync({ payload, ...restProps }),

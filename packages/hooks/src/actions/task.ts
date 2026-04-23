@@ -31,7 +31,7 @@ export const useTaskActions = () => {
       priority: params.priority || Priority.NOT_URGENT_UNIMPORTANT,
       recurring_rule_id: params.recurring_rule_id || null,
       title: params.title || '',
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

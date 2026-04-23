@@ -18,7 +18,7 @@ export const useAccountGroupActions = () => {
     const newAccountGroup: AccountGroupGet = {
       id: params.id || id,
       name: params.name || '',
-      profile_id: session.id || params.profile_id || '',
+      profile_id: params.profile_id || session.id,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,

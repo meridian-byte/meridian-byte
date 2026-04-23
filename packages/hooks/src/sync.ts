@@ -1,3 +1,4 @@
+import { workspacesUpdate } from './../node_modules/@repo/handlers/src/requests/database/workspaces';
 /**
  * @template-source next-template
  * @template-sync auto
@@ -62,6 +63,7 @@ import {
   Database,
   DatabaseError,
 } from '@repo/libraries/indexed-db/transactions';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -91,6 +93,15 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     getDeleted: (store) => store.deleted,
     setItems: (store, items) => store.setCategories(items),
     clearDeleted: (store) => store.clearDeletedCategories(),
+  },
+  [STORE_NAME.WORKSPACES]: {
+    dataStore: STORE_NAME.WORKSPACES,
+    useStoreHook: useStoreWorkspace,
+    serverUpdate: workspacesUpdate,
+    getItems: (store) => store.workspaces,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setWorkspaces(items),
+    clearDeleted: (store) => store.clearDeletedWorkspaces(),
   },
   [STORE_NAME.NOTES]: {
     dataStore: STORE_NAME.NOTES,
@@ -148,6 +159,12 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
       useStoreCategory.getState().setCategories(items),
     clearDeleted: () => useStoreCategory.getState().clearDeletedCategories(),
   },
+  [STORE_NAME.WORKSPACES]: {
+    store: useStoreWorkspace,
+    updateState: (items: any) =>
+      useStoreWorkspace.getState().setWorkspaces(items),
+    clearDeleted: () => useStoreWorkspace.getState().clearDeletedWorkspaces(),
+  },
   [STORE_NAME.NOTES]: {
     store: useStoreNote,
     updateState: (items: any) => useStoreNote.getState().setNotes(items),
@@ -181,6 +198,7 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
 // Define a shape for the payload
 export interface MergedSyncPayload {
   [STORE_NAME.CATEGORIES]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.WORKSPACES]?: { items: any[]; deleted: any[] };
   [STORE_NAME.NOTES]?: { items: any[]; deleted: any[] };
   [STORE_NAME.TASKS]?: { items: any[]; deleted: any[] };
   [STORE_NAME.REMINDERS]?: { items: any[]; deleted: any[] };
@@ -207,10 +225,12 @@ export const useMergedSync = (params: {
 
   // Call all hooks at the top level (Required by Hook Rules)
   const categoryStore = useStoreCategory();
+  const workspaceStore = useStoreWorkspace();
   const noteStore = useStoreNote();
 
   const stores = {
     [STORE_NAME.CATEGORIES]: categoryStore,
+    [STORE_NAME.WORKSPACES]: workspaceStore,
     [STORE_NAME.NOTES]: noteStore,
   };
 
@@ -255,6 +275,7 @@ export const useMergedSync = (params: {
   }, [
     storesToSync,
     // categoryStore,
+    // workspaceStore,
     // noteStore,
     handleSync,
     params.syncStatus,

@@ -1,59 +1,60 @@
-import { useStoreEat } from '@repo/libraries/zustand/stores/eat';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
-import { EatGet, EatRelations } from '@repo/types/models/eat';
-import { EatTime, Status, SyncStatus } from '@repo/types/models/enums';
+import { WorkspaceGet } from '@repo/types/models/workspace';
+import { Status, SyncStatus, WorkspaceType } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
-import { useServingActions } from './serving';
 
-export const useEatActions = () => {
+export const useWorkspaceActions = () => {
   const session = useStoreSession((s) => s.session);
-  const { servingCreate } = useServingActions();
-  const addEat = useStoreEat((s) => s.addEat);
-  const updateEat = useStoreEat((s) => s.updateEat);
-  const deleteEat = useStoreEat((s) => s.deleteEat);
+  const addWorkspace = useStoreWorkspace((s) => s.addWorkspace);
+  const updateWorkspace = useStoreWorkspace((s) => s.updateWorkspace);
+  const deleteWorkspace = useStoreWorkspace((s) => s.deleteWorkspace);
 
-  const eatCreate = (params: Partial<EatRelations>) => {
+  const workspaceCreate = (
+    params: Omit<Partial<WorkspaceGet>, 'type'> & { type: WorkspaceType }
+  ) => {
     if (!session) return;
 
     const id = generateUUID();
     const now = new Date();
 
-    const newEat: EatRelations = {
+    const newWorkspace: WorkspaceGet = {
       id: params.id || id,
-      time: params.time || EatTime.BREAKFAST,
+      title: params.title || 'New Workspace',
+      type: params.type,
       profile_id: params.profile_id || session.id,
-      servings: [],
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,
       updated_at: new Date(params.updated_at || now).toISOString() as any,
     };
 
-    addEat(newEat);
-    servingCreate(params.servings || []);
+    addWorkspace(newWorkspace);
+
+    return newWorkspace;
   };
 
-  const eatUpdate = (params: EatRelations) => {
+  const workspaceUpdate = (params: WorkspaceGet) => {
     if (!session) return;
 
     const now = new Date();
 
-    const newEat: EatRelations = {
+    const newWorkspace: WorkspaceGet = {
       ...params,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at).toISOString() as any,
       updated_at: new Date(now).toISOString() as any,
     };
 
-    updateEat(newEat);
+    updateWorkspace(newWorkspace);
   };
 
-  const eatDelete = (params: EatGet) => {
+  const workspaceDelete = (params: WorkspaceGet) => {
     if (!session) return;
 
     const now = new Date();
 
-    deleteEat({
+    deleteWorkspace({
       ...params,
       sync_status: SyncStatus.DELETED,
       created_at: new Date(params.created_at).toISOString() as any,
@@ -61,5 +62,5 @@ export const useEatActions = () => {
     });
   };
 
-  return { eatCreate, eatUpdate, eatDelete };
+  return { workspaceCreate, workspaceUpdate, workspaceDelete };
 };
