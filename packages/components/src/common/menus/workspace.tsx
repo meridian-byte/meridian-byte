@@ -214,8 +214,20 @@ export default function Workspace({
 
             <Stack gap={5}>
               {workspaces?.map((wi) => {
-                const notesInWorkspace = notes?.filter(
-                  (ni) => ni.workspace_id == wi.id
+                // find default workspace
+                const oldestWorkspace = workspaces?.reduce(
+                  (oldest, current) => {
+                    return new Date(current.created_at) <
+                      new Date(oldest.created_at)
+                      ? current
+                      : oldest;
+                  }
+                );
+
+                const notesInWorkspace = notes?.filter((ni) =>
+                  wi.id != oldestWorkspace?.id
+                    ? ni.workspace_id == wi.id
+                    : !ni.workspace_id || ni.workspace_id == wi.id
                 );
 
                 return (
