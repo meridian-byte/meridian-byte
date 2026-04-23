@@ -5,7 +5,10 @@ import { WorkspaceGet } from '@repo/types/models/workspace';
 
 export type ActiveTaskValue = TaskGet | null;
 export type ActiveWorkspaceValue = WorkspaceGet | null;
-type NoteActions = { move?: boolean; merge?: boolean };
+type NoteActions = {
+  move?: { toNote?: boolean; toWorkspace?: boolean };
+  merge?: boolean;
+};
 export type ActiveNoteValue = ({ item: NoteGet } & NoteActions) | null;
 export type ActiveItemsValue =
   | {

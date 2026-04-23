@@ -42,8 +42,8 @@ export default function Search({
       value={value}
       onChange={(e) => handleChange(e.currentTarget.value)}
       variant="filled"
-      aria-label="Search notes"
-      placeholder="Search notes..."
+      aria-label="Search"
+      placeholder="Search..."
       leftSection={<IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
       rightSection={
         loading ? (

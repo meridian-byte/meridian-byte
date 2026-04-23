@@ -17,7 +17,9 @@ import {
 import { loadInitialData } from '@repo/libraries/store';
 import {
   getFromLocalStorage,
+  getFromSessionStorage,
   saveToLocalStorage,
+  saveToSessionStorage,
 } from '@repo/utilities/storage';
 import {
   SessionValue,
@@ -281,12 +283,27 @@ export const useActiveItemStore = (params: {
         if (workspaces === undefined) return null;
         if (workspaces === null) return null;
 
-        // get active workspace id from local storage
-        const activeLocalId = getFromLocalStorage(
+        let workingId: string | null = null;
+
+        // get active workspace id from session storage
+        const activeSessionId = getFromSessionStorage(
           LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE
         );
 
-        if (!activeLocalId) {
+        if (!activeSessionId) {
+          // get active workspace id from local storage
+          const activeLocalId = getFromLocalStorage(
+            LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE
+          );
+
+          if (activeLocalId) {
+            workingId = activeLocalId;
+          }
+        } else {
+          workingId = activeSessionId;
+        }
+
+        if (!workingId) {
           let selectedWorkspace: WorkspaceGet | null = null;
 
           if (!workspaces.length) {
@@ -309,6 +326,11 @@ export const useActiveItemStore = (params: {
           }
 
           if (selectedWorkspace) {
+            saveToSessionStorage(
+              LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+              selectedWorkspace.id
+            );
+
             saveToLocalStorage(
               LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
               selectedWorkspace.id
@@ -317,9 +339,9 @@ export const useActiveItemStore = (params: {
 
           return selectedWorkspace;
         } else {
-          // find active local workspace from store
+          // find active workspace from store
           const activeLocalWorkspace = workspaces.find(
-            (wi) => wi.id == activeLocalId
+            (wi) => wi.id == workingId
           );
 
           return activeLocalWorkspace || null;

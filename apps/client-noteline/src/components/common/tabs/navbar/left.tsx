@@ -27,6 +27,7 @@ import PartialTabNavbarSearch from '@/components/partial/tabs/navbar/search';
 import ButtonAppshellNavbar from '@repo/components/common/buttons/appshell/navbar';
 import MenuWorkspace from '@repo/components/common/menus/workspace';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
+import { WorkspaceType } from '@repo/types/models/enums';
 
 export default function Left() {
   return (
@@ -36,8 +37,8 @@ export default function Left() {
       keepMounted={false}
       classNames={classes}
     >
-      <Box pt={'xs'} pr={'xs'} pl={5}>
-        <MenuWorkspace />
+      <Box pt={'xs'} pr={'xs'} pl={'xs'}>
+        <MenuWorkspace props={{ workspaceType: WorkspaceType.NOTELINE }} />
       </Box>
 
       <TabsList

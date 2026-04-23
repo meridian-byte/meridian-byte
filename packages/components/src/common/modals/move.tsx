@@ -19,7 +19,12 @@ import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { NotesValue, useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { NoteGet } from '@repo/types/models/note';
-import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
+import {
+  ActiveWorkspaceValue,
+  useStoreActiveItems,
+} from '@repo/libraries/zustand/stores/active-items';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import { WorkspaceGet } from '@repo/types/models/workspace';
 
 export default function Move({
   props,
@@ -38,13 +43,40 @@ export default function Move({
 
   const [searchValue, setSearchValue] = useState('');
 
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const notes = useStoreNote((s) => s.notes);
-  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
+
+  // find default workspace
+  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
+    return new Date(current.created_at) < new Date(oldest.created_at)
+      ? current
+      : oldest;
+  });
+
+  let workspaceNotes = [];
+
+  if (activeWorkspace?.id === oldestWorkspace?.id) {
+    workspaceNotes = (notes || []).filter((ni) => {
+      return !ni.workspace_id || ni.workspace_id === oldestWorkspace?.id;
+    });
+  } else {
+    workspaceNotes = (notes || []).filter((ni) => {
+      return ni.workspace_id === activeWorkspace?.id;
+    });
+  }
+
+  const note = workspaceNotes?.find((n) => n.id == props?.noteId);
 
   const { noteMove } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
-    list: getValidParentNotes(props?.noteId || '', notes || []),
+    list: activeNote?.move?.toNote
+      ? getValidParentNotes(
+          !props?.noteId ? activeNote.item.id || '' : props?.noteId || '',
+          workspaceNotes || []
+        )
+      : getValidWorkspaces(workspaces || [], activeWorkspace),
     searchValue: searchValue,
   });
 
@@ -61,9 +93,18 @@ export default function Move({
         withCloseButton={false}
         centered
       >
-        <LayoutModalMain props={{ close: handleClose, title: 'Move Note' }}>
+        <LayoutModalMain
+          props={{
+            close: handleClose,
+            title: activeNote?.move?.toNote
+              ? 'Move Note'
+              : 'Change Note Workspace',
+          }}
+        >
           <InputTextSearch
             props={{ value: searchValue, setValue: setSearchValue }}
+            aria-label={`Search ${activeNote?.move?.toNote ? 'notes' : 'workspaces'}`}
+            placeholder={`Search ${activeNote?.move?.toNote ? 'notes' : 'workspaces'}...`}
             data-autofocus
           />
 
@@ -87,7 +128,8 @@ export default function Move({
                 <>
                   <Center ta={'center'} py={SECTION_SPACING}>
                     <Text inherit fz={'sm'} c={'dimmed'}>
-                      No notes found...
+                      No {activeNote?.move?.toNote ? 'notes' : 'workspaces'}{' '}
+                      found...
                     </Text>
                   </Center>
                 </>
@@ -95,28 +137,52 @@ export default function Move({
                 <>
                   <NavLink
                     label={'Root'}
-                    display={!note?.parent_note_id ? 'none' : undefined}
+                    display={
+                      !activeNote?.move?.toNote ||
+                      !activeNote?.item.parent_note_id
+                        ? 'none'
+                        : undefined
+                    }
                     style={{
                       borderRadius: 'var(--mantine-radius-sm)',
                     }}
                     onClick={() => {
-                      if (note) {
-                        noteMove({ values: note, parent_note_id: null });
+                      if (activeNote?.move?.toNote) {
+                        noteMove({
+                          values: activeNote.item,
+                          parent_note_id: null,
+                        });
                       }
+
+                      handleClose();
                     }}
                   />
 
-                  {searchCriteriaItems.map((pni) => (
+                  {searchCriteriaItems.map((listedItem) => (
                     <NavLink
-                      key={pni.id}
-                      label={pni.title}
+                      key={listedItem.id}
+                      label={listedItem.title}
                       style={{
                         borderRadius: 'var(--mantine-radius-sm)',
                       }}
                       onClick={() => {
-                        if (note) {
-                          noteMove({ values: note, parent_note_id: pni.id });
+                        if (activeNote) {
+                          if (activeNote?.move?.toNote) {
+                            noteMove({
+                              values: activeNote.item,
+                              parent_note_id: listedItem.id,
+                            });
+                          }
+
+                          if (activeNote?.move?.toWorkspace) {
+                            noteMove({
+                              values: activeNote.item,
+                              workspace_id: listedItem.id,
+                            });
+                          }
                         }
+
+                        handleClose();
                       }}
                     />
                   ))}
@@ -140,6 +206,17 @@ export default function Move({
       </span>
     </>
   );
+}
+
+function getValidWorkspaces(
+  workspaces?: WorkspaceGet[],
+  activeWorkspace?: ActiveWorkspaceValue
+) {
+  const resolvedWorkspaces = workspaces?.filter(
+    (wi) => wi.id != activeWorkspace?.id
+  );
+
+  return resolvedWorkspaces || [];
 }
 
 function getValidParentNotes(noteId: string, notes: NoteGet[]): NoteGet[] {

@@ -11,6 +11,7 @@ import {
   Text,
 } from '@mantine/core';
 import {
+  IconCategory,
   IconCopy,
   IconFiles,
   IconGitMerge,
@@ -124,7 +125,7 @@ export default function Side({
                 />
               }
               onClick={() => {
-                if (note) addActiveNote(note, { move: true });
+                if (note) addActiveNote(note, { move: { toNote: true } });
               }}
             >
               Move note to...
@@ -141,6 +142,19 @@ export default function Side({
               }}
             >
               Merge note with...
+            </MenuItem>
+          </CloseProvider>
+
+          <CloseProvider>
+            <MenuItem
+              leftSection={
+                <IconCategory size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              }
+              onClick={() => {
+                if (note) addActiveNote(note, { move: { toWorkspace: true } });
+              }}
+            >
+              Change note workspace to...
             </MenuItem>
           </CloseProvider>
 

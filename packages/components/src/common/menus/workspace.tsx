@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Popover,
   Text,
@@ -20,6 +20,7 @@ import {
   ScrollArea,
   ScrollAreaAutosize,
   Tooltip,
+  NumberFormatter,
 } from '@mantine/core';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 import {
@@ -38,27 +39,47 @@ import {
 } from '@repo/constants/sizes';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import ModalWorkspaceCrud from '../modals/workspace/crud';
+import { WorkspaceType } from '@repo/types/models/enums';
+import { saveToSessionStorage } from '@repo/utilities/storage';
+import { LOCAL_STORAGE_NAME } from '@repo/constants/names';
+import { usePathname, useRouter } from 'next/navigation';
+import { extractUuidFromParam } from '@repo/utilities/url';
 
 export default function Workspace({
   children,
+  props,
 }: {
   children?: React.ReactNode;
+  props: { workspaceType: WorkspaceType };
 }) {
+  const [opened, setOpened] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
   const workspaces = useStoreWorkspace((s) => s.workspaces);
   const activeItems = useStoreActiveItems((s) => s.activeItems);
+  const setActiveItems = useStoreActiveItems((s) => s.setActiveItems);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const notes = useStoreNote((s) => s.notes);
-  const workspaceNotes = notes?.filter((ni) => {
-    const isDefaultWorkspace = activeWorkspace?.title
-      .toLocaleLowerCase()
-      .includes('default');
 
-    if (!isDefaultWorkspace) {
-      return ni.workspace_id == activeWorkspace?.id;
-    } else {
-      return !ni.workspace_id;
-    }
+  // find default workspace
+  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
+    return new Date(current.created_at) < new Date(oldest.created_at)
+      ? current
+      : oldest;
   });
+
+  let workspaceNotes = [];
+
+  if (activeWorkspace?.id === oldestWorkspace?.id) {
+    workspaceNotes = (notes || []).filter((ni) => {
+      return !ni.workspace_id || ni.workspace_id === oldestWorkspace?.id;
+    });
+  } else {
+    workspaceNotes = (notes || []).filter((ni) => {
+      return ni.workspace_id === activeWorkspace?.id;
+    });
+  }
 
   const defaultChild = (
     <Button
@@ -70,9 +91,14 @@ export default function Workspace({
       justify="space-between"
       variant="subtle"
       color="dark"
+      pl={0}
+      pt={0}
+      pb={0}
     >
       <Group gap={'xs'} wrap="nowrap">
-        <IconCategory size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <Avatar size={ICON_WRAPPER_SIZE} color="dark">
+          {activeWorkspace?.title[0]}
+        </Avatar>
 
         <Text
           component="span"
@@ -94,9 +120,12 @@ export default function Workspace({
       position="bottom-start"
       shadow="md"
       styles={{ dropdown: { padding: 0 } }}
+      keepMounted
+      opened={opened}
+      onChange={setOpened}
     >
       <PopoverTarget>
-        <div>
+        <div onClick={() => setOpened(!opened)}>
           {children ||
             (activeItems === undefined ? <Skeleton h={30} /> : defaultChild)}
         </div>
@@ -111,13 +140,9 @@ export default function Workspace({
           }
         >
           <Group gap={'xs'} wrap="nowrap">
-            <ThemeIcon
-              size={ICON_WRAPPER_SIZE * 1.3}
-              variant="light"
-              color="dark"
-            >
-              <IconCategory size={ICON_SIZE * 1.3} stroke={ICON_STROKE_WIDTH} />
-            </ThemeIcon>
+            <Avatar size={ICON_WRAPPER_SIZE * 1.3} color="dark">
+              {activeWorkspace?.title[0]}
+            </Avatar>
 
             <Stack gap={0} fz={'sm'}>
               <Text inherit lineClamp={1}>
@@ -188,58 +213,107 @@ export default function Workspace({
             </Group>
 
             <Stack gap={5}>
-              {workspaces?.map((wi) => (
+              {workspaces?.map((wi) => {
+                const notesInWorkspace = notes?.filter(
+                  (ni) => ni.workspace_id == wi.id
+                );
+
+                return (
+                  <Button
+                    key={wi.id}
+                    rightSection={
+                      activeWorkspace?.id != wi.id ? undefined : (
+                        <IconCheck
+                          size={ICON_SIZE}
+                          stroke={ICON_STROKE_WIDTH}
+                        />
+                      )
+                    }
+                    fullWidth
+                    size="compact-md"
+                    justify="space-between"
+                    variant="subtle"
+                    color="dark"
+                    pl={5}
+                    onClick={() => {
+                      // save new active workspace to session storage
+                      saveToSessionStorage(
+                        LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+                        wi.id
+                      );
+
+                      // set new global active workspace state
+                      setActiveItems({ workspace: wi });
+
+                      setOpened(false);
+
+                      const noteInViewId = extractUuidFromParam(pathname);
+
+                      if (noteInViewId) {
+                        if (pathname != '/app') {
+                          router.replace('/app');
+                        }
+                      }
+                    }}
+                  >
+                    <Group gap={'xs'} wrap="nowrap">
+                      <Avatar size={ICON_SIZE + 4} color="dark">
+                        {wi?.title[0]}
+                      </Avatar>
+
+                      <Text
+                        component="span"
+                        inherit
+                        fz={'sm'}
+                        fw={'normal'}
+                        lineClamp={1}
+                        maw={200}
+                      >
+                        {wi?.title}
+                      </Text>
+
+                      {activeWorkspace?.id != wi.id && (
+                        <Text
+                          component="span"
+                          inherit
+                          fz={'xs'}
+                          c={'dimmed'}
+                          lineClamp={1}
+                          fw={'normal'}
+                        >
+                          (
+                          <NumberFormatter
+                            value={notesInWorkspace?.length}
+                            thousandSeparator
+                          />
+                          )
+                        </Text>
+                      )}
+                    </Group>
+                  </Button>
+                );
+              })}
+
+              <ModalWorkspaceCrud workspace={{ type: props.workspaceType }}>
                 <Button
-                  key={wi.id}
-                  rightSection={
-                    activeWorkspace?.id != wi.id ? undefined : (
-                      <IconCheck size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                    )
-                  }
                   fullWidth
                   size="compact-md"
-                  justify="space-between"
+                  justify="start"
                   variant="subtle"
-                  color="dark"
+                  color="pri.5"
                   pl={5}
                 >
                   <Group gap={'xs'} wrap="nowrap">
-                    <Avatar size={ICON_SIZE + 4} color="dark">
-                      {activeWorkspace?.title[0]}
-                    </Avatar>
+                    <Center w={ICON_SIZE + 4} h={ICON_SIZE + 4}>
+                      <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                    </Center>
 
-                    <Text
-                      component="span"
-                      inherit
-                      fz={'sm'}
-                      fw={'normal'}
-                      lineClamp={1}
-                      maw={200}
-                    >
-                      {activeWorkspace?.title}
+                    <Text component="span" inherit fz={'sm'} fw={'normal'}>
+                      New Workspace
                     </Text>
                   </Group>
                 </Button>
-              ))}
-
-              <Button
-                fullWidth
-                size="compact-md"
-                justify="start"
-                variant="subtle"
-                color="pri.5"
-                pl={5}
-              >
-                <Group gap={'xs'} wrap="nowrap">
-                  <Center w={ICON_SIZE + 4} h={ICON_SIZE + 4}>
-                    <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                  </Center>
-
-                  <Text component="span" inherit fz={'sm'} fw={'normal'}>
-                    New Workspace
-                  </Text>
-                </Group>
-              </Button>
+              </ModalWorkspaceCrud>
             </Stack>
           </Stack>
         </ScrollAreaAutosize>

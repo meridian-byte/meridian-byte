@@ -19,6 +19,7 @@ import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
 
 export default function Merge({
   props,
@@ -37,12 +38,37 @@ export default function Merge({
   const [searchValue, setSearchValue] = useState('');
 
   const notes = useStoreNote((s) => s.notes);
-  const note = useStoreNote((s) => s.notes?.find((n) => n.id == props?.noteId));
+
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
+
+  // find default workspace
+  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
+    return new Date(current.created_at) < new Date(oldest.created_at)
+      ? current
+      : oldest;
+  });
+
+  let workspaceNotes = [];
+
+  if (activeWorkspace?.id === oldestWorkspace?.id) {
+    workspaceNotes = (notes || []).filter((ni) => {
+      return !ni.workspace_id || ni.workspace_id === oldestWorkspace?.id;
+    });
+  } else {
+    workspaceNotes = (notes || []).filter((ni) => {
+      return ni.workspace_id === activeWorkspace?.id;
+    });
+  }
+
+  const note = workspaceNotes?.find((n) => n.id == props?.noteId);
 
   const { noteMerge } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
-    list: (notes || []).filter((n) => n.id != props?.noteId),
+    list: (workspaceNotes || []).filter((n) =>
+      !props?.noteId ? n.id != activeNote?.item.id : n.id != props?.noteId
+    ),
     searchValue: searchValue,
   });
 
@@ -62,6 +88,9 @@ export default function Merge({
         <LayoutModalMain props={{ close: handleClose, title: 'Merge Note' }}>
           <InputTextSearch
             props={{ value: searchValue, setValue: setSearchValue }}
+            aria-label={`Search notes`}
+            placeholder={`Search notes...`}
+            data-autofocus
           />
 
           <Divider />

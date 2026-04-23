@@ -254,6 +254,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
 
       Popover: Popover.extend({
         defaultProps: {
+          zIndex: 100,
           transitionProps: {
             enterDelay: 0,
             duration: 100,

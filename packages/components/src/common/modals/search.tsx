@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import {
   Box,
@@ -7,6 +7,7 @@ import {
   Modal,
   NavLink,
   ScrollArea,
+  Stack,
   Text,
   Transition,
 } from '@mantine/core';
@@ -22,6 +23,8 @@ import LayoutModal from '@repo/components/layout/modal';
 import InputTextSearch from '../inputs/text/search';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { linkify } from '@repo/utilities/url';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Search({ children }: { children: React.ReactNode }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -30,8 +33,34 @@ export default function Search({ children }: { children: React.ReactNode }) {
   const notes = useStoreNote((s) => s.notes);
   const router = useRouter();
 
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
+
+  const resolvedNotes = useMemo(() => {
+    // find default workspace
+    const oldestWorkspace = workspaces?.reduce((oldest, current) => {
+      return new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest;
+    });
+
+    let workspaceNotes = [];
+
+    if (activeWorkspace?.id === oldestWorkspace?.id) {
+      workspaceNotes = (notes || []).filter((ni) => {
+        return !ni.workspace_id || ni.workspace_id === oldestWorkspace?.id;
+      });
+    } else {
+      workspaceNotes = (notes || []).filter((ni) => {
+        return ni.workspace_id === activeWorkspace?.id;
+      });
+    }
+
+    return workspaceNotes;
+  }, [notes, activeWorkspace]);
+
   const { searchCriteriaItems } = useSearchCriteria({
-    list: notes || [],
+    list: resolvedNotes || [],
     searchValue: searchValue,
     options: { showNoneOnEmpty: true },
   });
@@ -84,11 +113,17 @@ export default function Search({ children }: { children: React.ReactNode }) {
                   pt={0}
                 >
                   {!searchCriteriaItems.length ? (
-                    <Center ta={'center'} py={SECTION_SPACING / 2}>
-                      <Text inherit fz={'sm'} c={'dimmed'}>
-                        No notes found...
-                      </Text>
-                    </Center>
+                    <Stack
+                      align="center"
+                      ta={'center'}
+                      gap={'xs'}
+                      fz={'sm'}
+                      c={'dimmed'}
+                      py={SECTION_SPACING}
+                    >
+                      <Text inherit>No notes found...</Text>
+                      <Text inherit>Try another workspace.</Text>
+                    </Stack>
                   ) : (
                     <Box pt={'xs'}>
                       {items.map((a) => (

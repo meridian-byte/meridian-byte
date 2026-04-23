@@ -12,7 +12,7 @@ export const useContextMenu = (params?: { menuWidth?: number }) => {
 
   const close = () => setOpened(false);
 
-  const menuWidth = params?.menuWidth || 220;
+  const menuWidth = params?.menuWidth || undefined;
 
   return {
     opened,

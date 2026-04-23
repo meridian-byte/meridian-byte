@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Center,
@@ -27,9 +27,13 @@ import {
 } from '@repo/constants/sizes';
 import { useSearchCriteria } from '@repo/hooks/search';
 import { IconFileSearch } from '@tabler/icons-react';
+import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
+import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
 
 export default function Search() {
   const searchParams = useSearchParams();
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const notes = useStoreNote((s) => s.notes);
   const categories = useStoreCategory((s) => s.categories);
   const [value, setValue] = useState('');
@@ -47,8 +51,37 @@ export default function Search() {
     setParamNoteId(paramNoteId as string);
   }, [notes, searchParams]);
 
+  const resolvedNotes = useMemo(() => {
+    if (workspaces === undefined) return [];
+    if (workspaces === null) return [];
+    if (!activeWorkspace) return [];
+
+    // find default workspace
+    const oldestWorkspace = workspaces.reduce((oldest, current) => {
+      return new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest;
+    });
+
+    if (!oldestWorkspace) return [];
+
+    let workspaceNotes = [];
+
+    if (activeWorkspace.id === oldestWorkspace.id) {
+      workspaceNotes = (notes || []).filter((ni) => {
+        return !ni.workspace_id || ni.workspace_id === oldestWorkspace.id;
+      });
+    } else {
+      workspaceNotes = (notes || []).filter((ni) => {
+        return ni.workspace_id === activeWorkspace.id;
+      });
+    }
+
+    return workspaceNotes;
+  }, [notes, activeWorkspace, workspaces]);
+
   const { searchCriteriaItems } = useSearchCriteria({
-    list: notes || [],
+    list: resolvedNotes,
     searchValue: value,
     options: { showNoneOnEmpty: true },
   });
@@ -69,7 +102,8 @@ export default function Search() {
           pos={'sticky'}
           top={48}
           pb={'xs'}
-          px={'calc(var(--mantine-spacing-xs) - 3.33333px)'}
+          px={'xs'}
+          // px={'calc(var(--mantine-spacing-xs) - 3.33333px)'}
         >
           <InputTextSearch
             props={{ value, setValue }}
@@ -101,7 +135,14 @@ export default function Search() {
             {navlinkSkeleton}
           </Stack>
         ) : !searchCriteriaItems.length ? (
-          <Center ta={'center'} py={SECTION_SPACING}>
+          <Stack
+            align="center"
+            ta={'center'}
+            gap={'xs'}
+            fz={'sm'}
+            c={'dimmed'}
+            py={SECTION_SPACING}
+          >
             {!value.trim().length ? (
               <ThemeIcon
                 size={ICON_WRAPPER_SIZE * 2}
@@ -116,11 +157,12 @@ export default function Search() {
                 />
               </ThemeIcon>
             ) : (
-              <Text inherit fz={'sm'} c={'dimmed'}>
-                No notes found...
-              </Text>
+              <Stack>
+                <Text inherit>No notes found...</Text>
+                <Text inherit>Try another workspace.</Text>
+              </Stack>
             )}
-          </Center>
+          </Stack>
         ) : (
           searchCriteriaItems?.map((n) => {
             const category = categories?.find((c) => c.id == n.notebook_id);
