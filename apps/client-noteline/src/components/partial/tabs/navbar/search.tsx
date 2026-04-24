@@ -51,34 +51,31 @@ export default function Search() {
     setParamNoteId(paramNoteId as string);
   }, [notes, searchParams]);
 
-  const resolvedNotes = useMemo(() => {
-    if (workspaces === undefined) return [];
-    if (workspaces === null) return [];
-    if (!activeWorkspace) return [];
-
-    // find default workspace
-    const oldestWorkspace = workspaces.reduce((oldest, current) => {
-      return new Date(current.created_at) < new Date(oldest.created_at)
+  // find default workspace
+  const oldestWorkspaceId = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
         ? current
-        : oldest;
+        : oldest
+    ).id;
+  }, [workspaces]);
+
+  // 2. Resolve the notes based on active context
+  const resolvedNotes = useMemo(() => {
+    if (!activeWorkspace || !oldestWorkspaceId) return [];
+
+    const isActiveDefault = activeWorkspace.id === oldestWorkspaceId;
+
+    return (notes || []).filter((note) => {
+      if (isActiveDefault) {
+        // Show notes belonging to this workspace OR orphaned notes
+        return !note.workspace_id || note.workspace_id === oldestWorkspaceId;
+      }
+      // Show only notes belonging to the specific active workspace
+      return note.workspace_id === activeWorkspace.id;
     });
-
-    if (!oldestWorkspace) return [];
-
-    let workspaceNotes = [];
-
-    if (activeWorkspace.id === oldestWorkspace.id) {
-      workspaceNotes = (notes || []).filter((ni) => {
-        return !ni.workspace_id || ni.workspace_id === oldestWorkspace.id;
-      });
-    } else {
-      workspaceNotes = (notes || []).filter((ni) => {
-        return ni.workspace_id === activeWorkspace.id;
-      });
-    }
-
-    return workspaceNotes;
-  }, [notes, activeWorkspace, workspaces]);
+  }, [notes, activeWorkspace?.id, oldestWorkspaceId]);
 
   const { searchCriteriaItems } = useSearchCriteria({
     list: resolvedNotes,

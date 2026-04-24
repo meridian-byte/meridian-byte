@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Popover,
   Text,
@@ -63,11 +63,14 @@ export default function Workspace({
   const notes = useStoreNote((s) => s.notes);
 
   // find default workspace
-  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
-    return new Date(current.created_at) < new Date(oldest.created_at)
-      ? current
-      : oldest;
-  });
+  const oldestWorkspace = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest
+    );
+  }, [workspaces]);
 
   let workspaceNotes = [];
 
@@ -113,6 +116,21 @@ export default function Workspace({
       </Group>
     </Button>
   );
+
+  // 2. Pre-calculate note counts for EVERY workspace in one pass
+  const workspaceNoteCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+
+    (notes || []).forEach((note) => {
+      // If it has no ID, attribute it to the default workspace
+      const targetId = note.workspace_id || oldestWorkspace?.id;
+      if (targetId) {
+        counts[targetId] = (counts[targetId] || 0) + 1;
+      }
+    });
+
+    return counts;
+  }, [notes, oldestWorkspace?.id]);
 
   return (
     <Popover
@@ -214,21 +232,29 @@ export default function Workspace({
 
             <Stack gap={5}>
               {workspaces?.map((wi) => {
-                // find default workspace
-                const oldestWorkspace = workspaces?.reduce(
-                  (oldest, current) => {
-                    return new Date(current.created_at) <
-                      new Date(oldest.created_at)
-                      ? current
-                      : oldest;
-                  }
-                );
+                const noteCount = workspaceNoteCounts[wi.id] || 0;
+                const isActive = activeWorkspace?.id === wi.id;
 
-                const notesInWorkspace = notes?.filter((ni) =>
-                  wi.id != oldestWorkspace?.id
-                    ? ni.workspace_id == wi.id
-                    : !ni.workspace_id || ni.workspace_id == wi.id
-                );
+                const handleWorkspaceChange = () => {
+                  // save new active workspace to session storage
+                  saveToSessionStorage(
+                    LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
+                    wi.id
+                  );
+
+                  // set new global active workspace state
+                  setActiveItems({ workspace: wi });
+
+                  setOpened(false);
+
+                  const noteInViewId = extractUuidFromParam(pathname);
+
+                  if (noteInViewId) {
+                    if (pathname != '/app') {
+                      router.replace('/app');
+                    }
+                  }
+                };
 
                 return (
                   <Button
@@ -247,32 +273,12 @@ export default function Workspace({
                     variant="subtle"
                     color="dark"
                     pl={5}
-                    onClick={() => {
-                      // save new active workspace to session storage
-                      saveToSessionStorage(
-                        LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE,
-                        wi.id
-                      );
-
-                      // set new global active workspace state
-                      setActiveItems({ workspace: wi });
-
-                      setOpened(false);
-
-                      const noteInViewId = extractUuidFromParam(pathname);
-
-                      if (noteInViewId) {
-                        if (pathname != '/app') {
-                          router.replace('/app');
-                        }
-                      }
-                    }}
+                    onClick={() => handleWorkspaceChange()} // Move logic to a named function
                   >
                     <Group gap={'xs'} wrap="nowrap">
                       <Avatar size={ICON_SIZE + 4} color="dark">
                         {wi?.title[0]}
                       </Avatar>
-
                       <Text
                         component="span"
                         inherit
@@ -283,8 +289,7 @@ export default function Workspace({
                       >
                         {wi?.title}
                       </Text>
-
-                      {activeWorkspace?.id != wi.id && (
+                      {!isActive && (
                         <Text
                           component="span"
                           inherit
@@ -295,7 +300,7 @@ export default function Workspace({
                         >
                           (
                           <NumberFormatter
-                            value={notesInWorkspace?.length}
+                            value={noteCount}
                             thousandSeparator
                           />
                           )

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
 import {
   Button,
@@ -38,11 +38,14 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == props.noteId));
 
   // find default workspace
-  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
-    return new Date(current.created_at) < new Date(oldest.created_at)
-      ? current
-      : oldest;
-  });
+  const oldestWorkspace = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest
+    );
+  }, [workspaces]);
 
   return notes === undefined || activeWorkspace === undefined ? (
     <Center py={SECTION_SPACING * 2} mih={'75vh'}>

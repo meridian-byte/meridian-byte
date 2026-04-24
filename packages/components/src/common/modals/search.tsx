@@ -36,14 +36,17 @@ export default function Search({ children }: { children: React.ReactNode }) {
   const workspaces = useStoreWorkspace((s) => s.workspaces);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
 
-  const resolvedNotes = useMemo(() => {
-    // find default workspace
-    const oldestWorkspace = workspaces?.reduce((oldest, current) => {
-      return new Date(current.created_at) < new Date(oldest.created_at)
+  // find default workspace
+  const oldestWorkspace = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
         ? current
-        : oldest;
-    });
+        : oldest
+    );
+  }, [workspaces]);
 
+  const resolvedNotes = useMemo(() => {
     let workspaceNotes = [];
 
     if (activeWorkspace?.id === oldestWorkspace?.id) {

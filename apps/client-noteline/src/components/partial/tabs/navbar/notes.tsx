@@ -40,45 +40,54 @@ export default function Notes() {
 
   // const ids = new Set((notes || []).map((n) => n.id));
 
+  const oldestWorkspaceId = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest
+    ).id;
+  }, [workspaces]);
+
   // Process tree structure ONCE here
   const { rootNotes, notesMap, childrenMap } = useMemo(() => {
-    // find default workspace
-    const oldestWorkspace = workspaces?.reduce((oldest, current) => {
-      return new Date(current.created_at) < new Date(oldest.created_at)
-        ? current
-        : oldest;
-    });
-
-    let workspaceNotes = [];
-
-    if (activeWorkspace?.id === oldestWorkspace?.id) {
-      workspaceNotes = (notes || []).filter((ni) => {
-        return !ni.workspace_id || ni.workspace_id === oldestWorkspace?.id;
-      });
-    } else {
-      workspaceNotes = (notes || []).filter((ni) => {
-        return ni.workspace_id === activeWorkspace?.id;
-      });
-    }
-
-    const nMap = new Map(workspaceNotes?.map((n) => [n.id, n]));
+    const nMap = new Map<string, NoteGet>();
     const cMap = new Map<string, NoteGet[]>();
+    const roots: NoteGet[] = [];
 
-    workspaceNotes?.forEach((n) => {
-      if (n.parent_note_id) {
-        const arr = cMap.get(n.parent_note_id) || [];
-        arr.push(n);
-        cMap.set(n.parent_note_id, arr);
+    const isActiveDefault = activeWorkspace?.id === oldestWorkspaceId;
+
+    // Single pass through notes
+    (notes || []).forEach((note) => {
+      // 1. Workspace Filtering Logic
+      const belongsToActive = note.workspace_id === activeWorkspace?.id;
+      const isOrphanInDefault = !note.workspace_id && isActiveDefault;
+
+      if (belongsToActive || isOrphanInDefault) {
+        nMap.set(note.id, note);
+
+        // 2. Build Children Map
+        if (note.parent_note_id) {
+          const siblings = cMap.get(note.parent_note_id) || [];
+          siblings.push(note);
+          cMap.set(note.parent_note_id, siblings);
+        }
       }
     });
 
-    const roots = workspaceNotes?.filter(
-      (n) => !n.parent_note_id || !nMap.has(n.parent_note_id)
-    );
-    // Sort roots here...
+    // 3. Determine Roots
+    // We do this after the map is built to ensure parent_note_id existence check is accurate
+    nMap.forEach((note) => {
+      if (!note.parent_note_id || !nMap.has(note.parent_note_id)) {
+        roots.push(note);
+      }
+    });
+
+    // Sort roots (e.g., by title or position)
+    roots.sort((a, b) => a.title.localeCompare(b.title));
 
     return { rootNotes: roots, notesMap: nMap, childrenMap: cMap };
-  }, [notes, activeWorkspace]);
+  }, [notes, activeWorkspace, oldestWorkspaceId]);
 
   return (
     <div>

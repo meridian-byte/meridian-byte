@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import {
   Center,
@@ -48,11 +48,14 @@ export default function Move({
   const notes = useStoreNote((s) => s.notes);
 
   // find default workspace
-  const oldestWorkspace = workspaces?.reduce((oldest, current) => {
-    return new Date(current.created_at) < new Date(oldest.created_at)
-      ? current
-      : oldest;
-  });
+  const oldestWorkspace = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest
+    );
+  }, [workspaces]);
 
   let workspaceNotes = [];
 

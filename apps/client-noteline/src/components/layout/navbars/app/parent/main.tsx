@@ -23,7 +23,7 @@ import {
   IconSearch,
   IconTerminal,
 } from '@tabler/icons-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ModalSearch from '@repo/components/common/modals/search';
 import ModalCommands from '@repo/components/common/modals/commands';
 import { useNoteActions } from '@repo/hooks/actions/note';
@@ -59,6 +59,15 @@ export default function Main({
   const { noteCreate } = useNoteActions();
   const mobile = useMediaQuery('(max-width: 36em)');
 
+  const oldestWorkspace = useMemo(() => {
+    if (!workspaces?.length) return null;
+    return workspaces.reduce((oldest, current) =>
+      new Date(current.created_at) < new Date(oldest.created_at)
+        ? current
+        : oldest
+    );
+  }, [workspaces]);
+
   const handleCreate = (params?: { options?: { today?: boolean } }) => {
     if (notes === undefined) return;
 
@@ -76,13 +85,6 @@ export default function Main({
       regionalDate = currentDate;
 
       const exists = notes?.find((n) => n.title == currentDate);
-
-      // find default workspace
-      const oldestWorkspace = workspaces?.reduce((oldest, current) => {
-        return new Date(current.created_at) < new Date(oldest.created_at)
-          ? current
-          : oldest;
-      });
 
       if (oldestWorkspace) {
         if (activeWorkspace?.id !== oldestWorkspace.id) {
