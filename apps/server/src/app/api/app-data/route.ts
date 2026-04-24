@@ -102,26 +102,41 @@ export async function GET(request: NextRequest) {
 const PRISMA_MODEL_MAP: Record<string, any> = {
   [STORE_NAME.CATEGORIES]: prisma.category,
   [STORE_NAME.WORKSPACES]: prisma.workspace,
+  [STORE_NAME.VIEWS]: prisma.view,
   [STORE_NAME.NOTES]: prisma.note,
   [STORE_NAME.TASKS]: prisma.task,
   [STORE_NAME.REMINDERS]: prisma.reminder,
   [STORE_NAME.RECURRING_RULES]: prisma.recurringRule,
-  [STORE_NAME.VIEWS]: prisma.view,
+};
+
+const SYNC_PRIORITY: Record<string, number> = {
+  [STORE_NAME.WORKSPACES]: 1,
+  [STORE_NAME.CATEGORIES]: 2,
+  [STORE_NAME.VIEWS]: 3,
+  [STORE_NAME.NOTES]: 4,
+  [STORE_NAME.TASKS]: 5,
+  [STORE_NAME.REMINDERS]: 6,
+  [STORE_NAME.RECURRING_RULES]: 7,
 };
 
 export async function POST(request: NextRequest) {
   try {
     const storesParam = request.nextUrl.searchParams.get('stores');
-    // 1. Parse the requested stores into an array
-    const requestedStores = storesParam ? storesParam.split(',') : [];
+    // Parse the requested stores into an array
+    const rawStores = storesParam ? storesParam.split(',') : [];
 
-    // 1. Parse the body ONCE
+    // SORT HERE: Ensure the API dictates the execution order
+    const requestedStores = rawStores.sort((a, b) => {
+      return (SYNC_PRIORITY[a] || 99) - (SYNC_PRIORITY[b] || 99);
+    });
+
+    // Parse the body ONCE
     const fullPayload = await request.json();
 
     const allOperations: any[] = [];
     const storeRanges: Record<string, { start: number; end: number }> = {};
 
-    // 2. Build a single flat array of Prisma promises
+    // Build a single flat array of Prisma promises
     requestedStores.forEach((key) => {
       const model = PRISMA_MODEL_MAP[key]; // Get the correct model accessor
       const data = fullPayload[key];
@@ -167,10 +182,10 @@ export async function POST(request: NextRequest) {
       storeRanges[key] = { start: startIdx, end: allOperations.length };
     });
 
-    // 3. Execute everything in ONE transaction
+    // Execute everything in ONE transaction
     const flatResults = await prisma.$transaction(allOperations);
 
-    // 4. Map the flat results back to the store keys
+    // Map the flat results back to the store keys
     const responsePayload = requestedStores.reduce(
       (acc, key) => {
         const range = storeRanges[key];
