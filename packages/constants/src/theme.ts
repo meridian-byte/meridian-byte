@@ -254,7 +254,6 @@ export const getAppTheme = (params?: AppThemeProps) => {
 
       Popover: Popover.extend({
         defaultProps: {
-          zIndex: 100,
           transitionProps: {
             enterDelay: 0,
             duration: 100,
@@ -289,6 +288,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
 
       Modal: Modal.extend({
         defaultProps: {
+          zIndex: 1000,
           centered: true,
           withCloseButton: false,
           padding: 0,

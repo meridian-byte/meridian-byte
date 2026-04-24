@@ -25,6 +25,7 @@ import {
 } from '@repo/libraries/zustand/stores/active-items';
 import { useStoreWorkspace } from '@repo/libraries/zustand/stores/workspace';
 import { WorkspaceGet } from '@repo/types/models/workspace';
+import { SyncStatus } from '@repo/types/models/enums';
 
 export default function Move({
   props,
@@ -46,6 +47,7 @@ export default function Move({
   const workspaces = useStoreWorkspace((s) => s.workspaces);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const notes = useStoreNote((s) => s.notes);
+  const setNotes = useStoreNote((s) => s.setNotes);
 
   // find default workspace
   const oldestWorkspace = useMemo(() => {
@@ -70,7 +72,6 @@ export default function Move({
   }
 
   const note = workspaceNotes?.find((n) => n.id == props?.noteId);
-
   const { noteMove } = useNoteActions();
 
   const { searchCriteriaItems } = useSearchCriteria({
@@ -169,20 +170,57 @@ export default function Move({
                         borderRadius: 'var(--mantine-radius-sm)',
                       }}
                       onClick={() => {
-                        if (activeNote) {
-                          if (activeNote?.move?.toNote) {
-                            noteMove({
-                              values: activeNote.item,
-                              parent_note_id: listedItem.id,
-                            });
-                          }
+                        if (!activeNote) return;
 
-                          if (activeNote?.move?.toWorkspace) {
-                            noteMove({
-                              values: activeNote.item,
-                              workspace_id: listedItem.id,
-                            });
-                          }
+                        const noteToMove = activeNote.item;
+
+                        if (activeNote?.move?.toNote) {
+                          noteMove({
+                            values: noteToMove,
+                            parent_note_id: listedItem.id,
+                          });
+                        }
+
+                        if (activeNote?.move?.toWorkspace) {
+                          const now = new Date();
+                          const targetWorkspaceId = listedItem.id;
+
+                          // 1. Find all children/descendants of the note being moved
+                          const getChildIds = (parentId: string): string[] => {
+                            const children =
+                              notes?.filter(
+                                (n) => n.parent_note_id === parentId
+                              ) || [];
+                            return children.reduce(
+                              (acc, child) => [
+                                ...acc,
+                                child.id,
+                                ...getChildIds(child.id),
+                              ],
+                              [] as string[]
+                            );
+                          };
+
+                          const idsToUpdate = [
+                            activeNote.item.id,
+                            ...getChildIds(activeNote.item.id),
+                          ];
+
+                          // 2. Update the workspace_id for the whole branch
+                          const updatedNotes = notes?.map((n) =>
+                            idsToUpdate.includes(n.id)
+                              ? {
+                                  ...n,
+                                  workspace_id: targetWorkspaceId,
+                                  sync_status: SyncStatus.PENDING as any,
+                                  updated_at: new Date(
+                                    now
+                                  ).toISOString() as any,
+                                }
+                              : n
+                          );
+
+                          setNotes(updatedNotes || []);
                         }
 
                         handleClose();
@@ -255,3 +293,12 @@ function getValidParentNotes(noteId: string, notes: NoteGet[]): NoteGet[] {
     (n) => n.id !== noteId && !descendants.has(n.id) && n.id !== parentId
   );
 }
+
+// Faster version using a pre-built children map
+// A helper to find all IDs in a sub-tree
+const getAllChildIds = (parentId: string, allNotes: NoteGet[]): string[] => {
+  const children = allNotes.filter((n) => n.parent_note_id === parentId);
+  return children.reduce((acc, child) => {
+    return [...acc, child.id, ...getAllChildIds(child.id, allNotes)];
+  }, [] as string[]);
+};
