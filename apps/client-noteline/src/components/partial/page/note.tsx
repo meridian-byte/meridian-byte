@@ -77,9 +77,8 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
         </Group>
       </Stack>
     </Center>
-  ) : activeWorkspace?.id != oldestWorkspace?.id ? (
-    activeWorkspace?.id != note.workspace_id
-  ) : !!note.workspace_id && activeWorkspace?.id != note.workspace_id ? (
+  ) : (!note.workspace_id && activeWorkspace?.id != oldestWorkspace?.id) ||
+    (!!note.workspace_id && activeWorkspace?.id != note.workspace_id) ? (
     <Center py={SECTION_SPACING * 2} mih={'75vh'}>
       <Stack align="center" ta={'center'} gap={'xl'}>
         <Stack align="center" gap={'xs'}>
