@@ -60,7 +60,7 @@ export default function Note({ props }: { props?: { noteId?: string } }) {
             key={note.id}
             {...sharedProps}
             component={Link}
-            href={`/app/n/${linkify(note.title)}-${note.id}`}
+            href={`/n/${linkify(note.title)}-${note.id}`}
             px={{ base: 0, md: '5' }}
           >
             {note.title}

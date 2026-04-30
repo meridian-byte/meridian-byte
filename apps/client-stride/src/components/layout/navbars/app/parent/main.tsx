@@ -67,7 +67,7 @@ export default function Main({
             </DrawerAppNavbar>
           )}
 
-          <NextLink href="/app">
+          <NextLink href="/">
             <Group>
               <Tooltip label={'Go to home page'} position={'right'}>
                 <ActionIcon

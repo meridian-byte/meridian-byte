@@ -123,7 +123,7 @@ const cardSkeleton = <Skeleton h={128.2} />;
 
 function RecentNoteCard({ props }: { props: NoteGet }) {
   const link = useMemo(() => {
-    return `/app/n/${linkify(props.title || '')}-${props.id}`;
+    return `/n/${linkify(props.title || '')}-${props.id}`;
   }, [props.title, props.id]);
 
   const timeStamp = getRegionalDate(props.updated_at);

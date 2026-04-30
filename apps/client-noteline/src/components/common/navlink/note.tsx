@@ -74,7 +74,7 @@ function NoteComponent({
   const router = useRouter();
 
   const parentLink = useMemo(() => {
-    return `/app/n/${linkify(note?.title || '')}-${note?.id}`;
+    return `/n/${linkify(note?.title || '')}-${note?.id}`;
   }, [note?.title, note?.id]);
 
   function handleNavigate() {

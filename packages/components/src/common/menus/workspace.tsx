@@ -250,8 +250,8 @@ export default function Workspace({
                   const noteInViewId = extractUuidFromParam(pathname);
 
                   if (noteInViewId) {
-                    if (pathname != '/app') {
-                      router.replace('/app');
+                    if (pathname != '/') {
+                      router.replace('/');
                     }
                   }
                 };

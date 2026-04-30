@@ -36,7 +36,7 @@ export default function Task() {
     const category = categories?.find((ci) => ci.id == paramId);
     if (category) {
       path.push({
-        link: `/app/p/${linkify(category.title)}-${category.id}`,
+        link: `/p/${linkify(category.title)}-${category.id}`,
         label: category.title,
       });
     }

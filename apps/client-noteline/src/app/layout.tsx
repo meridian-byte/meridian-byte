@@ -31,6 +31,14 @@ import { APP_NAME } from '@repo/constants/app';
 import { createClient } from '@repo/libraries/supabase/server';
 import { getCookieServer } from '@repo/utilities/cookie-server';
 import { COOKIE_NAME } from '@repo/constants/names';
+import ItemEditProvider from '@repo/components/provider/item-edit';
+import AppShellAppMain from '@repo/components/layout/shells/app/main';
+import { APPSHELL } from '@/data/constants';
+import HeaderAppMain from '@/components/layout/headers/app/main';
+import NavbarAppParentMain from '@/components/layout/navbars/app/parent/main';
+import TabNavbarLeft from '@/components/common/tabs/navbar/left';
+import TabNavbarRight from '@/components/common/tabs/navbar/right';
+import ProviderView from '@repo/components/provider/view';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -103,7 +111,27 @@ export default async function RootLayout({
           colorScheme={resolvedTheme}
         >
           <ProviderStore props={{ sessionUser: session.user }}>
-            <ProviderSync>{children}</ProviderSync>
+            <ProviderSync>
+              <ItemEditProvider>
+                <AppShellAppMain
+                  props={{
+                    appShell: {
+                      headerHeight: APPSHELL.HEADER_HEIGHT,
+                      navbarWidth: APPSHELL.NAVBAR_WIDTH,
+                    },
+                    header: { component: <HeaderAppMain /> },
+                    navbar: { component: <NavbarAppParentMain /> },
+                    appShellChild: {
+                      appShell: { headerHeight: APPSHELL.HEADER_HEIGHT },
+                      leftSection: { component: <TabNavbarLeft /> },
+                      // rightSection: { component: <TabNavbarRight /> },
+                    },
+                  }}
+                >
+                  <ProviderView>{children}</ProviderView>
+                </AppShellAppMain>
+              </ItemEditProvider>
+            </ProviderSync>
           </ProviderStore>
         </ProviderMantine>
       </body>

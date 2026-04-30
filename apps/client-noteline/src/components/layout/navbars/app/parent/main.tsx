@@ -110,7 +110,7 @@ export default function Main({
           resolvedWorkspaceId = oldestWorkspace.id;
         }
       } else {
-        router.push(`/app/n/${linkify(exists.title)}-${exists.id}`);
+        router.push(`/n/${linkify(exists.title)}-${exists.id}`);
         return;
       }
     }
@@ -135,7 +135,7 @@ export default function Main({
             <ButtonAppshellNavbar />
           </DrawerAppNavbar>
 
-          <NextLink href="/app">
+          <NextLink href="/">
             <Group>
               <Tooltip label={'Go to home page'} position={'right'}>
                 <ActionIcon

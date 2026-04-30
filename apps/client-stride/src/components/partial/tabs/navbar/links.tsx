@@ -51,12 +51,12 @@ export default function Links() {
     {
       icon: IconHome,
       label: 'Home',
-      link: '/app',
+      link: '',
     },
     {
       icon: IconInbox,
       label: 'Inbox',
-      link: '/app/inbox',
+      link: '/inbox',
       count: !incompleteTasks
         ? undefined
         : incompleteTasks.filter((ti) => !ti.category_id).length,
@@ -64,7 +64,7 @@ export default function Links() {
     {
       icon: IconSun,
       label: 'Today',
-      link: '/app/today',
+      link: '/today',
       count: !incompleteTasks
         ? undefined
         : incompleteTasks.filter((ti) => isToday(ti.due_date || '')).length,
@@ -72,7 +72,7 @@ export default function Links() {
     {
       icon: IconCalendarEvent,
       label: 'Upcoming',
-      link: '/app/upcoming',
+      link: '/upcoming',
       count: !incompleteTasks
         ? undefined
         : incompleteTasks.filter((ti) => isWithinNext7Days(ti.due_date)).length,
@@ -80,13 +80,13 @@ export default function Links() {
     {
       icon: IconClearAll,
       label: 'All',
-      link: '/app/all',
+      link: '/all',
       count: tasks?.length,
     },
     {
       icon: IconCircleCheck,
       label: 'Completed',
-      link: '/app/completed',
+      link: '/completed',
       count: completeTasks?.length,
     },
   ];

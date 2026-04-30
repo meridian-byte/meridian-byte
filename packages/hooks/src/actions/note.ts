@@ -49,7 +49,7 @@ export const useNoteActions = () => {
 
     addNote(newNote);
 
-    router.push(`/app/n/${linkify(newNote.title)}-${newNote.id}`);
+    router.push(`/n/${linkify(newNote.title)}-${newNote.id}`);
 
     if (!userStates.editing) setUserStates({ ...userStates, editing: true });
 
@@ -152,7 +152,7 @@ export const useNoteActions = () => {
 
     // check if current note is in view
     if (!params.options?.noRedirect && !!params.values.id) {
-      if (pathname != '/app') router.replace(`/app`);
+      if (pathname != '/') router.replace(`/`);
     }
   };
 
@@ -185,7 +185,7 @@ export const useNoteActions = () => {
     // add to note to state
     updateNote(note);
 
-    router.push(`/app/n/${linkify(note.title)}-${note.id}`);
+    router.push(`/n/${linkify(note.title)}-${note.id}`);
 
     // delete merged note
     setTimeout(() => {
@@ -223,7 +223,7 @@ export const useNoteActions = () => {
       const noteInView = extractUuidFromParam(pathname);
 
       if (noteInView) {
-        if (pathname != '/app') router.replace(`/app`);
+        if (pathname != '/') router.replace(`/`);
       }
     }
   };

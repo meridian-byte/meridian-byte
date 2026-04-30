@@ -20,7 +20,7 @@ export default function Empty({
 
         <div>
           {!children ? (
-            <Button size="xs" component={Link} href={'/app'}>
+            <Button size="xs" component={Link} href={'/'}>
               Go To Home Page
             </Button>
           ) : (

@@ -8,18 +8,12 @@
 import LayoutPage from '@repo/components/layout/page';
 import LayoutBody from '@repo/components/layout/body';
 import AffixNavbar from '@repo/components/common/affixi/navbar';
-import LayoutSection from '@repo/components/layout/section';
-import { Center } from '@mantine/core';
-import NextLink from '@repo/components/common/anchor/next-link';
+import PartialPageHome from '@/components/partial/page/home';
 
 export default function Home() {
   return (
     <HomeLayout>
-      <LayoutSection id="home">
-        <Center mih={'100vh'}>
-          <NextLink href="/app">Go to App</NextLink>
-        </Center>
-      </LayoutSection>
+      <PartialPageHome />
     </HomeLayout>
   );
 }

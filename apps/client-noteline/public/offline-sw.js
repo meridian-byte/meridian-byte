@@ -56,7 +56,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Stale-while-revalidate for HTML pages (e.g., /app/inbox)
+  // Stale-while-revalidate for HTML pages
   if (request.mode === 'navigate') {
     event.respondWith(
       caches.match(request).then((cached) => {

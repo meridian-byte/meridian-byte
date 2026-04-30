@@ -66,7 +66,7 @@ export const useFormChatMessage = (params?: {
         }
 
         if (!chatId) {
-          if (newChatId) router.push(`/app/chat/${newChatId}`);
+          if (newChatId) router.push(`/chat/${newChatId}`);
         }
       },
     }

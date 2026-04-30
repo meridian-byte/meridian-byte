@@ -12,7 +12,7 @@ export const authRoutes = [
 ];
 
 export const protectedRoutes = [
-  '/app',
+  '/',
   // Add other protected routes
 ];
 

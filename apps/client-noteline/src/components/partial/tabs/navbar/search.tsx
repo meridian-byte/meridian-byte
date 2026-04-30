@@ -169,7 +169,7 @@ export default function Search() {
               <NavLink
                 key={n.id}
                 component={Link}
-                href={`/app/n/${linkify(n.title)}-${n.id}`}
+                href={`/n/${linkify(n.title)}-${n.id}`}
                 active={active}
                 onClick={() => {
                   if (desktop) return;

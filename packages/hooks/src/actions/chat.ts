@@ -84,7 +84,7 @@ export const useChatActions = () => {
       updated_at: new Date(now).toISOString() as any,
     });
 
-    if (pathname.includes(params.id)) router.push('/app');
+    if (pathname.includes(params.id)) router.push('/');
   };
 
   return {

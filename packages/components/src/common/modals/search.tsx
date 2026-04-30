@@ -74,7 +74,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
       label: n.title,
       leftSection: <IconNote size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />,
       onClick: () => {
-        router.push(`/app/n/${linkify(n.title)}-${n.id}`);
+        router.push(`/n/${linkify(n.title)}-${n.id}`);
         close();
       },
     };

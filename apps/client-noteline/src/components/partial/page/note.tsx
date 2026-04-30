@@ -69,7 +69,7 @@ export default function Note({ props }: { props: { noteId?: string | null } }) {
         </Stack>
 
         <Group>
-          <NextLink href="/app">
+          <NextLink href="/">
             <Button size="xs" color="dark">
               Back to Home
             </Button>

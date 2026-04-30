@@ -61,7 +61,7 @@ export default function Category({
   const pathname = usePathname();
   const router = useRouter();
 
-  const parentLink = `/app/p/${linkify(category?.title || '')}-${category?.id}`;
+  const parentLink = `/p/${linkify(category?.title || '')}-${category?.id}`;
 
   function handleNavigate() {
     router.push(parentLink);
