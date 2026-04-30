@@ -29,7 +29,7 @@ export default function LayoutDefault({
   children: React.ReactNode;
 }) {
   return (
-    <LayoutBody>
+    <>
       <LayoutSection id={'layout-auth-default'} containerized="xs">
         <Stack
           justify="center"
@@ -64,6 +64,6 @@ export default function LayoutDefault({
           </Card>
         </Stack>
       </LayoutSection>
-    </LayoutBody>
+    </>
   );
 }

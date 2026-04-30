@@ -29,7 +29,7 @@ export default function LayoutNotify({
   children: React.ReactNode;
 }) {
   return (
-    <LayoutBody>
+    <>
       <Grid gutter={0} px={{ base: 'md', xs: 0 }}>
         <GridCol
           span={5.5}
@@ -70,6 +70,6 @@ export default function LayoutNotify({
           </LayoutSection>
         </GridCol>
       </Grid>
-    </LayoutBody>
+    </>
   );
 }

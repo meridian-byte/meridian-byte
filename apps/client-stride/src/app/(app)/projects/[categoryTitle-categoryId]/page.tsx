@@ -5,6 +5,7 @@ import {
   extractUuidFromParam,
 } from '@repo/utilities/url';
 import PartialListingCategory from '@/components/partial/page/app/category';
+import LayoutPage from '@repo/components/layout/page';
 
 export default async function Category({
   params,
@@ -16,8 +17,8 @@ export default async function Category({
   const categoryTitle = extractSlugFromParam(paramValues);
 
   return (
-    <div>
+    <LayoutPage>
       <PartialListingCategory props={{ categoryId, categoryTitle }} />
-    </div>
+    </LayoutPage>
   );
 }

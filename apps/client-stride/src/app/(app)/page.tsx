@@ -6,29 +6,15 @@
  */
 
 import LayoutPage from '@repo/components/layout/page';
-import LayoutBody from '@repo/components/layout/body';
-import AffixNavbar from '@repo/components/common/affixi/navbar';
 import LayoutSection from '@repo/components/layout/section';
 import PartialListingHome from '@/components/partial/page/app/home';
 
 export default function Home() {
   return (
-    <HomeLayout>
+    <LayoutPage>
       <LayoutSection id={'app-home-content'} padded containerized={'sm'}>
         <PartialListingHome />
       </LayoutSection>
-    </HomeLayout>
-  );
-}
-
-async function HomeLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <LayoutBody>
-      <LayoutPage>
-        <main>{children}</main>
-
-        <AffixNavbar />
-      </LayoutPage>
-    </LayoutBody>
+    </LayoutPage>
   );
 }

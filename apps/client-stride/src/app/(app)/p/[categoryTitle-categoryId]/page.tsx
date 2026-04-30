@@ -5,6 +5,7 @@ import {
   extractUuidFromParam,
 } from '@repo/utilities/url';
 import { typeParams } from '../layout';
+import LayoutPage from '@repo/components/layout/page';
 
 export default async function Home({
   params,
@@ -15,5 +16,9 @@ export default async function Home({
   const categoryId = extractUuidFromParam(paramValues);
   const categoryTitle = extractSlugFromParam(paramValues);
 
-  return <PartialPageCategory props={{ categoryTitle, categoryId }} />;
+  return (
+    <LayoutPage>
+      <PartialPageCategory props={{ categoryTitle, categoryId }} />
+    </LayoutPage>
+  );
 }

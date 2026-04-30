@@ -25,14 +25,6 @@ import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
 import { APP_DESC, COMPANY_NAME } from '@repo/constants/app';
 import { APP_NAME } from '@repo/constants/app';
 import { createClient } from '@repo/libraries/supabase/server';
-import ItemEditProvider from '@repo/components/provider/item-edit';
-import AppShellAppMain from '@repo/components/layout/shells/app/main';
-import { APPSHELL } from '@/data/constants';
-import HeaderAppMain from '@/components/layout/headers/app/main';
-import NavbarAppParentMain from '@/components/layout/navbars/app/parent/main';
-import PartialTabNavbarLinks from '@/components/partial/tabs/navbar/links';
-import ProviderView from '@repo/components/provider/view';
-import LayoutSection from '@repo/components/layout/section';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -100,34 +92,7 @@ export default async function RootLayout({
           colorScheme={DEFAULT_COLOR_SCHEME}
         >
           <ProviderStore props={{ sessionUser: session.user }}>
-            <ProviderSync>
-              <ItemEditProvider>
-                <AppShellAppMain
-                  props={{
-                    appShell: {
-                      headerHeight: APPSHELL.HEADER_HEIGHT,
-                      navbarWidth: APPSHELL.NAVBAR_WIDTH,
-                    },
-                    header: { component: <HeaderAppMain /> },
-                    navbar: { component: <NavbarAppParentMain /> },
-                    appShellChild: {
-                      appShell: { headerHeight: APPSHELL.HEADER_HEIGHT },
-                      leftSection: { component: <PartialTabNavbarLinks /> },
-                    },
-                  }}
-                >
-                  <ProviderView>
-                    <LayoutSection
-                      id={'app-children-content'}
-                      padded
-                      containerized={'sm'}
-                    >
-                      {children}
-                    </LayoutSection>
-                  </ProviderView>
-                </AppShellAppMain>
-              </ItemEditProvider>
-            </ProviderSync>
+            <ProviderSync>{children}</ProviderSync>
           </ProviderStore>
         </ProviderMantine>
       </body>
