@@ -75,7 +75,7 @@ export default function Main({ item }: { item?: NoteGet }) {
       SubScript,
       Highlight,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Placeholder.configure({ placeholder: 'Add content here...' }),
+      Placeholder.configure({ placeholder: 'Write something…' }),
       TableKit.configure({ table: { resizable: true } }),
       TaskList,
       TaskItem.configure({ nested: true }),

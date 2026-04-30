@@ -141,7 +141,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           scrollbarSize: 6,
         },
         styles: {
-          scrollbar: { zIndex: 100 },
+          // scrollbar: { zIndex: 100 },
           thumb: {
             backgroundColor:
               'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
@@ -288,7 +288,6 @@ export const getAppTheme = (params?: AppThemeProps) => {
 
       Modal: Modal.extend({
         defaultProps: {
-          zIndex: 1000,
           centered: true,
           withCloseButton: false,
           padding: 0,

@@ -212,6 +212,7 @@ export default function Move({
                               ? {
                                   ...n,
                                   workspace_id: targetWorkspaceId,
+                                  parent_note_id: null, // Moving to a different workspace should reset parent_note_id
                                   sync_status: SyncStatus.PENDING as any,
                                   updated_at: new Date(
                                     now

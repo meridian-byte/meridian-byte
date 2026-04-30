@@ -103,14 +103,16 @@ export default function Home() {
                 </Button>
               </Stack>
             ) : (
-              sortArray(notes || [], (i) => i.updated_at, Order.DESCENDING).map(
-                (ni, i) =>
-                  i < 6 && (
-                    <div key={ni.id}>
-                      <RecentNoteCard props={ni} />
-                    </div>
-                  )
-              )
+              sortArray(notes || [], (i) => i.updated_at, Order.DESCENDING)
+                .filter((ni) => ni.content && ni.content.length > 10)
+                .map(
+                  (ni, i) =>
+                    i < 6 && (
+                      <div key={ni.id}>
+                        <RecentNoteCard props={ni} />
+                      </div>
+                    )
+                )
             )}
           </SimpleGrid>
         </Stack>

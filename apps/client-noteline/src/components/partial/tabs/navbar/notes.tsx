@@ -7,6 +7,7 @@ import {
   Group,
   Skeleton,
   Stack,
+  Text,
   Tooltip,
 } from '@mantine/core';
 import { useStoreNote } from '@repo/libraries/zustand/stores/note';
@@ -22,6 +23,7 @@ import {
   ICON_SIZE,
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
+  SECTION_SPACING,
 } from '@repo/constants/sizes';
 import {
   IconEdit,
@@ -176,6 +178,21 @@ export default function Notes() {
             {navlinkSkeleton}
             {navlinkSkeleton}
           </Stack>
+        ) : !notes || !notes.length ? (
+          <>
+            <Box
+              px={'xs'}
+              py={SECTION_SPACING}
+              ta={'center'}
+              fz={'sm'}
+              c={'dimmed'}
+            >
+              <Text inherit>
+                No notes yet. <br />
+                Click the <IconEdit size={16} /> icon to create your first note.
+              </Text>
+            </Box>
+          </>
         ) : (
           <>
             {sortArray(

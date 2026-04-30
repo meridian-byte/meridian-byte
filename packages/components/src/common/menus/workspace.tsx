@@ -319,6 +319,9 @@ export default function Workspace({
                   variant="subtle"
                   color="pri.5"
                   pl={5}
+                  onClick={() => {
+                    setOpened(false);
+                  }}
                 >
                   <Group gap={'xs'} wrap="nowrap">
                     <Center w={ICON_SIZE + 4} h={ICON_SIZE + 4}>

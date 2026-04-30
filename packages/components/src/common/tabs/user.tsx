@@ -77,6 +77,7 @@ export default function User({ props }: { props?: { close?: () => void } }) {
         bg={
           'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'
         }
+        w={mobile ? undefined : '33%'}
       >
         <Group px={8}>
           <ActionIcon
@@ -93,7 +94,6 @@ export default function User({ props }: { props?: { close?: () => void } }) {
         <TabsList
           mih={mobile ? undefined : TAB_HEIGHT}
           styles={{ list: { gap: 2 } }}
-          w={mobile ? undefined : '33%'}
           // style={{ flexDirection: mobile ? 'column' : 'row' }}
         >
           {tabs.map((tt) => (
