@@ -259,7 +259,9 @@ export const useMergedSync = (params: {
         (i) =>
           i.sync_status === SyncStatus.PENDING ||
           i.sync_status === SyncStatus.SAVED ||
-          i.sync_status === SyncStatus.ERROR
+          i.sync_status === SyncStatus.ERROR ||
+          (i.sync_status === SyncStatus.SYNCED_CLIENT &&
+            isRecent(i.updated_at || i.created_at))
       );
 
       if (needsSync || deleted.length > 0) {
@@ -566,3 +568,10 @@ export const syncToClientDB = async (
 function dedupeBy<T, K>(arr: T[], key: (item: T) => K): T[] {
   return Array.from(new Map(arr.map((i) => [key(i), i])).values());
 }
+
+const RECENT_THRESHOLD_MS = 10_000; // 10 seconds (tune this)
+
+const isRecent = (date: string | Date) => {
+  const t = new Date(date).getTime();
+  return Date.now() - t < RECENT_THRESHOLD_MS;
+};
