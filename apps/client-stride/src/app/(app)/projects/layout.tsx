@@ -1,5 +1,5 @@
 import React from 'react';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import { Metadata } from 'next';
 import { APP_NAME } from '@repo/constants/app';
 
@@ -19,5 +19,5 @@ export default function LayoutAppCategories({
 }: {
   children: React.ReactNode;
 }) {
-  return <LayoutBody>{children}</LayoutBody>;
+  return <LayoutMain>{children}</LayoutMain>;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import { typeParams } from '../layout';
 import { Metadata } from 'next';
 import { PostRelations } from '@repo/types/models/post';
@@ -30,5 +30,5 @@ export default function LayoutPost({
   children: React.ReactNode;
   params: typeParams;
 }) {
-  return <LayoutBody>{children}</LayoutBody>;
+  return <LayoutMain>{children}</LayoutMain>;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import AppShellAppMain from '@repo/components/layout/shells/app/main';
 import ItemEditProvider from '@repo/components/provider/item-edit';
 import { APPSHELL } from '@/data/constants';
@@ -14,7 +14,7 @@ export default async function LayoutApp({
   children: React.ReactNode;
 }) {
   return (
-    <LayoutBody>
+    <LayoutMain>
       <main>
         <ItemEditProvider>
           <AppShellAppMain
@@ -35,6 +35,6 @@ export default async function LayoutApp({
           </AppShellAppMain>
         </ItemEditProvider>
       </main>
-    </LayoutBody>
+    </LayoutMain>
   );
 }

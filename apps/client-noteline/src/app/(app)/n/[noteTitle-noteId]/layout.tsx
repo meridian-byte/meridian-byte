@@ -1,5 +1,5 @@
 import React from 'react';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import { typeParams } from '../layout';
 import { Metadata } from 'next';
 import { NoteGet } from '@repo/types/models/note';
@@ -38,9 +38,9 @@ export default async function LayoutNote({
   const noteId = extractUuidFromParam((await params)['noteTitle-noteId']);
 
   return (
-    <LayoutBody>
+    <LayoutMain>
       <HeaderAppNoteDetails props={{ noteId: noteId }} />
       {children}
-    </LayoutBody>
+    </LayoutMain>
   );
 }

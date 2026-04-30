@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { Center, Grid, GridCol, Stack } from '@mantine/core';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import LayoutSection from '@repo/components/layout/section';
 import ImageDefault from '@repo/components/common/images/default';
 import { images } from '@repo/constants/images';

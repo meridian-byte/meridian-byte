@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { Metadata } from 'next';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import AffixNavbar from '@repo/components/common/affixi/navbar';
 import { COMPANY_NAME } from '@repo/constants/app';
 
@@ -21,10 +21,10 @@ export default async function LayoutMarketing({
   children: React.ReactNode;
 }) {
   return (
-    <LayoutBody>
+    <LayoutMain>
       <main>{children}</main>
 
       <AffixNavbar />
-    </LayoutBody>
+    </LayoutMain>
   );
 }

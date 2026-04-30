@@ -1,5 +1,5 @@
 import React from 'react';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import { typeParams } from '../layout';
 import { Metadata } from 'next';
 import { CategoryGet } from '@repo/types/models/category';
@@ -42,9 +42,9 @@ export default async function LayoutCategory({
   // );
 
   return (
-    <LayoutBody>
+    <LayoutMain>
       {/* <HeaderAppCategoryDetails props={{ categoryId: categoryId }} /> */}
       {children}
-    </LayoutBody>
+    </LayoutMain>
   );
 }

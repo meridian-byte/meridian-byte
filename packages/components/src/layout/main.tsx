@@ -7,12 +7,12 @@
 
 import React, { useMemo } from 'react';
 import { Box, Divider, Flex } from '@mantine/core';
-import { BodyProps, Widths } from '@repo/types/layout';
+import { MainProps, Widths } from '@repo/types/layout';
 import LayoutSection from './section';
 
 export const DEFAULT_ASIDE_WIDTH = { md: 33, lg: 25 };
 
-export default function Body({
+export default function Main({
   children,
   bar,
   header,
@@ -20,7 +20,7 @@ export default function Body({
   hero,
   aside,
   footer,
-}: BodyProps) {
+}: MainProps) {
   const renderAside = (
     side: React.ReactNode,
     width?: Widths

@@ -6,7 +6,7 @@
  */
 
 import LayoutPage from '@repo/components/layout/page';
-import LayoutBody from '@repo/components/layout/body';
+import LayoutMain from '@repo/components/layout/main';
 import PartialPageHome from '@/components/partial/page/home';
 
 export default function Home() {
@@ -19,10 +19,10 @@ export default function Home() {
 
 async function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <LayoutBody>
+    <LayoutMain>
       <LayoutPage>
         <main>{children}</main>
       </LayoutPage>
-    </LayoutBody>
+    </LayoutMain>
   );
 }
