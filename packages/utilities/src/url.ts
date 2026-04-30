@@ -255,7 +255,9 @@ export const validateRoute = (params: {
       pathname.startsWith(r)
     );
 
-    if (isProtectedRoute) actions.redirectToAuth = true;
+    const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
+
+    if (isProtectedRoute && !isAuthRoute) actions.redirectToAuth = true;
   } else {
     const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
     if (isAuthRoute) actions.redirectFromAuth = true;
