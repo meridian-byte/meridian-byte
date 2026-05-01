@@ -18,7 +18,7 @@ export async function GET() {
     display: 'standalone',
     display_override: ['window-controls-overlay', 'standalone'],
     theme_color: '#63687c',
-    background_color: '#0c0c0c',
+    background_color: '#000000',
     orientation: 'portrait-primary',
     categories: ['productivity'],
     prefer_related_applications: false,
