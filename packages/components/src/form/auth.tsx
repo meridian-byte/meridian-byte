@@ -156,6 +156,7 @@ export default function Auth({
                     placeholder="********"
                     maxLength={8}
                     variant="filled"
+                    inputMode="numeric"
                     styles={{
                       input: {
                         textAlign: 'center',

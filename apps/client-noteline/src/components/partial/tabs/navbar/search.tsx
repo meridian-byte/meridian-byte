@@ -100,7 +100,7 @@ export default function Search() {
         h={`calc(100vh - ${40 + 48 + 1 + 56 + 1}px)`}
         scrollbars={'y'}
       >
-        <Stack gap={0} py={5} pl={5} pr={'xs'} mih={'150vh'}>
+        <Stack gap={0} py={5} pl={5} pr={'xs'}>
           {notes === undefined ? (
             <Stack gap={5}>
               {navlinkSkeleton}
