@@ -17,7 +17,7 @@ export async function GET() {
     start_url: AUTH_URLS.REDIRECT.DEFAULT,
     display: 'standalone',
     display_override: ['window-controls-overlay', 'standalone'],
-    theme_color: '#ac865c',
+    theme_color: '#000000',
     background_color: '#000000',
     orientation: 'portrait-primary',
     categories: ['productivity'],
