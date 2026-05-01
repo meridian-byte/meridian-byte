@@ -31,6 +31,7 @@ import { APP_NAME } from '@repo/constants/app';
 import { createClient } from '@repo/libraries/supabase/server';
 import { getCookieServer } from '@repo/utilities/cookie-server';
 import { COOKIE_NAME } from '@repo/constants/names';
+import { ColorScheme } from '@repo/types/enums';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -76,7 +77,10 @@ export default async function RootLayout({
 
         {/* General Web App Metadata */}
         <meta name="application-name" content={APP_NAME.NOTELINE} />
-        <meta name="theme-color" content="#000000" />
+        <meta
+          name="theme-color"
+          content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
+        />
 
         {/* Apple Web App Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

@@ -1,11 +1,20 @@
 import { AUTH_URLS } from '@repo/constants/paths';
 import { APP_DESC, APP_NAME } from '@repo/constants/app';
 import { linkify } from '@repo/utilities/url';
+import { getCookieServer } from '@repo/utilities/cookie-server';
+import { COOKIE_NAME } from '@repo/constants/names';
+import { DEFAULT_COLOR_SCHEME } from '@repo/constants/other';
+import { ColorScheme } from '@repo/types/enums';
+import { MantineColorScheme } from '@mantine/core';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function GET() {
+  const theme =
+    (await getCookieServer(COOKIE_NAME.COLOR_SCHEME)) || DEFAULT_COLOR_SCHEME;
+  const resolvedTheme = (theme || DEFAULT_COLOR_SCHEME) as MantineColorScheme;
+
   const manifest = {
     id: linkify(APP_NAME.NOTELINE),
     name: APP_NAME.NOTELINE,
@@ -17,8 +26,9 @@ export async function GET() {
     start_url: AUTH_URLS.REDIRECT.DEFAULT,
     display: 'standalone',
     display_override: ['window-controls-overlay', 'standalone'],
-    theme_color: '#000000',
-    background_color: '#000000',
+    theme_color: resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000',
+    background_color:
+      resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000',
     orientation: 'portrait-primary',
     categories: ['productivity'],
     prefer_related_applications: false,
