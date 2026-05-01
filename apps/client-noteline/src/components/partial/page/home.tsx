@@ -52,7 +52,7 @@ export default function Home() {
             </Title>
           </Group>
 
-          <Divider color="light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))" />
+          <Divider />
 
           <Box mih={80.8}>
             {notes === undefined ? (
@@ -72,7 +72,7 @@ export default function Home() {
             </Title>
           </Group>
 
-          <Divider color="light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))" />
+          <Divider />
 
           <SimpleGrid
             cols={

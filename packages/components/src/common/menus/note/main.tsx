@@ -66,7 +66,7 @@ export default function Main({
         <span>{children}</span>
       </MenuTarget>
 
-      <MenuDropdown>
+      <MenuDropdown maw={240}>
         <MenuLabel>
           <Text component="span" inherit lineClamp={1}>
             {note?.title}
@@ -139,7 +139,7 @@ export default function Main({
 
         <MenuDivider />
 
-        <MenuItem
+        {/* <MenuItem
           leftSection={
             <IconListDetails size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
@@ -147,11 +147,11 @@ export default function Main({
           disabled
         >
           Add file property
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuDivider />
+        {/* <MenuDivider /> */}
 
-        <MenuItem
+        {/* <MenuItem
           leftSection={
             <IconFileTypePdf size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
@@ -159,9 +159,9 @@ export default function Main({
           disabled
         >
           Export to PDF
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuDivider />
+        {/* <MenuDivider /> */}
 
         <MenuItem
           color="red.6"

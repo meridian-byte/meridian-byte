@@ -41,15 +41,6 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
           withCloseButton={false}
           onClose={toggleNavbarChild}
           size={'xs'}
-          styles={{
-            content: {
-              backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
-              borderTopRightRadius: 'var(--mantine-radius-lg)',
-              borderBottomRightRadius: 'var(--mantine-radius-lg)',
-              overflow: 'hidden',
-            },
-          }}
         >
           <ScrollArea h="100vh">
             <TabNavbarLeft />

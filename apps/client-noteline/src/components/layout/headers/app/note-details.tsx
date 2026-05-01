@@ -159,7 +159,7 @@ export default function NoteDetails({
       </LayoutSection>
 
       <Box px={'xs'} style={{ ...styles, transition: '0.25s all ease' }}>
-        <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))" />
+        <Divider />
       </Box>
     </Box>
   );

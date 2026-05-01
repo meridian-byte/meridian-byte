@@ -15,7 +15,7 @@ export default function Task({ props }: { props: { form: FormTask } }) {
         input: {
           width: ICON_WRAPPER_SIZE / 1.5,
           height: ICON_WRAPPER_SIZE / 1.5,
-          border: `1.5px solid ${props.form.values.complete ? 'var(--mantine-color-pri-7)' : getPriorityColor(props.form.values.priority as Priority) || 'var(--mantine-color-white)'}`,
+          border: `1.5px solid ${props.form.values.complete ? 'var(--mantine-color-pri-6)' : getPriorityColor(props.form.values.priority as Priority) || 'var(--mantine-color-white)'}`,
         },
         icon: {
           width: ICON_WRAPPER_SIZE / 3,

@@ -41,16 +41,11 @@ export default function Left() {
         <MenuWorkspace props={{ workspaceType: WorkspaceType.NOTELINE }} />
       </Box>
 
-      <TabsList
-        style={{ gap: 5, zIndex: 1 }}
-        pos={'sticky'}
-        top={0}
-        px={'xs'}
-        // mr={'xs'}
-        bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'
-        }
-      >
+      <TabsList style={{ gap: 5 }} px={'xs'}>
+        <Group hiddenFrom="md">
+          <ButtonAppshellNavbar />
+        </Group>
+
         <TabsTab value="folders">
           <Tooltip label={'All notes'}>
             <Group justify="center">
@@ -78,10 +73,6 @@ export default function Left() {
             </Group>
           </Tooltip>
         </TabsTab>
-
-        <Group hiddenFrom="md" ml={'auto'}>
-          <ButtonAppshellNavbar />
-        </Group>
       </TabsList>
 
       <TabsPanel value="folders">

@@ -75,7 +75,7 @@ export default function Main() {
               <Group>
                 <ActionIcon
                   variant="subtle"
-                  color="pri.5"
+                  color="pri.6"
                   aria-label={appshell?.child?.aside ? 'Collapse' : 'Expand'}
                   onClick={() => {
                     if (mobile) return;

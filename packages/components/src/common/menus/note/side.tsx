@@ -79,7 +79,7 @@ export default function Side({
           {props.options?.context ? <div {...anchorProps} /> : target}
         </MenuTarget>
 
-        <MenuDropdown>
+        <MenuDropdown maw={240}>
           <MenuLabel>
             <Text component="span" inherit lineClamp={1}>
               {note?.title}

@@ -61,10 +61,9 @@ export default function Child({
           flex: `0 0 ${navbarActive ? targetVw : 0}vw`,
           transition: `flex-basis .1s ease`,
           overflow: 'hidden',
-          backgroundColor:
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
-          borderTopRightRadius: 'var(--mantine-radius-lg)',
-          borderBottomRightRadius: 'var(--mantine-radius-lg)',
+          borderRight: !navbarActive
+            ? undefined
+            : `1px solid var(--mantine-color-default-border)`,
         }}
       >
         <ScrollArea
@@ -103,8 +102,8 @@ export default function Child({
           flex: `0 0 ${asideActive ? targetVw : 0}vw`,
           transition: `all .1s ease`,
           overflow: 'hidden',
-          backgroundColor:
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
+          // backgroundColor:
+          //   'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
         }}
       >
         <ScrollArea

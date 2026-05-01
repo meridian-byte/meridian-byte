@@ -145,7 +145,7 @@ $scrollbar-thumb: var(--mantine-color-dark-3);
     }
 
     .column-resize-handle {
-      background-color: var(--mantine-color-pri-4);
+      background-color: var(--mantine-color-pri-6);
       bottom: -2px;
       pointer-events: none;
       position: absolute;
@@ -237,8 +237,8 @@ $scrollbar-thumb: var(--mantine-color-dark-3);
   }
 
   ul[data-type='taskList'] input[type='checkbox']:checked {
-    background-color: var(--mantine-color-pri-4);
-    border-color: var(--mantine-color-pri-4);
+    background-color: var(--mantine-color-pri-6);
+    border-color: var(--mantine-color-pri-6);
   }
 
   ul[data-type='taskList'] input[type='checkbox']:checked::before {

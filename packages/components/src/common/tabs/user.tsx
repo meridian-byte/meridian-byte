@@ -59,8 +59,6 @@ export default function User({ props }: { props?: { close?: () => void } }) {
       variant="pills"
       styles={{
         panel: {
-          backgroundColor:
-            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
           width: mobile ? undefined : '66%',
         },
         tab: {
@@ -74,9 +72,9 @@ export default function User({ props }: { props?: { close?: () => void } }) {
         gap={8}
         py={'md'}
         px={'xs'}
-        bg={
-          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'
-        }
+        style={{
+          borderRight: '1px solid var(--mantine-color-default-border)',
+        }}
         w={mobile ? undefined : '33%'}
       >
         <Group px={8}>

@@ -72,7 +72,7 @@ export default async function RootLayout({
 
         {/* General Web App Metadata */}
         <meta name="application-name" content={APP_NAME.NOTELINE} />
-        <meta name="theme-color" content="#b08e67" />
+        <meta name="theme-color" content="#ac865c" />
 
         {/* Apple Web App Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

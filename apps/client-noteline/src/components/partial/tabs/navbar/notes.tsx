@@ -5,6 +5,7 @@ import {
   Box,
   Divider,
   Group,
+  ScrollArea,
   Skeleton,
   Stack,
   Text,
@@ -93,14 +94,7 @@ export default function Notes() {
 
   return (
     <div>
-      <Box
-        pos={'sticky'}
-        top={48}
-        bg={
-          'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'
-        }
-        style={{ zIndex: 1 }}
-      >
+      <Box>
         <Box px={'xs'}>
           <Divider variant="dashed" />
 
@@ -157,62 +151,57 @@ export default function Notes() {
         <Divider />
       </Box>
 
-      <Stack
-        gap={0}
-        style={{ zIndex: 0 }}
-        // pt={3.33333}
-        pb={'xs'}
-        pl={5}
-        pr={'xs'}
-        // mih={'150vh'}
-      >
-        {notes === undefined || activeItems === undefined ? (
-          <Stack gap={5}>
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-            {navlinkSkeleton}
-          </Stack>
-        ) : !notes || !notes.length ? (
-          <>
-            <Box
-              px={'xs'}
-              py={SECTION_SPACING}
-              ta={'center'}
-              fz={'sm'}
-              c={'dimmed'}
-            >
-              <Text inherit>
-                No notes yet. <br />
-                Click the <IconEdit size={16} /> icon to create your first note.
-              </Text>
-            </Box>
-          </>
-        ) : (
-          <>
-            {sortArray(
-              rootNotes || [],
-              (i) => i.created_at,
-              Order.DESCENDING
-            ).map((n) => {
-              return (
-                <div key={n.id}>
-                  <NavlinkNote
-                    noteId={n.id}
-                    notesMap={notesMap}
-                    childrenMap={childrenMap}
-                  />
-                </div>
-              );
-            })}
-          </>
-        )}
-      </Stack>
+      <ScrollArea h={`calc(100vh - ${40 + 48 + 48.8 + 1}px)`} scrollbars={'y'}>
+        <Stack gap={0} py={5} pl={5} pr={'xs'} mih={'150vh'}>
+          {notes === undefined || activeItems === undefined ? (
+            <Stack gap={5}>
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+              {navlinkSkeleton}
+            </Stack>
+          ) : !notes || !notes.length ? (
+            <>
+              <Box
+                px={'xs'}
+                py={SECTION_SPACING}
+                ta={'center'}
+                fz={'sm'}
+                c={'dimmed'}
+              >
+                <Text inherit>
+                  No notes yet. <br />
+                  Click the <IconEdit size={16} /> icon to create your first
+                  note.
+                </Text>
+              </Box>
+            </>
+          ) : (
+            <>
+              {sortArray(
+                rootNotes || [],
+                (i) => i.created_at,
+                Order.DESCENDING
+              ).map((n) => {
+                return (
+                  <div key={n.id}>
+                    <NavlinkNote
+                      noteId={n.id}
+                      notesMap={notesMap}
+                      childrenMap={childrenMap}
+                    />
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </Stack>
+      </ScrollArea>
     </div>
   );
 }

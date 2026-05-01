@@ -150,13 +150,7 @@ export default function Workspace({
       </PopoverTarget>
 
       <PopoverDropdown>
-        <Stack
-          p={'xs'}
-          gap={'xs'}
-          bg={
-            'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
-          }
-        >
+        <Stack p={'xs'} gap={'xs'}>
           <Group gap={'xs'} wrap="nowrap">
             <Avatar size={ICON_WRAPPER_SIZE * 1.3} color="dark">
               {activeWorkspace?.title[0]}
@@ -212,6 +206,8 @@ export default function Workspace({
           </Group>
         </Stack>
 
+        <Divider />
+
         <ScrollAreaAutosize mah={200} scrollbars={'y'} scrollbarSize={6}>
           <Stack px={'xs'} pb={'xs'} gap={0}>
             <Group
@@ -222,7 +218,7 @@ export default function Workspace({
                 top: 0,
                 zIndex: 1,
                 backgroundColor:
-                  'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
+                  'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
               }}
             >
               <Title order={2} fz={'sm'} fw={500}>
@@ -317,7 +313,7 @@ export default function Workspace({
                   size="compact-md"
                   justify="start"
                   variant="subtle"
-                  color="pri.5"
+                  color="pri.6"
                   pl={5}
                   onClick={() => {
                     setOpened(false);

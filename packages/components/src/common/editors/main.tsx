@@ -134,7 +134,7 @@ export default function Main({ item }: { item?: NoteGet }) {
                   </Title>
                 </Group>
 
-                <Divider color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))" />
+                <Divider />
               </Box>
 
               <Box display={userStateEditing == true ? undefined : 'none'}>
@@ -194,10 +194,7 @@ export default function Main({ item }: { item?: NoteGet }) {
                   </RichTextEditor.Toolbar>
                 </ScrollArea>
 
-                <Divider
-                  color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))"
-                  style={{ ...styles, transition: '0.25s all ease' }}
-                />
+                <Divider style={{ ...styles, transition: '0.25s all ease' }} />
               </Box>
             </LayoutSection>
           </WrapperUnderlayGlass>

@@ -24,6 +24,7 @@ import {
   ScrollArea,
   ScrollAreaAutosize,
   Select,
+  Tabs,
   TextInput,
   Tooltip,
 } from '@mantine/core';
@@ -76,29 +77,17 @@ export const getAppTheme = (params?: AppThemeProps) => {
         '#decebc',
         '#cbb399',
         '#ba9c7b',
-        '#b08e67', // src (5)
-        '#ac865c',
+        '#b08e67',
+        '#ac865c', // src (6)
         '#97734b',
         '#876640',
         '#775732',
-      ],
-      bgDark: [
-        '#1a1a1a',
-        '#181818',
-        '#161616',
-        '#141414',
-        '#121212',
-        '#101010',
-        '#0e0e0e',
-        '#0c0c0c',
-        '#0b0b0b',
-        '#0d0d0d',
       ],
     },
 
     primaryColor: 'pri',
     defaultRadius: 'md',
-    primaryShade: { light: 5, dark: 5 },
+    primaryShade: { light: 6, dark: 6 },
     cursorType: 'pointer',
 
     headings: {
@@ -127,24 +116,21 @@ export const getAppTheme = (params?: AppThemeProps) => {
 
       Divider: Divider.extend({
         defaultProps: {
-          styles: {
-            root: {
-              borderColor: 'var(--mantine-color-default-border)',
-            },
-          },
+          color:
+            'light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-8))',
         },
       }),
 
       ScrollArea: ScrollArea.extend({
         defaultProps: {
           type: 'auto',
-          scrollbarSize: 6,
+          scrollbarSize: 5,
         },
         styles: {
-          // scrollbar: { zIndex: 100 },
+          scrollbar: { zIndex: 10 },
           thumb: {
             backgroundColor:
-              'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+              'light-dark(var(--mantine-color-dark-0), var(--mantine-color-dark-6))',
           },
         },
       }),
@@ -153,6 +139,13 @@ export const getAppTheme = (params?: AppThemeProps) => {
         defaultProps: {
           type: 'auto',
           scrollbarSize: 8,
+        },
+        styles: {
+          scrollbar: { zIndex: 10 },
+          thumb: {
+            backgroundColor:
+              'light-dark(var(--mantine-color-dark-0), var(--mantine-color-dark-6))',
+          },
         },
       }),
 
@@ -170,7 +163,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             content: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
+                'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
             },
           },
         },
@@ -235,7 +228,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
             overflow: 'hidden',
             padding: 5,
             backgroundColor:
-              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
+              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
             borderColor: 'transparent',
           },
           item: {
@@ -246,7 +239,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           itemLabel: { fontSize: 'var(--mantine-font-size-sm)' },
           divider: {
             borderColor:
-              'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+              'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))',
           },
         },
         // classNames: classesMenu,
@@ -266,7 +259,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
             overflow: 'hidden',
             padding: 'var(--mantine-spacing-xs)',
             backgroundColor:
-              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-8))',
+              'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
             borderColor: 'transparent',
           },
         },
@@ -305,7 +298,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
           styles: {
             content: {
               backgroundColor:
-                'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))',
+                'light-dark(var(--mantine-color-body), var(--mantine-color-dark-9))',
             },
           },
         },
