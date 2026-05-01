@@ -9,6 +9,7 @@ export const authRoutes = [
   '/auth/sign-in',
   '/auth/error',
   '/api/auth',
+  '/manifest.webmanifest',
   // Add other auth routes
 ];
 
