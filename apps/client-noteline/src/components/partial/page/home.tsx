@@ -134,13 +134,13 @@ function RecentNoteCard({ props }: { props: NoteGet }) {
     <Link href={link}>
       <Card
         bg={
-          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'
+          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-9))'
         }
       >
         <CardSection
           p={'xs'}
           bg={
-            'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-9))'
+            'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-light))'
           }
           c={'dimmed'}
         >
