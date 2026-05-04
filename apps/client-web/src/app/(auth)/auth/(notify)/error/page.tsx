@@ -9,13 +9,14 @@ import React from 'react';
 import { Metadata } from 'next';
 import LayoutPage from '@repo/components/layout/page';
 import { NotifyError as PartialNotifyError } from '@repo/components/partial/page/notify';
+import { BASE_URL_CLIENT } from '@repo/constants/paths';
 
 export const metadata: Metadata = { title: 'Authentication Error' };
 
 export default function Error() {
   return (
     <LayoutPage>
-      <PartialNotifyError />
+      <PartialNotifyError props={{ baseUrl: BASE_URL_CLIENT.WEB }} />
     </LayoutPage>
   );
 }

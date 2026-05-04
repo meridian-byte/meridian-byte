@@ -27,9 +27,10 @@ type NotifySectionProps = {
   containerized?: boolean;
   margined?: boolean;
   titleBold?: boolean;
+  baseUrl?: string;
 };
 
-export const NotifyError = () => {
+export const NotifyError = ({ props }: { props?: { baseUrl?: string } }) => {
   const error = getUrlParam('error');
   const errorMessage = getUrlParam('message');
 
@@ -41,6 +42,7 @@ export const NotifyError = () => {
       title={(error as string) ?? 'Authentication Error'}
       subtitle="An authentication error has occured."
       message={(errorMessage as string) ?? ''}
+      baseUrl={props?.baseUrl}
     />
   );
 };
@@ -86,6 +88,7 @@ export function NotifySection({
   containerized = false,
   margined,
   titleBold = false,
+  baseUrl,
 }: NotifySectionProps) {
   return (
     <LayoutSection
@@ -108,8 +111,15 @@ export function NotifySection({
             {subtitle && (
               <Text ta={{ base: 'center', md: 'start' }}>{subtitle}</Text>
             )}
+
             {message && (
               <Text ta={{ base: 'center', md: 'start' }}>{message}</Text>
+            )}
+
+            {message?.includes('PKCE') && baseUrl && (
+              <WrapperSignOut props={{ baseUrl: baseUrl, dbConfig: config }}>
+                <Button>Try Again</Button>
+              </WrapperSignOut>
             )}
           </Stack>
         </Stack>

@@ -43,7 +43,11 @@ export function SignOut({
   props,
   children,
 }: {
-  props: { baseUrl: string; dbConfig: DBConfig };
+  props: {
+    baseUrl: string;
+    dbConfig: DBConfig;
+    options?: { clearDB?: boolean };
+  };
   children: React.ReactNode;
 }) {
   const [clicked, setClicked] = useState(false);
@@ -55,8 +59,10 @@ export function SignOut({
       onClick={async () => {
         setClicked(true);
 
-        // Delete local database
-        await deleteDatabase(props.dbConfig.name);
+        if (props.options?.clearDB) {
+          // Delete local database
+          await deleteDatabase(props.dbConfig.name);
+        }
 
         // Clear storage (optional)
         localStorage.clear();

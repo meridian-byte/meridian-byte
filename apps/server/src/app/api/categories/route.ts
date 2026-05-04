@@ -7,7 +7,7 @@
 
 import prisma from '@repo/libraries/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { CategoryRelations } from '@repo/types/models/category';
+import { CategoryGet } from '@repo/types/models/category';
 
 export const dynamic = 'force-dynamic';
 // export const revalidate = 3600;
@@ -40,7 +40,7 @@ export async function PUT(request: NextRequest) {
       categories,
       deletedIds,
     }: {
-      categories: CategoryRelations[];
+      categories: CategoryGet[];
       deletedIds?: string[];
     } = await request.json();
 
