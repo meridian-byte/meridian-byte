@@ -1,4 +1,3 @@
-import { workspacesUpdate } from './../node_modules/@repo/handlers/src/requests/database/workspaces';
 /**
  * @template-source next-template
  * @template-sync auto
@@ -9,6 +8,7 @@ import { workspacesUpdate } from './../node_modules/@repo/handlers/src/requests/
 import { useCallback, useEffect } from 'react';
 import { STORE_NAME } from '@repo/constants/names';
 import { budgetsUpdate } from '@repo/handlers/requests/database/budgets';
+import { workspacesUpdate } from '@repo/handlers/requests/database/workspaces';
 import { accountsUpdate } from '@repo/handlers/requests/database/accounts';
 import { accountGroupsUpdate } from '@repo/handlers/requests/database/account-groups';
 import { transactionsUpdate } from '@repo/handlers/requests/database/transactions';
