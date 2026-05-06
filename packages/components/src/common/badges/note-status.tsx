@@ -15,16 +15,24 @@ import {
   ICON_WRAPPER_SIZE,
 } from '@repo/constants/sizes';
 import { getRegionalDate, getRelativeTime } from '@repo/utilities/date-time';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMinuteTicker } from '@repo/hooks/interval';
 import { useStoreUserStates } from '@repo/libraries/zustand/stores/user-states';
 import { IconLock, IconLockOpen } from '@tabler/icons-react';
+import { usePathname } from 'next/navigation';
+import { useStoreNote } from '@repo/libraries/zustand/stores/note';
+import { extractUuidFromParam } from '@repo/utilities/url';
 
 export default function NoteStatus({
   props,
 }: {
   props?: { options?: { hide?: boolean } };
 }) {
+  const pathname = usePathname();
+  const notes = useStoreNote((s) => s.notes);
+  const noteId = extractUuidFromParam(pathname);
+  const note = notes?.find((n) => n.id == noteId);
+
   const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
   const toggleUserStateEditing = useStoreUserStates(
     (s) => s.toggleUserStateEditing
@@ -38,8 +46,22 @@ export default function NoteStatus({
     icon: locked ? IconLock : IconLockOpen,
   };
 
+  useEffect(() => {
+    if (pathname == '/' && !userStateEditing) {
+      toggleUserStateEditing();
+    }
+  }, [pathname]);
+
   return (
-    <Transition mounted={!props?.options?.hide ? true : locked}>
+    <Transition
+      mounted={
+        (note?.content || '').length < 8
+          ? false
+          : !props?.options?.hide
+            ? true
+            : locked
+      }
+    >
       {(styles) => (
         <div style={styles}>
           <Tooltip

@@ -6,15 +6,9 @@
  */
 
 import React from 'react';
-import { Center, Grid, GridCol, Stack } from '@mantine/core';
-import LayoutMain from '@repo/components/layout/main';
-import LayoutSection from '@repo/components/layout/section';
-import ImageDefault from '@repo/components/common/images/default';
-import { images } from '@repo/constants/images';
-import { SECTION_SPACING } from '@repo/constants/sizes';
 import { COMPANY_NAME } from '@repo/constants/app';
 import { Metadata } from 'next';
-import AnchorNextLink from '@repo/components/common/anchor/next-link';
+import LayoutAuthNotify from '@repo/components/layout/auth/notify';
 
 export const metadata: Metadata = {
   title: {
@@ -23,53 +17,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LayoutNotify({
+export default async function LayoutNotify({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode;
 }) {
   return (
     <>
-      <Grid gutter={0} px={{ base: 'md', xs: 0 }}>
-        <GridCol
-          span={5.5}
-          visibleFrom="md"
-          bg={'var(--mantine-color-pri-light)'}
-        >
-          <LayoutSection
-            id={'layout-auth-notify-icon'}
-            containerized="xs"
-            pos={'sticky'}
-            top={0}
-          >
-            <Center h={'100vh'} px={{ xs: 32 }}>
-              <AnchorNextLink href={'/'}>
-                <ImageDefault
-                  src={images.brand.icon.default}
-                  alt={COMPANY_NAME}
-                  height={96}
-                  width={96}
-                  fit="contain"
-                />
-              </AnchorNextLink>
-            </Center>
-          </LayoutSection>
-        </GridCol>
-
-        <GridCol span={{ base: 12, md: 6.5 }}>
-          <LayoutSection id={'layout-auth-notify-text'} containerized="xs">
-            <Stack
-              gap={'xl'}
-              justify="center"
-              mih={'100vh'}
-              px={{ xs: 32 }}
-              py={SECTION_SPACING}
-            >
-              {children}
-            </Stack>
-          </LayoutSection>
-        </GridCol>
-      </Grid>
+      <LayoutAuthNotify>{children}</LayoutAuthNotify>
     </>
   );
 }

@@ -6,15 +6,9 @@
  */
 
 import React from 'react';
-import LayoutMain from '@repo/components/layout/main';
-import LayoutSection from '@repo/components/layout/section';
-import ImageDefault from '@repo/components/common/images/default';
-import { Stack, Card, Group } from '@mantine/core';
-import { images } from '@repo/constants/images';
 import { COMPANY_NAME } from '@repo/constants/app';
-import { SECTION_SPACING } from '@repo/constants/sizes';
 import { Metadata } from 'next';
-import AnchorNextLink from '@repo/components/common/anchor/next-link';
+import LayoutAuthDefault from '@repo/components/layout/auth/default';
 
 export const metadata: Metadata = {
   title: {
@@ -30,40 +24,7 @@ export default function LayoutDefault({
 }) {
   return (
     <>
-      <LayoutSection id={'layout-auth-default'} containerized="xs">
-        <Stack
-          justify="center"
-          mih={'100vh'}
-          px={{ base: 0, sm: 40 }}
-          py={SECTION_SPACING}
-        >
-          <Card
-            shadow="xs"
-            // withBorder
-            // bg={'transparent'}
-            bg={
-              'light-dark(var(--mantine-color-pri-light), var(--mantine-color-dark-9))'
-            }
-            p={{ base: 'xl', xs: 40 }}
-          >
-            <Stack gap={'xl'}>
-              <Group justify="center">
-                <AnchorNextLink href={'/'}>
-                  <ImageDefault
-                    src={images.brand.icon.default}
-                    alt={COMPANY_NAME}
-                    height={48}
-                    width={48}
-                    fit="contain"
-                  />
-                </AnchorNextLink>
-              </Group>
-
-              {children}
-            </Stack>
-          </Card>
-        </Stack>
-      </LayoutSection>
+      <LayoutAuthDefault>{children}</LayoutAuthDefault>
     </>
   );
 }

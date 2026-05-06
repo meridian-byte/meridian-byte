@@ -3,8 +3,10 @@ const imageUrl = `/images`;
 export const images = {
   brand: {
     icon: {
-      default: `${imageUrl}/brand/icon/default.png`,
-      meta: `${imageUrl}/brand/icon/meta.png`,
+      meta: {
+        light: `${imageUrl}/brand/icon/meta-light.png`,
+        dark: `${imageUrl}/brand/icon/meta-dark.png`,
+      },
     },
   },
 };
