@@ -24,6 +24,7 @@ import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { useStoreReminder } from '@repo/libraries/zustand/stores/reminder';
 import { useStoreActiveItems } from '@repo/libraries/zustand/stores/active-items';
+import { TaskGet } from '@repo/types/models/task';
 
 export default function Main({
   props,
@@ -45,34 +46,16 @@ export default function Main({
   const reminders = useStoreReminder((s) => s.reminders);
   const taskReminders = reminders?.filter((ri) => ri.task_id == task?.id);
 
-  const addActiveTask = useStoreActiveItems((s) => s.addActiveTask);
-
   const { form } = useFormTask({ defaultValues: props });
 
   return (
     <Box className={classes.card}>
       <Group align="start" gap={'xs'} wrap="nowrap" w={'100%'}>
-        <Group
-          gap={5}
-          wrap="nowrap"
-          mt={'sm'}
-          pl={'xs'} // comment this out when adding drag handle
-        >
-          {/* <div className={classes.grip}>
-            <ActionIconDragHandle params={{ id: props.id }} />
-          </div> */}
-
+        <Group gap={5} wrap="nowrap" mt={'sm'} pl={'xs'}>
           <InputCheckboxTask props={{ form }} />
         </Group>
 
-        <Box
-          onClick={() => {
-            if (task) addActiveTask(task);
-          }}
-          w={'100%'}
-          py={'xs'}
-          style={{ cursor: 'pointer' }}
-        >
+        <ClickWrapper task={task}>
           <Stack gap={5} mt={2}>
             <Title order={2} fz={'sm'} fw={'normal'}>
               {task?.title}
@@ -181,8 +164,32 @@ export default function Main({
               )}
             </Group>
           </Stack>
-        </Box>
+        </ClickWrapper>
       </Group>
+    </Box>
+  );
+}
+
+function ClickWrapper({
+  task,
+  children,
+}: {
+  task?: TaskGet;
+  children: React.ReactNode;
+}) {
+  const addActiveTask = useStoreActiveItems((s) => s.addActiveTask);
+
+  return (
+    <Box
+      w={'100%'}
+      style={{ cursor: 'pointer' }}
+      py={'xs'}
+      onClick={() => {
+        console.log('task', task);
+        if (task) addActiveTask(task);
+      }}
+    >
+      {children}
     </Box>
   );
 }
