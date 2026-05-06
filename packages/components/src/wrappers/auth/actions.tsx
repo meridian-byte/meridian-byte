@@ -46,7 +46,7 @@ export function SignOut({
   props: {
     baseUrl: string;
     dbConfig: DBConfig;
-    options?: { clearDB?: boolean };
+    options?: { clearDB?: boolean; redirecUrl?: string };
   };
   children: React.ReactNode;
 }) {
@@ -80,7 +80,7 @@ export function SignOut({
 
         await signOut({ options: { baseUrl: props.baseUrl } });
 
-        window.location.href = '/';
+        window.location.href = props.options?.redirecUrl || '/auth/signed-out';
       }}
     >
       <LoadingOverlay

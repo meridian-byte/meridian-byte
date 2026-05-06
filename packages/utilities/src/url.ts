@@ -9,6 +9,7 @@ import { PARAM_NAME } from '@repo/constants/names';
 import { capitalizeWords } from './string';
 import {
   authRoutes,
+  ignoredRoutes,
   protectedDeadEndRoutes,
   protectedRoutes,
 } from '@repo/constants/routes';
@@ -255,9 +256,17 @@ export const validateRoute = (params: {
       pathname.startsWith(r)
     );
 
-    const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
+    if (isProtectedRoute) {
+      const isIgnoredRoute = ignoredRoutes.some((r) => pathname.startsWith(r));
 
-    if (isProtectedRoute && !isAuthRoute) actions.redirectToAuth = true;
+      if (!isIgnoredRoute) {
+        const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
+
+        if (!isAuthRoute) {
+          actions.redirectToAuth = true;
+        }
+      }
+    }
   } else {
     const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
     if (isAuthRoute) actions.redirectFromAuth = true;
