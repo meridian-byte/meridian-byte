@@ -50,6 +50,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
       STORE_NAME.REMINDERS,
       STORE_NAME.RECURRING_RULES,
       STORE_NAME.VIEWS,
+      STORE_NAME.WORKSPACES,
     ],
     handleSync: (payload: MergedSyncPayload) =>
       handleMergedSync({ payload, ...restProps }),

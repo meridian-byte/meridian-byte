@@ -12,9 +12,10 @@ import {
   useAppshellStore,
   useSessionStore,
   useLoadAppData,
-  useSelectedTaskStore,
+  useActiveItemStore,
 } from '@repo/hooks/store';
 import { User } from '@supabase/supabase-js';
+import { WorkspaceType } from '@repo/types/models/enums';
 
 export default function Store({
   props,
@@ -30,8 +31,8 @@ export default function Store({
     options: { clientOnly: false },
   });
   // useUserRoleStore();
-  useSelectedTaskStore();
   useAppshellStore();
+  useActiveItemStore({ workspaceType: WorkspaceType.STRIDE });
   useLoadAppData({
     clientOnly: false,
     storesToLoad: {
@@ -40,6 +41,7 @@ export default function Store({
       reminders: true,
       recurringRules: true,
       views: true,
+      workspaces: true,
     },
   });
 

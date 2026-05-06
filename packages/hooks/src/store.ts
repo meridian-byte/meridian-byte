@@ -227,19 +227,6 @@ export const useAppshellStore = (params?: { cookie?: AppShellValue }) => {
   }, [appshell]);
 };
 
-export const useSelectedTaskStore = () => {
-  const activeTask = useStoreActiveItems((s) => s.activeItems?.task);
-  const removeActiveTask = useStoreActiveItems((s) => s.removeActiveTask);
-
-  useEffect(() => {
-    const initializeTheme = () => {
-      removeActiveTask();
-    };
-
-    initializeTheme();
-  }, [activeTask]);
-};
-
 export const useChatTemporaryStore = () => {
   const setChatTemporary = useStoreChatTemporary((s) => s.setChatTemporary);
 

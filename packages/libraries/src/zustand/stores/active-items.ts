@@ -37,99 +37,47 @@ interface ActiveItemsState {
 export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   activeItems: undefined,
 
-  addActiveConfirm: (data) => {
+  addActiveConfirm: (data) =>
     set((state) => ({
-      activeItems: {
-        task: state.activeItems?.task ?? null,
-        workspace: state.activeItems?.workspace ?? null,
-        note: state.activeItems?.note ?? null,
-        confirm: data,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, confirm: data },
+    })),
 
-  removeActiveConfirm: () => {
+  removeActiveConfirm: () =>
     set((state) => ({
-      activeItems: {
-        task: state.activeItems?.task ?? null,
-        workspace: state.activeItems?.workspace ?? null,
-        note: state.activeItems?.note ?? null,
-        confirm: null,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, confirm: null },
+    })),
 
-  addActiveWorkspace: (data) => {
+  addActiveWorkspace: (data) =>
     set((state) => ({
-      activeItems: {
-        confirm: state.activeItems?.task ?? null,
-        task: state.activeItems?.task ?? null,
-        note: state.activeItems?.note ?? null,
-        workspace: data,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, workspace: data },
+    })),
 
-  removeActiveWorkspace: () => {
+  removeActiveWorkspace: () =>
     set((state) => ({
-      activeItems: {
-        confirm: state.activeItems?.task ?? null,
-        task: state.activeItems?.task ?? null,
-        note: state.activeItems?.note ?? null,
-        workspace: null,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, workspace: null },
+    })),
 
-  addActiveNote: (data, actions?: NoteActions) => {
+  addActiveNote: (data, actions) =>
     set((state) => ({
-      activeItems: {
-        confirm: state.activeItems?.task ?? null,
-        task: state.activeItems?.task ?? null,
-        workspace: state.activeItems?.workspace ?? null,
-        note: { item: data, ...actions },
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, note: { item: data, ...actions } },
+    })),
 
-  removeActiveNote: () => {
+  removeActiveNote: () =>
     set((state) => ({
-      activeItems: {
-        confirm: state.activeItems?.confirm ?? null,
-        task: state.activeItems?.task ?? null,
-        workspace: state.activeItems?.workspace ?? null,
-        note: null,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, note: null },
+    })),
 
-  addActiveTask: (data) => {
+  addActiveTask: (data) =>
     set((state) => ({
-      activeItems: {
-        confirm: state.activeItems?.confirm ?? null,
-        workspace: state.activeItems?.workspace ?? null,
-        note: state.activeItems?.note ?? null,
-        task: data,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, task: data },
+    })),
 
-  removeActiveTask: () => {
+  removeActiveTask: () =>
     set((state) => ({
-      activeItems: {
-        confirm: state.activeItems?.confirm ?? null,
-        workspace: state.activeItems?.workspace ?? null,
-        note: state.activeItems?.note ?? null,
-        task: null,
-      },
-    }));
-  },
+      activeItems: { ...state.activeItems, task: null },
+    })),
 
-  setActiveItems: (data) => {
-    set({ activeItems: data });
-  },
+  setActiveItems: (data) => set({ activeItems: data }),
 
-  clearActiveItems: () => {
-    set({ activeItems: undefined });
-  },
+  clearActiveItems: () => set({ activeItems: undefined }),
 }));

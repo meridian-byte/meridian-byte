@@ -227,11 +227,19 @@ export const useMergedSync = (params: {
   const categoryStore = useStoreCategory();
   const workspaceStore = useStoreWorkspace();
   const noteStore = useStoreNote();
+  const taskStore = useStoreTask();
+  const reminderStore = useStoreReminder();
+  const recurringRuleStore = useStoreRecurringRule();
+  const viewStore = useStoreView();
 
   const stores = {
     [STORE_NAME.CATEGORIES]: categoryStore,
     [STORE_NAME.WORKSPACES]: workspaceStore,
     [STORE_NAME.NOTES]: noteStore,
+    [STORE_NAME.VIEWS]: viewStore,
+    [STORE_NAME.TASKS]: taskStore,
+    [STORE_NAME.REMINDERS]: reminderStore,
+    [STORE_NAME.RECURRING_RULES]: recurringRuleStore,
   };
 
   const sync = useCallback(async () => {
