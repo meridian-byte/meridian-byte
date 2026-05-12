@@ -1,31 +1,24 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardSection,
-  Divider,
-  Group,
-  Text,
-} from '@mantine/core';
+import { Box, Button, Card, Group } from '@mantine/core';
 import React from 'react';
 import FormTaskCreate from '../../form/task/create';
-import ComboboxTaskProject from '../../common/inputs/combobox/task/project';
 import ModalConfirm from '../../common/modals/confirm';
-import { FormTask } from '@repo/hooks/form/task';
+import { useFormTask } from '@repo/hooks/form/task';
+import { TaskGet } from '@repo/types/models/task';
 
 export default function Create({
   props,
 }: {
-  props: {
-    form: FormTask;
-    opened?: boolean;
-    handleClose: () => void;
-    submitted: boolean;
-    handleSubmit: () => Promise<void>;
+  props?: {
+    defaultValues?: Partial<TaskGet>;
+    handleClose?: () => void;
   };
 }) {
+  const { form, handleSubmit, submitted } = useFormTask({
+    defaultValues: props?.defaultValues || { due_date: new Date() },
+  });
+
   const cancelButton = (
-    <Button size="xs" color="dark" variant="light" disabled={props.submitted}>
+    <Button size="xs" color="dark" variant="light" disabled={submitted}>
       Cancel
     </Button>
   );
@@ -42,7 +35,7 @@ export default function Create({
           borderTopRightRadius: 'var(--mantine-radius-md)',
         }}
       >
-        <FormTaskCreate props={{ form: props.form as any }} />
+        <FormTaskCreate props={{ form }} />
       </Box>
 
       <Group
@@ -56,31 +49,40 @@ export default function Create({
           borderBottomRightRadius: 'var(--mantine-radius-md)',
         }}
       >
-        <ComboboxTaskProject props={{ formTask: props.form }} />
+        {/* <ComboboxTaskProject props={{ formTask: props.form }} /> */}
 
         <Group gap={'xs'}>
-          {props.form.isDirty() ? (
+          {form.isDirty() ? (
             <ModalConfirm
               props={{
                 title: 'Discard unsaved changes?',
                 desc: 'Your unsaved changes will be discarded.',
-                onConfirm: () => props.handleClose(),
+                onConfirm: () => {
+                  if (props?.handleClose) props.handleClose();
+                },
               }}
             >
               {cancelButton}
             </ModalConfirm>
           ) : (
-            <div onClick={props.handleClose}>{cancelButton}</div>
+            <div
+              onClick={() => {
+                if (props?.handleClose) props.handleClose();
+              }}
+            >
+              {cancelButton}
+            </div>
           )}
 
           <Button
             size="xs"
             onClick={async () => {
-              await props.handleSubmit();
-              props.handleClose();
+              await handleSubmit();
+              form.reset();
+              if (props?.handleClose) props.handleClose();
             }}
-            disabled={!props.form.values.title?.trim()}
-            loading={props.submitted}
+            disabled={!form.values.title?.trim()}
+            loading={submitted}
           >
             Add Task
           </Button>

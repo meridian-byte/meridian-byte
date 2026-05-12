@@ -28,17 +28,19 @@ export default function Category({
   };
 }) {
   const { form, submitted, handleSubmit } = useFormCategory({
-    defaultValues: props?.defaultValues,
+    defaultValues: !props?.defaultValues
+      ? undefined
+      : { ...props?.defaultValues, type: CategoryType.TASK },
   });
 
   const mobile = useMediaQuery('(max-width: 36em)');
 
   return (
     <form
-      // onSubmit={form.onSubmit(async () => {
-      //   await handleSubmit();
-      //   if (props?.close) props.close();
-      // })}
+      onSubmit={form.onSubmit(async () => {
+        await handleSubmit();
+        if (props?.close) props.close();
+      })}
       noValidate
     >
       <Grid gutter={mobile ? 5 : undefined}>
@@ -79,6 +81,7 @@ export default function Category({
             label={mobile ? 'Name' : undefined}
             aria-label="Name"
             placeholder="Name"
+            data-autofocus
             leftSection={
               <IconLetterCase size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             }

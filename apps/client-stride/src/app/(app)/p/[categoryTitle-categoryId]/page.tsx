@@ -6,6 +6,7 @@ import {
 } from '@repo/utilities/url';
 import { typeParams } from '../layout';
 import LayoutPage from '@repo/components/layout/page';
+import LayoutSection from '@repo/components/layout/section';
 
 export default async function Home({
   params,
@@ -18,7 +19,9 @@ export default async function Home({
 
   return (
     <LayoutPage>
-      <PartialPageCategory props={{ categoryTitle, categoryId }} />
+      <LayoutSection id={'app-project-content'} padded containerized={'sm'}>
+        <PartialPageCategory props={{ categoryTitle, categoryId }} />
+      </LayoutSection>
     </LayoutPage>
   );
 }

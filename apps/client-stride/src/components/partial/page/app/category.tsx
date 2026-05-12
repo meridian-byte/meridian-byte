@@ -4,8 +4,7 @@ import React, { useMemo } from 'react';
 import AccordionTasks, {
   taskSkeleton,
 } from '@repo/components/common/accordions/tasks';
-import { SECTION_SPACING } from '@repo/constants/sizes';
-import { Button, Container } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import PlaceholderEmpty from '@repo/components/common/placeholder/empty';
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
@@ -31,8 +30,8 @@ export default function Category({
 
   return (
     <div>
-      {tasks == null || categories == null ? (
-        taskSkeleton // Avoid rendering mismatched DOM before hydration
+      {categories === undefined ? (
+        taskSkeleton
       ) : !category ? (
         <PlaceholderEmpty
           props={{
@@ -54,7 +53,6 @@ export default function Category({
       ) : (
         <AccordionTasks
           props={{
-            tasks: tasksOfCategory,
             defaultValues: { category_id: category.id || '' },
           }}
         />

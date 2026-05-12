@@ -18,30 +18,27 @@ import classes from './tasks.module.scss';
 import CardTaskCreate from '../cards/task/create';
 import { SECTION_SPACING } from '@repo/constants/sizes';
 import { useEffect, useState } from 'react';
-// import { FormTask } from '@/hooks/form/task';
-// import { useFormTaskView, useGetOrganizedTasks } from '@/hooks/form/task/view';
-// import { GroupSort } from '@generated/prisma';
-// import { TaskRelations } from '@/types/models/task';
 import { ViewGet } from '@repo/types/models/view';
 import { TaskGet } from '@repo/types/models/task';
 import { useGetOrganizedTasks } from '@repo/hooks/task/view';
 import CardTaskMain from '../cards/task/main';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
+import PlaceholderEmpty from '../placeholder/empty';
 
 export default function Tasks({
   props,
 }: {
-  props: {
-    tasks: TaskGet[];
+  props?: {
     view?: ViewGet;
     completeTasks?: boolean;
     defaultValues?: Partial<TaskGet>;
   };
 }) {
-  // const { view } = useFormTaskView();
+  const tasks = useStoreTask((s) => s.tasks);
 
   const { organizedTasksState } = useGetOrganizedTasks({
-    tasks: props.tasks || [],
-    completeTasks: props.completeTasks,
+    tasks: tasks || [],
+    completeTasks: props?.completeTasks,
   });
 
   const items = organizedTasksState.map((group, index) => {
@@ -86,19 +83,7 @@ export default function Tasks({
           <CardTaskCreate
             props={{
               defaultValues: {
-                category_id: props.defaultValues?.category_id,
-                // category_id:
-                //   view?.group_by == GroupSort.CATEGORY
-                //     ? group.id
-                //     : props.defaultValues?.category_id,
-                // due_date: (view?.group_by == GroupSort.DATE
-                //   ? group.id
-                //     ? new Date(group.id)
-                //     : undefined
-                //   : props.defaultValues?.dueDate) as any,
-                // priority: (view?.group_by == GroupSort.PRIORITY
-                //   ? group.id
-                //   : props.defaultValues?.priority) as any,
+                category_id: props?.defaultValues?.category_id,
               },
             }}
           />
@@ -123,7 +108,16 @@ export default function Tasks({
 
   const singleGroup = organizedTasksState.length == 1;
 
-  return (
+  return tasks === undefined ? (
+    taskSkeleton
+  ) : !tasks?.length ? (
+    <PlaceholderEmpty
+      props={{
+        title: 'No Tasks Found',
+        desc: 'Add some tasks to get started.',
+      }}
+    />
+  ) : (
     <Accordion
       multiple
       value={value}

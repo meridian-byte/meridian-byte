@@ -12,6 +12,7 @@ export const useTaskActions = () => {
   const deleteTask = useStoreTask((s) => s.deleteTask);
   const activeTask = useStoreActiveItems((s) => s.activeItems?.task);
   const removeActiveTask = useStoreActiveItems((s) => s.removeActiveTask);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
 
   const taskCreate = (params: Partial<TaskGet>) => {
     if (!session) return;
@@ -30,8 +31,10 @@ export const useTaskActions = () => {
       due_date: (params.due_date?.toISOString() as any) || null,
       priority: params.priority || Priority.NOT_URGENT_UNIMPORTANT,
       recurring_rule_id: params.recurring_rule_id || null,
+      parent_task_id: params?.parent_task_id || null,
       title: params.title || '',
       profile_id: params.profile_id || session.id,
+      workspace_id: params?.workspace_id || activeWorkspace?.id || null,
       status: params.status || Status.ACTIVE,
       sync_status: SyncStatus.PENDING,
       created_at: new Date(params.created_at || now).toISOString() as any,
@@ -60,6 +63,30 @@ export const useTaskActions = () => {
     updateTask(newTask);
   };
 
+  // handler to move task
+  const taskMove = (params: {
+    values: TaskGet;
+    parent_task_id?: string | null;
+    workspace_id?: string;
+  }) => {
+    if (params.parent_task_id !== undefined) {
+      // update task taskbook id
+      taskUpdate({
+        ...params.values,
+        parent_task_id: params.parent_task_id,
+      });
+    }
+
+    if (params.workspace_id !== undefined) {
+      // update task workspace id
+      taskUpdate({
+        ...params.values,
+        parent_task_id: null,
+        workspace_id: params.workspace_id,
+      });
+    }
+  };
+
   const taskDelete = (params: TaskGet) => {
     if (!session) return;
 
@@ -75,5 +102,5 @@ export const useTaskActions = () => {
     });
   };
 
-  return { taskCreate, taskUpdate, taskDelete };
+  return { taskCreate, taskUpdate, taskMove, taskDelete };
 };

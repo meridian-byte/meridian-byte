@@ -34,7 +34,7 @@ import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { useMemo } from 'react';
 import { isToday, isWithinNext7Days } from '@repo/utilities/date-time';
 
-export default function Links() {
+export default function Left() {
   const tasks = useStoreTask((s) => s.tasks);
   const incompleteTasks = useMemo(
     () => tasks?.filter((ti) => !ti.complete),
@@ -51,7 +51,7 @@ export default function Links() {
     {
       icon: IconHome,
       label: 'Home',
-      link: '',
+      link: '/',
     },
     {
       icon: IconInbox,

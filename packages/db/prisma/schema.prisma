@@ -59,6 +59,7 @@ enum CategoryType {
   BLOG
   CREDIT
   DEBIT
+  TASK
 }
 
 enum WorkspaceType {
@@ -220,6 +221,7 @@ model Workspace {
   profile_id String
 
   notes Note[]
+  tasks Task[]
 
   status      Status     @default(ACTIVE)
   sync_status SyncStatus @default(SYNCED)
@@ -579,12 +581,13 @@ model Customization {
 }
 
 model Task {
-  id          String    @id @default(uuid())
-  title       String
-  complete    Boolean   @default(false)
-  description String?
-  due_date    DateTime?
-  priority    Priority  @default(NOT_URGENT_UNIMPORTANT)
+  id             String    @id @default(uuid())
+  title          String
+  complete       Boolean   @default(false)
+  description    String?
+  due_date       DateTime?
+  priority       Priority  @default(NOT_URGENT_UNIMPORTANT)
+  parent_task_id String?
 
   profile           Profile        @relation(fields: [profile_id], references: [id], onDelete: Cascade)
   profile_id        String
@@ -592,6 +595,8 @@ model Task {
   category_id       String?
   recurring_rule    RecurringRule? @relation(fields: [recurring_rule_id], references: [id])
   recurring_rule_id String?
+  workspace         Workspace?     @relation(fields: [workspace_id], references: [id], onDelete: SetNull)
+  workspace_id      String?
 
   reminders Reminder[]
 

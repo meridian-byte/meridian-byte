@@ -41,11 +41,6 @@ import { useMediaQuery } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { COLOR_CODES } from '@repo/constants/other';
 import ModalConfirm from '../common/modals/confirm';
-import ComboboxTaskProject from '../common/inputs/combobox/task/project';
-import ComboboxTaskDueDate from '../common/inputs/combobox/task/due';
-import ComboboxTaskTime from '../common/inputs/combobox/task/time';
-import ComboboxTaskRepeat from '../common/inputs/combobox/task/repeat';
-import ComboboxTaskPriority from '../common/inputs/combobox/task/priority';
 import { useFormReminder } from '@repo/hooks/form/reminder';
 import { useFormRecurringRule } from '@repo/hooks/form/recurring-rule';
 import { getRegionalDate } from '@repo/utilities/date-time';
@@ -199,37 +194,37 @@ export default function Task({
                   <Title order={3} fz={'xs'} fw={500} pl={'sm'}>
                     Project
                   </Title>
-                  <ComboboxTaskProject
+                  {/* <ComboboxTaskProject
                     props={{
                       formTask: form,
                       inputProps: { width: '100%' },
                     }}
-                  />
+                  /> */}
                 </Stack>
 
                 <Stack gap={5}>
                   <Title order={3} fz={'xs'} fw={500} pl={'sm'}>
                     Date
                   </Title>
-                  <ComboboxTaskDueDate
+                  {/* <ComboboxTaskDueDate
                     props={{ form: form, inputProps: { width: '100%' } }}
-                  />
+                  /> */}
                 </Stack>
 
                 <Stack gap={5}>
                   <Title order={3} fz={'xs'} fw={500} pl={'sm'}>
                     Reminder
                   </Title>
-                  <ComboboxTaskTime
+                  {/* <ComboboxTaskTime
                     props={{ form: form, inputProps: { width: '100%' } }}
-                  />
+                  /> */}
                 </Stack>
 
                 <Stack gap={5}>
                   <Title order={3} fz={'xs'} fw={500} pl={'sm'}>
                     Recurrence
                   </Title>
-                  <ComboboxTaskRepeat
+                  {/* <ComboboxTaskRepeat
                     props={{
                       form: {
                         task: form,
@@ -238,19 +233,19 @@ export default function Task({
                       },
                       inputProps: { width: '100%' },
                     }}
-                  />
+                  /> */}
                 </Stack>
 
                 <Stack gap={5}>
                   <Title order={3} fz={'xs'} fw={500} pl={'sm'}>
                     Priority
                   </Title>
-                  <ComboboxTaskPriority
+                  {/* <ComboboxTaskPriority
                     props={{
                       formTask: form,
                       inputProps: { width: '100%' },
                     }}
-                  />
+                  /> */}
                 </Stack>
               </Stack>
 

@@ -35,6 +35,7 @@ export enum CategoryType {
   BLOG = 'BLOG',
   CREDIT = 'CREDIT',
   DEBIT = 'DEBIT',
+  TASK = 'TASK',
 }
 
 export enum RecurringFrequency {

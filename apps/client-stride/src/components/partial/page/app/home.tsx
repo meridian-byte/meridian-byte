@@ -48,15 +48,6 @@ export default function Home() {
     [tasks]
   );
 
-  const { form, handleSubmit, submitted } = useFormTask({
-    defaultValues: { due_date: now },
-  });
-
-  const handleClose = () => {
-    form.reset();
-    close();
-  };
-
   return (
     <div>
       <Stack gap={SECTION_SPACING / 2}>
@@ -71,14 +62,7 @@ export default function Home() {
           </Title>
         )}
 
-        <PartialTaskCreate
-          props={{
-            form,
-            handleClose,
-            submitted,
-            handleSubmit,
-          }}
-        />
+        <PartialTaskCreate />
 
         {tasks == null ? (
           taskSkeleton

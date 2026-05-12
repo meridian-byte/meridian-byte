@@ -5,7 +5,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { Modal } from '@mantine/core';
 import { TaskGet } from '@repo/types/models/task';
 import PartialTaskCreate from '../../../partial/task/create';
-import { useFormTask } from '@repo/hooks/form/task';
 
 export default function Create({
   props,
@@ -16,12 +15,7 @@ export default function Create({
 }) {
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { form, submitted, handleSubmit } = useFormTask({
-    defaultValues: props,
-  });
-
   const handleClose = () => {
-    form.reset();
     close();
   };
 
@@ -32,11 +26,8 @@ export default function Create({
         onClose={handleClose}
         size={'lg'}
         styles={{ content: { overflow: 'visible' } }}
-        keepMounted={false}
       >
-        <PartialTaskCreate
-          props={{ form, submitted, handleSubmit, handleClose }}
-        />
+        <PartialTaskCreate props={{ defaultValues: props, handleClose }} />
       </Modal>
 
       <span onClick={open} style={{ cursor: 'pointer' }}>

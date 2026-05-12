@@ -1,5 +1,6 @@
 import { useStoreCategory } from '@repo/libraries/zustand/stores/category';
 import { useStoreSession } from '@repo/libraries/zustand/stores/session';
+import { useStoreTask } from '@repo/libraries/zustand/stores/task';
 import { CategoryGet } from '@repo/types/models/category';
 import { CategoryType, Status, SyncStatus } from '@repo/types/models/enums';
 import { generateUUID } from '@repo/utilities/generators';
@@ -9,6 +10,8 @@ export const useCategoryActions = () => {
   const addCategory = useStoreCategory((s) => s.addCategory);
   const updateCategory = useStoreCategory((s) => s.updateCategory);
   const deleteCategory = useStoreCategory((s) => s.deleteCategory);
+  const tasks = useStoreTask((s) => s.tasks);
+  const setTasks = useStoreTask((s) => s.setTasks);
 
   const categoryCreate = (params: Partial<CategoryGet>) => {
     if (!session) return;
@@ -19,7 +22,7 @@ export const useCategoryActions = () => {
     const newCategory: CategoryGet = {
       id: params.id || id,
       title: params.title || 'New Project',
-      type: params.type || CategoryType.DEBIT,
+      type: params.type || CategoryType.TASK,
       profile_id: params.profile_id || session.id,
       parent_category_id: params.parent_category_id || '',
       status: params.status || Status.ACTIVE,
@@ -48,6 +51,17 @@ export const useCategoryActions = () => {
 
   const categoryDelete = (params: CategoryGet) => {
     if (!session) return;
+
+    if (params.type == CategoryType.TASK) {
+      if (tasks?.length) {
+        setTasks(
+          tasks.map((ti) => {
+            if (ti.category_id != params.id) return ti;
+            return { ...ti, category_id: null };
+          })
+        );
+      }
+    }
 
     const now = new Date();
 

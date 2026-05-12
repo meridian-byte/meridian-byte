@@ -5,7 +5,7 @@ import ItemEditProvider from '@repo/components/provider/item-edit';
 import { APPSHELL } from '@/data/constants';
 import HeaderAppMain from '@/components/layout/headers/app/main';
 import NavbarAppParentMain from '@/components/layout/navbars/app/parent/main';
-import PartialTabNavbarLinks from '@/components/partial/tabs/navbar/links';
+import PartialTabNavbarLeft from '@/components/partial/tabs/navbar/left';
 import ProviderView from '@repo/components/provider/view';
 
 export default async function LayoutApp({
@@ -27,7 +27,7 @@ export default async function LayoutApp({
               navbar: { component: <NavbarAppParentMain /> },
               appShellChild: {
                 appShell: { headerHeight: APPSHELL.HEADER_HEIGHT },
-                leftSection: { component: <PartialTabNavbarLinks /> },
+                leftSection: { component: <PartialTabNavbarLeft /> },
               },
             }}
           >

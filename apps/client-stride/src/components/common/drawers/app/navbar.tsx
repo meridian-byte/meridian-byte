@@ -17,7 +17,7 @@ import {
   ICON_WRAPPER_SIZE,
   WEEK,
 } from '@repo/constants/sizes';
-import PartialNavbarLinks from '@/components/partial/tabs/navbar/links';
+import PartialNavbarLinks from '@/components/partial/tabs/navbar/left';
 import { IconLayoutSidebarLeftCollapse } from '@tabler/icons-react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 

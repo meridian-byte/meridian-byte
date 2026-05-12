@@ -73,6 +73,7 @@ export default function Side({
         withinPortal
         width={menuWidth}
         keepMounted
+        styles={{ dropdown: { minWidth: 240 } }}
       >
         <MenuTarget>
           {props.options?.context ? <div {...anchorProps} /> : target}

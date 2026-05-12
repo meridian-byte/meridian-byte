@@ -4,10 +4,6 @@ import { FormTask } from '@repo/hooks/form/task';
 import { Group, Textarea } from '@mantine/core';
 import React from 'react';
 import classes from './create.module.scss';
-import ComboboxTaskDue from '@repo/components/common/inputs/combobox/task/due';
-import ComboboxTaskTime from '@repo/components/common/inputs/combobox/task/time';
-import ComboboxTaskRepeat from '@repo/components/common/inputs/combobox/task/repeat';
-import ComboboxTaskPriority from '@repo/components/common/inputs/combobox/task/priority';
 import { useFormReminder } from '@repo/hooks/form/reminder';
 import { useFormRecurringRule } from '@repo/hooks/form/recurring-rule';
 
@@ -46,7 +42,7 @@ export default function Create({ props }: { props: { form: FormTask } }) {
         />
       </div>
 
-      <Group gap={'xs'} mt={'xs'}>
+      {/* <Group gap={'xs'} mt={'xs'}>
         <ComboboxTaskDue props={{ form: props.form }} />
         <ComboboxTaskTime props={{ form: props.form }} />
         <ComboboxTaskRepeat
@@ -59,7 +55,7 @@ export default function Create({ props }: { props: { form: FormTask } }) {
           }}
         />
         <ComboboxTaskPriority props={{ formTask: props.form }} />
-      </Group>
+      </Group> */}
     </>
   );
 }
