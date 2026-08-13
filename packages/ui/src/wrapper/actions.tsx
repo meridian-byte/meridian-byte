@@ -10,7 +10,7 @@ import { AuthAction } from '@repo/types';
 import { DBConfig } from '@repo/types';
 import { AUTH_URLS } from '@repo/constants';
 
-export function SignIn({
+export function WrapperActionSignIn({
   children,
   options,
 }: {
@@ -36,7 +36,7 @@ export function SignIn({
   );
 }
 
-export function SignOut({
+export function WrapperActionSignOut({
   props,
   children,
 }: {

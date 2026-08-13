@@ -12,7 +12,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { SignOut as WrapperSignOut } from '@atlas/ui/wrapper/actions';
+import { WrapperActionSignOut } from '@repo/ui';
 import { getUrlParam } from '@repo/utils';
 import { config } from '@repo/store';
 import { AUTH_URLS } from '@repo/constants';
@@ -65,7 +65,7 @@ export const NotifySignOut = ({ props }: { props: { baseUrl: string } }) => {
       subtitle="Are you sure you want to sign out?"
       actions={
         <>
-          <WrapperSignOut
+          <WrapperActionSignOut
             props={{
               baseUrl: props.baseUrl,
               dbConfig: config,
@@ -73,7 +73,7 @@ export const NotifySignOut = ({ props }: { props: { baseUrl: string } }) => {
             }}
           >
             <Button>Sign Out</Button>
-          </WrapperSignOut>
+          </WrapperActionSignOut>
 
           <Button
             component={Link}
@@ -147,7 +147,7 @@ export function NotifySection({
 
             {message?.includes('PKCE') && baseUrl && (
               <Group mt={'md'}>
-                <WrapperSignOut
+                <WrapperActionSignOut
                   props={{
                     baseUrl: baseUrl,
                     dbConfig: config,
@@ -155,7 +155,7 @@ export function NotifySection({
                   }}
                 >
                   <Button>Try Again</Button>
-                </WrapperSignOut>
+                </WrapperActionSignOut>
               </Group>
             )}
           </Stack>

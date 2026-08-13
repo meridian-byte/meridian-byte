@@ -14,4 +14,6 @@ export * from './provider/initialize';
 export * from './provider/mantine';
 export * from './provider/sync';
 
+export * from './wrapper/actions';
+
 export * from './spinner/app';
