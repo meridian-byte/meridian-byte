@@ -33,9 +33,9 @@ import {
 import AccordionNavbar from '@atlas/ui/accordion/navbar';
 import { config, useStoreSession, useStoreView } from '@repo/store';
 import MenuNew from '@atlas/ui/menu/new';
-import { SignIn, SignOut } from '@atlas/ui/wrapper/actions';
 import { AuthAction } from '@repo/types';
 import Link from 'next/link';
+import { AvatarUser } from '@repo/ui';
 
 export default function App() {
   return (
@@ -75,37 +75,7 @@ function NavbarHeader() {
     <Stack p={0} gap={0}>
       <Group wrap="nowrap" gap={0}>
         <Box style={{ flex: 1 }}>
-          {session === undefined ? (
-            <Skeleton h={sharedSize} radius={0} />
-          ) : !session?.email ? (
-            <SignIn options={{ action: AuthAction.SIGN_IN }}>
-              <Button
-                size="xs"
-                fullWidth
-                variant="subtle"
-                color="dark"
-                leftSection={<IconUser size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-                justify="start"
-                pl={5}
-                radius={0}
-              >
-                Sign In
-              </Button>
-            </SignIn>
-          ) : (
-            <Button
-              size="xs"
-              fullWidth
-              variant="subtle"
-              color="dark"
-              leftSection={<IconUser size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-              justify="start"
-              pl={5}
-              radius={0}
-            >
-              {session.user_metadata.name || session.email}
-            </Button>
-          )}
+          {session === undefined ? <Skeleton h={sharedSize} radius={0} /> : <AvatarUser />}
         </Box>
 
         {session === undefined ? (

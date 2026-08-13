@@ -1,3 +1,5 @@
+export * from './avatars/user';
+
 export * from './layout/intros/page';
 export * from './layout/intros/section';
 export * from './layout/section';
