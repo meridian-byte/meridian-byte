@@ -4,9 +4,9 @@ import { NextRequest } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  routeProfilesGet();
+  return routeProfilesGet();
 }
 
 export async function PUT(request: NextRequest) {
-  routeProfilesPut(request);
+  return routeProfilesPut(request);
 }

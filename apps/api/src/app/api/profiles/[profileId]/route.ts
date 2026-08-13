@@ -7,19 +7,19 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ profileId: string }> },
 ) {
-  routeProfileGet(request, { params });
+  return routeProfileGet(request, { params });
 }
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ profileId: string }> },
 ) {
-  routeProfilePost(request, { params });
+  return routeProfilePost(request, { params });
 }
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ profileId: string }> },
 ) {
-  routeProfilePut(request, { params });
+  return routeProfilePut(request, { params });
 }
