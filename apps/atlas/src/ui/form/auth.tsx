@@ -94,7 +94,7 @@ export default function Auth({
                 }}
                 disabled={!!messageAuth}
                 leftSection={
-                  <ThemeIcon color="dark" variant="transparent" size={ICON_WRAPPER_SIZE}>
+                  <ThemeIcon color="gray" variant="transparent" size={ICON_WRAPPER_SIZE}>
                     <IconMail size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                   </ThemeIcon>
                 }
@@ -151,7 +151,7 @@ export default function Auth({
                       error: { textAlign: 'center' },
                     }}
                     leftSection={
-                      <ThemeIcon color="dark" variant="transparent" size={ICON_WRAPPER_SIZE}>
+                      <ThemeIcon color="gray" variant="transparent" size={ICON_WRAPPER_SIZE}>
                         <IconPassword size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                       </ThemeIcon>
                     }

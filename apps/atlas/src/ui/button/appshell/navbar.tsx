@@ -22,7 +22,7 @@ export default function Navbar({ options }: { options?: { hideWhenOpen?: boolean
     <ActionIcon
       radius={0}
       variant="subtle"
-      color="dark"
+      color="gray"
       aria-label={label}
       size={SHELL_VALUES.FOOTER.HEIGHT - 1}
       onClick={toggleNavbarChild}

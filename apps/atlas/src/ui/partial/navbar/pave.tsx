@@ -81,7 +81,7 @@ export default function Pave() {
 
                 <NavLink
                   label={nl.label}
-                  color="dark"
+                  color="gray"
                   px={'xs'}
                   py={3}
                   fw={500}
@@ -117,7 +117,7 @@ export default function Pave() {
               <Tooltip label={`Add calendar`}>
                 <ActionIcon
                   size={30}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   radius={0}
                   onClick={() => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR)}
@@ -144,7 +144,7 @@ export default function Pave() {
 
                   <NavLink
                     label={sc.title}
-                    color="dark"
+                    color="gray"
                     px={'xs'}
                     py={3}
                     fw={500}

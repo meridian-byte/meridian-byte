@@ -87,7 +87,7 @@ export default function Stride() {
 
               <NavLink
                 label={nl.label}
-                color="dark"
+                color="gray"
                 px={'xs'}
                 py={3}
                 fw={500}
@@ -115,7 +115,7 @@ export default function Stride() {
               <Tooltip label={`Add task list`}>
                 <ActionIcon
                   size={30}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   radius={0}
                   onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST)}
@@ -133,7 +133,7 @@ export default function Stride() {
 
                 <NavLink
                   label={nl.label}
-                  color="dark"
+                  color="gray"
                   px={'xs'}
                   py={3}
                   fw={500}

@@ -95,7 +95,7 @@ function NavbarHeader() {
         size="xs"
         fullWidth
         variant="subtle"
-        color="dark"
+        color="gray"
         leftSection={<IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
         justify="start"
         pl={5}
@@ -116,7 +116,7 @@ function NavbarHeader() {
         size="xs"
         fullWidth
         variant="subtle"
-        color="dark"
+        color="gray"
         leftSection={<IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
         justify="start"
         pl={5}
@@ -139,7 +139,7 @@ function NavbarHeader() {
             size="xs"
             fullWidth
             variant="subtle"
-            color="dark"
+            color="gray"
             leftSection={<IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
             justify="start"
             pl={5}
@@ -158,7 +158,7 @@ function NavbarHeader() {
         </Box>
 
         {/* <MenuNew>
-          <ActionIcon size={30} variant="subtle" color={'dark'} radius={0}>
+          <ActionIcon size={30} variant="subtle" color={'gray'} radius={0}>
             <IconChevronDown size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>
         </MenuNew> */}

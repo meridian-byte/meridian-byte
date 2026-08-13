@@ -53,7 +53,7 @@ export default function Theme() {
       radius={0}
       variant={'subtle'}
       size={SHELL_VALUES.FOOTER.HEIGHT}
-      color="dark"
+      color="gray"
       onClick={() => {
         startTransition(() => {
           setColorScheme(buttonProps.label as MantineColorScheme);

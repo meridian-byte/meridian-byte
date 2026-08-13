@@ -95,7 +95,7 @@ export default function Navbar() {
                   component="span"
                   size={30}
                   radius={0}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -111,7 +111,7 @@ export default function Navbar() {
                   component="span"
                   size={30}
                   radius={0}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -127,7 +127,7 @@ export default function Navbar() {
                   component="span"
                   size={30}
                   radius={0}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   onClick={(e) => {
                     e.stopPropagation();

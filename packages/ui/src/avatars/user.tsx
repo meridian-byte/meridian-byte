@@ -25,7 +25,7 @@ export function AvatarUser({ size }: { size?: number }) {
             size="xs"
             fullWidth
             variant="subtle"
-            color="dark"
+            color="gray"
             leftSection={<IconUser size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
             justify="start"
             pl={5}
@@ -39,7 +39,7 @@ export function AvatarUser({ size }: { size?: number }) {
           size="xs"
           fullWidth
           variant="subtle"
-          color="dark"
+          color="gray"
           leftSection={
             <Avatar
               src={session.user_metadata.avatar_url || null}

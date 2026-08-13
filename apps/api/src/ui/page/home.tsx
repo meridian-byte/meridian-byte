@@ -24,7 +24,7 @@ export default function Home() {
     <LayoutSection id="home">
       <Center ta={'center'} mih={'100vh'}>
         <Card
-          bg={'var(--mantine-color-dark-9)'}
+          bg={'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'}
           padding={0}
           px={SECTION_SPACING * 2}
           py={SECTION_SPACING}
@@ -55,7 +55,7 @@ export default function Home() {
             </Stack>
 
             <Stack gap={'xs'} align="center">
-              <Badge variant="outline" color="dark">
+              <Badge variant="outline" color="gray">
                 Version: {version}
               </Badge>
 

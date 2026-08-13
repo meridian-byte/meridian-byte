@@ -21,7 +21,7 @@ export default function Fullscreen() {
       size={SHELL_VALUES.FOOTER.HEIGHT}
       onClick={toggle}
       variant="subtle"
-      color="dark"
+      color="gray"
     >
       <buttonProps.icon size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
     </ActionIcon>

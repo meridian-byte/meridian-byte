@@ -61,7 +61,7 @@ export default function Jot() {
 
               <NavLink
                 label={nl.label}
-                color="dark"
+                color="gray"
                 px={'xs'}
                 py={3}
                 fw={500}
@@ -89,7 +89,7 @@ export default function Jot() {
               <Tooltip label={`Add note`}>
                 <ActionIcon
                   size={30}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   radius={0}
                   onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
@@ -101,7 +101,7 @@ export default function Jot() {
               <Tooltip label={`Add note folder`}>
                 <ActionIcon
                   size={30}
-                  color="dark"
+                  color="gray"
                   variant="subtle"
                   radius={0}
                   onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER)}
@@ -119,7 +119,7 @@ export default function Jot() {
 
                 <NavLink
                   label={nl.label}
-                  color="dark"
+                  color="gray"
                   px={'xs'}
                   py={3}
                   fw={500}

@@ -27,7 +27,7 @@ export default function App() {
       >
         <ButtonAppshellNavbar />
 
-        <ActionIcon size={SHELL_VALUES.FOOTER.HEIGHT} radius={0} color="dark" variant="subtle">
+        <ActionIcon size={SHELL_VALUES.FOOTER.HEIGHT} radius={0} color="gray" variant="subtle">
           <IconSettings size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
 
@@ -37,7 +37,7 @@ export default function App() {
 
         <IndicatorNetworkStatus props={{ syncStatus }} />
 
-        <ActionIcon size={SHELL_VALUES.FOOTER.HEIGHT} radius={0} color="dark" variant="subtle">
+        <ActionIcon size={SHELL_VALUES.FOOTER.HEIGHT} radius={0} color="gray" variant="subtle">
           <IconBell size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
       </Group>

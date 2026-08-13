@@ -210,7 +210,7 @@ export default function App() {
                       }
                       rightSection={<IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
                       onClick={ci.action}
-                      color="dark"
+                      color="gray"
                       px={'xs'}
                       py={3}
                       fw={500}
