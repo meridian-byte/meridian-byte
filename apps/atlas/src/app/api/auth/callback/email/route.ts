@@ -4,5 +4,5 @@ import { routeAuthCallbackEmail } from '@repo/handlers';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  routeAuthCallbackEmail(request);
+  return routeAuthCallbackEmail(request);
 }
