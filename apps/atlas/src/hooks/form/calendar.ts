@@ -2,6 +2,7 @@ import { hasLength, UseFormReturnType } from '@mantine/form';
 import { useCalendarActions, useStoreAppShell } from '@repo/store';
 import { useFormBase } from '../form';
 import { CalendarGet } from '@repo/types';
+import { useAppshellChild } from '../appshell';
 
 export type FormCalendarValues = {
   id: string;
@@ -15,7 +16,7 @@ export const useFormCalendar = (params?: {
   options?: { closeWhenDone?: boolean };
 }) => {
   const appshell = useStoreAppShell((s) => s.appshell);
-  const toggleAsideChild = useStoreAppShell((s) => s.toggleAsideChild);
+  const { handleToggleChildAside } = useAppshellChild();
 
   const { calendarCreate, calendarUpdate } = useCalendarActions();
 
@@ -52,7 +53,7 @@ export const useFormCalendar = (params?: {
         if (params?.options?.closeWhenDone) {
           if (!!appshell) {
             if (appshell.child.aside == true) {
-              toggleAsideChild();
+              handleToggleChildAside();
             }
           }
         }

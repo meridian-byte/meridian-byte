@@ -4,6 +4,7 @@ import { useFormBase } from '../form';
 import { EventGet } from '@repo/types';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
+import { useAppshellChild } from '../appshell';
 
 export type FormEventValues = {
   id: string;
@@ -17,7 +18,7 @@ export const useFormEvent = (params?: {
   options?: { closeWhenDone?: boolean };
 }) => {
   const appshell = useStoreAppShell((s) => s.appshell);
-  const toggleAsideChild = useStoreAppShell((s) => s.toggleAsideChild);
+  const { handleToggleChildAside } = useAppshellChild();
 
   const { eventCreate, eventUpdate } = useEventActions();
 
@@ -60,7 +61,7 @@ export const useFormEvent = (params?: {
         if (params?.options?.closeWhenDone) {
           if (!!appshell) {
             if (appshell.child.aside == true) {
-              toggleAsideChild();
+              handleToggleChildAside();
             }
           }
         }
