@@ -54,7 +54,7 @@ const authOauth = async (params: { searchParams: URLSearchParams }) => {
 
   const { profile, existed } = items;
 
-  sharedUserHandle({ supabase, profile: profile, existed: existed });
+  await sharedUserHandle({ supabase, profile: profile, existed: existed });
 
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? AUTH_URLS.REDIRECT.DEFAULT;

@@ -73,7 +73,7 @@ const authEmail = async (params: { searchParams: URLSearchParams; baseUrl: strin
 
   const { profile, existed } = items;
 
-  sharedUserHandle({ supabase, profile: profile, existed: existed });
+  await sharedUserHandle({ supabase, profile: profile, existed: existed });
 
   return `${baseUrl + `${redirectUrl || AUTH_URLS.REDIRECT}`}`;
 };
