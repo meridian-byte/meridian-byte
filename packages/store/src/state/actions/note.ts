@@ -2,16 +2,16 @@ import { useStoreNote } from '../note';
 import { useStoreSession } from '../session';
 import { NoteGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
-import { generateUUID } from '@repo/utils';
-import { usePathname, useRouter } from 'next/navigation';
+import { generateCopyTitle, generateUUID } from '@repo/utils';
+import { useRouter } from 'next/navigation';
 import { useStoreUserStates } from '../user-states';
 import { linkify } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
+import { useSubView, useViewModal } from '../../handler/view';
+import { SUBVIEW_NAMES } from '@repo/constants';
 
 export const useNoteActions = () => {
   const session = useStoreSession((s) => s.session);
-  const pathname = usePathname();
-  const router = useRouter();
   const notes = useStoreNote((s) => s.notes);
   const addNote = useStoreNote((s) => s.addNote);
   const updateNote = useStoreNote((s) => s.updateNote);
@@ -21,17 +21,28 @@ export const useNoteActions = () => {
   const userStates = useStoreUserStates((s) => s.userStates);
   const setUserStates = useStoreUserStates((s) => s.setUserStates);
 
+  const { subViewValue, showSubViewJot } = useSubView();
+
+  const { modalViewValue, closeModalView } = useViewModal();
+
   const noteCreate = (params?: Partial<NoteGet>) => {
     if (!session) return;
     if (!userStates) return;
     if (!activeWorkspace) return;
+    if (notes === undefined || notes === null) return;
 
     const id = generateUUID();
     const now = new Date();
 
+    // Extracts existing titles to check for collision
+    const existingTitles = notes.map((n) => n.title);
+
+    // Handles cleanly: if params?.title is undefined, defaults to "New Note" / "New Note 1"
+    const title = generateCopyTitle(params?.title, existingTitles, 'New Note');
+
     const newNote: NoteGet = {
       id: params?.id || id,
-      title: params?.title || 'New Note',
+      title,
       content: params?.content || '<p></p>',
       profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
@@ -42,7 +53,7 @@ export const useNoteActions = () => {
 
     addNote(newNote);
 
-    router.push(`/n/${linkify(newNote.title)}-${newNote.id}`);
+    showSubViewJot(`note: ${newNote.id}`);
 
     if (!userStates.editing) setUserStates({ ...userStates, editing: true });
 
@@ -66,8 +77,8 @@ export const useNoteActions = () => {
 
   const noteDelete = (params: NoteGet) => {
     if (!session) return;
-    if (!notes) return;
     if (!activeWorkspace) return;
+    if (notes === undefined || notes === null) return;
 
     const now = new Date();
 
@@ -78,48 +89,26 @@ export const useNoteActions = () => {
       updatedAt: new Date(now).toISOString() as any,
     });
 
-    // // check if current note is in view
-    // if (!params.options?.noRedirect && !!params.id) {
-    //   if (pathname != '/') router.replace(`/`);
-    // }
+    // check if current note is in view
+    if (subViewValue?.includes(params.id)) {
+      showSubViewJot(SUBVIEW_NAMES.JOT.HOME);
+    }
+
+    if (!!modalViewValue) closeModalView();
   };
 
   // handler to create note copy
   const noteCopy = (params: { values: NoteGet }) => {
-    if (!notes) return;
     if (!activeWorkspace) return;
+    if (notes === undefined || notes === null) return;
 
-    const baseTitle = params.values.title?.trim() ?? '';
-
-    // helper to escape regex special chars in title
-    function escapeRegex(str: string) {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-
-    const escapedBase = escapeRegex(baseTitle);
-
-    // matches "<baseTitle>" or "<baseTitle> <number>" at the very end
-    const titleRegex = new RegExp(`^${escapedBase}(?: (\\d+))?$`);
-
-    // collect notes that are copies of this title
-    const matchingCopies = notes.filter((n) => titleRegex.test(n.title));
-
-    // find the highest numeric suffix already used
-    let maxNumber = 0;
-    for (const n of matchingCopies) {
-      const match = n.title.match(titleRegex);
-      if (match && match[1]) {
-        const num = parseInt(match[1], 10);
-        if (num > maxNumber) maxNumber = num;
-      }
-    }
-
-    const nextNumber = maxNumber + 1;
+    const existingTitles = notes.map((n) => n.title);
+    const newTitle = generateCopyTitle(params.values.title ?? '', existingTitles);
 
     const noteCopy: NoteGet = {
       ...params.values,
       id: generateUUID(),
-      title: `${baseTitle} ${nextNumber}`,
+      title: newTitle,
     };
 
     // add copy to state
@@ -156,7 +145,7 @@ export const useNoteActions = () => {
     // add to note to state
     updateNote(note);
 
-    router.push(`/n/${linkify(note.title)}-${note.id}`);
+    showSubViewJot(`note: ${note.id}`);
 
     // delete merged note
     setTimeout(() => {

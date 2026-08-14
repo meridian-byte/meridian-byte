@@ -92,3 +92,38 @@ export const getEmailLocalPart = (email: string): string => {
   const atIndex = email.indexOf('@');
   return atIndex !== -1 ? email.slice(0, atIndex) : email;
 };
+
+/**
+ * Generates a unique title with an incremental suffix if duplicates exist.
+ * e.g., "New Note" -> "New Note 1", or "Project" -> "Project 1"
+ */
+export function generateCopyTitle(
+  targetTitle: string | undefined | null,
+  existingTitles: string[],
+  defaultTitle = 'New Note',
+): string {
+  const baseTitle = targetTitle?.trim() || defaultTitle;
+  const escapedBase = baseTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const titleRegex = new RegExp(`^${escapedBase}(?: (\\d+))?$`);
+
+  let maxNumber = -1; // -1 means baseTitle doesn't exist at all yet
+
+  for (const title of existingTitles) {
+    const match = title.match(titleRegex);
+    if (match) {
+      // If "Base Title 2", num is 2. If exact "Base Title", num is 0.
+      const num = match[1] ? parseInt(match[1], 10) : 0;
+      if (num > maxNumber) {
+        maxNumber = num;
+      }
+    }
+  }
+
+  // If the title doesn't exist yet, return it directly without suffix.
+  if (maxNumber === -1) {
+    return baseTitle;
+  }
+
+  // Otherwise, append the next numeric suffix
+  return `${baseTitle} ${maxNumber + 1}`;
+}
