@@ -8,6 +8,7 @@ import { ProviderMantine, ProviderInitialize, ProviderSync } from '@repo/ui';
 import { ColorSchemeScript, MantineColorScheme, mantineHtmlProps } from '@mantine/core';
 import { getAppTheme } from '@repo/constants';
 import { getAppResolver } from '@atlas/resolver';
+import { ColorScheme } from '@repo/types';
 
 import './globals.css';
 
@@ -17,7 +18,8 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 // ‼️ import schedule styles after core and dates package styles
 import '@mantine/schedule/styles.css';
-import { ColorScheme } from '@repo/types';
+import '@mantine/notifications/styles.css';
+import '@mantine/tiptap/styles.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

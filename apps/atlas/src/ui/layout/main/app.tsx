@@ -64,9 +64,7 @@ function LayoutMain({
   };
 }) {
   return (
-    <Box p={'xs'}>
-      {options?.containerized ? <Container size={'md'}>{children}</Container> : children}
-    </Box>
+    <Box>{options?.containerized ? <Container size={'md'}>{children}</Container> : children}</Box>
   );
 }
 

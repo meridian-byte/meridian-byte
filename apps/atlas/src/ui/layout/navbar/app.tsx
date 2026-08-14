@@ -45,7 +45,7 @@ export default function App() {
         <NavbarHeader />
       </AppShellSection>
 
-      <Divider size={3} />
+      <Divider />
 
       <AppShellSection
         grow
@@ -92,7 +92,7 @@ function NavbarHeader() {
         )}
       </Group>
 
-      <Divider size={3} />
+      <Divider />
 
       <Button
         size="xs"

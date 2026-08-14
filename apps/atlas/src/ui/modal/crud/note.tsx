@@ -54,7 +54,7 @@ function NoteDelete({ note, onClose }: { note?: NoteGet; onClose: () => void }) 
           <Text component="em" inherit fw={500}>
             {note?.title}
           </Text>{' '}
-          will be deleted. The events in this note will be preserved.
+          will be deleted. This action is irreversible.
         </Text>
 
         <Group justify="end" mt={'md'}>

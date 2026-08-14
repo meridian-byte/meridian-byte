@@ -11,10 +11,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@mantine/core": "^9.4.2",
     "@mantine/dates": "^9.4.2",
     "@mantine/form": "^9.4.2",
-    "@mantine/hooks": "^9.4.2",
     "@mantine/notifications": "^9.4.2",
     "@mantine/schedule": "^9.4.2",
     "@repo/auth": "workspace:*",
@@ -24,8 +22,8 @@
     "@repo/handlers": "workspace:*",
     "@repo/store": "workspace:*",
     "@repo/types": "workspace:*",
-    "@repo/utils": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@tabler/icons-react": "^3.44.0",
     "dayjs": "^1.11.21",
     "next": "16.2.10",

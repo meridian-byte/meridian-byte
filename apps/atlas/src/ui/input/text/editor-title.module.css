@@ -1,0 +1,6 @@
+.input {
+  width: 100%;
+  font-size: var(--mantine-h2-font-size);
+  font-weight: bold;
+  padding: 0;
+}

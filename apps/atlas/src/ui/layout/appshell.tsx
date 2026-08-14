@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import {
   AppShell,
   AppShellAside,
@@ -15,12 +15,16 @@ import LayoutFooterApp from './footer/app';
 import LayoutAsideApp from './aside/app';
 import { SHELL_VALUES } from '@atlas/constants';
 import { useStoreAppShell } from '@repo/store';
+import { ScrollContext } from '@repo/hooks';
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
   // const mobile = useMediaQuery('(max-width: 36em)');
   // const desktop = useMediaQuery('(min-width: 62em)');
+
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const contextValue = useMemo(() => viewportRef, []);
 
   return (
     <AppShell
@@ -42,9 +46,15 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       </AppShellNavbar>
 
       <AppShellMain>
-        <ScrollArea scrollbars={'y'} h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT}px)`}>
-          {children}
-        </ScrollArea>
+        <ScrollContext.Provider value={contextValue}>
+          <ScrollArea
+            scrollbars={'y'}
+            h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT}px)`}
+            viewportRef={contextValue}
+          >
+            {children}
+          </ScrollArea>
+        </ScrollContext.Provider>
       </AppShellMain>
 
       <AppShellAside>

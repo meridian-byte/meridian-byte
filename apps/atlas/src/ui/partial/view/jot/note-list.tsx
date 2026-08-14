@@ -1,10 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useSubView } from '@repo/store';
+import HeaderNote from '@atlas/ui/layout/header/note';
+import PartialPageNote from '../../page/note';
 
 export default function JotList() {
-  const { subViewValue, showSubViewJot } = useSubView();
+  return (
+    <div>
+      <HeaderNote />
 
-  return <div>JotList: {subViewValue}</div>;
+      <PartialPageNote />
+    </div>
+  );
 }

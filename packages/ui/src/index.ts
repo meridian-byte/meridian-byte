@@ -10,6 +10,8 @@ export * from './layout/modal';
 
 export * from './loader/main';
 
+export * from './parser/html';
+
 export * from './partial/error/404';
 export * from './partial/error/500';
 
@@ -19,6 +21,8 @@ export * from './provider/initialize';
 export * from './provider/mantine';
 export * from './provider/sync';
 
+export * from './wrapper/underlays/blur';
+export * from './wrapper/underlays/glass';
 export * from './wrapper/actions';
 
 export * from './spinner/app';
