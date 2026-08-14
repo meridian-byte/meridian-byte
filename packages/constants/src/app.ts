@@ -117,6 +117,10 @@ export const MODAL_VIEW_NAMES = {
       },
     },
     JOT: {
+      NOTE: {
+        UPDATE: 'crud-note-update',
+        DELETE: 'crud-note-delete',
+      },
       FOLDER: {
         UPDATE: 'crud-folder-update',
         DELETE: 'crud-folder-delete',

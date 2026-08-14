@@ -12,13 +12,18 @@ import {
   IconNote,
   IconPlus,
 } from '@tabler/icons-react';
-import { useViewAside } from '@repo/store';
+import { useNoteActions, useViewAside } from '@repo/store';
 import FormCalendar from '@atlas/ui/form/calendar';
 import FormEvent from '@atlas/ui/form/event';
+import { useAppshellChild } from '@repo/hooks';
 
 export default function App() {
   const { asideViewValue, showAsideViewPave, showAsideViewJot, showAsideViewStride } =
     useViewAside();
+
+  const { handleToggleChildAside } = useAppshellChild();
+
+  const { noteCreate } = useNoteActions();
 
   const createItems = [
     {
@@ -42,7 +47,10 @@ export default function App() {
         {
           icon: IconNote,
           label: 'Note',
-          action: () => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE),
+          action: () => {
+            noteCreate();
+            handleToggleChildAside();
+          },
         },
         {
           icon: IconFolder,
@@ -69,6 +77,7 @@ export default function App() {
   ];
 
   let resolvedItems = createItems;
+
   if (asideViewValue === ASIDE_VIEW_NAMES.NEW.PAVE.ITEM) {
     resolvedItems = [createItems[0]];
   } else if (asideViewValue === ASIDE_VIEW_NAMES.NEW.JOT.ITEM) {

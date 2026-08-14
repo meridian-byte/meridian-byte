@@ -1,6 +1,18 @@
 'use client';
 
-import { ActionIcon, Box, Divider, Group, NavLink, Stack, Title, Tooltip } from '@mantine/core';
+import {
+  ActionIcon,
+  Box,
+  Divider,
+  Group,
+  Loader,
+  NavLink,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import {
   ASIDE_VIEW_NAMES,
   ICON_SIZE,
@@ -14,19 +26,23 @@ import {
   IconCalendarDown,
   IconCalendarShare,
   IconCircleCheck,
+  IconDots,
   IconFolder,
   IconHome,
   IconInbox,
   IconNote,
   IconPlus,
 } from '@tabler/icons-react';
-import { useSubView, useViewAside } from '@repo/store';
+import { useNoteActions, useStoreNote, useSubView, useViewAside } from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
+import MenuNote from '@atlas/ui/menu/note';
 
 export default function Jot() {
   const { showSubViewJot } = useSubView();
+  const { noteCreate } = useNoteActions();
   const { showAsideViewJot } = useViewAside();
+  const notes = useStoreNote((s) => s.notes);
 
   const navLinks: any[] = [
     // {
@@ -34,21 +50,6 @@ export default function Jot() {
     //   label: capitalizeWords(SUBVIEW_NAMES.JOT.HOME),
     //   action: () => showSubViewJot(SUBVIEW_NAMES.JOT.HOME),
     // },
-  ];
-
-  const sampleNoteLists = [
-    {
-      label: 'note item 1',
-      action: () => showSubViewJot(`note: ${'note item 1'}`),
-    },
-    {
-      label: 'brain dump',
-      action: () => showSubViewJot(`note: ${'brain dump'}`),
-    },
-    {
-      label: 'Journal entry (19-07-26)',
-      action: () => showSubViewJot(`note: ${'Journal entry (19-07-26)'}`),
-    },
   ];
 
   return (
@@ -92,7 +93,8 @@ export default function Jot() {
                   color="gray"
                   variant="subtle"
                   radius={0}
-                  onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
+                  // onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
+                  onClick={() => noteCreate()}
                 >
                   <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
@@ -113,21 +115,44 @@ export default function Jot() {
           </Group>
 
           <div>
-            {sampleNoteLists.map((nl, i) => (
-              <React.Fragment key={nl.label}>
-                {<Divider />}
+            {notes === undefined ? (
+              <Stack align="center" py={'xl'} fz={'xs'}>
+                <Loader size={'xs'} />
+              </Stack>
+            ) : !notes?.length ? (
+              <Stack align="center" py={'xl'} fz={'xs'}>
+                <Text inherit>No notes</Text>
+              </Stack>
+            ) : (
+              notes.map((ni, i) => (
+                <React.Fragment key={ni.id}>
+                  {<Divider />}
 
-                <NavLink
-                  label={nl.label}
-                  color="gray"
-                  px={'xs'}
-                  py={3}
-                  fw={500}
-                  styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                  onClick={nl.action}
-                />
-              </React.Fragment>
-            ))}
+                  <Group gap={0} wrap="nowrap">
+                    <NavLink
+                      label={ni.title}
+                      color="gray"
+                      px={'xs'}
+                      py={3}
+                      fw={500}
+                      leftSection={
+                        <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
+                          <IconNote size={ICON_SIZE - 4} />
+                        </ThemeIcon>
+                      }
+                      styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
+                      onClick={() => showSubViewJot(`note: ${ni.id}`)}
+                    />
+
+                    <MenuNote defaultValues={ni}>
+                      <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
+                        <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                      </ActionIcon>
+                    </MenuNote>
+                  </Group>
+                </React.Fragment>
+              ))
+            )}
           </div>
         </div>
       </Stack>
