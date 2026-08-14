@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStoreCalendar, useStoreEvent, useStoreView } from '@repo/store';
-import { useSubView } from '@atlas/hooks/view';
+import { useSubView } from '@repo/store';
 import { Schedule, ScheduleEventData, ScheduleViewLevel } from '@mantine/schedule';
 import { generateUUID } from '@repo/utils';
 import {

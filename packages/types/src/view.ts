@@ -3,4 +3,5 @@ export type View = {
   subView: string | null;
   navbarView: string[] | null;
   asideView: string | null;
+  modalView: string | null;
 };

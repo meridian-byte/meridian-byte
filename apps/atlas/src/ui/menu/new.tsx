@@ -54,8 +54,10 @@ export default function New({ children, ...restProps }: { children: React.ReactN
         item: {
           height: 28,
           padding: 6,
-          fontSize: 'var(--mantine-font-size-xs)',
+        },
+        itemLabel: {
           fontWeight: 500,
+          fontSize: 'var(--mantine-font-size-xs)',
         },
         itemSection: {
           color: 'dark',

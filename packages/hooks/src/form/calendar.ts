@@ -4,6 +4,7 @@ import { useFormBase } from '../form';
 import { CalendarGet } from '@repo/types';
 import { useAppshellChild } from '../appshell';
 import { getRandomColorName } from '@repo/constants';
+import { useViewModal } from '@repo/store';
 
 export type FormCalendarValues = {
   id: string;
@@ -20,6 +21,8 @@ export const useFormCalendar = (params?: {
   const { handleToggleChildAside } = useAppshellChild();
 
   const { calendarCreate, calendarUpdate } = useCalendarActions();
+
+  const { closeModalView } = useViewModal();
 
   const { form, submitted, handleSubmit } = useFormBase<Partial<CalendarGet>>(
     {
@@ -52,12 +55,16 @@ export const useFormCalendar = (params?: {
           } as CalendarGet);
         }
 
-        if (params?.options?.closeWhenDone) {
-          if (!!appshell) {
-            if (appshell.child.aside == true) {
-              handleToggleChildAside();
+        if (!params?.defaultValues?.updatedAt) {
+          if (params?.options?.closeWhenDone) {
+            if (!!appshell) {
+              if (appshell.child.aside == true) {
+                handleToggleChildAside();
+              }
             }
           }
+        } else {
+          closeModalView();
         }
       },
     },

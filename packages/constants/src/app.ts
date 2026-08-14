@@ -87,7 +87,6 @@ export const SUBVIEW_NAMES = {
 };
 
 export const ASIDE_VIEW_NAMES = {
-  SEARCH: 'search',
   NEW: {
     ITEM: 'new',
     PAVE: {
@@ -104,6 +103,30 @@ export const ASIDE_VIEW_NAMES = {
       ITEM: 'new-stride-item',
       TASK: 'new-task',
       TASK_LIST: 'new-task-list',
+    },
+  },
+};
+
+export const MODAL_VIEW_NAMES = {
+  SEARCH: 'search',
+  CRUD: {
+    PAVE: {
+      CALENDAR: {
+        UPDATE: 'crud-calendar-update',
+        DELETE: 'crud-calendar-delete',
+      },
+    },
+    JOT: {
+      FOLDER: {
+        UPDATE: 'crud-folder-update',
+        DELETE: 'crud-folder-delete',
+      },
+    },
+    STRIDE: {
+      TASK_LIST: {
+        UPDATE: 'crud-task-list-update',
+        DELETE: 'crud-task-list-delete',
+      },
     },
   },
 };

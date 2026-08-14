@@ -1,5 +1,5 @@
-import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, SUBVIEW_NAMES } from '@repo/constants';
-import { useStoreView } from '@repo/store';
+import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, MODAL_VIEW_NAMES } from '@repo/constants';
+import { useStoreView } from '../state/view';
 
 export const useView = () => {
   const viewValue = useStoreView((s) => s.view?.view);
@@ -174,5 +174,39 @@ export const useViewAside = () => {
     showAsideViewPave,
     showAsideViewJot,
     showAsideViewStride,
+  };
+};
+
+export const useViewModal = () => {
+  const modalViewValue = useStoreView((s) => s.view?.modalView);
+  const setModalViewValue = useStoreView((s) => s.setModalViewValue);
+
+  // handle modal search open
+  const showModalViewSearch = () => {
+    if (modalViewValue != MODAL_VIEW_NAMES.SEARCH) {
+      setModalViewValue(MODAL_VIEW_NAMES.SEARCH);
+    }
+  };
+
+  // handle modal calendar crud open
+  const showModalViewCalendarCrud = (calendarId: string, action: string) => {
+    if (!modalViewValue?.includes(action)) {
+      setModalViewValue(`${action}-${calendarId}`);
+    }
+  };
+
+  // handle modal close
+  const closeModalView = () => {
+    if (modalViewValue) {
+      setModalViewValue(null);
+    }
+  };
+
+  return {
+    modalViewValue,
+    setModalViewValue,
+    showModalViewSearch,
+    showModalViewCalendarCrud,
+    closeModalView,
   };
 };

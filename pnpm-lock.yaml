@@ -150,6 +150,9 @@ importers:
       '@repo/handlers':
         specifier: workspace:*
         version: link:../../packages/handlers
+      '@repo/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@repo/store':
         specifier: workspace:*
         version: link:../../packages/store
@@ -426,6 +429,55 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../config
+      typescript:
+        specifier: ^5.6.2
+        version: 5.9.3
+
+  packages/hooks:
+    dependencies:
+      '@mantine/form':
+        specifier: ^9.4.2
+        version: 9.5.0(react@19.2.4)
+      '@mantine/hooks':
+        specifier: ^9.4.2
+        version: 9.5.0(react@19.2.4)
+      '@mantine/notifications':
+        specifier: ^9.4.2
+        version: 9.5.0(@mantine/core@9.5.0(@mantine/hooks@9.5.0(react@19.2.4))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.5.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@repo/constants':
+        specifier: workspace:*
+        version: link:../constants
+      '@repo/handlers':
+        specifier: workspace:*
+        version: link:../handlers
+      '@repo/store':
+        specifier: workspace:*
+        version: link:../store
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../types
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
+      dayjs:
+        specifier: ^1.11.21
+        version: 1.11.21
+      react:
+        specifier: 19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: 19.2.4
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/react':
+        specifier: ^19
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.17)
       typescript:
         specifier: ^5.6.2
         version: 5.9.3

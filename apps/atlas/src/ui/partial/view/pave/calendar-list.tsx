@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useSubView } from '@atlas/hooks/view';
+import { useSubView } from '@repo/store';
 import { extractUuidFromParam } from '@repo/utils';
 import { AgendaView, ScheduleEventData } from '@mantine/schedule';
 import dayjs from 'dayjs';

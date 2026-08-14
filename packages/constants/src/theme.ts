@@ -255,6 +255,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
         defaultProps: {
           size: 'xs',
           variant: 'filled',
+          checkIconPosition: 'right',
           styles: {
             input: {
               backgroundColor:

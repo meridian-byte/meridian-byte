@@ -3,8 +3,8 @@
 import React from 'react';
 import { Box, Container } from '@mantine/core';
 import { useStoreView } from '@repo/store';
-import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, SUBVIEW_NAMES } from '@repo/constants';
-import { useSubView } from '@atlas/hooks/view';
+import { APP_NAMES_ATLAS, SUBVIEW_NAMES } from '@repo/constants';
+import { useSubView } from '@repo/store';
 import PartialViewStrideTaskList from '@atlas/ui/partial/view/stride/task-list';
 import PartialViewJotNoteList from '@atlas/ui/partial/view/jot/note-list';
 import PartialViewPaveCalendarList from '@atlas/ui/partial/view/pave/calendar-list';

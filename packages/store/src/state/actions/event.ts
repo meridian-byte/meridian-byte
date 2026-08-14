@@ -58,7 +58,7 @@ export const useEventActions = () => {
     updateEvent(newEvent);
   };
 
-  const eventDelete = (params: { values: EventGet; options?: { noRedirect?: boolean } }) => {
+  const eventDelete = (params: EventGet) => {
     if (!session) return;
     if (!events) return;
     if (!activeWorkspace) return;
@@ -66,9 +66,9 @@ export const useEventActions = () => {
     const now = new Date();
 
     deleteEvent({
-      ...params.values,
+      ...params,
       syncStatus: SyncStatus.DELETED,
-      createdAt: new Date(params.values.createdAt).toISOString() as any,
+      createdAt: new Date(params.createdAt).toISOString() as any,
       updatedAt: new Date(now).toISOString() as any,
     });
   };

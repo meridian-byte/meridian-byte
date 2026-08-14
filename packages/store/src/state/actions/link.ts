@@ -51,7 +51,7 @@ export const useLinkActions = () => {
     updateLink(newLink);
   };
 
-  const linkDelete = (params: { values: LinkGet; options?: { noRedirect?: boolean } }) => {
+  const linkDelete = (params: LinkGet) => {
     if (!session) return;
     if (!links) return;
     if (!activeWorkspace) return;
@@ -59,9 +59,9 @@ export const useLinkActions = () => {
     const now = new Date();
 
     deleteLink({
-      ...params.values,
+      ...params,
       syncStatus: SyncStatus.DELETED,
-      createdAt: new Date(params.values.createdAt).toISOString() as any,
+      createdAt: new Date(params.createdAt).toISOString() as any,
       updatedAt: new Date(now).toISOString() as any,
     });
   };

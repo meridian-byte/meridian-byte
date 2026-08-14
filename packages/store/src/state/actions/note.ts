@@ -64,7 +64,7 @@ export const useNoteActions = () => {
     updateNote(newNote);
   };
 
-  const noteDelete = (params: { values: NoteGet; options?: { noRedirect?: boolean } }) => {
+  const noteDelete = (params: NoteGet) => {
     if (!session) return;
     if (!notes) return;
     if (!activeWorkspace) return;
@@ -72,16 +72,16 @@ export const useNoteActions = () => {
     const now = new Date();
 
     deleteNote({
-      ...params.values,
+      ...params,
       syncStatus: SyncStatus.DELETED,
-      createdAt: new Date(params.values.createdAt).toISOString() as any,
+      createdAt: new Date(params.createdAt).toISOString() as any,
       updatedAt: new Date(now).toISOString() as any,
     });
 
-    // check if current note is in view
-    if (!params.options?.noRedirect && !!params.values.id) {
-      if (pathname != '/') router.replace(`/`);
-    }
+    // // check if current note is in view
+    // if (!params.options?.noRedirect && !!params.id) {
+    //   if (pathname != '/') router.replace(`/`);
+    // }
   };
 
   // handler to create note copy
@@ -160,10 +160,7 @@ export const useNoteActions = () => {
 
     // delete merged note
     setTimeout(() => {
-      noteDelete({
-        values: params.from,
-        options: { noRedirect: true },
-      });
+      noteDelete(params.from);
     }, 3000);
 
     return note;

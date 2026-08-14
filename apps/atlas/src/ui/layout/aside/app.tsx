@@ -2,20 +2,17 @@
 
 import React from 'react';
 import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { useStoreView } from '@repo/store';
-import { Box, Divider, NavLink, Stack, Title } from '@mantine/core';
+import { Box, Divider, NavLink, Title } from '@mantine/core';
 import {
   IconCalendar,
   IconCalendarEvent,
-  IconCalendarRepeat,
   IconCheckbox,
   IconFolder,
   IconListCheck,
   IconNote,
   IconPlus,
-  IconRepeat,
 } from '@tabler/icons-react';
-import { useViewAside } from '@atlas/hooks/view';
+import { useViewAside } from '@repo/store';
 import FormCalendar from '@atlas/ui/form/calendar';
 import FormEvent from '@atlas/ui/form/event';
 
@@ -82,8 +79,6 @@ export default function App() {
 
   const getAsideTitle = (view: string) => {
     switch (view) {
-      case ASIDE_VIEW_NAMES.SEARCH:
-        return 'Global Search';
       case ASIDE_VIEW_NAMES.NEW.PAVE.EVENT:
         return 'Add Event';
       case ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR:
@@ -116,7 +111,6 @@ export default function App() {
       asideViewValue === viewKey ||
       (viewKey === 'DEFAULT' &&
         ![
-          ASIDE_VIEW_NAMES.SEARCH,
           ASIDE_VIEW_NAMES.NEW.PAVE.EVENT,
           ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR,
           ASIDE_VIEW_NAMES.NEW.JOT.NOTE,
@@ -142,13 +136,7 @@ export default function App() {
 
   return (
     <>
-      {/* 1. Global Search View */}
-      <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.SEARCH}>
-        {/* Swap strings with <GlobalSearchComponent /> later */}
-        <div>global search</div>
-      </LayoutAsideSection>
-
-      {/* 2. Pave Views */}
+      {/* Pave Views */}
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.PAVE.EVENT}>
         <div>
           <FormEvent />
@@ -161,7 +149,7 @@ export default function App() {
         </div>
       </LayoutAsideSection>
 
-      {/* 3. Jot Views */}
+      {/* Jot Views */}
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.JOT.NOTE}>
         <div>add note</div>
       </LayoutAsideSection>
@@ -170,7 +158,7 @@ export default function App() {
         <div>add note folder</div>
       </LayoutAsideSection>
 
-      {/* 4. Stride Views */}
+      {/* Stride Views */}
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.STRIDE.TASK}>
         <div>add task</div>
       </LayoutAsideSection>
@@ -179,7 +167,7 @@ export default function App() {
         <div>add task list</div>
       </LayoutAsideSection>
 
-      {/* 5. Fallback / Default Navigation Views */}
+      {/* Fallback / Default Navigation Views */}
       <LayoutAsideSection viewKey="DEFAULT">
         <div>
           {resolvedItems.map((gi, i) => (

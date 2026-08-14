@@ -26,6 +26,7 @@
     "@repo/types": "workspace:*",
     "@repo/utils": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/hooks": "workspace:*",
     "@tabler/icons-react": "^3.44.0",
     "dayjs": "^1.11.21",
     "next": "16.2.10",

@@ -20,7 +20,7 @@ import {
   IconNote,
   IconPlus,
 } from '@tabler/icons-react';
-import { useSubView, useViewAside } from '@atlas/hooks/view';
+import { useSubView, useViewAside } from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 

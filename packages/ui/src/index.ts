@@ -1,9 +1,12 @@
 export * from './avatar/user';
 
+export * from './button/confirm-cancel';
+
 export * from './layout/intros/page';
 export * from './layout/intros/section';
 export * from './layout/section';
 export * from './layout/main';
+export * from './layout/modal';
 
 export * from './loader/main';
 

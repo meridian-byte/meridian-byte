@@ -21,11 +21,11 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DateInput, DateTimePicker } from '@mantine/dates';
-import { useFormEvent } from '@atlas/hooks/form/event';
+import { useFormEvent } from '@repo/hooks';
 import dayjs from 'dayjs';
 import { useEventActions, useStoreCalendar, useStoreEvent } from '@repo/store';
 import { EventFormData } from '@repo/types';
-import { useAppshellChild } from '@atlas/hooks/appshell';
+import { useAppshellChild } from '@repo/hooks';
 
 interface EventFormProps {
   initialData?: EventFormData | null;
@@ -68,7 +68,7 @@ export default function Event({ initialData, onClose }: EventFormProps) {
     if (!initialData?.id) return;
 
     if (targetEvent) {
-      eventDelete({ values: targetEvent });
+      eventDelete(targetEvent);
       if (onClose) onClose();
     }
   };
@@ -224,7 +224,8 @@ export default function Event({ initialData, onClose }: EventFormProps) {
 
             <Group gap="xs" style={{ marginLeft: 'auto' }}>
               <Button
-                variant="default"
+                color="gray"
+                variant="light"
                 onClick={() => {
                   if (onClose) {
                     onClose();

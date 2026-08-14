@@ -36,6 +36,7 @@ import MenuNew from '@atlas/ui/menu/new';
 import { AuthAction } from '@repo/types';
 import Link from 'next/link';
 import { AvatarUser } from '@repo/ui';
+import { useViewModal } from '@repo/store';
 
 export default function App() {
   return (
@@ -68,6 +69,8 @@ function NavbarHeader() {
   const view = useStoreView((s) => s.view);
   const setView = useStoreView((s) => s.setView);
   const session = useStoreSession((s) => s.session);
+
+  const { showModalViewSearch } = useViewModal();
 
   const sharedSize = 30;
 
@@ -121,14 +124,7 @@ function NavbarHeader() {
         justify="start"
         pl={5}
         radius={0}
-        onClick={() => {
-          if (view === undefined) return;
-          if (view === null) return;
-
-          if (view.asideView != ASIDE_VIEW_NAMES.SEARCH) {
-            setView({ ...view, asideView: ASIDE_VIEW_NAMES.SEARCH });
-          }
-        }}
+        onClick={showModalViewSearch}
       >
         Global Search
       </Button>

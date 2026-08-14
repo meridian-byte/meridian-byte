@@ -15,19 +15,26 @@ import {
   Divider,
   Grid,
   GridCol,
+  Group,
   Select,
   Textarea,
   TextInput,
 } from '@mantine/core';
-import { useFormCalendar } from '@atlas/hooks/form/calendar';
+import { useAppshellChild, useFormCalendar } from '@repo/hooks';
 import { colors } from '@repo/constants';
+import { CalendarGet } from '@repo/types';
+import { useViewModal } from '@repo/store';
 
-export default function Calendar() {
+export default function Calendar({ defaultValues }: { defaultValues?: Partial<CalendarGet> }) {
   const [checked, setChecked] = useState(true);
 
   const { form, submitted, handleSubmit } = useFormCalendar({
     options: { closeWhenDone: checked },
+    defaultValues,
   });
+
+  const { closeModalView } = useViewModal();
+  const { handleToggleChildAside } = useAppshellChild();
 
   return (
     <Box component="form" onSubmit={form.onSubmit(() => handleSubmit())} noValidate p={'xs'}>
@@ -47,6 +54,7 @@ export default function Calendar() {
             placeholder="Description"
             {...form.getInputProps('description')}
             autosize
+            minRows={2}
             maxRows={5}
           />
         </GridCol>
@@ -65,23 +73,48 @@ export default function Calendar() {
           />
         </GridCol>
 
-        <GridCol span={{ base: 12 }}>
-          <Checkbox
-            label={'Close when done'}
-            checked={checked}
-            onChange={(event) => setChecked(event.currentTarget.checked)}
-            mt={'xs'}
-          />
-        </GridCol>
+        {!defaultValues?.updatedAt && (
+          <GridCol span={{ base: 12 }}>
+            <Checkbox
+              label={'Close when done'}
+              checked={checked}
+              onChange={(event) => setChecked(event.currentTarget.checked)}
+              mt={'xs'}
+            />
+          </GridCol>
+        )}
 
         <GridCol span={{ base: 12 }}>
           <Divider my={'xs'} />
         </GridCol>
 
         <GridCol span={{ base: 12 }}>
-          <Button type="submit" loading={submitted}>
-            {submitted ? 'Adding' : 'Add'}
-          </Button>
+          <Group justify="end" gap="xs">
+            <Button
+              disabled={submitted}
+              color="gray"
+              variant="light"
+              onClick={() => {
+                if (!defaultValues?.updatedAt) {
+                  handleToggleChildAside();
+                } else {
+                  closeModalView();
+                }
+              }}
+            >
+              {'Cancel'}
+            </Button>
+
+            <Button type="submit" loading={submitted}>
+              {submitted
+                ? defaultValues?.updatedAt
+                  ? 'Saving'
+                  : 'Adding'
+                : defaultValues?.updatedAt
+                  ? 'Save'
+                  : 'Add'}
+            </Button>
+          </Group>
         </GridCol>
       </Grid>
     </Box>

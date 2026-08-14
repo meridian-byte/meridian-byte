@@ -3,12 +3,14 @@
 import {
   ActionIcon,
   Box,
+  Center,
   Divider,
   Group,
   Loader,
   NavLink,
   Stack,
   Text,
+  ThemeIcon,
   Title,
   Tooltip,
 } from '@mantine/core';
@@ -28,6 +30,9 @@ import {
   IconCalendarPlus,
   IconCalendarShare,
   IconCircleCheck,
+  IconCircleFilled,
+  IconDots,
+  IconEdit,
   IconInbox,
   IconLayoutCards,
   IconLayoutDistributeHorizontal,
@@ -35,10 +40,11 @@ import {
   IconLayoutList,
   IconPlus,
 } from '@tabler/icons-react';
-import { useSubView, useViewAside } from '@atlas/hooks/view';
+import { useSubView, useViewAside } from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreCalendar } from '@repo/store';
+import MenuCalendar from '@atlas/ui/menu/calendar';
 
 export default function Pave() {
   const { subViewValue, showSubViewPave } = useSubView();
@@ -122,7 +128,7 @@ export default function Pave() {
                   radius={0}
                   onClick={() => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR)}
                 >
-                  <IconCalendar size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>
@@ -142,15 +148,28 @@ export default function Pave() {
                 <React.Fragment key={sc.title}>
                   <Divider />
 
-                  <NavLink
-                    label={sc.title}
-                    color="gray"
-                    px={'xs'}
-                    py={3}
-                    fw={500}
-                    styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                    onClick={() => showSubViewPave(`calendar: ${sc.id}`)}
-                  />
+                  <Group gap={0} wrap="nowrap">
+                    <NavLink
+                      label={sc.title}
+                      color="gray"
+                      px={'xs'}
+                      py={3}
+                      fw={500}
+                      leftSection={
+                        <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
+                          <IconCircleFilled size={6} color={sc.color || 'pri'} />
+                        </ThemeIcon>
+                      }
+                      styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
+                      onClick={() => showSubViewPave(`calendar: ${sc.id}`)}
+                    />
+
+                    <MenuCalendar defaultValues={sc}>
+                      <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
+                        <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                      </ActionIcon>
+                    </MenuCalendar>
+                  </Group>
                 </React.Fragment>
               ))
             )}

@@ -5,7 +5,7 @@ import { IconArrowBarLeft, IconArrowBarRight } from '@tabler/icons-react';
 import { ActionIcon } from '@mantine/core';
 import { ICON_STROKE_WIDTH } from '@repo/constants';
 import { SHELL_VALUES } from '@atlas/constants';
-import { useAppshellChild } from '@atlas/hooks/appshell';
+import { useAppshellChild } from '@repo/hooks';
 
 export default function Aside({
   options,

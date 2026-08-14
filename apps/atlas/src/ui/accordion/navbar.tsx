@@ -12,19 +12,14 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { useStoreView } from '@repo/store';
 import {
   IconChevronDown,
   IconChevronRight,
-  IconCircle,
   IconExternalLink,
-  IconEye,
   IconHome,
   IconPlus,
 } from '@tabler/icons-react';
-import { SHELL_VALUES } from '@atlas/constants';
-import { useView, useViewAside, useViewNavbar } from '@atlas/hooks/view';
-import { useEffect, useState } from 'react';
+import { useView, useViewAside, useViewNavbar } from '@repo/store';
 import PartialNavbarPave from '../partial/navbar/pave';
 import PartialNavbarStride from '../partial/navbar/stride';
 import PartialNavbarJot from '../partial/navbar/jot';
