@@ -85,29 +85,14 @@ export async function routeProfilePost(
   { params }: { params: Promise<{ profileId: string }> },
 ) {
   try {
-    const { profileId } = await params;
-
     const profile: ProfileGet = await request.json();
 
-    const transaction = await db.$transaction(async (db) => {
-      const profileExists = !!(await db.profile.findUnique({
-        where: { id: profileId },
-      }));
-
-      const profileRecord = await db.profile.upsert({
-        where: { id: profileId },
-        update: profile,
-        create: profile,
-      });
-
-      return {
-        profile: profileRecord,
-        existed: profileExists,
-      };
+    const profileRecord = await db.profile.create({
+      data: profile,
     });
 
     return NextResponse.json(
-      { items: transaction },
+      { items: profileRecord },
       { status: 200, statusText: 'Profile Created' },
     );
   } catch (error) {

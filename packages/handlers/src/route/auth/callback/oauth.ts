@@ -2,9 +2,9 @@
 
 import { NextResponse } from 'next/server';
 import { createClientcloudbaseServer } from '@repo/cloudbase';
-import { profileCreate } from '@repo/handlers';
+import { profileCreateDb } from '@repo/handlers';
 import { segmentFullName, linkify } from '@repo/utils';
-import { API_URL, AUTH_URLS, BASE_URL } from '@repo/constants';
+import { AUTH_URLS } from '@repo/constants';
 import { sharedUserHandle } from '@repo/auth';
 
 export async function routeAuthCallbackOauth(request: Request) {
@@ -43,7 +43,7 @@ const authOauth = async (params: { searchParams: URLSearchParams }) => {
   const nameSegments = segmentFullName(data.user.user_metadata.name || '');
 
   // create profile if doesn't exist
-  const { items } = await profileCreate(API_URL, {
+  const { profile, existed } = await profileCreateDb({
     id: data.user?.id,
     firstName: nameSegments.first,
     lastName: nameSegments.last,
@@ -52,9 +52,7 @@ const authOauth = async (params: { searchParams: URLSearchParams }) => {
     avatar: data.user.user_metadata.avatar_url || '',
   });
 
-  const { profile, existed } = items;
-
-  await sharedUserHandle({ supabase, profile: profile, existed: existed });
+  await sharedUserHandle({ supabase, profile, existed });
 
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? AUTH_URLS.REDIRECT.DEFAULT;

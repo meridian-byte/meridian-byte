@@ -1,10 +1,10 @@
 'use server';
 
 import { NextResponse, type NextRequest } from 'next/server';
-import { API_URL, COOKIE_NAME } from '@repo/constants';
-import { AUTH_URLS, BASE_URL } from '@repo/constants';
+import { COOKIE_NAME } from '@repo/constants';
+import { AUTH_URLS } from '@repo/constants';
 import { createClientcloudbaseServer } from '@repo/cloudbase';
-import { profileCreate } from '@repo/handlers';
+import { profileCreateDb } from '@repo/handlers';
 import { getEmailLocalPart, linkify } from '@repo/utils';
 import { sharedUserHandle } from '@repo/auth';
 
@@ -64,16 +64,14 @@ const authEmail = async (params: { searchParams: URLSearchParams; baseUrl: strin
   const nameFromEmail = getEmailLocalPart(session.user?.email || '');
 
   // create profile if doesn't exist
-  const { items } = await profileCreate(API_URL, {
+  const { profile, existed } = await profileCreateDb({
     id: session.user?.id || '',
     email: session.user?.email || '',
     firstName: nameFromEmail,
     userName: linkify(session.user?.email || ''),
   });
 
-  const { profile, existed } = items;
-
-  await sharedUserHandle({ supabase, profile: profile, existed: existed });
+  await sharedUserHandle({ supabase, profile, existed });
 
   return `${baseUrl + `${redirectUrl || AUTH_URLS.REDIRECT}`}`;
 };
