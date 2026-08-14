@@ -1,3 +1,24 @@
+export const adjustEventsToCurrentMonth = (events: any[]) => {
+  const now = new Date();
+  const currentYear = now.getUTCFullYear();
+  const currentMonth = now.getUTCMonth(); // 0-indexed (0 = Jan, 11 = Dec)
+
+  return events.map((event) => {
+    const start = new Date(event.start);
+    const end = new Date(event.end);
+
+    // Set year and month while preserving day, hours, minutes, seconds
+    start.setUTCFullYear(currentYear, currentMonth);
+    end.setUTCFullYear(currentYear, currentMonth);
+
+    return {
+      ...event,
+      start,
+      end,
+    };
+  });
+};
+
 export const sampleCalendars = [
   {
     title: 'Work & Projects',
@@ -21,7 +42,7 @@ export const sampleCalendars = [
   },
 ];
 
-export const sampleEvents = [
+export const sampleEvents = adjustEventsToCurrentMonth([
   // ==========================================
   // 1. Work & Projects
   // ==========================================
@@ -72,8 +93,8 @@ export const sampleEvents = [
   {
     title: "Family Dinner - Mom's Birthday",
     description: 'Celebration dinner with the extended family.',
-    start: new Date('2026-08-28T18:30:00Z'),
-    end: new Date('2026-08-28T21:00:00Z'),
+    start: new Date('2026-08-28T16:30:00Z'),
+    end: new Date('2026-08-28T18:30:00Z'),
     allDay: false,
     location: 'Bistro Bella Italia',
   },
@@ -128,9 +149,9 @@ export const sampleEvents = [
   {
     title: 'Product Launch Social Campaign',
     description: 'Coordinated cross-platform post campaign across Twitter, LinkedIn, and YouTube.',
-    start: new Date('2026-09-01T00:00:00Z'),
-    end: new Date('2026-09-01T23:59:59Z'),
-    allDay: true,
+    start: new Date('2026-09-01T10:00:00Z'),
+    end: new Date('2026-09-01T11:00:00Z'),
+    allDay: false,
     location: 'Buffer / Social Platforms',
   },
 
@@ -140,25 +161,25 @@ export const sampleEvents = [
   {
     title: 'Labor Day Holiday',
     description: 'Official public holiday - office closed.',
-    start: new Date('2026-09-07T00:00:00Z'),
-    end: new Date('2026-09-07T23:59:59Z'),
+    start: new Date('2026-08-06 21:00:00Z'),
+    end: new Date('2026-08-07 21:00:00Z'),
     allDay: true,
     location: null,
   },
   {
-    title: 'Sarah - Out of Office (Vacation)',
+    title: 'Sarah - Out of Office',
     description: 'Annual summer break. Coverage handled by Alex.',
-    start: new Date('2026-09-10T00:00:00Z'),
-    end: new Date('2026-09-14T23:59:59Z'),
-    allDay: true,
+    start: new Date('2026-08-10T10:00:00Z'),
+    end: new Date('2026-08-10T17:00:00Z'),
+    allDay: false,
     location: null,
   },
   {
     title: 'Company Wellness Friday',
     description: 'Paid company-wide day off to reset and recharge.',
-    start: new Date('2026-09-18T00:00:00Z'),
-    end: new Date('2026-09-18T23:59:59Z'),
+    start: new Date('2026-08-17 21:00:00Z'),
+    end: new Date('2026-08-18 21:00:00Z'),
     allDay: true,
     location: null,
   },
-];
+]);
