@@ -66,7 +66,7 @@ export function LayoutModal({
           )}
 
           {props?.close && (
-            <ActionIcon size={ICON_WRAPPER_SIZE} onClick={props.close} variant="light" color="gray">
+            <ActionIcon size={ICON_WRAPPER_SIZE} onClick={props.close} variant="default">
               <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             </ActionIcon>
           )}

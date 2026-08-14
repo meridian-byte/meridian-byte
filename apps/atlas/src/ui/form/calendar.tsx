@@ -92,8 +92,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
           <Group justify="end" gap="xs">
             <Button
               disabled={submitted}
-              color="gray"
-              variant="light"
+              variant="default"
               onClick={() => {
                 if (!defaultValues?.updatedAt) {
                   handleToggleChildAside();

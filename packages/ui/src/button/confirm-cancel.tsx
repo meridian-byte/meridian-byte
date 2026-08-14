@@ -9,7 +9,7 @@ export function ButtonConfirmCancel({
 }) {
   return (
     <Group>
-      <Button color="gray" variant="light" onClick={options.onCancel}>
+      <Button variant="default" onClick={options.onCancel}>
         Cancel
       </Button>
 

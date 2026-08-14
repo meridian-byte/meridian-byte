@@ -9,8 +9,8 @@ export default function Empty({ label }: { label?: string }) {
   return (
     <Stack align="center" py={SECTION_SPACING}>
       <Group>
-        <ThemeIcon size={ICON_WRAPPER_SIZE} variant="light" color="gray">
-          <IconMoodEmpty size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <ThemeIcon size={ICON_WRAPPER_SIZE * 1.5} variant="default">
+          <IconMoodEmpty size={ICON_SIZE * 1.5} stroke={ICON_STROKE_WIDTH} />
         </ThemeIcon>
       </Group>
 

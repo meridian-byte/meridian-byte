@@ -52,8 +52,7 @@ export default function Providers({ props }: { props: { baseUrl: string } }) {
       <Button
         key={providerDetails.provider}
         fullWidth
-        color="gray"
-        variant="light"
+        variant="default"
         onClick={handleClick}
         loading={loading == providerDetails.provider}
         leftSection={

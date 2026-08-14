@@ -224,8 +224,7 @@ export default function Event({ initialData, onClose }: EventFormProps) {
 
             <Group gap="xs" style={{ marginLeft: 'auto' }}>
               <Button
-                color="gray"
-                variant="light"
+                variant="default"
                 onClick={() => {
                   if (onClose) {
                     onClose();
