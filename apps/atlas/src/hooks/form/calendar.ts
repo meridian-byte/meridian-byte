@@ -3,6 +3,7 @@ import { useCalendarActions, useStoreAppShell } from '@repo/store';
 import { useFormBase } from '../form';
 import { CalendarGet } from '@repo/types';
 import { useAppshellChild } from '../appshell';
+import { getRandomColorName } from '@repo/constants';
 
 export type FormCalendarValues = {
   id: string;
@@ -24,6 +25,7 @@ export const useFormCalendar = (params?: {
     {
       title: params?.defaultValues?.title || '',
       description: params?.defaultValues?.description || '',
+      color: params?.defaultValues?.color || getRandomColorName(),
     },
     {
       title: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters required'),

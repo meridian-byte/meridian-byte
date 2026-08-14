@@ -7,9 +7,20 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import React, { useState } from 'react';
-import { Box, Button, Checkbox, Divider, Grid, GridCol, Textarea, TextInput } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  Grid,
+  GridCol,
+  Select,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { useFormCalendar } from '@atlas/hooks/form/calendar';
+import { colors } from '@repo/constants';
 
 export default function Calendar() {
   const [checked, setChecked] = useState(true);
@@ -37,6 +48,20 @@ export default function Calendar() {
             {...form.getInputProps('description')}
             autosize
             maxRows={5}
+          />
+        </GridCol>
+
+        <GridCol span={{ base: 12 }}>
+          <Select
+            label="Color"
+            placeholder="Select calendar color"
+            {...form.getInputProps('color')}
+            data={colors.map((ci) => {
+              return {
+                label: ci.label,
+                value: ci.colorName,
+              };
+            })}
           />
         </GridCol>
 
