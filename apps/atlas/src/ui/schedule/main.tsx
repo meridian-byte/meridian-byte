@@ -273,7 +273,11 @@ export default function Main() {
               onClose={eventCrud.closeForm}
               // onExited={eventCrud.handleExitTransitionEnd}
             >
-              <FormEvent initialData={eventCrud.selectedEventData} onClose={eventCrud.closeForm} />
+              <FormEvent
+                modal={true}
+                initialData={eventCrud.selectedEventData}
+                onClose={eventCrud.closeForm}
+              />
             </Modal>
           </>
         )

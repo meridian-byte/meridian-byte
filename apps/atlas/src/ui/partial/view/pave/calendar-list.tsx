@@ -110,7 +110,11 @@ export default function CalendarList() {
       )}
 
       <Modal opened={eventCrud.formOpened} onClose={eventCrud.closeForm}>
-        <FormEvent initialData={eventCrud.selectedEventData} onClose={eventCrud.closeForm} />
+        <FormEvent
+          modal={true}
+          initialData={eventCrud.selectedEventData}
+          onClose={eventCrud.closeForm}
+        />
       </Modal>
     </>
   );

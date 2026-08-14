@@ -28,11 +28,12 @@ import { EventFormData } from '@repo/types';
 import { useAppshellChild } from '@repo/hooks';
 
 interface EventFormProps {
+  modal?: boolean;
   initialData?: EventFormData | null;
   onClose?: () => void;
 }
 
-export default function Event({ initialData, onClose }: EventFormProps) {
+export default function Event({ modal, initialData, onClose }: EventFormProps) {
   const [checked, setChecked] = useState(true);
 
   const { handleToggleChildAside } = useAppshellChild();
@@ -44,6 +45,7 @@ export default function Event({ initialData, onClose }: EventFormProps) {
   const { eventDelete } = useEventActions(); // Assuming you have a delete action in your store
 
   const { form, submitted, handleSubmit } = useFormEvent({
+    modal,
     defaultValues: targetEvent,
     options: { closeWhenDone: checked },
   });
@@ -80,7 +82,7 @@ export default function Event({ initialData, onClose }: EventFormProps) {
       label: 'Start',
       placeholder: 'Start',
       ...form.getInputProps('start'),
-      valueFormat: 'DD MMM YYYY hh:mm A',
+      valueFormat: `DD MMM YYYY${form.values.allDay ? '' : ' HH:mm A'}`,
       presets: [
         {
           value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
@@ -134,7 +136,7 @@ export default function Event({ initialData, onClose }: EventFormProps) {
         </GridCol>
 
         <GridCol span={{ base: 12 }} display={!form.values.allDay ? 'none' : undefined}>
-          <DateInput {...allDayProps.props} />
+          <DateInput {...allDayProps.props} valueFormat={'DD MMM YYYY'} />
         </GridCol>
 
         <GridCol span={{ base: 12 }} display={form.values.allDay ? 'none' : undefined}>
@@ -206,13 +208,15 @@ export default function Event({ initialData, onClose }: EventFormProps) {
           <Divider my={'xs'} />
         </GridCol>
 
-        <GridCol span={{ base: 12 }}>
-          <Checkbox
-            label={'Close when done'}
-            checked={checked}
-            onChange={(event) => setChecked(event.currentTarget.checked)}
-          />
-        </GridCol>
+        {!modal && (
+          <GridCol span={{ base: 12 }}>
+            <Checkbox
+              label={'Close when done'}
+              checked={checked}
+              onChange={(event) => setChecked(event.currentTarget.checked)}
+            />
+          </GridCol>
+        )}
 
         <GridCol span={{ base: 12 }}>
           <Group justify="space-between">

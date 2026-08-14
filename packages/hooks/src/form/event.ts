@@ -14,6 +14,7 @@ export type FormEventValues = {
 export type FormEvent = UseFormReturnType<Partial<FormEventValues>>;
 
 export const useFormEvent = (params?: {
+  modal?: boolean;
   defaultValues?: Partial<EventGet>;
   options?: { closeWhenDone?: boolean };
 }) => {
@@ -58,7 +59,7 @@ export const useFormEvent = (params?: {
           } as EventGet);
         }
 
-        if (params?.options?.closeWhenDone) {
+        if (!params?.modal && params?.options?.closeWhenDone) {
           if (!!appshell) {
             if (appshell.child.aside == true) {
               handleToggleChildAside();
