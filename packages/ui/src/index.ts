@@ -1,4 +1,4 @@
-export * from './avatars/user';
+export * from './avatar/user';
 
 export * from './layout/intros/page';
 export * from './layout/intros/section';
