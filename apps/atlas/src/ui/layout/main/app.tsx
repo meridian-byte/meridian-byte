@@ -61,10 +61,13 @@ function LayoutMain({
   children: React.ReactNode;
   options?: {
     containerized?: boolean;
+    withoutPadding?: boolean;
   };
 }) {
   return (
-    <Box>{options?.containerized ? <Container size={'md'}>{children}</Container> : children}</Box>
+    <Box p={!!options?.withoutPadding ? undefined : 'xs'}>
+      {options?.containerized ? <Container size={'md'}>{children}</Container> : children}
+    </Box>
   );
 }
 
@@ -113,7 +116,7 @@ function ViewJot() {
   return (
     <>
       <DisplayNoneWrapper visible={!!isNoteList}>
-        <LayoutMain>
+        <LayoutMain options={{ withoutPadding: true }}>
           <PartialViewJotNoteList />
         </LayoutMain>
       </DisplayNoneWrapper>
