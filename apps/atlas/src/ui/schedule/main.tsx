@@ -22,6 +22,7 @@ import { useEventCrud } from '@atlas/hooks/schedule';
 import { IconPlus } from '@tabler/icons-react';
 import FormEvent from '../form/event';
 import PartialLoading from '../partial/loading';
+import { SHELL_VALUES } from '@atlas/constants';
 
 export default function Main() {
   // views
@@ -125,7 +126,9 @@ export default function Main() {
                 startTime: '05:00:00',
                 endTime: '23:00:00',
                 intervalMinutes: 15,
-                slotHeight: 80,
+                // slotHeight: 80,
+                startScrollTime: '09:00:00',
+                scrollAreaProps: { mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 60}px)` },
                 withSubHourGridLines: false,
 
                 renderEvent: (event, props) => (
@@ -145,6 +148,9 @@ export default function Main() {
                 startTime: '05:00:00',
                 endTime: '23:00:00',
                 intervalMinutes: 30,
+                // slotHeight: 80,
+                startScrollTime: '09:00:00',
+                scrollAreaProps: { mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 61}px)` },
                 weekdayFormat: 'dd',
                 highlightToday: true,
                 withWeekendDays: true,
