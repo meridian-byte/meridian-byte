@@ -22,7 +22,7 @@ import {
   SECTION_SPACING,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam } from '@repo/utils';
 import {
   IconCalendar,
   IconCalendarCancel,
@@ -144,34 +144,45 @@ export default function Pave() {
                 <Text inherit>No calendars</Text>
               </Stack>
             ) : (
-              calendars.map((sc, i) => (
-                <React.Fragment key={sc.title}>
-                  <Divider />
+              calendars.map((ci, i) => {
+                const calendarActive =
+                  subViewValue?.includes('calendar: ') &&
+                  extractUuidFromParam(subViewValue) == ci.id;
 
-                  <Group gap={0} wrap="nowrap">
-                    <NavLink
-                      label={sc.title}
-                      color="gray"
-                      px={'xs'}
-                      py={3}
-                      fw={500}
-                      leftSection={
-                        <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
-                          <IconCircleFilled size={6} color={sc.color || 'pri'} />
-                        </ThemeIcon>
-                      }
-                      styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                      onClick={() => showSubViewPave(`calendar: ${sc.id}`)}
-                    />
+                return (
+                  <React.Fragment key={ci.title}>
+                    <Divider />
 
-                    <MenuCalendar defaultValues={sc}>
-                      <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-                        <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                      </ActionIcon>
-                    </MenuCalendar>
-                  </Group>
-                </React.Fragment>
-              ))
+                    <Group gap={0} wrap="nowrap">
+                      <NavLink
+                        label={ci.title}
+                        color="gray"
+                        px={'xs'}
+                        py={3}
+                        fw={500}
+                        leftSection={
+                          <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
+                            <IconCircleFilled size={6} color={ci.color || 'pri'} />
+                          </ThemeIcon>
+                        }
+                        styles={{
+                          label: {
+                            fontSize: 'var(--mantine-font-size-xs)',
+                            color: !calendarActive ? undefined : 'var(--mantine-color-pri-6)',
+                          },
+                        }}
+                        onClick={() => showSubViewPave(`calendar: ${ci.id}`)}
+                      />
+
+                      <MenuCalendar defaultValues={ci}>
+                        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
+                          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                        </ActionIcon>
+                      </MenuCalendar>
+                    </Group>
+                  </React.Fragment>
+                );
+              })
             )}
           </div>
         </div>

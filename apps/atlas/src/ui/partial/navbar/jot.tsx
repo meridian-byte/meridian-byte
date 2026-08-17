@@ -20,7 +20,7 @@ import {
   ICON_WRAPPER_SIZE,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam } from '@repo/utils';
 import {
   IconCalendarCancel,
   IconCalendarDown,
@@ -39,7 +39,7 @@ import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import MenuNote from '@atlas/ui/menu/note';
 
 export default function Jot() {
-  const { showSubViewJot } = useSubView();
+  const { subViewValue, showSubViewJot } = useSubView();
   const { noteCreate } = useNoteActions();
   const { showAsideViewJot } = useViewAside();
   const notes = useStoreNote((s) => s.notes);
@@ -107,6 +107,7 @@ export default function Jot() {
                   variant="subtle"
                   radius={0}
                   onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER)}
+                  disabled
                 >
                   <IconFolder size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
@@ -124,34 +125,44 @@ export default function Jot() {
                 <Text inherit>No notes</Text>
               </Stack>
             ) : (
-              notes.map((ni, i) => (
-                <React.Fragment key={ni.id}>
-                  {<Divider />}
+              notes.map((ni, i) => {
+                const noteActive =
+                  subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == ni.id;
 
-                  <Group gap={0} wrap="nowrap">
-                    <NavLink
-                      label={ni.title}
-                      color="gray"
-                      px={'xs'}
-                      py={3}
-                      fw={500}
-                      leftSection={
-                        <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
-                          <IconNote size={ICON_SIZE - 4} />
-                        </ThemeIcon>
-                      }
-                      styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                      onClick={() => showSubViewJot(`note: ${ni.id}`)}
-                    />
+                return (
+                  <React.Fragment key={ni.id}>
+                    {<Divider />}
 
-                    <MenuNote defaultValues={ni}>
-                      <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-                        <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                      </ActionIcon>
-                    </MenuNote>
-                  </Group>
-                </React.Fragment>
-              ))
+                    <Group gap={0} wrap="nowrap">
+                      <NavLink
+                        label={ni.title}
+                        color="gray"
+                        px={'xs'}
+                        py={3}
+                        fw={500}
+                        leftSection={
+                          <ThemeIcon size={ICON_SIZE - 4} color="gray" variant="transparent" mt={4}>
+                            <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                          </ThemeIcon>
+                        }
+                        styles={{
+                          label: {
+                            fontSize: 'var(--mantine-font-size-xs)',
+                            color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
+                          },
+                        }}
+                        onClick={() => showSubViewJot(`note: ${ni.id}`)}
+                      />
+
+                      <MenuNote defaultValues={ni}>
+                        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
+                          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                        </ActionIcon>
+                      </MenuNote>
+                    </Group>
+                  </React.Fragment>
+                );
+              })
             )}
           </div>
         </div>

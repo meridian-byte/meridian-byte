@@ -8,7 +8,7 @@ import {
   ICON_WRAPPER_SIZE,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam, generateUUID } from '@repo/utils';
 import {
   IconCalendarCancel,
   IconCalendarDown,
@@ -23,7 +23,7 @@ import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 
 export default function Stride() {
-  const { showSubViewStride } = useSubView();
+  const { subViewValue, showSubViewStride } = useSubView();
   const { showAsideViewStride } = useViewAside();
 
   const navLinks = [
@@ -56,22 +56,27 @@ export default function Stride() {
 
   const sampleTaskLists = [
     {
+      id: generateUUID(),
       label: 'Household',
       action: () => showSubViewStride(`list: ${'Household'}`),
     },
     {
+      id: generateUUID(),
       label: 'Shopping',
       action: () => showSubViewStride(`list: ${'Shopping'}`),
     },
     {
+      id: generateUUID(),
       label: 'Health & Fitness',
       action: () => showSubViewStride(`list: ${'Health & Fitness'}`),
     },
     {
+      id: generateUUID(),
       label: 'School',
       action: () => showSubViewStride(`list: ${'School'}`),
     },
     {
+      id: generateUUID(),
       label: 'Work',
       action: () => showSubViewStride(`list: ${'Work'}`),
     },
@@ -81,28 +86,37 @@ export default function Stride() {
     <LayoutPartialNavbar>
       <Stack gap={'xs'}>
         <Box>
-          {navLinks.map((nl, i) => (
-            <React.Fragment key={nl.label}>
-              {i > 0 && <Divider />}
+          {navLinks.map((nl, i) => {
+            const active = nl.label.toLocaleLowerCase() == subViewValue;
 
-              <NavLink
-                label={nl.label}
-                color="gray"
-                px={'xs'}
-                py={3}
-                fw={500}
-                styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                onClick={nl.action}
-                leftSection={
-                  <nl.icon
-                    size={ICON_SIZE - 4}
-                    stroke={ICON_STROKE_WIDTH}
-                    style={{ marginTop: 2 }}
-                  />
-                }
-              />
-            </React.Fragment>
-          ))}
+            return (
+              <React.Fragment key={nl.label}>
+                {i > 0 && <Divider />}
+
+                <NavLink
+                  label={nl.label}
+                  color="gray"
+                  px={'xs'}
+                  py={3}
+                  fw={500}
+                  styles={{
+                    label: {
+                      fontSize: 'var(--mantine-font-size-xs)',
+                      color: active ? 'var(--mantine-color-pri-6)' : undefined,
+                    },
+                  }}
+                  onClick={nl.action}
+                  leftSection={
+                    <nl.icon
+                      size={ICON_SIZE - 4}
+                      stroke={ICON_STROKE_WIDTH}
+                      style={{ marginTop: 2 }}
+                    />
+                  }
+                />
+              </React.Fragment>
+            );
+          })}
         </Box>
 
         <div>
@@ -127,21 +141,31 @@ export default function Stride() {
           </Group>
 
           <div>
-            {sampleTaskLists.map((nl, i) => (
-              <React.Fragment key={nl.label}>
-                {<Divider />}
+            {sampleTaskLists.map((tli, i) => {
+              const taskListActive =
+                subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == tli.id;
 
-                <NavLink
-                  label={nl.label}
-                  color="gray"
-                  px={'xs'}
-                  py={3}
-                  fw={500}
-                  styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                  onClick={nl.action}
-                />
-              </React.Fragment>
-            ))}
+              return (
+                <React.Fragment key={tli.label}>
+                  {<Divider />}
+
+                  <NavLink
+                    label={tli.label}
+                    color="gray"
+                    px={'xs'}
+                    py={3}
+                    fw={500}
+                    styles={{
+                      label: {
+                        fontSize: 'var(--mantine-font-size-xs)',
+                        color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
+                      },
+                    }}
+                    onClick={tli.action}
+                  />
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
       </Stack>
