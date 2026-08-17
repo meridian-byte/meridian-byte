@@ -108,6 +108,7 @@ export default function Navbar() {
                   radius={0}
                   color="gray"
                   variant="subtle"
+                  disabled
                   onClick={(e) => {
                     e.stopPropagation();
                     item.actions.switch();
@@ -124,6 +125,7 @@ export default function Navbar() {
                   radius={0}
                   color="gray"
                   variant="subtle"
+                  disabled
                   onClick={(e) => {
                     e.stopPropagation();
                     // action goes here
