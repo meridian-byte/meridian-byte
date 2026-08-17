@@ -32,6 +32,8 @@ export async function GET(request: NextRequest) {
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),
+
+      // Pave
       [STORE_NAME.CALENDARS]: () =>
         db.calendar.findMany({
           where: { profileId: userId },
@@ -42,6 +44,8 @@ export async function GET(request: NextRequest) {
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),
+
+      // Jot
       [STORE_NAME.NOTES]: () =>
         db.note.findMany({
           where: { profileId: userId },
@@ -49,6 +53,28 @@ export async function GET(request: NextRequest) {
         }),
       [STORE_NAME.LINKS]: () =>
         db.link.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
+
+      // Stride
+      [STORE_NAME.TASK_LISTS]: () =>
+        db.taskList.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
+      [STORE_NAME.RECURRING_RULES]: () =>
+        db.recurringRule.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
+      [STORE_NAME.TASKS]: () =>
+        db.task.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
+      [STORE_NAME.REMINDERS]: () =>
+        db.reminder.findMany({
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),
@@ -87,18 +113,38 @@ export async function GET(request: NextRequest) {
 
 const PRISMA_MODEL_MAP: Record<string, any> = {
   [STORE_NAME.WORKSPACES]: db.workspace,
+
+  // Pave
   [STORE_NAME.CALENDARS]: db.calendar,
   [STORE_NAME.EVENTS]: db.event,
+
+  // Jot
   [STORE_NAME.NOTES]: db.note,
   [STORE_NAME.LINKS]: db.link,
+
+  // Stride
+  [STORE_NAME.TASK_LISTS]: db.taskList,
+  [STORE_NAME.RECURRING_RULES]: db.recurringRule,
+  [STORE_NAME.TASKS]: db.task,
+  [STORE_NAME.REMINDERS]: db.reminder,
 };
 
 const SYNC_PRIORITY: Record<string, number> = {
   [STORE_NAME.WORKSPACES]: 1,
+
+  // Pave
   [STORE_NAME.CALENDARS]: 2,
   [STORE_NAME.EVENTS]: 3,
+
+  // Jot
   [STORE_NAME.NOTES]: 4,
   [STORE_NAME.LINKS]: 5,
+
+  // Stride
+  [STORE_NAME.TASK_LISTS]: 6,
+  [STORE_NAME.RECURRING_RULES]: 7,
+  [STORE_NAME.TASKS]: 8,
+  [STORE_NAME.REMINDERS]: 9,
 };
 
 export async function POST(request: NextRequest) {

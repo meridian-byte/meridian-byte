@@ -36,12 +36,6 @@ enum TaskStatus {
   DONE
 }
 
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
-}
-
 enum EntityType {
   TASK
   EVENT
@@ -61,6 +55,22 @@ enum TransactionType {
   EXPENSE
 }
 
+enum Priority {
+  URGENT_IMPORTANT
+  NOT_URGENT_IMPORTANT
+  URGENT_UNIMPORTANT
+  NOT_URGENT_UNIMPORTANT
+}
+
+enum Frequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUALLY
+  ANNUALLY
+}
+
 //
 // CORE
 //
@@ -76,11 +86,15 @@ model Profile {
   customized Boolean @default(false)
   role       Role    @default(USER)
 
-  workspaces Workspace[]
-  events     Event[]
-  notes      Note[]
-  links      Link[]
-  calendars  Calendar[]
+  workspaces     Workspace[]
+  events         Event[]
+  notes          Note[]
+  links          Link[]
+  calendars      Calendar[]
+  taskLists      TaskList[]
+  tasks          Task[]
+  recurringRules RecurringRule[]
+  reminders      Reminder[]
 
   syncStatus SyncStatus @default(SYNCED) @map("sync_status")
 
@@ -98,10 +112,14 @@ model Workspace {
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId String  @map("profile_id")
 
-  events    Event[]
-  notes     Note[]
-  links     Link[]
-  calendars Calendar[]
+  events         Event[]
+  notes          Note[]
+  links          Link[]
+  calendars      Calendar[]
+  taskLists      TaskList[]
+  tasks          Task[]
+  recurringRules RecurringRule[]
+  reminders      Reminder[]
 
   syncStatus SyncStatus @default(SYNCED) @map("sync_status")
 
@@ -112,7 +130,7 @@ model Workspace {
 }
 
 //
-// EVENTS
+// Pave
 //
 
 model Calendar {
@@ -140,8 +158,8 @@ model Event {
   id          String   @id @default(cuid())
   title       String
   description String?
-  start       DateTime @map("start")
-  end         DateTime @map("end")
+  start       DateTime
+  end         DateTime
   allDay      Boolean  @default(false) @map("all_day")
   location    String?
 
@@ -149,7 +167,7 @@ model Event {
   profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
-  calendar    Calendar? @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  calendar    Calendar? @relation(fields: [calendarId], references: [id], onDelete: SetNull)
   calendarId  String?   @map("calendar_id")
 
   syncStatus SyncStatus @default(SYNCED) @map("sync_status")
@@ -161,7 +179,7 @@ model Event {
 }
 
 //
-// Notes
+// Jot
 //
 
 model Note {
@@ -205,4 +223,98 @@ model Link {
 
   @@unique([fromId, toId]) // to avoid duplicate links
   @@map(name: "links")
+}
+
+//
+// Stride
+//
+
+model TaskList {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  color       String?
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String    @map("profile_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String    @map("workspace_id")
+
+  tasks Task[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("task_lists")
+}
+
+model RecurringRule {
+  id        String    @id @default(uuid())
+  frequency Frequency
+  interval  Int       @default(1)
+  end_date  DateTime? @map("end_date")
+  weekdays  String[] // 0 - monday, 6 - sunday. comma separated for multiples. eg. 0,4,6
+  months    String[] // 0 - january, 12 - december. comma separated for multiples. eg. 5,7,11
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String    @map("profile_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String    @map("workspace_id")
+
+  tasks Task[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map(name: "recurring_rules")
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  dueDate     DateTime? @map("due_date")
+  complete    Boolean   @default(false)
+  priority    Priority  @default(NOT_URGENT_UNIMPORTANT)
+
+  profile         Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId       String         @map("profile_id")
+  workspace       Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId     String         @map("workspace_id")
+  taskList        TaskList?      @relation(fields: [taskListId], references: [id], onDelete: SetNull)
+  taskListId      String?        @map("task_list_id")
+  recurring_rule  RecurringRule? @relation(fields: [recurringRuleId], references: [id])
+  recurringRuleId String?        @map("recurring_rule_id")
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  reminders Reminder[]
+
+  @@map("tasks")
+}
+
+model Reminder {
+  id       String   @id @default(uuid())
+  remindAt DateTime @map("remind_at")
+  sent     Boolean  @default(false)
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String    @map("profile_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String    @map("workspace_id")
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId      String    @map("task_id")
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map(name: "reminders")
 }

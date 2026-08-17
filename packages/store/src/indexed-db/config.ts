@@ -12,12 +12,63 @@ import { linkify } from '@repo/utils';
 
 export const config: DBConfig = {
   name: linkify(COMPANY_NAME),
-  version: 3,
+  version: 4,
   stores: [
     // {
     //   name: STORE_NAME.SETTINGS,
     //   keyPath: 'id',
     // },
+    {
+      name: STORE_NAME.WORKSPACES,
+      keyPath: 'id',
+    },
+
+    // Pave
+    {
+      name: STORE_NAME.CALENDARS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.EVENTS,
+      keyPath: 'id',
+    },
+
+    // Jot
+    {
+      name: STORE_NAME.NOTES,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.LINKS,
+      keyPath: 'id',
+    },
+
+    // Stride
+    {
+      name: STORE_NAME.TASK_LISTS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.RECURRING_RULES,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.TASKS,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.REMINDERS,
+      keyPath: 'id',
+    },
+    // {
+    //   name: STORE_NAME.VIEWS,
+    //   keyPath: 'id',
+    // },
+    // {
+    //   name: STORE_NAME.NOTIFICATIONS,
+    //   keyPath: 'id',
+    // },
+
     // {
     //   name: STORE_NAME.ACCOUNTS,
     //   keyPath: 'id',
@@ -31,29 +82,10 @@ export const config: DBConfig = {
     //   keyPath: 'id',
     // },
     // {
-    //   name: STORE_NAME.CATEGORIES,
-    //   keyPath: 'id',
-    // },
-    // {
     //   name: STORE_NAME.TRANSACTIONS,
     //   keyPath: 'id',
     // },
-    {
-      name: STORE_NAME.CALENDARS,
-      keyPath: 'id',
-    },
-    {
-      name: STORE_NAME.EVENTS,
-      keyPath: 'id',
-    },
-    {
-      name: STORE_NAME.NOTES,
-      keyPath: 'id',
-    },
-    {
-      name: STORE_NAME.LINKS,
-      keyPath: 'id',
-    },
+
     // {
     //   name: STORE_NAME.FOODS,
     //   keyPath: 'id',
@@ -74,6 +106,7 @@ export const config: DBConfig = {
     //   name: STORE_NAME.MASSES,
     //   keyPath: 'id',
     // },
+
     // {
     //   name: STORE_NAME.CHATS,
     //   keyPath: 'id',
@@ -86,29 +119,5 @@ export const config: DBConfig = {
     //   name: STORE_NAME.CUSTOMIZATIONS,
     //   keyPath: 'id',
     // },
-    // {
-    //   name: STORE_NAME.TASKS,
-    //   keyPath: 'id',
-    // },
-    // {
-    //   name: STORE_NAME.REMINDERS,
-    //   keyPath: 'id',
-    // },
-    // {
-    //   name: STORE_NAME.RECURRING_RULES,
-    //   keyPath: 'id',
-    // },
-    // {
-    //   name: STORE_NAME.VIEWS,
-    //   keyPath: 'id',
-    // },
-    // {
-    //   name: STORE_NAME.NOTIFICATIONS,
-    //   keyPath: 'id',
-    // },
-    {
-      name: STORE_NAME.WORKSPACES,
-      keyPath: 'id',
-    },
   ],
 };

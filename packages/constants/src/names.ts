@@ -44,31 +44,40 @@ export const FILE_NAME = {
 export const STORE_NAME = {
   COLOR_SCHEME: 'colorScheme',
   SESSION: 'session',
+
   SETTINGS: 'settings',
-  POSTS: 'posts',
-  CATEGORIES: 'categories',
+  WORKSPACES: 'workspaces',
+
   ACCOUNTS: 'accounts',
   ACCOUNT_GROUPS: 'accountGroups',
   BUDGETS: 'budgets',
   TRANSACTIONS: 'transactions',
+
+  // Pave
   CALENDARS: 'calendars',
   EVENTS: 'events',
+
   FOODS: 'foods',
   MEALS: 'meals',
   SERVINGS: 'servings',
   EATS: 'eats',
   MASSES: 'masses',
+
+  // Jot
   NOTES: 'notes',
   LINKS: 'links',
+
   CHATS: 'chats',
   CHAT_MESSAGES: 'chatMessages',
   CUSTOMIZATIONS: 'customizations',
+
+  // Stride
+  TASK_LISTS: 'taskLists',
+  RECURRING_RULES: 'recurringRules',
   TASKS: 'tasks',
   REMINDERS: 'reminders',
-  RECURRING_RULES: 'recurringRules',
   VIEWS: 'views',
   NOTIFICATIONS: 'notifications',
-  WORKSPACES: 'workspaces',
 };
 
 export const DEFAULT_NAMES = {
