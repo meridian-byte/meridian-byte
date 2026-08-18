@@ -20,7 +20,7 @@ import {
   ICON_WRAPPER_SIZE,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords, extractUuidFromParam } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam, sortArray } from '@repo/utils';
 import {
   IconCalendarCancel,
   IconCalendarDown,
@@ -37,12 +37,14 @@ import { useNoteActions, useStoreNote, useSubView, useViewAside } from '@repo/st
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import MenuNote from '@atlas/ui/menu/note';
+import { Order } from '@repo/types';
 
 export default function Jot() {
   const { subViewValue, showSubViewJot } = useSubView();
   const { noteCreate } = useNoteActions();
   const { showAsideViewJot } = useViewAside();
   const notes = useStoreNote((s) => s.notes);
+  const sortedNotes = sortArray(notes || [], (i) => i.createdAt, Order.DESCENDING);
 
   const navLinks: any[] = [
     // {
@@ -125,7 +127,7 @@ export default function Jot() {
                 <Text inherit>No notes</Text>
               </Stack>
             ) : (
-              notes.map((ni, i) => {
+              sortedNotes.map((ni, i) => {
                 const noteActive =
                   subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == ni.id;
 

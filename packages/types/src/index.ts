@@ -15,4 +15,8 @@ export * from './models/event';
 export * from './models/link';
 export * from './models/note';
 export * from './models/profile';
+export * from './models/task-list';
+export * from './models/recurring-rule';
+export * from './models/task';
+export * from './models/reminder';
 export * from './models/workspace';

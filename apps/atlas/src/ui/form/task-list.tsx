@@ -20,15 +20,15 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core';
-import { useAppshellChild, useFormCalendar } from '@repo/hooks';
+import { useAppshellChild, useFormTaskList } from '@repo/hooks';
 import { ASIDE_VIEW_NAMES, colors } from '@repo/constants';
-import { CalendarGet } from '@repo/types';
+import { TaskListGet } from '@repo/types';
 import { useViewAside, useViewModal } from '@repo/store';
 
-export default function Calendar({ defaultValues }: { defaultValues?: Partial<CalendarGet> }) {
+export default function TaskList({ defaultValues }: { defaultValues?: Partial<TaskListGet> }) {
   const [checked, setChecked] = useState(true);
 
-  const { form, submitted, handleSubmit } = useFormCalendar({
+  const { form, submitted, handleSubmit } = useFormTaskList({
     options: { closeWhenDone: checked },
     defaultValues,
   });
@@ -63,7 +63,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
         <GridCol span={{ base: 12 }}>
           <Select
             label="Color"
-            placeholder="Select calendar color"
+            placeholder="Select task list color"
             {...form.getInputProps('color')}
             data={colors.map((ci) => {
               return {
@@ -74,7 +74,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
           />
         </GridCol>
 
-        {!defaultValues?.updatedAt && asideViewValue == ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR && (
+        {!defaultValues?.updatedAt && asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST && (
           <GridCol span={{ base: 12 }}>
             <Checkbox
               label={'Close when done'}

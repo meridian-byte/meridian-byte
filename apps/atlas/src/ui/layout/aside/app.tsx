@@ -15,6 +15,7 @@ import {
 import { useNoteActions, useViewAside } from '@repo/store';
 import FormCalendar from '@atlas/ui/form/calendar';
 import FormEvent from '@atlas/ui/form/event';
+import FormTaskList from '@atlas/ui/form/task-list';
 import { useAppshellChild } from '@repo/hooks';
 
 export default function App() {
@@ -173,7 +174,7 @@ export default function App() {
       </LayoutAsideSection>
 
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST}>
-        <div>add task list</div>
+        <FormTaskList />
       </LayoutAsideSection>
 
       {/* Fallback / Default Navigation Views */}

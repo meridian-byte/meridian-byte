@@ -18,6 +18,10 @@ import { openDatabase } from '../../indexed-db/actions';
 import { config } from '../../indexed-db/config';
 import { FileSyncAdapter, SyncStatus } from '@repo/types';
 import { useStoreCalendar } from '../calendar';
+import { useStoreTaskList } from '../task-list';
+import { useStoreTask } from '../task';
+import { useStoreRecurringRule } from '../recurring-rule';
+import { useStoreReminder } from '../reminder';
 
 const mergeItems = async (
   dataStore: string,
@@ -140,6 +144,8 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     useStoreHook: useStoreWorkspace,
     setState: (store, items) => store.setWorkspaces(items),
   },
+
+  // Pave
   calendars: {
     dataStore: STORE_NAME.CALENDARS,
     useStoreHook: useStoreCalendar,
@@ -150,6 +156,8 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     useStoreHook: useStoreEvent,
     setState: (store, items) => store.setEvents(items),
   },
+
+  // Jot
   notes: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
@@ -159,6 +167,28 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
     dataStore: STORE_NAME.LINKS,
     useStoreHook: useStoreLink,
     setState: (store, items) => store.setLinks(items),
+  },
+
+  // Stride
+  taskLists: {
+    dataStore: STORE_NAME.TASK_LISTS,
+    useStoreHook: useStoreTaskList,
+    setState: (store, items) => store.setTaskLists(items),
+  },
+  recurringRules: {
+    dataStore: STORE_NAME.RECURRING_RULES,
+    useStoreHook: useStoreRecurringRule,
+    setState: (store, items) => store.setRecurringRules(items),
+  },
+  tasks: {
+    dataStore: STORE_NAME.TASKS,
+    useStoreHook: useStoreTask,
+    setState: (store, items) => store.setTasks(items),
+  },
+  reminders: {
+    dataStore: STORE_NAME.REMINDERS,
+    useStoreHook: useStoreReminder,
+    setState: (store, items) => store.setReminders(items),
   },
 } as const;
 
@@ -172,11 +202,21 @@ export const useLoadAppData = (options: {
   const session = useStoreSession((s) => s.session);
 
   const stores = {
-    workspaces: useStoreWorkspace(),
-    calendars: useStoreCalendar(),
-    events: useStoreEvent(),
-    notes: useStoreNote(),
-    links: useStoreLink(),
+    [STORE_NAME.WORKSPACES]: useStoreWorkspace(),
+
+    // Pave
+    [STORE_NAME.CALENDARS]: useStoreCalendar(),
+    [STORE_NAME.EVENTS]: useStoreEvent(),
+
+    // Jot
+    [STORE_NAME.NOTES]: useStoreNote(),
+    [STORE_NAME.LINKS]: useStoreLink(),
+
+    // Stride
+    [STORE_NAME.TASK_LISTS]: useStoreTaskList(),
+    [STORE_NAME.RECURRING_RULES]: useStoreRecurringRule(),
+    [STORE_NAME.TASKS]: useStoreTask(),
+    [STORE_NAME.REMINDERS]: useStoreReminder(),
   };
 
   useEffect(() => {

@@ -1,6 +1,18 @@
 'use client';
 
-import { ActionIcon, Box, Divider, Group, NavLink, Stack, Title, Tooltip } from '@mantine/core';
+import {
+  ActionIcon,
+  Box,
+  Divider,
+  Group,
+  Loader,
+  NavLink,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import {
   ASIDE_VIEW_NAMES,
   ICON_SIZE,
@@ -14,6 +26,8 @@ import {
   IconCalendarDown,
   IconCalendarShare,
   IconCircleCheck,
+  IconCircleFilled,
+  IconDots,
   IconInbox,
   IconListCheck,
   IconPlus,
@@ -21,10 +35,13 @@ import {
 import { useSubView, useViewAside } from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
+import { useStoreTaskList } from '@repo/store';
+import MenuTaskList from '@atlas/ui/menu/task-list';
 
 export default function Stride() {
   const { subViewValue, showSubViewStride } = useSubView();
   const { showAsideViewStride } = useViewAside();
+  const taskLists = useStoreTaskList((s) => s.taskLists);
 
   const navLinks = [
     {
@@ -51,34 +68,6 @@ export default function Stride() {
       icon: IconCircleCheck,
       label: capitalizeWords(SUBVIEW_NAMES.STRIDE.COMPLETE),
       action: () => showSubViewStride(SUBVIEW_NAMES.STRIDE.COMPLETE),
-    },
-  ];
-
-  const sampleTaskLists = [
-    {
-      id: generateUUID(),
-      label: 'Household',
-      action: () => showSubViewStride(`list: ${'Household'}`),
-    },
-    {
-      id: generateUUID(),
-      label: 'Shopping',
-      action: () => showSubViewStride(`list: ${'Shopping'}`),
-    },
-    {
-      id: generateUUID(),
-      label: 'Health & Fitness',
-      action: () => showSubViewStride(`list: ${'Health & Fitness'}`),
-    },
-    {
-      id: generateUUID(),
-      label: 'School',
-      action: () => showSubViewStride(`list: ${'School'}`),
-    },
-    {
-      id: generateUUID(),
-      label: 'Work',
-      action: () => showSubViewStride(`list: ${'Work'}`),
     },
   ];
 
@@ -141,31 +130,54 @@ export default function Stride() {
           </Group>
 
           <div>
-            {sampleTaskLists.map((tli, i) => {
-              const taskListActive =
-                subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == tli.id;
+            {taskLists === undefined ? (
+              <Stack align="center" py={'xl'} fz={'xs'}>
+                <Loader size={'xs'} />
+              </Stack>
+            ) : !taskLists?.length ? (
+              <Stack align="center" py={'xl'} fz={'xs'}>
+                <Text inherit>No task lists</Text>
+              </Stack>
+            ) : (
+              taskLists.map((tli, i) => {
+                const taskListActive =
+                  subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == tli.id;
 
-              return (
-                <React.Fragment key={tli.label}>
-                  {<Divider />}
+                return (
+                  <React.Fragment key={tli.title}>
+                    {<Divider />}
 
-                  <NavLink
-                    label={tli.label}
-                    color="gray"
-                    px={'xs'}
-                    py={3}
-                    fw={500}
-                    styles={{
-                      label: {
-                        fontSize: 'var(--mantine-font-size-xs)',
-                        color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
-                      },
-                    }}
-                    onClick={tli.action}
-                  />
-                </React.Fragment>
-              );
-            })}
+                    <Group gap={0} wrap="nowrap">
+                      <NavLink
+                        label={tli.title}
+                        color="gray"
+                        px={'xs'}
+                        py={3}
+                        fw={500}
+                        leftSection={
+                          <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
+                            <IconCircleFilled size={6} color={tli.color || 'pri'} />
+                          </ThemeIcon>
+                        }
+                        styles={{
+                          label: {
+                            fontSize: 'var(--mantine-font-size-xs)',
+                            color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
+                          },
+                        }}
+                        onClick={() => showSubViewStride(`list: ${tli.id}`)}
+                      />
+
+                      <MenuTaskList defaultValues={tli}>
+                        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
+                          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                        </ActionIcon>
+                      </MenuTaskList>
+                    </Group>
+                  </React.Fragment>
+                );
+              })
+            )}
           </div>
         </div>
       </Stack>

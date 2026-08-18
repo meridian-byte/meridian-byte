@@ -1,3 +1,4 @@
+export * from './array';
 export * from './hooks';
 export * from './string';
 export * from './cookie-client';

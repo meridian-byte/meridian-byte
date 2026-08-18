@@ -138,23 +138,33 @@ function ViewStride() {
   return (
     <>
       <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.INBOX}>
-        <LayoutMain>inbox</LayoutMain>
+        <LayoutMain>
+          <PartialViewStrideTaskList />
+        </LayoutMain>
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.TODAY}>
-        <LayoutMain>today</LayoutMain>
+        <LayoutMain>
+          <PartialViewStrideTaskList />
+        </LayoutMain>
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.UPCOMING}>
-        <LayoutMain>upcoming</LayoutMain>
+        <LayoutMain>
+          <PartialViewStrideTaskList />
+        </LayoutMain>
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.OVERDUE}>
-        <LayoutMain>overdue</LayoutMain>
+        <LayoutMain>
+          <PartialViewStrideTaskList />
+        </LayoutMain>
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.COMPLETE}>
-        <LayoutMain>complete</LayoutMain>
+        <LayoutMain>
+          <PartialViewStrideTaskList />
+        </LayoutMain>
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={!!isTaskList}>

@@ -374,14 +374,31 @@ export const isDateInRange = (date: Date, range: { min: Date; max: Date }): bool
 /**
  * Checks if a date is within the next 7 days
  */
-export const isWithinNext7Days = (date: Date | string | null): boolean => {
+interface IsWithinNext7DaysOptions {
+  excludeToday?: boolean;
+}
+
+export const isWithinNext7Days = (
+  date: Date | string | null,
+  options: IsWithinNext7DaysOptions = {},
+): boolean => {
   if (!date) return false;
+
   const inputDate = new Date(date);
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const end = new Date(now);
-  end.setDate(now.getDate() + 7);
-  return inputDate >= now && inputDate <= end;
+  if (isNaN(inputDate.getTime())) return false; // Guard against invalid date strings
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  if (options.excludeToday) {
+    start.setDate(start.getDate() + 1);
+  }
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+  end.setDate(end.getDate() + 7);
+
+  return inputDate >= start && inputDate <= end;
 };
 
 /**
@@ -420,4 +437,87 @@ export const getTimeOfDay = (): 'morning' | 'afternoon' | 'evening' | 'night' =>
   if (hours >= 12 && hours < 18) return 'afternoon';
   if (hours >= 18 && hours < 21) return 'evening';
   return 'night';
+};
+
+/**
+ * Returns tomorrow's date.
+ * Options allow setting to midnight (start of day) or maintaining current time.
+ */
+export const getTomorrow = (from: Date | string = new Date(), startOfDay = true): Date => {
+  const date = typeof from === 'string' ? new Date(from) : new Date(from);
+  date.setDate(date.getDate() + 1);
+  if (startOfDay) {
+    date.setHours(0, 0, 0, 0);
+  }
+  return date;
+};
+
+/**
+ * Calculates a date 1 week out.
+ * - 'offset': Exactly 7 days (168 hours) from the given date.
+ * - 'monday': The upcoming Monday at 00:00:00 (if today is Monday, returns next Monday).
+ */
+export const getNextWeek = (
+  from: Date | string = new Date(),
+  mode: 'offset' | 'monday' = 'offset',
+): Date => {
+  const date = typeof from === 'string' ? new Date(from) : new Date(from);
+
+  if (mode === 'offset') {
+    date.setDate(date.getDate() + 7);
+    return date;
+  }
+
+  const day = date.getDay();
+  // If today is Sunday (0), Monday is +1 day. Otherwise, count days remaining to next Monday.
+  const daysUntilMonday = day === 0 ? 1 : 8 - day;
+
+  date.setDate(date.getDate() + daysUntilMonday);
+  date.setHours(0, 0, 0, 0);
+  return date;
+};
+
+/**
+ * Adds a specified number of hours to a date.
+ */
+export const addHours = (hours: number, from: Date | string = new Date()): Date => {
+  const date = typeof from === 'string' ? new Date(from) : new Date(from);
+  date.setTime(date.getTime() + hours * 60 * 60 * 1000);
+  return date;
+};
+
+/**
+ * Convenience helper to get exactly 3 hours from now (or a base date).
+ */
+export const getThreeHoursFromNow = (): Date => {
+  return addHours(3, new Date());
+};
+
+/**
+ * Returns the upcoming Saturday at midnight (00:00:00).
+ * If today is Saturday, returns the Saturday of the next week (+7 days).
+ */
+export const getNextSaturday = (from: Date | string = new Date()): Date => {
+  const date = typeof from === 'string' ? new Date(from) : new Date(from);
+  const day = date.getDay();
+
+  // If Saturday (6), jump 7 days; otherwise compute remaining days to Saturday
+  const daysUntilSaturday = day === 6 ? 7 : (6 - day + 7) % 7;
+
+  date.setDate(date.getDate() + daysUntilSaturday);
+  date.setHours(0, 0, 0, 0);
+  return date;
+};
+
+/**
+ * Returns the 1st day of the next month at midnight (00:00:00).
+ * Handles year boundaries automatically (e.g., Dec -> Jan next year).
+ */
+export const getNextMonth = (from: Date | string = new Date()): Date => {
+  const date = typeof from === 'string' ? new Date(from) : new Date(from);
+  // Setting day to 1 before modifying month prevents calendar roll-over bugs (e.g. Jan 31 -> Feb 28/29)
+  date.setDate(1);
+  date.setMonth(date.getMonth() + 1);
+  date.setHours(0, 0, 0, 0);
+  return date;
 };

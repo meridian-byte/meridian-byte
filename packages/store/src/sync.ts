@@ -19,6 +19,10 @@ import {
   notesUpdate,
   linksUpdate,
   calendarsUpdate,
+  taskListsUpdate,
+  recurringRulesUpdate,
+  tasksUpdate,
+  remindersUpdate,
 } from '@repo/handlers';
 
 import { SessionValue, useStoreSession } from './state/session';
@@ -28,6 +32,10 @@ import { SyncStatusValue } from './state/sync-status';
 import { useStoreWorkspace } from './state/workspace';
 import { useStoreEvent } from './state/event';
 import { useStoreCalendar } from './state/calendar';
+import { useStoreTaskList } from './state/task-list';
+import { useStoreRecurringRule } from './state/recurring-rule';
+import { useStoreTask } from './state/task';
+import { useStoreReminder } from './state/reminder';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -57,6 +65,8 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setWorkspaces(items),
     clearDeleted: (store) => store.clearDeletedWorkspaces(),
   },
+
+  // Pave
   [STORE_NAME.CALENDARS]: {
     dataStore: STORE_NAME.CALENDARS,
     useStoreHook: useStoreCalendar,
@@ -75,6 +85,8 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setEvents(items),
     clearDeleted: (store) => store.clearDeletedEvents(),
   },
+
+  // Jot
   [STORE_NAME.NOTES]: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
@@ -93,6 +105,44 @@ export const SYNC_STORES: Record<string, SyncStoreConfig> = {
     setItems: (store, items) => store.setLinks(items),
     clearDeleted: (store) => store.clearDeletedLinks(),
   },
+
+  // Stride
+  [STORE_NAME.TASK_LISTS]: {
+    dataStore: STORE_NAME.TASK_LISTS,
+    useStoreHook: useStoreTaskList,
+    serverUpdate: taskListsUpdate,
+    getItems: (store) => store.taskLists,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setTaskLists(items),
+    clearDeleted: (store) => store.clearDeletedTaskLists(),
+  },
+  [STORE_NAME.RECURRING_RULES]: {
+    dataStore: STORE_NAME.RECURRING_RULES,
+    useStoreHook: useStoreRecurringRule,
+    serverUpdate: recurringRulesUpdate,
+    getItems: (store) => store.recurringRules,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setRecurringRules(items),
+    clearDeleted: (store) => store.clearDeletedRecurringRules(),
+  },
+  [STORE_NAME.TASKS]: {
+    dataStore: STORE_NAME.TASKS,
+    useStoreHook: useStoreTask,
+    serverUpdate: tasksUpdate,
+    getItems: (store) => store.tasks,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setTasks(items),
+    clearDeleted: (store) => store.clearDeletedTasks(),
+  },
+  [STORE_NAME.REMINDERS]: {
+    dataStore: STORE_NAME.REMINDERS,
+    useStoreHook: useStoreReminder,
+    serverUpdate: remindersUpdate,
+    getItems: (store) => store.reminders,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setReminders(items),
+    clearDeleted: (store) => store.clearDeletedReminders(),
+  },
 } as const;
 
 type SyncStoreKey = keyof typeof SYNC_STORES;
@@ -103,6 +153,8 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
     updateState: (items: any) => useStoreWorkspace.getState().setWorkspaces(items),
     clearDeleted: () => useStoreWorkspace.getState().clearDeletedWorkspaces(),
   },
+
+  // Pave
   [STORE_NAME.CALENDARS]: {
     store: useStoreCalendar,
     updateState: (items: any) => useStoreCalendar.getState().setCalendars(items),
@@ -113,6 +165,8 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
     updateState: (items: any) => useStoreEvent.getState().setEvents(items),
     clearDeleted: () => useStoreEvent.getState().clearDeletedEvents(),
   },
+
+  // Jot
   [STORE_NAME.NOTES]: {
     store: useStoreNote,
     updateState: (items: any) => useStoreNote.getState().setNotes(items),
@@ -123,15 +177,47 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
     updateState: (items: any) => useStoreLink.getState().setLinks(items),
     clearDeleted: () => useStoreLink.getState().clearDeletedLinks(),
   },
+
+  // Stride
+  [STORE_NAME.TASK_LISTS]: {
+    store: useStoreTaskList,
+    updateState: (items: any) => useStoreTaskList.getState().setTaskLists(items),
+    clearDeleted: () => useStoreTaskList.getState().clearDeletedTaskLists(),
+  },
+  [STORE_NAME.RECURRING_RULES]: {
+    store: useStoreRecurringRule,
+    updateState: (items: any) => useStoreRecurringRule.getState().setRecurringRules(items),
+    clearDeleted: () => useStoreRecurringRule.getState().clearDeletedRecurringRules(),
+  },
+  [STORE_NAME.TASKS]: {
+    store: useStoreTask,
+    updateState: (items: any) => useStoreTask.getState().setTasks(items),
+    clearDeleted: () => useStoreTask.getState().clearDeletedTasks(),
+  },
+  [STORE_NAME.REMINDERS]: {
+    store: useStoreReminder,
+    updateState: (items: any) => useStoreReminder.getState().setReminders(items),
+    clearDeleted: () => useStoreReminder.getState().clearDeletedReminders(),
+  },
 };
 
 // Define a shape for the payload
 export interface MergedSyncPayload {
   [STORE_NAME.WORKSPACES]?: { items: any[]; deleted: any[] };
+
+  // Pave
   [STORE_NAME.CALENDARS]?: { items: any[]; deleted: any[] };
   [STORE_NAME.EVENTS]?: { items: any[]; deleted: any[] };
+
+  // Jot
   [STORE_NAME.NOTES]?: { items: any[]; deleted: any[] };
   [STORE_NAME.LINKS]?: { items: any[]; deleted: any[] };
+
+  // Stride
+  [STORE_NAME.TASK_LISTS]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.RECURRING_RULES]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.TASKS]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.REMINDERS]?: { items: any[]; deleted: any[] };
 }
 
 // Update the MergedSyncParams to handle multiple datasets
@@ -158,13 +244,27 @@ export const useMergedSync = (params: {
   const eventStore = useStoreEvent();
   const noteStore = useStoreNote();
   const linkStore = useStoreLink();
+  const taskListStore = useStoreTaskList();
+  const recurringRuleStore = useStoreRecurringRule();
+  const taskStore = useStoreTask();
+  const reminderStore = useStoreReminder();
 
   const stores = {
     [STORE_NAME.WORKSPACES]: workspaceStore,
+
+    // Pave
     [STORE_NAME.CALENDARS]: calendarStore,
     [STORE_NAME.EVENTS]: eventStore,
+
+    // Jot
     [STORE_NAME.NOTES]: noteStore,
     [STORE_NAME.LINKS]: linkStore,
+
+    // Stride
+    [STORE_NAME.TASK_LISTS]: taskListStore,
+    [STORE_NAME.RECURRING_RULES]: recurringRuleStore,
+    [STORE_NAME.TASKS]: taskStore,
+    [STORE_NAME.REMINDERS]: reminderStore,
   };
 
   const sync = useCallback(async () => {
@@ -211,6 +311,10 @@ export const useMergedSync = (params: {
     // eventStore,
     // noteStore,
     // linkStore,
+    // taskListStore,
+    // recurringRuleStore,
+    // taskStore,
+    // reminderStore,
     handleSync,
     params.syncStatus,
   ]);

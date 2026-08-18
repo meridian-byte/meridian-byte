@@ -51,10 +51,20 @@ export function ProviderInitialize({
     clientOnly: false,
     storesToLoad: {
       [STORE_NAME.WORKSPACES]: true,
+
+      // Pave
       [STORE_NAME.CALENDARS]: true,
       [STORE_NAME.EVENTS]: true,
+
+      // Jot
       [STORE_NAME.NOTES]: true,
-      [STORE_NAME.LINKS]: true,
+      // [STORE_NAME.LINKS]: true,
+
+      // Stride
+      [STORE_NAME.TASK_LISTS]: true,
+      // [STORE_NAME.RECURRING_RULES]: true,
+      [STORE_NAME.TASKS]: true,
+      // [STORE_NAME.REMINDERS]: true,
     },
   });
 
