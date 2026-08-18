@@ -374,14 +374,31 @@ export const isDateInRange = (date: Date, range: { min: Date; max: Date }): bool
 /**
  * Checks if a date is within the next 7 days
  */
-export const isWithinNext7Days = (date: Date | string | null): boolean => {
+interface IsWithinNext7DaysOptions {
+  excludeToday?: boolean;
+}
+
+export const isWithinNext7Days = (
+  date: Date | string | null,
+  options: IsWithinNext7DaysOptions = {},
+): boolean => {
   if (!date) return false;
+
   const inputDate = new Date(date);
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const end = new Date(now);
-  end.setDate(now.getDate() + 7);
-  return inputDate >= now && inputDate <= end;
+  if (isNaN(inputDate.getTime())) return false; // Guard against invalid date strings
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  if (options.excludeToday) {
+    start.setDate(start.getDate() + 1);
+  }
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+  end.setDate(end.getDate() + 7);
+
+  return inputDate >= start && inputDate <= end;
 };
 
 /**
