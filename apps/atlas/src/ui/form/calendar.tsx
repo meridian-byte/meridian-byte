@@ -21,9 +21,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useAppshellChild, useFormCalendar } from '@repo/hooks';
-import { colors } from '@repo/constants';
+import { ASIDE_VIEW_NAMES, colors } from '@repo/constants';
 import { CalendarGet } from '@repo/types';
-import { useViewModal } from '@repo/store';
+import { useViewAside, useViewModal } from '@repo/store';
 
 export default function Calendar({ defaultValues }: { defaultValues?: Partial<CalendarGet> }) {
   const [checked, setChecked] = useState(true);
@@ -34,6 +34,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
   });
 
   const { closeModalView } = useViewModal();
+  const { asideViewValue } = useViewAside();
   const { handleToggleChildAside } = useAppshellChild();
 
   return (
@@ -73,7 +74,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
           />
         </GridCol>
 
-        {!defaultValues?.updatedAt && (
+        {!defaultValues?.updatedAt && asideViewValue == ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR && (
           <GridCol span={{ base: 12 }}>
             <Checkbox
               label={'Close when done'}
@@ -101,7 +102,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
                 }
               }}
             >
-              {'Cancel'}
+              {'Close'}
             </Button>
 
             <Button type="submit" loading={submitted}>

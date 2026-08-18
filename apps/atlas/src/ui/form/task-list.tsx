@@ -21,9 +21,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useAppshellChild, useFormTaskList } from '@repo/hooks';
-import { colors } from '@repo/constants';
+import { ASIDE_VIEW_NAMES, colors } from '@repo/constants';
 import { TaskListGet } from '@repo/types';
-import { useViewModal } from '@repo/store';
+import { useViewAside, useViewModal } from '@repo/store';
 
 export default function TaskList({ defaultValues }: { defaultValues?: Partial<TaskListGet> }) {
   const [checked, setChecked] = useState(true);
@@ -34,6 +34,7 @@ export default function TaskList({ defaultValues }: { defaultValues?: Partial<Ta
   });
 
   const { closeModalView } = useViewModal();
+  const { asideViewValue } = useViewAside();
   const { handleToggleChildAside } = useAppshellChild();
 
   return (
@@ -73,7 +74,7 @@ export default function TaskList({ defaultValues }: { defaultValues?: Partial<Ta
           />
         </GridCol>
 
-        {!defaultValues?.updatedAt && (
+        {!defaultValues?.updatedAt && asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST && (
           <GridCol span={{ base: 12 }}>
             <Checkbox
               label={'Close when done'}
@@ -101,7 +102,7 @@ export default function TaskList({ defaultValues }: { defaultValues?: Partial<Ta
                 }
               }}
             >
-              {'Cancel'}
+              {'Close'}
             </Button>
 
             <Button type="submit" loading={submitted}>
