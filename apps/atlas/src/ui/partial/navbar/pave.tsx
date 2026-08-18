@@ -22,7 +22,7 @@ import {
   SECTION_SPACING,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords, extractUuidFromParam } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam, sortArray } from '@repo/utils';
 import {
   IconCalendar,
   IconCalendarCancel,
@@ -45,11 +45,13 @@ import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreCalendar } from '@repo/store';
 import MenuCalendar from '@atlas/ui/menu/calendar';
+import { Order } from '@repo/types';
 
 export default function Pave() {
   const { subViewValue, showSubViewPave } = useSubView();
   const { showAsideViewPave } = useViewAside();
   const calendars = useStoreCalendar((s) => s.calendars);
+  const sortedCalendars = sortArray(calendars || [], (i) => i.createdAt, Order.DESCENDING);
 
   const navLinks = [
     {
@@ -144,7 +146,7 @@ export default function Pave() {
                 <Text inherit>No calendars</Text>
               </Stack>
             ) : (
-              calendars.map((ci, i) => {
+              sortedCalendars.map((ci, i) => {
                 const calendarActive =
                   subViewValue?.includes('calendar: ') &&
                   extractUuidFromParam(subViewValue) == ci.id;
