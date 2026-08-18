@@ -2,7 +2,7 @@ import { useStoreRecurringRule } from '../recurring-rule';
 import { useStoreSession } from '../session';
 import { Frequency, RecurringRuleGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
-import { generateUUID } from '@repo/utils';
+import { generateUUID, getNextMonth } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { useViewModal } from '../../handler/view';
 
@@ -24,7 +24,7 @@ export const useRecurringRuleActions = () => {
 
     const newRecurringRule: RecurringRuleGet = {
       id: params?.id || id,
-      end_date: new Date(params?.end_date || now).toISOString() as any,
+      endDate: !params?.endDate ? null : (new Date(params.endDate).toISOString() as any),
       frequency: params?.frequency || Frequency.WEEKLY,
       interval: params?.interval || 1,
       weekdays: params?.weekdays || [],
@@ -49,6 +49,7 @@ export const useRecurringRuleActions = () => {
 
     const newRecurringRule: RecurringRuleGet = {
       ...params,
+      endDate: !params?.endDate ? null : (new Date(params.endDate).toISOString() as any),
       syncStatus: SyncStatus.PENDING,
       updatedAt: new Date(now).toISOString() as any,
     };

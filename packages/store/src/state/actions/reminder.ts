@@ -2,7 +2,7 @@ import { useStoreReminder } from '../reminder';
 import { useStoreSession } from '../session';
 import { ReminderGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
-import { generateUUID } from '@repo/utils';
+import { generateUUID, getThreeHoursFromNow } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { useViewModal } from '../../handler/view';
 
@@ -29,7 +29,7 @@ export const useReminderActions = () => {
 
     const newReminder: ReminderGet = {
       id: params?.id || id,
-      remindAt: new Date(params?.remindAt || now).toISOString() as any,
+      remindAt: new Date(params?.remindAt || getThreeHoursFromNow()).toISOString() as any,
       sent: params?.sent ?? false,
       taskId: params.taskId,
       profileId: params?.profileId || session.id,
@@ -52,6 +52,7 @@ export const useReminderActions = () => {
 
     const newReminder: ReminderGet = {
       ...params,
+      remindAt: new Date(params?.remindAt || getThreeHoursFromNow()).toISOString() as any,
       syncStatus: SyncStatus.PENDING,
       updatedAt: new Date(now).toISOString() as any,
     };
