@@ -254,7 +254,7 @@ model RecurringRule {
   id        String    @id @default(uuid())
   frequency Frequency
   interval  Int       @default(1)
-  end_date  DateTime? @map("end_date")
+  endDate   DateTime? @map("end_date")
   weekdays  String[] // 0 - monday, 6 - sunday. comma separated for multiples. eg. 0,4,6
   months    String[] // 0 - january, 12 - december. comma separated for multiples. eg. 5,7,11
 

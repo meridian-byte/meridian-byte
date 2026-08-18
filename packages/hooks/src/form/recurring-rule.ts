@@ -25,7 +25,7 @@ export const useFormRecurringRule = (params?: {
 
   const { form, submitted, handleSubmit } = useFormBase<Partial<RecurringRuleGet>>(
     {
-      end_date: params?.defaultValues?.end_date || null,
+      endDate: params?.defaultValues?.endDate || null,
       frequency: params?.defaultValues?.frequency || Frequency.WEEKLY,
       interval: params?.defaultValues?.interval || 1,
       months: params?.defaultValues?.months || [],
