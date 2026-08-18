@@ -245,7 +245,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
             input: {
               backgroundColor:
                 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
-              // fontWeight: 500,
+              fontWeight: 500,
             },
           },
         },
@@ -260,6 +260,7 @@ export const getAppTheme = (params?: AppThemeProps) => {
             input: {
               backgroundColor:
                 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
+              fontWeight: 500,
             },
             dropdown: {
               backgroundColor:

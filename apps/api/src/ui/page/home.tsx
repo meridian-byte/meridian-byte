@@ -24,7 +24,7 @@ export default function Home() {
     <LayoutSection id="home">
       <Center ta={'center'} mih={'100vh'}>
         <Card
-          bg={'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'}
+          bg={'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-9))'}
           padding={0}
           px={SECTION_SPACING * 2}
           py={SECTION_SPACING}
