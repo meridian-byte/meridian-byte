@@ -1,9 +1,12 @@
 import { hasLength, UseFormReturnType } from '@mantine/form';
-import { useTaskActions, useStoreAppShell } from '@repo/store';
+import { useTaskActions, useStoreAppShell, useSubView, useStoreTaskList } from '@repo/store';
 import { useFormBase } from '../form';
 import { Priority, TaskGet } from '@repo/types';
 import { useAppshellChild } from '../appshell';
 import { useViewModal } from '@repo/store';
+import { SUBVIEW_NAMES } from '@repo/constants';
+import { useEffect } from 'react';
+import { extractUuidFromParam, getTomorrow } from '@repo/utils';
 
 export type FormTaskValues = {
   id: string;
@@ -22,19 +25,31 @@ export const useFormTask = (params?: {
   const { taskCreate, taskUpdate } = useTaskActions();
 
   const { closeModalView } = useViewModal();
+  const { subViewValue } = useSubView();
+
+  const inboxView = subViewValue === SUBVIEW_NAMES.STRIDE.INBOX;
+  const todayView = subViewValue === SUBVIEW_NAMES.STRIDE.TODAY;
+  const upcomingView = subViewValue === SUBVIEW_NAMES.STRIDE.UPCOMING;
+  const completeView = subViewValue === SUBVIEW_NAMES.STRIDE.COMPLETE;
+
+  const taskListId = extractUuidFromParam(subViewValue || '');
 
   const { form, submitted, handleSubmit } = useFormBase<Partial<TaskGet>>(
     {
       title: params?.defaultValues?.title || '',
       description: params?.defaultValues?.description || '',
-      complete: params?.defaultValues?.complete ?? false,
+      complete: completeView ? true : (params?.defaultValues?.complete ?? false),
       priority: params?.defaultValues?.priority || Priority.NOT_URGENT_UNIMPORTANT,
-      dueDate: params?.defaultValues?.dueDate || null,
-      taskListId: params?.defaultValues?.taskListId || null,
+      dueDate: todayView
+        ? new Date()
+        : upcomingView
+          ? getTomorrow()
+          : params?.defaultValues?.dueDate || null,
+      taskListId: inboxView ? null : params?.defaultValues?.taskListId || taskListId || null,
     },
     {
-      title: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters required'),
-      description: hasLength({ max: 255 }, 'Maximum of 255 characters required'),
+      title: hasLength({ min: 2, max: 512 }, true),
+      description: hasLength({ max: 2048 }, true),
     },
     {
       resetOnSuccess: true,
@@ -76,5 +91,12 @@ export const useFormTask = (params?: {
     form,
     submitted,
     handleSubmit,
+    views: {
+      inboxView,
+      todayView,
+      upcomingView,
+      completeView,
+    },
+    taskListId,
   };
 };
