@@ -202,6 +202,13 @@ export const useViewModal = () => {
     }
   };
 
+  // handle modal task crud open
+  const showModalViewTaskCrud = (taskId: string, action: string) => {
+    if (!modalViewValue?.includes(action)) {
+      setModalViewValue(`${action}-${taskId}`);
+    }
+  };
+
   // handle modal close
   const closeModalView = () => {
     if (modalViewValue) {
@@ -215,6 +222,7 @@ export const useViewModal = () => {
     showModalViewSearch,
     showModalViewCalendarCrud,
     showModalViewTaskListCrud,
+    showModalViewTaskCrud,
     closeModalView,
   };
 };

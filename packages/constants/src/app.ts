@@ -127,6 +127,10 @@ export const MODAL_VIEW_NAMES = {
       },
     },
     STRIDE: {
+      TASK: {
+        UPDATE: 'crud-task-update',
+        DELETE: 'crud-task-delete',
+      },
       TASK_LIST: {
         UPDATE: 'crud-task-list-update',
         DELETE: 'crud-task-list-delete',
