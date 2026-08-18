@@ -17,7 +17,7 @@ export type FormTask = UseFormReturnType<Partial<FormTaskValues>>;
 
 export const useFormTask = (params?: {
   defaultValues?: Partial<TaskGet>;
-  options?: { closeWhenDone?: boolean };
+  options?: { closeWhenDone?: boolean; checkBox?: boolean };
 }) => {
   const appshell = useStoreAppShell((s) => s.appshell);
   const { handleToggleChildAside } = useAppshellChild();
@@ -86,6 +86,17 @@ export const useFormTask = (params?: {
       },
     },
   );
+
+  useEffect(() => {
+    if (!params?.options?.checkBox) return;
+    if (!params?.defaultValues) return;
+    if (form.values.complete == params.defaultValues.complete) return;
+
+    taskUpdate({
+      ...params?.defaultValues,
+      complete: form.values.complete,
+    } as TaskGet);
+  }, [form.values.complete]);
 
   return {
     form,
