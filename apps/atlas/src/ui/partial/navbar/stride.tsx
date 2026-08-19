@@ -97,11 +97,13 @@ export default function Stride() {
                   }}
                   onClick={nl.action}
                   leftSection={
-                    <nl.icon
-                      size={ICON_SIZE - 4}
-                      stroke={ICON_STROKE_WIDTH}
-                      style={{ marginTop: 2 }}
-                    />
+                    <div style={{ color: active ? 'var(--mantine-color-pri-6)' : undefined }}>
+                      <nl.icon
+                        size={ICON_SIZE - 4}
+                        stroke={ICON_STROKE_WIDTH}
+                        style={{ marginTop: 2 }}
+                      />
+                    </div>
                   }
                 />
               </React.Fragment>
@@ -124,7 +126,7 @@ export default function Stride() {
                   radius={0}
                   onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST)}
                 >
-                  <IconListCheck size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>
