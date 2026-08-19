@@ -453,6 +453,19 @@ export const getTomorrow = (from: Date | string = new Date(), startOfDay = true)
 };
 
 /**
+ * Returns yesterday's date.
+ * Options allow setting to midnight (start of day) or maintaining current time.
+ */
+export const getYesterday = (from: Date | string = new Date(), startOfDay = true): Date => {
+  const date = typeof from === 'string' ? new Date(from) : new Date(from);
+  date.setDate(date.getDate() - 1);
+  if (startOfDay) {
+    date.setHours(0, 0, 0, 0);
+  }
+  return date;
+};
+
+/**
  * Calculates a date 1 week out.
  * - 'offset': Exactly 7 days (168 hours) from the given date.
  * - 'monday': The upcoming Monday at 00:00:00 (if today is Monday, returns next Monday).

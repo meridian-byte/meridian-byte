@@ -30,6 +30,7 @@ export const useFormTask = (params?: {
   const inboxView = subViewValue === SUBVIEW_NAMES.STRIDE.INBOX;
   const todayView = subViewValue === SUBVIEW_NAMES.STRIDE.TODAY;
   const upcomingView = subViewValue === SUBVIEW_NAMES.STRIDE.UPCOMING;
+  const overdueView = subViewValue === SUBVIEW_NAMES.STRIDE.OVERDUE;
   const completeView = subViewValue === SUBVIEW_NAMES.STRIDE.COMPLETE;
 
   const taskListId = extractUuidFromParam(subViewValue || '');
@@ -106,6 +107,7 @@ export const useFormTask = (params?: {
       inboxView,
       todayView,
       upcomingView,
+      overdueView,
       completeView,
     },
     taskListId,

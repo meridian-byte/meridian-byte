@@ -111,9 +111,6 @@ export default function TaskList() {
         filteredTasks = sortedTasks?.filter(
           (ti) => !ti.complete && ti.dueDate && isOverdue(ti.dueDate),
         );
-        completeTasks = sortedTasks?.filter(
-          (ti) => ti.complete && ti.dueDate && isOverdue(ti.dueDate),
-        );
         break;
       case SUBVIEW_NAMES.STRIDE.COMPLETE:
         filteredTasks = sortedTasks?.filter((ti) => ti.complete);

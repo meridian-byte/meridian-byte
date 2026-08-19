@@ -31,7 +31,7 @@ import { useStoreTaskList, useSubView, useViewAside, useViewModal } from '@repo/
 import { DateInput } from '@mantine/dates';
 import { IconCalendarEvent, IconCategory, IconFlag } from '@tabler/icons-react';
 import { ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH, SUBVIEW_NAMES } from '@repo/constants';
-import { capitalizeWords, getNextWeek, getTomorrow } from '@repo/utils';
+import { capitalizeWords, getNextWeek, getTomorrow, getYesterday } from '@repo/utils';
 import dayjs from 'dayjs';
 
 export default function Task({
@@ -110,6 +110,11 @@ export default function Task({
               minDate={
                 creatingTask && views.upcomingView
                   ? dayjs(getTomorrow()).format('YYYY-MM-DD')
+                  : undefined
+              }
+              maxDate={
+                creatingTask && views.overdueView
+                  ? dayjs(getYesterday()).format('YYYY-MM-DD')
                   : undefined
               }
               {...form.getInputProps('dueDate')}
