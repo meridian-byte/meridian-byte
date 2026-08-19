@@ -2,7 +2,7 @@
 
 import {
   DEFAULT_NAMES,
-  getRandomColorName,
+  getUniqueColor,
   sampleCalendars,
   sampleEvents,
   sampleTaskLists,
@@ -68,7 +68,7 @@ export const profileCreateDb = async (params: ProfileCreate) => {
               id: generateUUID(),
               title: calendarTemplate.title,
               description: calendarTemplate.description,
-              color: getRandomColorName(),
+              color: getUniqueColor(),
               profileId: newProfile.id,
               workspaceId: workspace.id,
 
@@ -96,7 +96,7 @@ export const profileCreateDb = async (params: ProfileCreate) => {
               id: generateUUID(),
               title: taskListTemplate.title,
               description: taskListTemplate.description,
-              color: getRandomColorName(),
+              color: getUniqueColor(),
               profileId: newProfile.id,
               workspaceId: workspace.id,
 

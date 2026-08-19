@@ -3,7 +3,7 @@ import { useTaskListActions, useStoreAppShell } from '@repo/store';
 import { useFormBase } from '../form';
 import { TaskListGet } from '@repo/types';
 import { useAppshellChild } from '../appshell';
-import { getRandomColorName } from '@repo/constants';
+import { getUniqueColor } from '@repo/constants';
 import { useViewModal } from '@repo/store';
 
 export type FormTaskListValues = {
@@ -28,7 +28,7 @@ export const useFormTaskList = (params?: {
     {
       title: params?.defaultValues?.title || '',
       description: params?.defaultValues?.description || '',
-      color: params?.defaultValues?.color || getRandomColorName(),
+      color: params?.defaultValues?.color || getUniqueColor(),
     },
     {
       title: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters required'),

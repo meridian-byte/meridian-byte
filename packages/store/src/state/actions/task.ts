@@ -4,7 +4,6 @@ import { Priority, TaskGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
 import { generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
-import { getRandomColorName } from '@repo/constants';
 import { useViewModal } from '../../handler/view';
 
 export const useTaskActions = () => {

@@ -4,7 +4,7 @@ import { CalendarGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
 import { generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
-import { getRandomColorName } from '@repo/constants';
+import { getUniqueColor } from '@repo/constants';
 import { useViewModal } from '../../handler/view';
 
 export const useCalendarActions = () => {
@@ -27,7 +27,7 @@ export const useCalendarActions = () => {
       id: params?.id || id,
       title: params?.title || 'New Calendar',
       description: params?.description || null,
-      color: params?.color || getRandomColorName(),
+      color: params?.color || getUniqueColor(),
       profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,
