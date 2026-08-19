@@ -128,7 +128,10 @@ export default function TaskList() {
     <LayoutSection id={'task-list'} containerized>
       <Box py={SECTION_SPACING}>
         {filteredTasks === undefined || !filteredTasks?.length ? (
-          <PartialEmpty loading={filteredTasks === undefined} label="No tasks found" />
+          <div>
+            <PartialEmpty loading={filteredTasks === undefined} label="No tasks found" />
+            <AddTask />
+          </div>
         ) : (
           <Stack gap={SECTION_SPACING}>
             <Stack>
