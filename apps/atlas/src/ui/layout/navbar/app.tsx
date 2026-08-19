@@ -45,7 +45,7 @@ export default function App() {
         <NavbarHeader />
       </AppShellSection>
 
-      <Divider />
+      <Divider size={3} />
 
       <AppShellSection
         grow

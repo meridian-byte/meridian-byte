@@ -153,7 +153,7 @@ export default function Navbar() {
       onChange={(newValues) => setNavbarViewValue(newValues)}
       chevronIconSize={ICON_SIZE}
       chevron={null}
-      keepMounted
+      // keepMounted
       multiple
       styles={{
         control: { height: 30, padding: 0, paddingLeft: '5px' },
