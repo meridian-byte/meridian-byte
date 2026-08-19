@@ -274,38 +274,40 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
   );
 }
 
-export function AddTask() {
-  const [adding, setAdding] = useState(false);
+export function AddTask({ options }: { options?: { adding?: boolean } }) {
+  const [adding, setAdding] = useState(options?.adding ?? false);
   const { subViewValue } = useSubView();
 
   useEffect(() => {
+    if (options?.adding !== undefined) return;
     setAdding(false);
   }, [subViewValue]);
 
   return (
-    subViewValue !== SUBVIEW_NAMES.STRIDE.OVERDUE && (
-      <Box>
-        <Box px={SECTION_SPACING - 8} display={!adding ? undefined : 'none'}>
-          <Divider variant="dashed" />
-        </Box>
-
-        {adding && (
-          <Card
-            // px={15}
-            // py={'xs'}
-            padding={0}
-            // bg={'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'}
-            bg={'transparent'}
-            withBorder
-          >
-            <FormTask onUnmount={setAdding} />
-          </Card>
-        )}
-
-        <Box display={!adding ? undefined : 'none'} onClick={() => setAdding(true)}>
-          <TaskCard options={{ add: true }} />
-        </Box>
+    <Box>
+      <Box px={SECTION_SPACING - 8} display={!adding ? undefined : 'none'}>
+        <Divider variant="dashed" />
       </Box>
-    )
+
+      {adding && (
+        <Card
+          // px={15}
+          // py={'xs'}
+          padding={0}
+          // bg={'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'}
+          bg={'transparent'}
+          withBorder={options?.adding === undefined}
+        >
+          <FormTask
+            onUnmount={setAdding}
+            options={{ withoutCheck: options?.adding !== undefined }}
+          />
+        </Card>
+      )}
+
+      <Box display={!adding ? undefined : 'none'} onClick={() => setAdding(true)}>
+        <TaskCard options={{ add: true }} />
+      </Box>
+    </Box>
   );
 }

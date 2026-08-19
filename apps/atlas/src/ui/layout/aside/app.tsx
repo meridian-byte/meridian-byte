@@ -17,6 +17,7 @@ import FormCalendar from '@atlas/ui/form/calendar';
 import FormEvent from '@atlas/ui/form/event';
 import FormTaskList from '@atlas/ui/form/task-list';
 import { useAppshellChild } from '@repo/hooks';
+import { AddTask } from '@atlas/ui/partial/view/stride/task-list';
 
 export default function App() {
   const { asideViewValue, showAsideViewPave, showAsideViewJot, showAsideViewStride } =
@@ -170,7 +171,7 @@ export default function App() {
 
       {/* Stride Views */}
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.STRIDE.TASK}>
-        <div>add task</div>
+        <AddTask options={{ adding: true }} />
       </LayoutAsideSection>
 
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST}>

@@ -41,9 +41,9 @@ export default function Task({
 }: {
   defaultValues?: Partial<TaskGet>;
   onUnmount?: React.Dispatch<React.SetStateAction<boolean>>;
-  options?: { modal?: boolean };
+  options?: { modal?: boolean; withoutCheck?: boolean };
 }) {
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(options?.withoutCheck);
 
   const { form, submitted, handleSubmit, views, taskListId } = useFormTask({
     options: { closeWhenDone: checked },
@@ -94,12 +94,12 @@ export default function Task({
         <ScrollArea flex={1}>
           <Flex
             gap={'xs'}
-            align={options?.modal ? undefined : 'center'}
-            direction={options?.modal ? 'column' : 'row'}
+            align={options?.modal || options?.withoutCheck ? undefined : 'center'}
+            direction={options?.modal || options?.withoutCheck ? 'column' : 'row'}
             p={options?.modal ? sharedPadding : undefined}
             // mih={'100vh'}
           >
-            {options?.modal && <InputTaskList />}
+            {(options?.modal || options?.withoutCheck) && <InputTaskList />}
 
             <DateInput
               aria-label={'Due date'}
@@ -157,14 +157,14 @@ export default function Task({
           gap="xs"
           p={options?.modal ? sharedPadding : undefined}
         >
-          {!options?.modal && <InputTaskList />}
+          {!(options?.modal || options?.withoutCheck) && <InputTaskList />}
 
           <Group gap={'xs'}>
             <Button
               disabled={submitted}
               variant="default"
               onClick={() => {
-                if (onUnmount) {
+                if (onUnmount && !options?.withoutCheck) {
                   onUnmount(false);
                 } else {
                   if (!defaultValues?.updatedAt) {
@@ -211,23 +211,25 @@ export default function Task({
               : undefined
           }
         >
-          <ScrollArea h={sharedHeight} p={sharedPadding}>
+          <ScrollArea h={sharedHeight} p={options?.withoutCheck ? 'xs' : sharedPadding}>
             <Grid gap={0}>
-              <GridCol span={options?.modal ? 1 : 0.5}>
-                <Group pl={options?.modal ? 5 : 0}>
-                  <Checkbox
-                    aria-label={'Complete'}
-                    defaultChecked={form.values.complete}
-                    {...form.getInputProps('complete')}
-                    disabled={creatingTask && views.completeView}
-                    size="sm"
-                    radius={99}
-                    mt={8}
-                  />
-                </Group>
-              </GridCol>
+              {!options?.withoutCheck && (
+                <GridCol span={options?.modal ? 1 : 0.5}>
+                  <Group pl={options?.modal ? 5 : 0}>
+                    <Checkbox
+                      aria-label={'Complete'}
+                      defaultChecked={form.values.complete}
+                      {...form.getInputProps('complete')}
+                      disabled={creatingTask && views.completeView}
+                      size="sm"
+                      radius={99}
+                      mt={8}
+                    />
+                  </Group>
+                </GridCol>
+              )}
 
-              <GridCol span={options?.modal ? 11 : 11.5}>
+              <GridCol span={options?.modal ? 11 : options?.withoutCheck ? 12 : 11.5}>
                 <Stack gap={'xs'}>
                   <div>
                     <TextInput
@@ -280,7 +282,8 @@ export default function Task({
                   {!options?.modal && <TaskProperties />}
 
                   {!defaultValues?.updatedAt &&
-                    asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK && (
+                    asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK &&
+                    options?.withoutCheck && (
                       <div>
                         <Checkbox
                           label={'Close when done'}
