@@ -183,3 +183,193 @@ export const sampleEvents = adjustEventsToCurrentMonth([
     location: null,
   },
 ]);
+
+export const sampleTaskLists = [
+  {
+    key: 'work',
+    title: 'Work & Projects',
+    description: 'Projects, deliverables, and professional priorities.',
+  },
+  {
+    key: 'personal',
+    title: 'Personal',
+    description: 'Personal errands, health, and life admin.',
+  },
+  {
+    key: 'content',
+    title: 'Content Pipeline',
+    description: 'Content creation, publishing, and marketing tasks.',
+  },
+  {
+    key: 'someday',
+    title: 'Someday / Maybe',
+    description: 'Ideas and tasks that are not urgent.',
+  },
+];
+
+const now = new Date();
+
+const daysFromNow = (days: number, hours = 12) => {
+  const date = new Date(now);
+  date.setDate(date.getDate() + days);
+  date.setHours(hours, 0, 0, 0);
+  return date;
+};
+
+export const sampleTasks = [
+  // ==========================================
+  // INBOX
+  // ==========================================
+  {
+    title: 'Review new project request',
+    description: 'Review the request and decide whether it should become a formal project.',
+    dueDate: null,
+    complete: false,
+    priority: 'NOT_URGENT_IMPORTANT',
+    taskListKey: null,
+  },
+  {
+    title: 'Reply to outstanding emails',
+    description: 'Clear the remaining emails that need a response.',
+    dueDate: daysFromNow(0, 17),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: null,
+  },
+
+  // ==========================================
+  // WORK & PROJECTS
+  // ==========================================
+  {
+    title: 'Send revised project proposal',
+    description: 'Send the updated proposal to the client after incorporating feedback.',
+    dueDate: daysFromNow(-3, 15),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'work',
+  },
+  {
+    title: 'Update project documentation',
+    description: 'Bring the architecture and deployment documentation up to date.',
+    dueDate: daysFromNow(-2, 16),
+    complete: false,
+    priority: 'URGENT_UNIMPORTANT',
+    taskListKey: 'work',
+  },
+  {
+    title: 'Finalize Acme Corp pitch deck',
+    description: 'Review the proposal and make final adjustments before the client pitch.',
+    dueDate: daysFromNow(0, 16),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'work',
+  },
+  {
+    title: 'Review cloud architecture document',
+    description: 'Make sure the revised infrastructure design is ready for submission.',
+    dueDate: daysFromNow(2, 15),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'work',
+  },
+  {
+    title: 'Prepare sprint retrospective notes',
+    description: 'Collect wins, blockers, and improvement opportunities from the team.',
+    dueDate: daysFromNow(5, 12),
+    complete: false,
+    priority: 'NOT_URGENT_IMPORTANT',
+    taskListKey: 'work',
+  },
+  {
+    title: 'Clean up old Jira tickets',
+    description: 'Close stale tickets and update tickets that still need action.',
+    dueDate: null,
+    complete: false,
+    priority: 'NOT_URGENT_UNIMPORTANT',
+    taskListKey: 'work',
+  },
+  {
+    title: 'Submit weekly status report',
+    description: 'Send the completed status report to the team.',
+    dueDate: daysFromNow(-1, 15),
+    complete: true,
+    priority: 'NOT_URGENT_IMPORTANT',
+    taskListKey: 'work',
+  },
+
+  // ==========================================
+  // PERSONAL
+  // ==========================================
+  {
+    title: 'Order birthday gift',
+    description: 'Purchase and arrange delivery of Mom’s birthday gift.',
+    dueDate: daysFromNow(-1, 17),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'personal',
+  },
+  {
+    title: 'Buy groceries for the week',
+    description: 'Restock vegetables, fruit, coffee, and household essentials.',
+    dueDate: daysFromNow(1, 17),
+    complete: false,
+    priority: 'NOT_URGENT_IMPORTANT',
+    taskListKey: 'personal',
+  },
+  {
+    title: 'Confirm dental appointment',
+    description: 'Call the clinic and confirm the appointment time.',
+    dueDate: daysFromNow(-1, 7),
+    complete: true,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'personal',
+  },
+
+  // ==========================================
+  // CONTENT PIPELINE
+  // ==========================================
+  {
+    title: 'Publish Tech Stack article',
+    description: 'Complete the final publishing checklist and release the article.',
+    dueDate: daysFromNow(0, 18),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'content',
+  },
+  {
+    title: 'Create newsletter draft',
+    description: 'Write the first draft of this week’s industry newsletter.',
+    dueDate: daysFromNow(5, 14),
+    complete: false,
+    priority: 'NOT_URGENT_IMPORTANT',
+    taskListKey: 'content',
+  },
+  {
+    title: 'Prepare social campaign assets',
+    description: 'Create graphics and copy for the product launch campaign.',
+    dueDate: daysFromNow(9, 16),
+    complete: false,
+    priority: 'URGENT_IMPORTANT',
+    taskListKey: 'content',
+  },
+
+  // ==========================================
+  // SOMEDAY / MAYBE
+  // ==========================================
+  {
+    title: 'Research new project management tools',
+    description: 'Compare alternatives and note useful features.',
+    dueDate: null,
+    complete: false,
+    priority: 'NOT_URGENT_UNIMPORTANT',
+    taskListKey: 'someday',
+  },
+  {
+    title: 'Plan next personal project',
+    description: 'Write down possible ideas and decide which one is worth pursuing.',
+    dueDate: null,
+    complete: false,
+    priority: 'NOT_URGENT_IMPORTANT',
+    taskListKey: 'someday',
+  },
+];
