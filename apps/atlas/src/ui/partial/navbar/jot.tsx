@@ -38,6 +38,7 @@ import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import MenuNote from '@atlas/ui/menu/note';
 import { Order } from '@repo/types';
+import PartialEmpty from '../empty';
 
 export default function Jot() {
   const { subViewValue, showSubViewJot } = useSubView();
@@ -118,14 +119,8 @@ export default function Jot() {
           </Group>
 
           <div>
-            {notes === undefined ? (
-              <Stack align="center" py={'xl'} fz={'xs'}>
-                <Loader size={'xs'} />
-              </Stack>
-            ) : !notes?.length ? (
-              <Stack align="center" py={'xl'} fz={'xs'}>
-                <Text inherit>No notes</Text>
-              </Stack>
+            {notes === undefined || !notes?.length ? (
+              <PartialEmpty loading={notes === undefined} label={`No notes.`} />
             ) : (
               sortedNotes.map((ni, i) => {
                 const noteActive =

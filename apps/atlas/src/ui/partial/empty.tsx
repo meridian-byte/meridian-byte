@@ -9,7 +9,7 @@ export default function Empty({ label, loading }: { label?: string; loading?: bo
   const sharedSize = ICON_WRAPPER_SIZE * 1.5;
 
   return (
-    <Stack align="center" py={SECTION_SPACING}>
+    <Stack align="center" py={SECTION_SPACING} mih={220}>
       <Center h={sharedSize} w={sharedSize} display={loading ? undefined : 'none'}>
         <Loader />
       </Center>

@@ -46,6 +46,7 @@ import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreCalendar } from '@repo/store';
 import MenuCalendar from '@atlas/ui/menu/calendar';
 import { Order } from '@repo/types';
+import PartialEmpty from '../empty';
 
 export default function Pave() {
   const { subViewValue, showSubViewPave } = useSubView();
@@ -137,14 +138,8 @@ export default function Pave() {
           </Group>
 
           <div>
-            {calendars === undefined ? (
-              <Stack align="center" py={'xl'} fz={'xs'}>
-                <Loader size={'xs'} />
-              </Stack>
-            ) : !calendars?.length ? (
-              <Stack align="center" py={'xl'} fz={'xs'}>
-                <Text inherit>No calendars</Text>
-              </Stack>
+            {calendars === undefined || !calendars?.length ? (
+              <PartialEmpty loading={calendars === undefined} label={`No calendars.`} />
             ) : (
               sortedCalendars.map((ci, i) => {
                 const calendarActive =

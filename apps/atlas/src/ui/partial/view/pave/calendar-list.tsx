@@ -92,10 +92,9 @@ export default function CalendarList() {
 
       <Divider mt="xs" />
 
-      {events === undefined ? (
-        <PartialLoading />
-      ) : !scheduleEvents?.length ? (
+      {events === undefined || !scheduleEvents?.length ? (
         <PartialEmpty
+          loading={events === undefined}
           label={`No events for '${calendar?.title}' calendar in ${currentDate.format('MMMM YYYY')}`}
         />
       ) : (

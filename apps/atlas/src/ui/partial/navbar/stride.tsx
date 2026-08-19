@@ -37,6 +37,7 @@ import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreTaskList } from '@repo/store';
 import MenuTaskList from '@atlas/ui/menu/task-list';
+import PartialEmpty from '../empty';
 
 export default function Stride() {
   const { subViewValue, showSubViewStride } = useSubView();
@@ -130,14 +131,8 @@ export default function Stride() {
           </Group>
 
           <div>
-            {taskLists === undefined ? (
-              <Stack align="center" py={'xl'} fz={'xs'}>
-                <Loader size={'xs'} />
-              </Stack>
-            ) : !taskLists?.length ? (
-              <Stack align="center" py={'xl'} fz={'xs'}>
-                <Text inherit>No task lists</Text>
-              </Stack>
+            {taskLists === undefined || !taskLists?.length ? (
+              <PartialEmpty loading={taskLists === undefined} label={`No task lists.`} />
             ) : (
               taskLists.map((tli, i) => {
                 const taskListActive =
