@@ -5,7 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useIdle, UserNetworkReturnValue } from '@mantine/hooks';
 import { config } from './indexed-db/config';
 import { openDatabase } from './indexed-db/actions';
@@ -230,49 +230,43 @@ export type MergedSyncParams = {
 
 export const useMergedSync = (params: {
   online: boolean;
-  storesToSync: SyncStoreKey[]; // Use an array for stability
+  storesToSync: SyncStoreKey[];
   handleSync: (payload: MergedSyncPayload) => Promise<void>;
   syncStatus: SyncStatusValue;
 }) => {
-  const { online, storesToSync, handleSync } = params;
+  const { online } = params;
   const idle = useIdle(4000, { events: ['keypress', 'click'] });
   const { noSession } = useSessionCheck();
 
-  // Call all hooks at the top level (Required by Hook Rules)
-  const workspaceStore = useStoreWorkspace();
-  const calendarStore = useStoreCalendar();
-  const eventStore = useStoreEvent();
-  const noteStore = useStoreNote();
-  const linkStore = useStoreLink();
-  const taskListStore = useStoreTaskList();
-  const recurringRuleStore = useStoreRecurringRule();
-  const taskStore = useStoreTask();
-  const reminderStore = useStoreReminder();
+  // Store params in a ref so sync always reads fresh state without re-triggering useEffect
+  const paramsRef = useRef(params);
+  paramsRef.current = params;
 
-  const stores = {
-    [STORE_NAME.WORKSPACES]: workspaceStore,
+  // Ref guard to prevent concurrent sync executions
+  const isSyncingRef = useRef(false);
 
-    // Pave
-    [STORE_NAME.CALENDARS]: calendarStore,
-    [STORE_NAME.EVENTS]: eventStore,
+  const triggerSync = useCallback(async () => {
+    // Prevent execution if already syncing or pending
+    if (isSyncingRef.current || paramsRef.current.syncStatus === SyncStatus.PENDING) {
+      return;
+    }
 
-    // Jot
-    [STORE_NAME.NOTES]: noteStore,
-    [STORE_NAME.LINKS]: linkStore,
+    const stores = {
+      [STORE_NAME.WORKSPACES]: useStoreWorkspace.getState(),
+      [STORE_NAME.CALENDARS]: useStoreCalendar.getState(),
+      [STORE_NAME.EVENTS]: useStoreEvent.getState(),
+      [STORE_NAME.NOTES]: useStoreNote.getState(),
+      [STORE_NAME.LINKS]: useStoreLink.getState(),
+      [STORE_NAME.TASK_LISTS]: useStoreTaskList.getState(),
+      [STORE_NAME.RECURRING_RULES]: useStoreRecurringRule.getState(),
+      [STORE_NAME.TASKS]: useStoreTask.getState(),
+      [STORE_NAME.REMINDERS]: useStoreReminder.getState(),
+    };
 
-    // Stride
-    [STORE_NAME.TASK_LISTS]: taskListStore,
-    [STORE_NAME.RECURRING_RULES]: recurringRuleStore,
-    [STORE_NAME.TASKS]: taskStore,
-    [STORE_NAME.REMINDERS]: reminderStore,
-  };
-
-  const sync = useCallback(async () => {
     const payload: MergedSyncPayload = {};
     let hasDirtyData = false;
 
-    // Build the payload dynamically based on what's active
-    storesToSync.forEach((key) => {
+    paramsRef.current.storesToSync.forEach((key) => {
       const config = SYNC_STORES[key];
 
       // Safety Check: skip if config doesn't exist for this key
@@ -285,7 +279,6 @@ export const useMergedSync = (params: {
       const items = config.getItems(store) ?? [];
       const deleted = config.getDeleted(store) ?? [];
 
-      // ONLY add to payload if there is something that needs action
       const needsSync = items.some(
         (i) =>
           i.syncStatus === SyncStatus.PENDING ||
@@ -295,35 +288,28 @@ export const useMergedSync = (params: {
       );
 
       if (needsSync || deleted.length > 0) {
+        console.log('--> [info] syncing', key);
         (payload as any)[key] = { items, deleted };
         hasDirtyData = true;
       }
     });
 
-    // Only proceed if we actually have work to do
-    if (hasDirtyData && params.syncStatus !== SyncStatus.PENDING) {
-      await handleSync(payload);
+    if (hasDirtyData) {
+      try {
+        isSyncingRef.current = true;
+        await paramsRef.current.handleSync(payload);
+      } finally {
+        isSyncingRef.current = false;
+      }
     }
-  }, [
-    storesToSync,
-    // workspaceStore,
-    // calendarStore,
-    // eventStore,
-    // noteStore,
-    // linkStore,
-    // taskListStore,
-    // recurringRuleStore,
-    // taskStore,
-    // reminderStore,
-    handleSync,
-    params.syncStatus,
-  ]);
+  }, []);
 
+  // Effect ONLY re-runs when idle, online, or session state actually transitions
   useEffect(() => {
     if (!noSession && idle && online) {
-      sync();
+      triggerSync();
     }
-  }, [online, noSession, idle, sync]);
+  }, [online, noSession, idle, triggerSync]);
 };
 
 export const handleMergedSync = async (
