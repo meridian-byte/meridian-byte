@@ -89,6 +89,7 @@ export default function Main({ item }: { item?: NoteGet }) {
     <Divider
       orientation="vertical"
       color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))"
+      style={{ margin: '0 5px' }}
     />
   );
 

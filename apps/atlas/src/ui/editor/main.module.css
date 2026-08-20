@@ -1,15 +1,15 @@
 .root {
-  border: 0px solid transparent;
+  border: 0px solid transparent !important;
 }
 
 .toolbar {
   padding: var(--mantine-spacing-xs) 0;
-  border: 0px solid transparent;
-  gap: 5;
+  border: 0px solid transparent !important;
+  gap: 2;
 }
 
 .content {
-  border: 0px solid transparent;
+  border: 0px solid transparent !important;
 }
 
 .controlsGroup {
@@ -19,16 +19,19 @@
 
 .control {
   transition: 0.25s all ease;
-  background-color: transparent;
-  border: 0px solid transparent;
+  background-color: transparent !important;
+  border: 0px solid transparent !important;
 }
 
 .control[data-active] {
-  background-color: var(--mantine-color-pri-light);
+  background-color: var(--mantine-color-pri-light) !important;
 }
 
 @media (hover: hover) {
   .control:hover {
-    background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+    background-color: light-dark(
+      var(--mantine-color-gray-1),
+      var(--mantine-color-dark-8)
+    ) !important;
   }
 }
