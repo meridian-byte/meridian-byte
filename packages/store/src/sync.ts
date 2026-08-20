@@ -150,53 +150,53 @@ type SyncStoreKey = keyof typeof SYNC_STORES;
 const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
   [STORE_NAME.WORKSPACES]: {
     store: useStoreWorkspace,
-    updateState: (items: any) => useStoreWorkspace.getState().setWorkspaces(items),
+    updateState: (items: any) => useStoreWorkspace.getState().mergeWorkspaces(items),
     clearDeleted: () => useStoreWorkspace.getState().clearDeletedWorkspaces(),
   },
 
   // Pave
   [STORE_NAME.CALENDARS]: {
     store: useStoreCalendar,
-    updateState: (items: any) => useStoreCalendar.getState().setCalendars(items),
+    updateState: (items: any) => useStoreCalendar.getState().mergeCalendars(items),
     clearDeleted: () => useStoreCalendar.getState().clearDeletedCalendars(),
   },
   [STORE_NAME.EVENTS]: {
     store: useStoreEvent,
-    updateState: (items: any) => useStoreEvent.getState().setEvents(items),
+    updateState: (items: any) => useStoreEvent.getState().mergeEvents(items),
     clearDeleted: () => useStoreEvent.getState().clearDeletedEvents(),
   },
 
   // Jot
   [STORE_NAME.NOTES]: {
     store: useStoreNote,
-    updateState: (items: any) => useStoreNote.getState().setNotes(items),
+    updateState: (items: any) => useStoreNote.getState().mergeNotes(items),
     clearDeleted: () => useStoreNote.getState().clearDeletedNotes(),
   },
   [STORE_NAME.LINKS]: {
     store: useStoreLink,
-    updateState: (items: any) => useStoreLink.getState().setLinks(items),
+    updateState: (items: any) => useStoreLink.getState().mergeLinks(items),
     clearDeleted: () => useStoreLink.getState().clearDeletedLinks(),
   },
 
   // Stride
   [STORE_NAME.TASK_LISTS]: {
     store: useStoreTaskList,
-    updateState: (items: any) => useStoreTaskList.getState().setTaskLists(items),
+    updateState: (items: any) => useStoreTaskList.getState().mergeTaskLists(items),
     clearDeleted: () => useStoreTaskList.getState().clearDeletedTaskLists(),
   },
   [STORE_NAME.RECURRING_RULES]: {
     store: useStoreRecurringRule,
-    updateState: (items: any) => useStoreRecurringRule.getState().setRecurringRules(items),
+    updateState: (items: any) => useStoreRecurringRule.getState().mergeRecurringRules(items),
     clearDeleted: () => useStoreRecurringRule.getState().clearDeletedRecurringRules(),
   },
   [STORE_NAME.TASKS]: {
     store: useStoreTask,
-    updateState: (items: any) => useStoreTask.getState().setTasks(items),
+    updateState: (items: any) => useStoreTask.getState().mergeTasks(items),
     clearDeleted: () => useStoreTask.getState().clearDeletedTasks(),
   },
   [STORE_NAME.REMINDERS]: {
     store: useStoreReminder,
-    updateState: (items: any) => useStoreReminder.getState().setReminders(items),
+    updateState: (items: any) => useStoreReminder.getState().mergeReminders(items),
     clearDeleted: () => useStoreReminder.getState().clearDeletedReminders(),
   },
 };

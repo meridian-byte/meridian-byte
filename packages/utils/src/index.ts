@@ -11,3 +11,4 @@ export * from './validation';
 export * from './theme';
 export * from './generators';
 export * from './middeware';
+export * from './object';
