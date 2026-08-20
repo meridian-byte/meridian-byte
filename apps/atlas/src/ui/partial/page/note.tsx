@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { useStoreNote, useSubView } from '@repo/store';
 import { Button, Center, Group, Loader, Stack, Text, Title } from '@mantine/core';
-import { ICON_SIZE, ICON_STROKE_WIDTH, SECTION_SPACING } from '@repo/constants';
+import { ICON_SIZE, ICON_STROKE_WIDTH, SECTION_SPACING, SUBVIEW_NAMES } from '@repo/constants';
 import { IconArrowLeft } from '@tabler/icons-react';
 import NextLink from '@atlas/ui/anchor/next-link';
 import { LayoutSection } from '@repo/ui';
@@ -54,11 +54,9 @@ export default function Note() {
         </Stack>
 
         <Group>
-          <NextLink href="/">
-            <Button size="xs" color="dark">
-              Back to Home
-            </Button>
-          </NextLink>
+          <Button size="xs" color="dark" onClick={() => showSubViewJot(SUBVIEW_NAMES.JOT.HOME)}>
+            Back to Home
+          </Button>
         </Group>
       </Stack>
     </Center>

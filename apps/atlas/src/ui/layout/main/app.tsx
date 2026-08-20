@@ -99,7 +99,7 @@ function ViewPave() {
         </LayoutMain>
       </DisplayNoneWrapper>
 
-      <DisplayNoneWrapper visible={!subViewValue}>
+      <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.PAVE.HOME}>
         <LayoutMain>Pave Home</LayoutMain>
       </DisplayNoneWrapper>
     </>
@@ -121,7 +121,7 @@ function ViewJot() {
         </LayoutMain>
       </DisplayNoneWrapper>
 
-      <DisplayNoneWrapper visible={!subViewValue}>
+      <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.JOT.HOME}>
         <LayoutMain>Jot Home</LayoutMain>
       </DisplayNoneWrapper>
     </>
@@ -173,7 +173,7 @@ function ViewStride() {
         </LayoutMain>
       </DisplayNoneWrapper>
 
-      <DisplayNoneWrapper visible={!subViewValue}>
+      <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.STRIDE.HOME}>
         <LayoutMain>Stride Home</LayoutMain>
       </DisplayNoneWrapper>
     </>
