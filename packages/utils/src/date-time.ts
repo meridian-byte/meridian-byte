@@ -71,9 +71,10 @@ export const getRelativeTime = (
   options?: {
     hideSeconds?: boolean;
     format?: 'long' | 'short' | 'narrow';
+    allowFuture?: boolean; // New option, defaults to true to preserve backward compatibility
   },
 ): string => {
-  const { hideSeconds = false, format = 'long' } = options ?? {};
+  const { hideSeconds = false, format = 'long', allowFuture = true } = options ?? {};
 
   const date = typeof input === 'string' ? new Date(input) : input;
 
@@ -82,49 +83,47 @@ export const getRelativeTime = (
   }
 
   const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
+  let diffMs = date.getTime() - now.getTime();
+
+  // Clamp future timestamps to current time if future dates are disabled
+  if (!allowFuture && diffMs > 0) {
+    diffMs = 0;
+  }
+
   const diffSec = Math.round(diffMs / 1000);
+
+  // Return "just now" for immediate changes or when hideSeconds is enabled within 60s
+  if (Math.abs(diffSec) < (hideSeconds ? 60 : 5)) {
+    return 'just now';
+  }
 
   const rtf = new Intl.RelativeTimeFormat(locale, {
     numeric: 'auto',
     style: format,
   });
 
-  // Collapse < 60 seconds
-  if (hideSeconds && Math.abs(diffSec) < 60) {
-    // Important: this won't be perfectly localized.
-    // If you need full i18n correctness, use a translation map.
-    return diffSec < 0
-      ? format === 'narrow'
-        ? 'less than 1m ago'
-        : 'less than a minute ago'
-      : format === 'narrow'
-        ? 'in less than 1m'
-        : 'in less than a minute';
+  const minutes = Math.round(diffSec / 60);
+  if (Math.abs(minutes) < 60) {
+    return rtf.format(minutes, 'minute');
   }
 
-  const divisions = [
-    { amount: 60, unit: 'seconds' },
-    { amount: 60, unit: 'minutes' },
-    { amount: 24, unit: 'hours' },
-    { amount: 7, unit: 'days' },
-    { amount: 4.34524, unit: 'weeks' },
-    { amount: 12, unit: 'months' },
-    { amount: Number.POSITIVE_INFINITY, unit: 'years' },
-  ] as const;
-
-  let duration = diffSec;
-
-  for (const division of divisions) {
-    if (Math.abs(duration) < division.amount) {
-      const unit = division.unit.replace(/s$/, '') as Intl.RelativeTimeFormatUnit;
-
-      return rtf.format(Math.round(duration), unit);
-    }
-    duration /= division.amount;
+  const hours = Math.round(diffSec / 3600);
+  if (Math.abs(hours) < 24) {
+    return rtf.format(hours, 'hour');
   }
 
-  return rtf.format(0, 'second');
+  const days = Math.round(diffSec / 86400);
+  if (Math.abs(days) < 30) {
+    return rtf.format(days, 'day');
+  }
+
+  const months = Math.round(diffSec / 2592000);
+  if (Math.abs(months) < 12) {
+    return rtf.format(months, 'month');
+  }
+
+  const years = Math.round(diffSec / 31536000);
+  return rtf.format(years, 'year');
 };
 
 /**

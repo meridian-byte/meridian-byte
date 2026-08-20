@@ -16,13 +16,18 @@ export default function UpdatedTimestamp() {
   const noteId = extractUuidFromParam(subViewValue || '');
   const note = notes?.find((n) => n.id == noteId);
 
+  const updatedAt = note?.updatedAt && getRegionalDate(note.updatedAt);
+
   return notes === undefined ? (
     <Skeleton h={30} w={80} radius={0} />
   ) : !note ? null : (
     <Tooltip
-      label={<span>Last edited: {getRegionalDate(note.updatedAt).date}</span>}
+      label={
+        <span>
+          Last edited: {updatedAt?.date}, {updatedAt?.time.toUpperCase()}
+        </span>
+      }
       styles={{ tooltip: { textAlign: 'center' } }}
-      display={(note?.content || '').length < 8 ? 'none' : undefined}
     >
       <Badge
         tt={'none'}
@@ -34,12 +39,12 @@ export default function UpdatedTimestamp() {
         h={30}
         radius={0}
         style={{ cursor: 'pointer' }}
-        display={(note?.content || '').length < 8 ? 'none' : undefined}
       >
         <Text component="span" inherit>
           {getRelativeTime(new Date(note.updatedAt), 'en-GB', {
-            hideSeconds: true,
+            // hideSeconds: true,
             format: 'narrow',
+            allowFuture: false,
           })}
         </Text>
       </Badge>
