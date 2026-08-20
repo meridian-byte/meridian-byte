@@ -42,23 +42,7 @@ export function ProviderSync({ children }: { children: React.ReactNode }) {
     syncStatus: restProps.syncStatus,
     online: networkStatus.online,
     // Use an array of keys for stability in the hook's dependency array
-    storesToSync: [
-      STORE_NAME.WORKSPACES,
-
-      // Pave
-      STORE_NAME.CALENDARS,
-      STORE_NAME.EVENTS,
-
-      // Jot
-      STORE_NAME.NOTES,
-      STORE_NAME.LINKS,
-
-      // Stride
-      STORE_NAME.TASK_LISTS,
-      // STORE_NAME.RECURRING_RULES,
-      STORE_NAME.TASKS,
-      // STORE_NAME.REMINDERS,
-    ],
+    storesToSync: STORES_TO_SYNC,
     // The payload (i) passed here is now the MergedSyncPayload { notes, categories }
     handleSync: (payload: MergedSyncPayload) =>
       handleMergedSync({ payload, ...restProps, apiUrl: API_URL }),
@@ -66,3 +50,21 @@ export function ProviderSync({ children }: { children: React.ReactNode }) {
 
   return <div>{children}</div>;
 }
+
+const STORES_TO_SYNC = [
+  STORE_NAME.WORKSPACES,
+
+  // Pave
+  STORE_NAME.CALENDARS,
+  STORE_NAME.EVENTS,
+
+  // Jot
+  STORE_NAME.NOTES,
+  STORE_NAME.LINKS,
+
+  // Stride
+  STORE_NAME.TASK_LISTS,
+  // STORE_NAME.RECURRING_RULES,
+  STORE_NAME.TASKS,
+  // STORE_NAME.REMINDERS,
+];
