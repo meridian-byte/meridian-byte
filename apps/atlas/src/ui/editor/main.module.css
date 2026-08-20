@@ -5,7 +5,7 @@
 .toolbar {
   padding: var(--mantine-spacing-xs) 0;
   border: 0px solid transparent !important;
-  gap: 2;
+  gap: 2 !important;
 }
 
 .content {
