@@ -450,7 +450,11 @@ export const handleServerResponse = async (
     const config = SYNC_STORES[key as SyncStoreKey];
     const registry = SYNC_REGISTRY[key as SyncStoreKey];
 
-    if (!config || !registry) continue;
+    // Safety Check: skip if config doesn't exist for this key
+    if (!config || !registry) {
+      console.warn(`Sync config for hook key "${key}" is missing in SYNC_STORES.`);
+      continue;
+    }
 
     // 2. Update Client DB & Zustand to 'SYNCED'
     // We use your existing syncToClientDB but with 'fromServer' flag
@@ -493,7 +497,7 @@ export const syncToServerAfterDelay = async (
 
     // 2. Process the successful return to update local state
     if (result?.data) {
-      await handleServerResponse(result.data, networkStatus, params.db);
+      await handleServerResponse(result.data.items, networkStatus, params.db);
     }
 
     setSyncStatus(SyncStatus.SYNCED);
