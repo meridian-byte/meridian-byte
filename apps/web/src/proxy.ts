@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getColorScheme, setCorsHeaders } from '@repo/utils';
-import { CROSS_ORIGINS } from '@repo/constants';
 
 export async function proxy(request: NextRequest) {
   // Handle preflight
   if (request.method === 'OPTIONS') {
     const response = NextResponse.json({}, { status: 200 });
-    setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
+    setCorsHeaders({ request, response });
     return response;
   }
 
   let response = NextResponse.next({ request });
 
   // Set CORS headers for the response
-  setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
+  setCorsHeaders({ request, response });
 
   response = getColorScheme(request, response);
 

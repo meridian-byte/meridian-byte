@@ -5,7 +5,7 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { COOKIE_NAME } from '@repo/constants';
+import { COOKIE_NAME, SHARED_VERCEL_SUBSTRING } from '@repo/constants';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -87,14 +87,49 @@ export const createRedirectHandler = (
  * -------------------------------
  * Sets CORS headers for allowed origins.
  */
-export const setCorsHeaders = (params: {
-  crossOrigins: string[];
-  request: NextRequest;
-  response: NextResponse;
-}) => {
+export const isAllowedOrigin = (origin: string): boolean => {
+  if (!origin) return false;
+
+  try {
+    const { hostname, protocol } = new URL(origin);
+
+    // 1. Allow local development
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return true;
+    }
+
+    // 2. Allow HTTPS requests to production domain or its subdomains
+    const productionDomain = process.env.NEXT_PUBLIC_HOST_WEB_PROD;
+
+    if (!productionDomain) {
+      console.error('x--> (CORS error) Production domain required.');
+      return false;
+    }
+
+    if (
+      protocol === 'https:' &&
+      (hostname === productionDomain || hostname.endsWith(`.${productionDomain}`))
+    ) {
+      return true;
+    }
+
+    // 3. Allow Vercel preview deployments for meridianbyte projects
+    const vercelPreviewRegex = new RegExp(`^${SHARED_VERCEL_SUBSTRING}-[a-z0-9-]+\\.vercel\\.app$`);
+
+    if (protocol === 'https:' && vercelPreviewRegex.test(hostname)) {
+      return true;
+    }
+
+    return false;
+  } catch {
+    return false; // Invalid URL structure
+  }
+};
+
+export const setCorsHeaders = (params: { request: NextRequest; response: NextResponse }) => {
   const origin = params.request.headers.get('origin') || '';
 
-  if (params.crossOrigins.some((allowed) => origin.includes(allowed))) {
+  if (isAllowedOrigin(origin)) {
     const { response } = params;
 
     response.headers.set('Access-Control-Allow-Credentials', 'true');
@@ -128,15 +163,9 @@ export const setCorsHeaders = (params: {
 /**
  * Generate a NextResponse JSON with optional CORS headers
  */
-export const jsonResponse = (
-  data: any,
-  request: NextRequest,
-  options?: { status?: number; crossOrigins?: string[] },
-) => {
+export const jsonResponse = (data: any, request: NextRequest, options?: { status?: number }) => {
   const response = NextResponse.json(data, { status: options?.status ?? 200 });
-  if (options?.crossOrigins) {
-    setCorsHeaders({ crossOrigins: options.crossOrigins, request, response });
-  }
+  setCorsHeaders({ request, response });
   return response;
 };
 
