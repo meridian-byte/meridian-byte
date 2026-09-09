@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import { HEADERS } from '@repo/constants';
 
 export const apiCall = async (

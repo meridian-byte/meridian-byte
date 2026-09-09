@@ -8,12 +8,6 @@ import {
   sampleTaskLists,
   sampleTasks,
 } from '@repo/constants';
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
 
 import { db } from '@repo/db';
 import { Priority, ProfileCreate, TaskListGet } from '@repo/types';

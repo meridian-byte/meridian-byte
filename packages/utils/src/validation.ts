@@ -1,11 +1,4 @@
 /**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
-/**
  * Predefined validation error messages and helper generators
  */
 export const errors = {
@@ -40,8 +33,7 @@ export const validators = {
   /**
    * Check if the field is empty
    */
-  required: (val: string): string | false =>
-    !val.trim() ? errors.isEmpty : false,
+  required: (val: string): string | false => (!val.trim() ? errors.isEmpty : false),
 
   /**
    * Minimum length validator
@@ -78,8 +70,7 @@ export const validators = {
   /**
    * Text-only validator (no numbers)
    */
-  textOnly: (val: string): string | false =>
-    /[0-9]/.test(val) ? errors.isText : false,
+  textOnly: (val: string): string | false => (/[0-9]/.test(val) ? errors.isText : false),
 
   /**
    * Checkbox validator
@@ -89,11 +80,8 @@ export const validators = {
   /**
    * Match validator for comparing two fields
    */
-  matches: (
-    val: string,
-    otherVal: string,
-    fieldName = 'Field'
-  ): string | false => (val !== otherVal ? errors.isMatch(fieldName) : false),
+  matches: (val: string, otherVal: string, fieldName = 'Field'): string | false =>
+    val !== otherVal ? errors.isMatch(fieldName) : false,
 
   /**
    * Generic regex validator with custom error
@@ -111,7 +99,7 @@ export const validators = {
  */
 export const getPasswordStrength = (
   password: string,
-  requirements: { re: RegExp; label: string }[]
+  requirements: { re: RegExp; label: string }[],
 ): number => {
   let multiplier = password.length >= 8 ? 0 : 1;
 

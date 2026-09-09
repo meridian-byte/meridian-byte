@@ -1,13 +1,6 @@
 'use client';
 
 /**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
-/**
  * Save an item to localStorage after serializing it to JSON.
  *
  * @param name - key to save under

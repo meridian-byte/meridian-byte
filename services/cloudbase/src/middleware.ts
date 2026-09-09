@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import { PARAM_NAME } from '@repo/constants';
 import { AUTH_URLS } from '@repo/constants';
 import { validateRoute } from '@repo/utils';
@@ -31,27 +24,23 @@ export const updateSession = async (
     throw new Error('Missing Supabase URL or Key');
   }
 
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
 
-          supabaseResponse = NextResponse.next({ request });
+        supabaseResponse = NextResponse.next({ request });
 
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
-          );
-        },
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options),
+        );
       },
     },
-  );
+  });
 
   // Do not run code between createServerClient and
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug

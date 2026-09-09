@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import React from 'react';
 import { Center, Container, Grid, GridCol, Stack } from '@mantine/core';
 import ImageDefault from '../../image/default';

@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 export enum Hashing {
   SHA1 = 'SHA-1',
   SHA256 = 'SHA-256',

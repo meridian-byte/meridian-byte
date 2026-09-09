@@ -1,12 +1,5 @@
 'use client';
 
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import { useEffect } from 'react';
 import { useStoreView, ViewValue } from '../../state/view';
 import { getFromSessionStorage, saveToSessionStorage } from '@repo/utils';

@@ -1,12 +1,5 @@
 'use client';
 
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import { useEffect, useRef } from 'react';
 import { DEFAULT_NAMES, LOCAL_STORAGE_NAME } from '@repo/constants';
 import {

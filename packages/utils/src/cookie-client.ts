@@ -1,12 +1,5 @@
 'use client';
 
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 type CookieOptions = {
   expiryInSeconds: number;
   sameSite?: 'Strict' | 'Lax' | 'None';

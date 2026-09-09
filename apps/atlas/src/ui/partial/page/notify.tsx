@@ -1,12 +1,5 @@
 'use client';
 
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import { Flex, Stack, Title, Text, Group, Button, Container } from '@mantine/core';
 import { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';

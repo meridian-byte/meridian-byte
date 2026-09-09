@@ -1,11 +1,4 @@
 /**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
-/**
  * Capitalize the first letter of a string
  */
 export const capitalizeWord = (value: string): string => {

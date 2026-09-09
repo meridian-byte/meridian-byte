@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 export const SHARED_VERCEL_SUBSTRING = 'meridianbyte';
 const VERCEL_TEAM_SLUG = SHARED_VERCEL_SUBSTRING + '-team';
 const vercelEnv = process.env.NEXT_PUBLIC_VERCEL_ENV;

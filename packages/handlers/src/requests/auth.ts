@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 import { AUTH_URLS } from '@repo/constants';
 import { SignIn, SignOut } from '@repo/types';
 

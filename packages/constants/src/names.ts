@@ -1,10 +1,3 @@
-/**
- * @template-source next-template
- * @template-sync auto
- * @description This file originates from the base template repository.
- * Do not modify unless you intend to backport changes to the template.
- */
-
 export const COOKIE_NAME = {
   USER_ROLE: 'user.role',
   APP_SHELL: 'appshell',
