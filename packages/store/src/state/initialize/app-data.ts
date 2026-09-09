@@ -146,46 +146,46 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
   },
 
   // Pave
-  calendars: {
+  [STORE_NAME.CALENDARS]: {
     dataStore: STORE_NAME.CALENDARS,
     useStoreHook: useStoreCalendar,
     setState: (store, items) => store.setCalendars(items),
   },
-  events: {
+  [STORE_NAME.EVENTS]: {
     dataStore: STORE_NAME.EVENTS,
     useStoreHook: useStoreEvent,
     setState: (store, items) => store.setEvents(items),
   },
 
   // Jot
-  notes: {
+  [STORE_NAME.NOTES]: {
     dataStore: STORE_NAME.NOTES,
     useStoreHook: useStoreNote,
     setState: (store, items) => store.setNotes(items),
   },
-  links: {
+  [STORE_NAME.LINKS]: {
     dataStore: STORE_NAME.LINKS,
     useStoreHook: useStoreLink,
     setState: (store, items) => store.setLinks(items),
   },
 
   // Stride
-  taskLists: {
+  [STORE_NAME.TASK_LISTS]: {
     dataStore: STORE_NAME.TASK_LISTS,
     useStoreHook: useStoreTaskList,
     setState: (store, items) => store.setTaskLists(items),
   },
-  recurringRules: {
+  [STORE_NAME.RECURRING_RULES]: {
     dataStore: STORE_NAME.RECURRING_RULES,
     useStoreHook: useStoreRecurringRule,
     setState: (store, items) => store.setRecurringRules(items),
   },
-  tasks: {
+  [STORE_NAME.TASKS]: {
     dataStore: STORE_NAME.TASKS,
     useStoreHook: useStoreTask,
     setState: (store, items) => store.setTasks(items),
   },
-  reminders: {
+  [STORE_NAME.REMINDERS]: {
     dataStore: STORE_NAME.REMINDERS,
     useStoreHook: useStoreReminder,
     setState: (store, items) => store.setReminders(items),
