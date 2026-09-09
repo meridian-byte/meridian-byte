@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@repo/cloudbase';
 import { getColorScheme, setCorsHeaders } from '@repo/utils';
-import { CROSS_ORIGINS } from '@repo/constants';
 import { BASE_URL } from '@repo/constants';
 
 export async function proxy(request: NextRequest) {
   // Handle preflight
   if (request.method === 'OPTIONS') {
     const response = NextResponse.json({}, { status: 200 });
-    setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
+    setCorsHeaders({ request, response });
     return response;
   }
 
   let response = NextResponse.next({ request });
 
   // Set CORS headers for the response
-  setCorsHeaders({ crossOrigins: CROSS_ORIGINS, request, response });
+  setCorsHeaders({ request, response });
 
   // Update the session in the response
   response = await updateSession(request, response, BASE_URL.ATLAS);

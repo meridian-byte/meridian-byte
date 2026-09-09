@@ -2,7 +2,6 @@ export * from './configs/next';
 export * from './configs/postcss';
 export * from './app';
 export * from './colors';
-export * from './hosts';
 export * from './icons';
 export * from './images';
 export * from './names';

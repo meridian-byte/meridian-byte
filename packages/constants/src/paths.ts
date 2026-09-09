@@ -49,3 +49,5 @@ export const BASE_URL = {
 };
 
 export const API_URL = `${BASE_URL.API}/api`;
+
+export const SHARED_VERCEL_SUBSTRING = 'meridianbyte';
