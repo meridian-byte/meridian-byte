@@ -53,11 +53,11 @@ const authEmail = async (params: { searchParams: URLSearchParams; baseUrl: strin
 
   if (verifyError) {
     if (verifyError.code == 'validation_failed') {
-      return `${baseUrl + AUTH_URLS.ERROR}?error=${'Validation Failed'}&message=${verifyError.message}`;
+      return `${baseUrl + AUTH_URLS.ERROR}?error=${'Validation Failed'}&message=${encodeURIComponent(verifyError.message)}`;
     } else if (verifyError.code == 'otp_expired') {
-      return `${baseUrl + AUTH_URLS.ERROR}?error=${'Invalid OTP'}&message=${verifyError.message}`;
+      return `${baseUrl + AUTH_URLS.ERROR}?error=${'Invalid OTP'}&message=${encodeURIComponent(verifyError.message)}`;
     } else {
-      throw `${baseUrl + AUTH_URLS.ERROR}?error=${'An Unexpected Error Occured'}&message=${verifyError.message}`;
+      throw `${baseUrl + AUTH_URLS.ERROR}?error=${'An Unexpected Error Occured'}&message=${encodeURIComponent(verifyError.message)}`;
     }
   }
 
