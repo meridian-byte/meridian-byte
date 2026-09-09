@@ -7,7 +7,6 @@
 
 export const SHARED_VERCEL_SUBSTRING = 'meridianbyte';
 const VERCEL_TEAM_SLUG = SHARED_VERCEL_SUBSTRING + '-team';
-const currentApp = process.env.NEXT_PUBLIC_APP_NAME; // 'WEB' | 'API' | 'ATLAS'
 const vercelEnv = process.env.NEXT_PUBLIC_VERCEL_ENV;
 const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
 const gitBranch = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF;
@@ -22,35 +21,29 @@ const cleanHost = (host?: string) => host?.replace(/^https?:\/\//, '') || '';
 const sanitizeBranch = (branch?: string) =>
   branch ? branch.toLowerCase().replace(/[^a-z0-9-]/g, '-') : '';
 
-const getSiblingPreviewUrl = (projectName: string) => {
-  if (!gitBranch) return vercelUrl;
+const getPreviewUrl = (projectName: string) => {
+  if (!gitBranch) return cleanHost(vercelUrl); // Fallback if no git ref exists
   const branchSlug = sanitizeBranch(gitBranch);
   return `${projectName}-git-${branchSlug}-${VERCEL_TEAM_SLUG}.vercel.app`;
 };
 
 // API Host
 export const HOSTNAME_API = isVercelPreview
-  ? currentApp === 'API'
-    ? vercelUrl
-    : getSiblingPreviewUrl(`${SHARED_VERCEL_SUBSTRING}-api`)
+  ? getPreviewUrl(`${SHARED_VERCEL_SUBSTRING}-api`)
   : isProduction
     ? cleanHost(process.env.NEXT_PUBLIC_HOST_API_PROD)
     : cleanHost(process.env.NEXT_PUBLIC_HOST_API_DEV);
 
 // WEB Host
 export const HOSTNAME_WEB = isVercelPreview
-  ? currentApp === 'WEB'
-    ? vercelUrl
-    : getSiblingPreviewUrl(`${SHARED_VERCEL_SUBSTRING}-web`)
+  ? getPreviewUrl(`${SHARED_VERCEL_SUBSTRING}-web`)
   : isProduction
     ? cleanHost(process.env.NEXT_PUBLIC_HOST_WEB_PROD)
     : cleanHost(process.env.NEXT_PUBLIC_HOST_WEB_DEV);
 
 // ATLAS Host
 export const HOSTNAME_ATLAS = isVercelPreview
-  ? currentApp === 'ATLAS'
-    ? vercelUrl
-    : getSiblingPreviewUrl(`${SHARED_VERCEL_SUBSTRING}-atlas`)
+  ? getPreviewUrl(`${SHARED_VERCEL_SUBSTRING}-atlas`)
   : isProduction
     ? cleanHost(process.env.NEXT_PUBLIC_HOST_ATLAS_PROD)
     : cleanHost(process.env.NEXT_PUBLIC_HOST_ATLAS_DEV);
