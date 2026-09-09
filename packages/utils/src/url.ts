@@ -5,9 +5,9 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { authRegex, PARAM_NAME } from '@repo/constants';
+import { PARAM_NAME } from '@repo/constants';
 import { capitalizeWords } from './string';
-import { ignoredRoutes } from '@repo/constants';
+import { authRoutes, ignoredAuthRoutes, ignoredRoutes, protectedRoutes } from '@repo/constants';
 
 /**
  * Appends a redirect query parameter to a target URL
@@ -228,21 +228,32 @@ export const validateRoute = (params: { request: Request; user: any | null; path
     redirectToHome: false,
   };
 
-  // Skip middleware redirects for API routes (API routes handle their own 401s/JSON responses)
-  if (pathname.startsWith('/api/')) return actions;
-
-  const isAuthRoute = authRegex.test(pathname);
-  const isIgnoredRoute = ignoredRoutes.has(pathname);
-
   if (!user) {
-    // Protected by default: block if not ignored and not an auth route
-    if (!isIgnoredRoute && !isAuthRoute) {
-      actions.redirectToAuth = true;
+    const isProtectedRoute = protectedRoutes.some((r) => {
+      if (r === '/') {
+        return pathname === '/';
+      }
+
+      return pathname === r || pathname.startsWith(r);
+    });
+
+    if (isProtectedRoute) {
+      const isIgnoredRoute = ignoredRoutes.some((r) => pathname === r);
+
+      if (!isIgnoredRoute) {
+        const isAuthRoute = authRoutes.some((r) => pathname === r);
+
+        if (!isAuthRoute) {
+          actions.redirectToAuth = true;
+        }
+      }
     }
   } else {
-    // If logged in, redirect away from auth pages EXCEPT for explicit ignored routes
-    if (isAuthRoute && !isIgnoredRoute) {
-      actions.redirectFromAuth = true;
+    const isIgnoredAuthRoute = ignoredAuthRoutes.some((r) => pathname === r);
+
+    if (!isIgnoredAuthRoute) {
+      const isAuthRoute = authRoutes.some((r) => pathname === r);
+      if (isAuthRoute) actions.redirectFromAuth = true;
     }
   }
 

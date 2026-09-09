@@ -5,17 +5,29 @@
  * Do not modify unless you intend to backport changes to the template.
  */
 
-import { AUTH_URLS } from './paths';
+export const authRoutes = [
+  '/auth/sign-in',
+  '/auth/error',
+  '/auth/sign-out',
 
-export const ignoredRoutes = new Set([
+  // Add other auth routes
+];
+
+export const protectedRoutes = [
+  '/',
+
+  // Add other protected routes
+];
+
+export const ignoredRoutes = [
   '/manifest.webmanifest',
-  AUTH_URLS.SIGN_OUT,
-  AUTH_URLS.SIGNED_OUT,
+  '/robots.txt',
+
   // Add other ignored routes
-]);
+];
 
-// Match anything starting with /auth/
-export const authRegex = /^\/auth(?:\/.*)?$/;
+export const ignoredAuthRoutes = [
+  '/auth/sign-out',
 
-// Match exact files
-export const ignoredRegex = /^\/manifest\.webmanifest$/;
+  // Add other ignored auth routes
+];
