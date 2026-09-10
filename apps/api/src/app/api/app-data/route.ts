@@ -73,20 +73,18 @@ export async function GET(request: NextRequest) {
         }),
     };
 
-    // 3. Filter the map to only include requested stores
-    const activeQueries = requestedStores
-      .filter((key) => !!queryMap[key]) // Ignore invalid keys
-      .map((key) => queryMap[key]());
+    // 3. Filter the map to only include valid requested stores
+    const validQueries = requestedStores.filter((key) => !!queryMap[key]);
+    const activeQueries = validQueries.map((key) => queryMap[key]());
 
-    // 3. Execute the transaction
+    // 4. Execute the transaction
     const results = await db.$transaction(activeQueries, {
-      maxWait: 10000, // Wait up to 10s to acquire a connection (default: 2000ms - 5000ms)
-      timeout: 15000, // Allow the transaction to run for up to 15s (default: 5000ms)
+      maxWait: 10000, // Wait up to 10s to acquire a connection
+      timeout: 15000, // Allow the transaction to run for up to 15s
     });
 
-    // 5. Format into a clean object: { tasks: [...], categories: [...] }
-    // Map the results back to their keys
-    const responsePayload = requestedStores.reduce(
+    // 5. Format into a clean object using the VALID keys array so indices match 1:1
+    const responsePayload = validQueries.reduce(
       (acc, key, index) => {
         acc[key] = results[index];
         return acc;
