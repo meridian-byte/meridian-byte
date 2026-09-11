@@ -1,6 +1,7 @@
 import { Box, BoxProps, Container } from '@mantine/core';
 import { SECTION_SPACING } from '@repo/constants';
 import { SectionProps } from '@repo/types';
+import classes from './section.module.css';
 
 export function LayoutSection({
   containerized = 'responsive',
@@ -27,6 +28,8 @@ export function LayoutSection({
         ? margined
         : undefined;
 
+  const isResponsive = containerized === 'responsive';
+
   return (
     <Box
       component="section"
@@ -41,7 +44,11 @@ export function LayoutSection({
       {...rest}
     >
       {containerized ? (
-        <Container size={typeof containerized === 'boolean' ? undefined : containerized} h={'100%'}>
+        <Container
+          size={isResponsive || containerized === true ? undefined : containerized}
+          h={'100%'}
+          className={containerized === 'responsive' ? classes.responsiveContainer : undefined}
+        >
           {children}
         </Container>
       ) : (
