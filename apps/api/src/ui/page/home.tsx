@@ -64,8 +64,8 @@ export default function Home() {
 
             <Text inherit size="sm" mt="xl" c="dimmed">
               Back to main site:{' '}
-              <Anchor inherit href={`https://${mainSiteLink}`} c={'dark.1'}>
-                {mainSiteLink}
+              <Anchor inherit href={`https://${HOSTNAME_WEB}`} c={'dark.1'}>
+                {HOSTNAME_WEB}
               </Anchor>
             </Text>
           </div>
