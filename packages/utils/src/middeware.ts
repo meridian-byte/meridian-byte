@@ -106,10 +106,10 @@ export const isAllowedOrigin = (origin: string): boolean => {
       return true;
     }
 
-    // 3. Allow Vercel preview deployments for meridianbyte projects
-    const vercelPreviewRegex = new RegExp(`^${SHARED_VERCEL_SUBSTRING}-[a-z0-9-]+\\.vercel\\.app$`);
-
-    if (protocol === 'https:' && vercelPreviewRegex.test(hostname)) {
+    // 3. Vercel Preview Deployments Check
+    // Safely verify it ends with .vercel.app and starts with your project prefix
+    const prefix = `${SHARED_VERCEL_SUBSTRING}-`;
+    if (hostname.endsWith('.vercel.app') && hostname.startsWith(prefix)) {
       return true;
     }
 
