@@ -5,6 +5,10 @@
       "cache": true,
       "env": ["DATABASE_URL", "DIRECT_URL"]
     },
+    "migrate:dev": {
+      "cache": false,
+      "env": ["DATABASE_URL", "DIRECT_URL"]
+    },
     "build": {
       "dependsOn": ["^build", "@repo/db#generate"],
       "env": [
