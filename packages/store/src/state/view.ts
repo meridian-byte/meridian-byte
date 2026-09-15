@@ -10,8 +10,12 @@ interface ViewState {
 
   setViewValue: (value: string | null) => void;
   setSubViewValue: (value: string | null) => void;
+
   setNavbarViewValue: (value: string[] | null) => void;
   setAsideViewValue: (value: string | null) => void;
+
+  setTabsJotViewValue: (value: View['tabsJotView']) => void;
+
   setModalViewValue: (value: string | null) => void;
 }
 
@@ -33,6 +37,7 @@ export const useStoreView = create<ViewState>((set) => ({
         navbarView: state.view?.navbarView ?? null,
         asideView: state.view?.asideView ?? null,
         modalView: state.view?.modalView ?? null,
+        tabsJotView: state.view?.tabsJotView ?? [],
         view: value,
       },
     }));
@@ -45,6 +50,7 @@ export const useStoreView = create<ViewState>((set) => ({
         navbarView: state.view?.navbarView ?? null,
         asideView: state.view?.asideView ?? null,
         modalView: state.view?.modalView ?? null,
+        tabsJotView: state.view?.tabsJotView ?? [],
         subView: value,
       },
     }));
@@ -57,6 +63,7 @@ export const useStoreView = create<ViewState>((set) => ({
         asideView: state.view?.asideView ?? null,
         subView: state.view?.subView ?? null,
         modalView: state.view?.modalView ?? null,
+        tabsJotView: state.view?.tabsJotView ?? [],
         navbarView: value,
       },
     }));
@@ -69,7 +76,21 @@ export const useStoreView = create<ViewState>((set) => ({
         navbarView: state.view?.navbarView ?? null,
         subView: state.view?.subView ?? null,
         modalView: state.view?.modalView ?? null,
+        tabsJotView: state.view?.tabsJotView ?? [],
         asideView: value,
+      },
+    }));
+  },
+
+  setTabsJotViewValue: (value) => {
+    set((state) => ({
+      view: {
+        view: state.view?.view ?? null,
+        asideView: state.view?.asideView ?? null,
+        subView: state.view?.subView ?? null,
+        modalView: state.view?.modalView ?? null,
+        navbarView: state.view?.navbarView ?? null,
+        tabsJotView: value,
       },
     }));
   },
@@ -81,6 +102,7 @@ export const useStoreView = create<ViewState>((set) => ({
         navbarView: state.view?.navbarView ?? null,
         subView: state.view?.subView ?? null,
         asideView: state.view?.asideView ?? null,
+        tabsJotView: state.view?.tabsJotView ?? [],
         modalView: value,
       },
     }));
