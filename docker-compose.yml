@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: local_postgres_motown
+    container_name: local_postgres_meridian
     restart: always
     environment:
       POSTGRES_USER: postgres
