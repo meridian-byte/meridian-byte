@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useStoreView, ViewValue } from '../../state/view';
 import { getFromSessionStorage, saveToSessionStorage } from '@repo/utils';
-import { SESSION_STORAGE_NAME } from '@repo/constants';
+import { APP_NAMES_ATLAS, SESSION_STORAGE_NAME } from '@repo/constants';
 
 interface UseViewInitializeParams {
   initialView?: ViewValue;
@@ -24,6 +24,13 @@ export const useViewInitialize = (params?: UseViewInitializeParams) => {
         view: null,
         subView: null,
         asideView: null,
+        navbarView: [
+          APP_NAMES_ATLAS.PAVE,
+          APP_NAMES_ATLAS.JOT,
+          APP_NAMES_ATLAS.STRIDE,
+          // APP_NAMES_ATLAS.PRIME,
+          // APP_NAMES_ATLAS.TALLY,
+        ],
       };
 
     // Sync to store
