@@ -2,26 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getColorScheme, setCorsHeaders } from '@repo/utils';
 
 export async function proxy(request: NextRequest) {
-  // Handle OPTIONS preflight immediately
+  // Handle preflight
   if (request.method === 'OPTIONS') {
-    const response = new NextResponse(null, { status: 204 });
+    const response = NextResponse.json({}, { status: 200 });
     setCorsHeaders({ request, response });
     return response;
   }
 
-  // Generate standard downstream response
-  const response = NextResponse.next();
+  let response = NextResponse.next({ request });
 
-  // Apply CORS headers directly
+  // Set CORS headers for the response
   setCorsHeaders({ request, response });
 
-  // Handle other middleware checks
-  const modifiedResponse = getColorScheme(request, response);
+  response = getColorScheme(request, response);
 
   // Disable SEO/indexing globally for all responses passing through middleware
-  modifiedResponse.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 
-  return modifiedResponse;
+  return response;
 }
 
 export const config = {
