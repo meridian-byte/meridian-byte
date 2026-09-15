@@ -109,8 +109,6 @@ export const isAllowedOrigin = (origin: string): boolean => {
     // 3. Vercel Preview Deployments Check
     // Safely verify it ends with .vercel.app and starts with your project prefix
     const prefix = `${SHARED_VERCEL_SUBSTRING}-`;
-    console.log('prefix', prefix);
-    console.log('hostname.startsWith(prefix)', hostname.startsWith(prefix));
     if (hostname.endsWith('.vercel.app') && hostname.startsWith(prefix)) {
       return true;
     }
