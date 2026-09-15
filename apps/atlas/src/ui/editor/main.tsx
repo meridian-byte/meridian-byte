@@ -13,7 +13,7 @@ import { TableKit } from '@tiptap/extension-table';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { BubbleMenu } from '@tiptap/react/menus';
 import { ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from '@repo/constants';
-import { useNoteActions } from '@repo/store';
+import { useNoteActions, useStoreNote } from '@repo/store';
 import { NoteGet } from '@repo/types';
 import { useDebouncedCallback, useIdle, useMediaQuery } from '@mantine/hooks';
 import {
@@ -34,7 +34,10 @@ import { useStoreUserStates } from '@repo/store';
 import { ParserHtml } from '@repo/ui';
 import { LayoutSection } from '@repo/ui';
 
-export default function Main({ item }: { item?: NoteGet }) {
+export default function Main({ noteId }: { noteId: string }) {
+  const notes = useStoreNote((s) => s.notes);
+  const note = notes?.find((ni) => ni.id == noteId);
+
   const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
   const { styles } = useScroll({
     threshold: 70,
@@ -46,10 +49,10 @@ export default function Main({ item }: { item?: NoteGet }) {
   const idle = useIdle(2000);
   const mobile = useMediaQuery('(max-width: 36em)');
 
-  const [content, setContent] = useState<string>(item?.content || '');
+  const [content, setContent] = useState<string>(note?.content || '');
 
   const handleChangeDebounced = useDebouncedCallback((c: string) => {
-    if (item) noteUpdate({ ...item, content: c });
+    if (note) noteUpdate({ ...note, content: c });
   }, 400);
 
   const handleChange = (c: string) => {
@@ -75,15 +78,16 @@ export default function Main({ item }: { item?: NoteGet }) {
     content: content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML().trim();
-      if (html == item?.content) return;
+      if (html == note?.content) return;
       handleChange(html);
     },
   });
 
   useEffect(() => {
     if (!editor) return;
-    editor.commands.setContent(item?.content || '');
-  }, [item?.id, editor, searchParams]);
+    handleChange(note?.content || '');
+    editor.commands.setContent(note?.content || '');
+  }, [note?.id, editor, searchParams]);
 
   const divider = (
     <Divider
@@ -113,11 +117,11 @@ export default function Main({ item }: { item?: NoteGet }) {
           }}
         >
           <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-            <LayoutSection id={`note-editor-toolbar`} containerized={!item ? false : 'md'}>
+            <LayoutSection id={`note-editor-toolbar`} containerized={!note ? false : 'md'}>
               <Box style={{ ...styles, transition: '0.25s all ease' }} hiddenFrom="xs">
                 <Group py={'xs'}>
                   <Title order={2} fz={'sm'} fw={500} lineClamp={1}>
-                    {item?.title}
+                    {note?.title}
                   </Title>
                 </Group>
 
@@ -185,14 +189,14 @@ export default function Main({ item }: { item?: NoteGet }) {
         </Box>
 
         <Box display={userStateEditing == true ? 'none' : undefined} mt={'xs'}>
-          <LayoutSection id={`note-editor-parser`} containerized={!item ? false : 'md'}>
+          <LayoutSection id={`note-editor-parser`} containerized={!note ? false : 'md'}>
             <ParserHtml props={{ html: content }} />
           </LayoutSection>
         </Box>
 
         <LayoutSection
           id={`note-editor-content`}
-          containerized={!item ? false : 'md'}
+          containerized={!note ? false : 'md'}
           display={userStateEditing == true ? undefined : 'none'}
         >
           <RichTextEditor.Content p={0} mt={'xs'} />
@@ -200,7 +204,7 @@ export default function Main({ item }: { item?: NoteGet }) {
       </RichTextEditor>
 
       <Box mih={30} mt={'md'}>
-        <Transition mounted={!item && content.length > 7}>
+        <Transition mounted={!note && content.length > 7}>
           {(styles) => (
             <div style={styles}>
               <Group gap={'xs'}>

@@ -9,12 +9,13 @@ import { useNoteActions } from '@repo/store';
 import { useStoreNote } from '@repo/store';
 import { LayoutSection } from '@repo/ui';
 
-export default function EditorTitle({ item }: { item: NoteGet }) {
+export default function EditorTitle({ noteId }: { noteId: string }) {
   const notes = useStoreNote((s) => s.notes);
+  const note = notes?.find((ni) => ni.id == noteId);
   const { noteUpdate } = useNoteActions();
 
   const field = useField({
-    initialValue: item.title,
+    initialValue: note?.title || '',
     validate: (value) => (value.trim().length < 1 ? true : null),
   });
 
@@ -24,8 +25,8 @@ export default function EditorTitle({ item }: { item: NoteGet }) {
     if (value.length < 1) {
       field.reset();
     } else {
-      if (value != item.title) {
-        noteUpdate({ ...item, title: value });
+      if (value != note?.title) {
+        if (note) noteUpdate({ ...note, title: value });
       }
     }
   };
@@ -47,13 +48,15 @@ export default function EditorTitle({ item }: { item: NoteGet }) {
 
   useEffect(() => {
     if (!notes) return;
-    field.setValue(item.title);
-  }, [notes, item]);
+    if (!note) return;
+
+    field.setValue(note.title);
+  }, [notes, note]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (item.title.trim()) return;
+    if (note?.title.trim()) return;
 
     // Focus the input once the component has mounted
     inputRef.current?.focus();
