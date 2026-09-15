@@ -31,7 +31,7 @@ export default function Home() {
         >
           <div>
             <Title order={1} mb="xs" fz={{ base: '1.5rem', sm: 'var(--mantine-h1-font-size)' }}>
-              API.{mainSiteLink}
+              {mainSiteLink}
             </Title>
 
             <Text inherit size="lg" mb="xl" c="dimmed" fz={{ base: 'sm', sm: 'md' }}>
