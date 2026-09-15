@@ -1,3 +1,5 @@
+import { NoteGet } from '@repo/types';
+
 export const adjustEventsToCurrentMonth = (events: any[]) => {
   const now = new Date();
   const currentYear = now.getUTCFullYear();
@@ -183,6 +185,79 @@ export const sampleEvents = adjustEventsToCurrentMonth([
     location: null,
   },
 ]);
+
+export const sampleNotes = [
+  {
+    title: '🚀 Getting Started with Your Workspace',
+    content: `
+      <h2>Welcome to your new digital hub!</h2>
+      <p>This workspace is designed to help you organize your tasks, events, and thoughts in one seamless interface.</p>
+      <h3>Quick Tips:</h3>
+      <ul>
+        <li><strong>Tasks:</strong> Keep track of daily to-dos and project milestones.</li>
+        <li><strong>Calendar:</strong> Block out time for important meetings and focus sessions.</li>
+        <li><strong>Notes:</strong> Capture ideas, meeting minutes, and quick drafts.</li>
+      </ul>
+      <p>Feel free to edit or delete this note whenever you are ready!</p>
+    `.trim(),
+  },
+  {
+    title: '💡 Brainstorming: Q3 Product Feature Ideas',
+    content: `
+      <h2>Product Roadmap & Feature Wishlist</h2>
+      <p>Key takeaways from our initial product alignment session:</p>
+      <ol>
+        <li><strong>Dark Mode Support:</strong> High priority user request.</li>
+        <li><strong>Keyboard Shortcuts:</strong> Improve speed-dial actions (e.g., <code>Cmd + K</code> for global search).</li>
+        <li><strong>Offline Sync:</strong> Cache recent notes locally for seamless editing.</li>
+      </ol>
+      <blockquote>"Focus on friction-free capture before adding deep complexity."</blockquote>
+    `.trim(),
+  },
+  {
+    title: '📝 Weekly Team Sync Template',
+    content: `
+      <h2>Weekly Standup Agenda</h2>
+      <p><strong>Date:</strong> Recurring Monday @ 10:00 AM</p>
+      <hr />
+      <h3>1. Wins from Last Week</h3>
+      <p>Add key achievements or successful deployments here...</p>
+      <h3>2. Current Blockers</h3>
+      <p>Highlight any dependencies or pending code reviews...</p>
+      <h3>3. Action Items</h3>
+      <ul>
+        <li>[ ] Review pull request for database migrations</li>
+        <li>[ ] Draft update announcement for users</li>
+      </ul>
+    `.trim(),
+  },
+  {
+    title: '📚 Book Notes: Atomic Habits',
+    content: `
+      <h2>Key Takeaways from James Clear</h2>
+      <p>Habits are the compound interest of self-improvement.</p>
+      <h3>The Four Laws of Behavior Change:</h3>
+      <ul>
+        <li><strong>1st Law (Cue):</strong> Make it obvious.</li>
+        <li><strong>2nd Law (Craving):</strong> Make it attractive.</li>
+        <li><strong>3rd Law (Response):</strong> Make it easy.</li>
+        <li><strong>4th Law (Reward):</strong> Make it satisfying.</li>
+      </ul>
+    `.trim(),
+  },
+  {
+    title: '🛒 Project Launch Checklist',
+    content: `
+      <h2>Pre-Flight Operations</h2>
+      <p>Ensure all systems are go before enabling feature flags for public traffic.</p>
+      <ul>
+        <li><strong>Database:</strong> Run final production migrations and verify indexes.</li>
+        <li><strong>Analytics:</strong> Confirm event tracking works on core user conversion funnels.</li>
+        <li><strong>Security:</strong> Verify permission guards on all API routes.</li>
+      </ul>
+    `.trim(),
+  },
+];
 
 export const sampleTaskLists = [
   {

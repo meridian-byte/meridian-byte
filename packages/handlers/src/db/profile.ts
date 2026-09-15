@@ -5,6 +5,7 @@ import {
   getUniqueColor,
   sampleCalendars,
   sampleEvents,
+  sampleNotes,
   sampleTaskLists,
   sampleTasks,
 } from '@repo/constants';
@@ -123,6 +124,18 @@ export const profileCreateDb = async (params: ProfileCreate) => {
             profileId: newProfile.id,
             workspaceId: workspace.id,
             taskListId: null,
+          })),
+        });
+
+        // Seed default Notes
+        await db.note.createMany({
+          data: sampleNotes.map((note) => ({
+            id: generateUUID(),
+            title: note.title,
+            content: note.content,
+            profileId: newProfile.id,
+            workspaceId: workspace.id,
+            syncStatus: 'SYNCED',
           })),
         });
 
