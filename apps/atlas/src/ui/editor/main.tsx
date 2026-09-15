@@ -107,7 +107,7 @@ export default function Main({ item }: { item?: NoteGet }) {
           top={mobile ? 0 : 30}
           style={{
             zIndex: 10,
-            opacity: idle ? 0 : 1,
+            opacity: idle || userStateEditing != true ? 0 : 1,
             transition: '.25s all ease',
             // display: !item || userStateEditing != true ? 'none' : undefined,
           }}
@@ -124,7 +124,7 @@ export default function Main({ item }: { item?: NoteGet }) {
                 <Divider />
               </Box>
 
-              <Box display={userStateEditing == true ? undefined : 'none'}>
+              <Box>
                 <Divider style={{ ...styles, transition: '0.25s all ease' }} />
 
                 <ScrollArea bg={'transparent'} w={'100%'} scrollbars={'x'} type="auto">
@@ -184,7 +184,7 @@ export default function Main({ item }: { item?: NoteGet }) {
           </WrapperUnderlayGlass>
         </Box>
 
-        <Box display={userStateEditing == true ? 'none' : undefined} mt={60 - 1}>
+        <Box display={userStateEditing == true ? 'none' : undefined} mt={'xs'}>
           <LayoutSection id={`note-editor-parser`} containerized={!item ? false : 'md'}>
             <ParserHtml props={{ html: content }} />
           </LayoutSection>
