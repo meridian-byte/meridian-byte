@@ -152,7 +152,19 @@ export default function Pave() {
 
                     <Group gap={0} wrap="nowrap">
                       <NavLink
-                        label={ci.title}
+                        label={
+                          <Tooltip
+                            label={ci.title}
+                            multiline
+                            maw={320}
+                            position="top-start"
+                            arrowOffset={16}
+                          >
+                            <Text component="span" inherit lineClamp={1} lh={2}>
+                              {ci.title}
+                            </Text>
+                          </Tooltip>
+                        }
                         color="gray"
                         px={'xs'}
                         py={3}

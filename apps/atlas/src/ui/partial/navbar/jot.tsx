@@ -132,13 +132,25 @@ export default function Jot() {
 
                     <Group gap={0} wrap="nowrap">
                       <NavLink
-                        label={ni.title}
+                        label={
+                          <Tooltip
+                            label={ni.title}
+                            multiline
+                            maw={320}
+                            position="top-start"
+                            arrowOffset={16}
+                          >
+                            <Text component="span" inherit lineClamp={1} lh={2}>
+                              {ni.title}
+                            </Text>
+                          </Tooltip>
+                        }
                         color="gray"
                         px={'xs'}
                         py={3}
                         fw={500}
                         leftSection={
-                          <ThemeIcon size={ICON_SIZE - 4} color="gray" variant="transparent" mt={4}>
+                          <ThemeIcon size={ICON_SIZE - 4} color="gray" variant="transparent">
                             <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                           </ThemeIcon>
                         }

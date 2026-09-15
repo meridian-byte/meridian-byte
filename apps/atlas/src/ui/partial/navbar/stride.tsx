@@ -146,7 +146,19 @@ export default function Stride() {
 
                     <Group gap={0} wrap="nowrap">
                       <NavLink
-                        label={tli.title}
+                        label={
+                          <Tooltip
+                            label={tli.title}
+                            multiline
+                            maw={320}
+                            position="top-start"
+                            arrowOffset={16}
+                          >
+                            <Text component="span" inherit lineClamp={1} lh={2}>
+                              {tli.title}
+                            </Text>
+                          </Tooltip>
+                        }
                         color="gray"
                         px={'xs'}
                         py={3}

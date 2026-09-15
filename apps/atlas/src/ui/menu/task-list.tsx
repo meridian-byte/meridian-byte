@@ -10,6 +10,7 @@ import {
   MenuLabel,
   Text,
   MenuDivider,
+  Tooltip,
 } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { TaskListGet } from '@repo/types';
@@ -24,7 +25,7 @@ export default function TaskList({
 
   return (
     <Menu
-      width={200}
+      width={220}
       trigger="click"
       position="right-start"
       styles={{
@@ -48,9 +49,17 @@ export default function TaskList({
 
       <MenuDropdown>
         <MenuLabel>
-          <Text inherit lineClamp={1}>
-            {defaultValues.title}
-          </Text>
+          <Tooltip
+            label={defaultValues.title}
+            multiline
+            maw={320}
+            position="top-start"
+            arrowOffset={16}
+          >
+            <Text inherit lineClamp={1}>
+              {defaultValues.title}
+            </Text>
+          </Tooltip>
         </MenuLabel>
 
         <MenuDivider />
