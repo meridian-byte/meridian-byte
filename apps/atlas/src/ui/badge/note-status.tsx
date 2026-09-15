@@ -25,19 +25,17 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
   const { subViewValue } = useSubView();
   const noteId = extractUuidFromParam(subViewValue || '');
   const notes = useStoreNote((s) => s.notes);
-  const note = notes?.find((n) => n.id == noteId);
+  // const note = notes?.find((n) => n.id == noteId);
 
   const userStateEditing = useStoreUserStates((s) => s.userStates?.editing);
   const toggleUserStateEditing = useStoreUserStates((s) => s.toggleUserStateEditing);
 
-  const locked = userStateEditing == false;
+  const reading = userStateEditing == false;
 
   const buttonProps = {
-    color: locked ? 'yellow' : 'gray',
-    variant: locked ? 'light' : 'subtle',
-    view: locked == true ? 'Editing' : 'Reading',
-    label: locked == true ? 'read' : 'edit',
-    icon: locked == true ? IconBook : IconWriting,
+    view: reading ? 'Reading' : 'Editing',
+    label: reading ? 'edit' : 'read',
+    icon: reading ? IconWriting : IconBook,
   };
 
   return userStateEditing === undefined ? (
@@ -57,8 +55,8 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
           >
             <Group>
               <ActionIcon
-                variant={buttonProps.variant}
-                color={buttonProps.color}
+                variant={'subtle'}
+                color={'gray'}
                 size={ICON_WRAPPER_SIZE}
                 radius={0}
                 onClick={() => toggleUserStateEditing()}
