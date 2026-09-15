@@ -190,6 +190,7 @@ export const sampleNotes = [
   {
     title: '🚀 Getting Started with Your Workspace',
     content: `
+    <p>
       <h2>Welcome to your new digital hub!</h2>
       <p>This workspace is designed to help you organize your tasks, events, and thoughts in one seamless interface.</p>
       <h3>Quick Tips:</h3>
@@ -199,11 +200,13 @@ export const sampleNotes = [
         <li><strong>Notes:</strong> Capture ideas, meeting minutes, and quick drafts.</li>
       </ul>
       <p>Feel free to edit or delete this note whenever you are ready!</p>
+    </p>
     `.trim(),
   },
   {
     title: '💡 Brainstorming: Q3 Product Feature Ideas',
     content: `
+    <p>
       <h2>Product Roadmap & Feature Wishlist</h2>
       <p>Key takeaways from our initial product alignment session:</p>
       <ol>
@@ -212,11 +215,13 @@ export const sampleNotes = [
         <li><strong>Offline Sync:</strong> Cache recent notes locally for seamless editing.</li>
       </ol>
       <blockquote>"Focus on friction-free capture before adding deep complexity."</blockquote>
+    </p>
     `.trim(),
   },
   {
     title: '📝 Weekly Team Sync Template',
     content: `
+    <p>
       <h2>Weekly Standup Agenda</h2>
       <p><strong>Date:</strong> Recurring Monday @ 10:00 AM</p>
       <hr />
@@ -229,11 +234,13 @@ export const sampleNotes = [
         <li>[ ] Review pull request for database migrations</li>
         <li>[ ] Draft update announcement for users</li>
       </ul>
+    </p>
     `.trim(),
   },
   {
     title: '📚 Book Notes: Atomic Habits',
     content: `
+    <p>
       <h2>Key Takeaways from James Clear</h2>
       <p>Habits are the compound interest of self-improvement.</p>
       <h3>The Four Laws of Behavior Change:</h3>
@@ -243,11 +250,13 @@ export const sampleNotes = [
         <li><strong>3rd Law (Response):</strong> Make it easy.</li>
         <li><strong>4th Law (Reward):</strong> Make it satisfying.</li>
       </ul>
+    </p>
     `.trim(),
   },
   {
     title: '🛒 Project Launch Checklist',
     content: `
+    <p>
       <h2>Pre-Flight Operations</h2>
       <p>Ensure all systems are go before enabling feature flags for public traffic.</p>
       <ul>
@@ -255,6 +264,7 @@ export const sampleNotes = [
         <li><strong>Analytics:</strong> Confirm event tracking works on core user conversion funnels.</li>
         <li><strong>Security:</strong> Verify permission guards on all API routes.</li>
       </ul>
+    </p>
     `.trim(),
   },
 ];
