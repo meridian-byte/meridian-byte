@@ -158,8 +158,13 @@ export default function Pave() {
                         py={3}
                         fw={500}
                         leftSection={
-                          <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
-                            <IconCircleFilled size={6} color={ci.color || 'pri'} />
+                          <ThemeIcon
+                            size={ICON_SIZE - 4}
+                            variant="transparent"
+                            mt={4}
+                            c={`${ci.color}.6` || 'pri'}
+                          >
+                            <IconCircleFilled size={6} />
                           </ThemeIcon>
                         }
                         styles={{

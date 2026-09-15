@@ -152,8 +152,13 @@ export default function Stride() {
                         py={3}
                         fw={500}
                         leftSection={
-                          <ThemeIcon size={ICON_SIZE - 4} variant="transparent" mt={4}>
-                            <IconCircleFilled size={6} color={tli.color || 'pri'} />
+                          <ThemeIcon
+                            size={ICON_SIZE - 4}
+                            variant="transparent"
+                            mt={4}
+                            c={`${tli.color}.6` || 'pri'}
+                          >
+                            <IconCircleFilled size={6} />
                           </ThemeIcon>
                         }
                         styles={{
