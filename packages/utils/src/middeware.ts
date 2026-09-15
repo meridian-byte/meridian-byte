@@ -94,6 +94,8 @@ export const isAllowedOrigin = (origin: string): boolean => {
     // 2. Allow HTTPS requests to production domain or its subdomains
     const productionDomain = process.env.NEXT_PUBLIC_HOST_WEB_PROD;
 
+    console.log('productionDomain', productionDomain);
+
     if (!productionDomain) {
       console.error('x--> (CORS error) Production domain required.');
       return false;
