@@ -94,8 +94,6 @@ export const isAllowedOrigin = (origin: string): boolean => {
     // 2. Allow HTTPS requests to production domain or its subdomains
     const productionDomain = process.env.NEXT_PUBLIC_HOST_WEB_PROD;
 
-    console.log('productionDomain', productionDomain);
-
     if (!productionDomain) {
       console.error('x--> (CORS error) Production domain required.');
       return false;
@@ -109,12 +107,11 @@ export const isAllowedOrigin = (origin: string): boolean => {
     }
 
     // 3. Vercel Preview Deployments Check
-    // Allows any subdomains under .vercel.app containing your project identifier
-    if (
-      protocol === 'https:' &&
-      hostname.endsWith('.vercel.app') &&
-      hostname.includes(SHARED_VERCEL_SUBSTRING)
-    ) {
+    // Safely verify it ends with .vercel.app and starts with your project prefix
+    const prefix = `${SHARED_VERCEL_SUBSTRING}-`;
+    console.log('prefix', prefix);
+    console.log('hostname.startsWith(prefix)', hostname.startsWith(prefix));
+    if (hostname.endsWith('.vercel.app') && hostname.startsWith(prefix)) {
       return true;
     }
 
