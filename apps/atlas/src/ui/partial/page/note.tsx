@@ -12,8 +12,7 @@ import { extractUuidFromParam, saveToLocalStorage, saveToSessionStorage } from '
 import { LOCAL_STORAGE_NAME } from '@repo/constants';
 import { useStoreWorkspace } from '@repo/store';
 import { WorkspaceGet } from '@repo/types';
-import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
-import EditorMain from '@atlas/ui/editor/main';
+import TabsNote from '@atlas/ui/tabs/note';
 
 export default function Note() {
   const { subViewValue, showSubViewJot } = useSubView();
@@ -111,12 +110,8 @@ export default function Note() {
       </Stack>
     </Center>
   ) : (
-    <LayoutSection id={`note-details`} padded={SECTION_SPACING / 2} containerized={false}>
-      <div>
-        <InputTextEditorTitle item={note} />
-
-        <EditorMain item={note} />
-      </div>
+    <LayoutSection id={`note-details`} containerized={false}>
+      <TabsNote />
     </LayoutSection>
   );
 }
