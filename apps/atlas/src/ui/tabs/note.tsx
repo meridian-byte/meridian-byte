@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   ActionIcon,
+  Box,
   Group,
   ScrollArea,
   Tabs,
@@ -18,6 +19,8 @@ import { IconX } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, SECTION_SPACING } from '@repo/constants';
 import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
 import EditorMain from '@atlas/ui/editor/main';
+import { SHELL_VALUES } from '@atlas/constants';
+import { ScrollContext } from '@repo/hooks';
 
 export default function Note() {
   const tabsJotView = useStoreView((s) => s.view?.tabsJotView);
@@ -104,16 +107,16 @@ export default function Note() {
     return () => cancelAnimationFrame(frameId);
   }, [noteId, tabsJotView]); // Ensure `tabsJotView` is in the dependency array
 
+  // scrollarea
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const contextValue = useMemo(() => viewportRef, []);
+
   return (
     <Tabs
       value={noteId}
       styles={{
         tab: { borderRadius: 0, padding: '6px 10px' },
         tabLabel: { lineHeight: 1.3 },
-        panel: {
-          paddingTop: SECTION_SPACING / 2,
-          paddingBottom: SECTION_SPACING / 2,
-        },
       }}
     >
       <TabsList>
@@ -178,8 +181,17 @@ export default function Note() {
 
       {(tabsJotView || []).map((ati) => (
         <TabsPanel key={ati.tab} value={ati.tab} onClick={() => handleMakePersistent(ati.tab)}>
-          <InputTextEditorTitle noteId={ati.tab} />
-          <EditorMain noteId={ati.tab} />
+          <ScrollContext.Provider value={contextValue}>
+            <ScrollArea
+              h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 30 + 32.12 + 1}px)`}
+              viewportRef={contextValue}
+            >
+              <Box pt={SECTION_SPACING / 2}>
+                <InputTextEditorTitle noteId={ati.tab} />
+                <EditorMain noteId={ati.tab} />
+              </Box>
+            </ScrollArea>
+          </ScrollContext.Provider>
         </TabsPanel>
       ))}
     </Tabs>

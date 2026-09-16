@@ -47,7 +47,6 @@ export default function Main({ noteId }: { noteId: string }) {
   const searchParams = useSearchParams();
   const { noteCreate, noteUpdate } = useNoteActions();
   const idle = useIdle(2000);
-  const mobile = useMediaQuery('(max-width: 36em)');
 
   const [content, setContent] = useState<string>(note?.content || '');
 
@@ -108,7 +107,7 @@ export default function Main({ noteId }: { noteId: string }) {
       >
         <Box
           pos={'sticky'}
-          top={mobile ? 0 : 30}
+          top={0}
           style={{
             zIndex: 10,
             opacity: idle || userStateEditing != true ? 0 : 1,
