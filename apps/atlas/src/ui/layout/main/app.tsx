@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Container } from '@mantine/core';
+import { Box, Center, Container, Loader } from '@mantine/core';
 import { useStoreView } from '@repo/store';
 import { APP_NAMES_ATLAS, SUBVIEW_NAMES } from '@repo/constants';
 import { useSubView } from '@repo/store';
@@ -9,11 +9,12 @@ import PartialViewStrideTaskList from '@atlas/ui/partial/view/stride/task-list';
 import PartialViewJotNoteList from '@atlas/ui/partial/view/jot/note-list';
 import PartialViewPaveCalendarList from '@atlas/ui/partial/view/pave/calendar-list';
 import ScheduleMain from '@atlas/ui/schedule/main';
+import { SHELL_VALUES } from '@atlas/constants';
 
 export default function App() {
   const viewValue = useStoreView((s) => s.view?.view);
 
-  if (viewValue === undefined) return <>loading</>;
+  if (viewValue === undefined) return <Loading />;
 
   return (
     <>
@@ -71,10 +72,18 @@ function LayoutMain({
   );
 }
 
+function Loading() {
+  return (
+    <Center mih={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT}px)`}>
+      <Loader />
+    </Center>
+  );
+}
+
 function ViewPave() {
   const { subViewValue } = useSubView();
 
-  if (subViewValue === undefined) return <>loading</>;
+  if (subViewValue === undefined) return <Loading />;
 
   const isCalendarList = subViewValue?.includes('calendar: ');
 
@@ -109,7 +118,7 @@ function ViewPave() {
 function ViewJot() {
   const { subViewValue } = useSubView();
 
-  if (subViewValue === undefined) return <>loading</>;
+  if (subViewValue === undefined) return <Loading />;
 
   const isNoteList = subViewValue?.includes('note: ');
 
@@ -131,7 +140,7 @@ function ViewJot() {
 function ViewStride() {
   const { subViewValue } = useSubView();
 
-  if (subViewValue === undefined) return <>loading</>;
+  if (subViewValue === undefined) return <Loading />;
 
   const isTaskList = subViewValue?.includes('list: ');
 
@@ -183,7 +192,7 @@ function ViewStride() {
 function ViewPrime() {
   const { subViewValue } = useSubView();
 
-  if (subViewValue === undefined) return <>loading</>;
+  if (subViewValue === undefined) return <Loading />;
 
   return <LayoutMain>prime</LayoutMain>;
 }
@@ -191,7 +200,7 @@ function ViewPrime() {
 function ViewTally() {
   const { subViewValue } = useSubView();
 
-  if (subViewValue === undefined) return <>loading</>;
+  if (subViewValue === undefined) return <Loading />;
 
   return <LayoutMain>tally</LayoutMain>;
 }
