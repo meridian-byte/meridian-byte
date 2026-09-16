@@ -4,7 +4,9 @@ import { APP_DESC, APP_NAME, DEFAULT_COLOR_SCHEME, getApiUrl } from '@repo/const
 import { createClientcloudbaseServer } from '@repo/cloudbase';
 import { getCookieServer } from '@repo/utils';
 import { COOKIE_NAME } from '@repo/constants';
-import { ProviderMantine, ProviderInitialize, ProviderSync } from '@repo/ui';
+import { ProviderMantine } from '@repo/ui';
+import ProviderInitialize from '@atlas/ui/provider/initialize';
+import ProviderSync from '@atlas/ui/provider/sync';
 import { ColorSchemeScript, MantineColorScheme, mantineHtmlProps } from '@mantine/core';
 import { getAppTheme } from '@repo/constants';
 import { getAppResolver } from '@atlas/resolver';

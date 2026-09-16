@@ -194,6 +194,7 @@ export const LOAD_STORES: Record<string, LoadStoreConfig> = {
 type LoadStoreKey = keyof typeof LOAD_STORES;
 
 export const useLoadAppData = (options: {
+  sourceSite: string;
   apiUrl: string;
   storesToLoad: Partial<Record<LoadStoreKey, boolean>>;
   clientOnly?: boolean;
@@ -235,7 +236,7 @@ export const useLoadAppData = (options: {
         const storeQuery = activeStoreKeys.join(',');
 
         const res = await fetch(
-          `${options.apiUrl}/app-data?userId=${session.id}&stores=${storeQuery}`,
+          `${options.apiUrl}/app-data?userId=${session.id}&sourceSite=${options.sourceSite}&stores=${storeQuery}`,
         );
 
         if (!res.ok) {
