@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { API_URL, APP_DESC, APP_NAME, BASE_URL, DEFAULT_COLOR_SCHEME } from '@repo/constants';
+import { APP_DESC, APP_NAME, DEFAULT_COLOR_SCHEME, getApiUrl } from '@repo/constants';
 import { createClientcloudbaseServer } from '@repo/cloudbase';
 import { getCookieServer } from '@repo/utils';
 import { COOKIE_NAME } from '@repo/constants';
@@ -101,7 +101,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           theme={getAppTheme}
           cssVariablesResolver={getAppResolver}
         >
-          <ProviderInitialize props={{ baseUrl: API_URL, sessionUser: session.user }}>
+          <ProviderInitialize props={{ baseUrl: await getApiUrl(), sessionUser: session.user }}>
             <ProviderSync>{children}</ProviderSync>
           </ProviderInitialize>
         </ProviderMantine>

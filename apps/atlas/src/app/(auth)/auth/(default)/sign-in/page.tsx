@@ -2,13 +2,13 @@ import React from 'react';
 import { Metadata } from 'next';
 import FormAuth from '@atlas/ui/form/auth';
 import { AuthAction } from '@repo/types';
-import { BASE_URL } from '@repo/constants';
+import { getBaseUrl } from '@repo/constants';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = { title: 'Sign In' };
 
-export default function SignIn() {
+export default async function SignIn() {
   return (
     <div>
       <FormAuth
@@ -17,7 +17,7 @@ export default function SignIn() {
           title: 'Welcome Back!',
           desc: 'Sign in to access your personalized experience.',
         }}
-        baseUrl={BASE_URL.ATLAS}
+        baseUrl={(await getBaseUrl()).ATLAS}
       />
     </div>
   );

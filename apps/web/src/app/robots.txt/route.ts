@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { BASE_URL } from '@repo/constants';
+import { getBaseUrl } from '@repo/constants';
 
 export const dynamic = 'force-static';
 
@@ -11,7 +11,7 @@ Disallow: /api/
 Disallow: /*?ref=*
 Disallow: /*?utm_*
 
-Sitemap: ${BASE_URL.WEB}/sitemap.xml
+Sitemap: ${(await getBaseUrl()).WEB}/sitemap.xml
   `.trim();
 
   return new NextResponse(content, {

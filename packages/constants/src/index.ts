@@ -12,3 +12,5 @@ export * from './sizes';
 export * from './seed';
 export * from './theme';
 export * from './paths';
+export * from './paths-client';
+export * from './paths-server';
