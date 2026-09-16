@@ -1,17 +1,19 @@
 // app/sitemap.xml/route.ts
 import { NextResponse } from 'next/server';
-import { BASE_URL } from '@repo/constants';
+import { getBaseUrl } from '@repo/constants';
 
 export const dynamic = 'force-static';
 
 export async function GET() {
   const today = new Date().toISOString().split('T')[0];
 
+  const baseUrl = (await getBaseUrl()).WEB;
+
   const staticRoutes = [
     '', // homepage
     // additional routes go here
   ].map((route) => ({
-    loc: `${BASE_URL.WEB}${route}`,
+    loc: `${baseUrl}${route}`,
     lastmod: today,
     changefreq: 'weekly',
     priority: route === '' ? 1 : 0.8,

@@ -10,7 +10,7 @@ import {
   syncToServerAfterDelay,
   useMergedSync,
 } from '@repo/store';
-import { API_URL, BASE_URL, STORE_NAME } from '@repo/constants';
+import { API_URL, STORE_NAME } from '@repo/constants';
 
 export function ProviderSync({ children }: { children: React.ReactNode }) {
   const networkStatus = useNetwork();
