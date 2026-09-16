@@ -69,26 +69,26 @@ export const getUrlPrefix = (host?: string) => {
 };
 
 // Client-safe synchronous static URLs
-const hostApi = resolveHost(
+export const HOSTNAME_API = resolveHost(
   process.env.NEXT_PUBLIC_HOST_API_PROD,
   process.env.NEXT_PUBLIC_HOST_API_DEV,
   `${SHARED_VERCEL_SUBSTRING}-api`,
 );
-const hostWeb = resolveHost(
+export const HOSTNAME_WEB = resolveHost(
   process.env.NEXT_PUBLIC_HOST_WEB_PROD,
   process.env.NEXT_PUBLIC_HOST_WEB_DEV,
   `${SHARED_VERCEL_SUBSTRING}-web`,
 );
-const hostAtlas = resolveHost(
+export const HOSTNAME_ATLAS = resolveHost(
   process.env.NEXT_PUBLIC_HOST_ATLAS_PROD,
   process.env.NEXT_PUBLIC_HOST_ATLAS_DEV,
   `${SHARED_VERCEL_SUBSTRING}-atlas`,
 );
 
 export const BASE_URL = {
-  API: `${getUrlPrefix(hostApi)}${hostApi}`,
-  WEB: `${getUrlPrefix(hostWeb)}${hostWeb}`,
-  ATLAS: `${getUrlPrefix(hostAtlas)}${hostAtlas}`,
+  API: `${getUrlPrefix(HOSTNAME_API)}${HOSTNAME_API}`,
+  WEB: `${getUrlPrefix(HOSTNAME_WEB)}${HOSTNAME_WEB}`,
+  ATLAS: `${getUrlPrefix(HOSTNAME_ATLAS)}${HOSTNAME_ATLAS}`,
 };
 
 export const API_URL = `${BASE_URL.API}/api`;
