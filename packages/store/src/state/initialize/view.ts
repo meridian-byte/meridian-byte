@@ -31,6 +31,7 @@ export const useViewInitialize = (params?: UseViewInitializeParams) => {
           // APP_NAMES_ATLAS.PRIME,
           // APP_NAMES_ATLAS.TALLY,
         ],
+        tabsJotView: [],
       };
 
     // Sync to store
