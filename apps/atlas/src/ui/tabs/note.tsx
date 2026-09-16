@@ -114,6 +114,7 @@ export default function Note() {
   return (
     <Tabs
       value={noteId}
+      keepMounted
       styles={{
         tab: { borderRadius: 0, padding: '6px 10px' },
         tabLabel: { lineHeight: 1.3 },
@@ -179,21 +180,28 @@ export default function Note() {
         </ScrollArea>
       </TabsList>
 
-      {(tabsJotView || []).map((ati) => (
-        <TabsPanel key={ati.tab} value={ati.tab} onClick={() => handleMakePersistent(ati.tab)}>
-          <ScrollContext.Provider value={contextValue}>
-            <ScrollArea
-              h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 30 + 32.12 + 1}px)`}
-              viewportRef={contextValue}
-            >
-              <Box pt={SECTION_SPACING / 2}>
-                <InputTextEditorTitle noteId={ati.tab} />
-                <EditorMain noteId={ati.tab} />
-              </Box>
-            </ScrollArea>
-          </ScrollContext.Provider>
-        </TabsPanel>
-      ))}
+      <Box>
+        {(tabsJotView || []).map((ati) => (
+          <Box
+            key={ati.tab}
+            style={{
+              display: ati.tab === noteId ? undefined : 'none',
+            }}
+          >
+            <ScrollContext.Provider value={contextValue}>
+              <ScrollArea
+                h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 30 + 32.12 + 1}px)`}
+                viewportRef={contextValue}
+              >
+                <Box pt={SECTION_SPACING / 2}>
+                  <InputTextEditorTitle noteId={ati.tab} />
+                  <EditorMain noteId={ati.tab} />
+                </Box>
+              </ScrollArea>
+            </ScrollContext.Provider>
+          </Box>
+        ))}
+      </Box>
     </Tabs>
   );
 }

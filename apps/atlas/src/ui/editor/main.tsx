@@ -44,20 +44,12 @@ export default function Main({ noteId }: { noteId: string }) {
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
     scrolledStyles: useMemo(() => ({ opacity: 1 }), []),
   });
-  const searchParams = useSearchParams();
   const { noteCreate, noteUpdate } = useNoteActions();
   const idle = useIdle(2000);
-
-  const [content, setContent] = useState<string>(note?.content || '');
 
   const handleChangeDebounced = useDebouncedCallback((c: string) => {
     if (note) noteUpdate({ ...note, content: c });
   }, 400);
-
-  const handleChange = (c: string) => {
-    setContent(c);
-    handleChangeDebounced(c);
-  };
 
   const editor = useEditor({
     immediatelyRender: false, // ✅ prevents hydration mismatches
@@ -74,19 +66,15 @@ export default function Main({ noteId }: { noteId: string }) {
       TaskList,
       TaskItem.configure({ nested: true }),
     ],
-    content: content,
+    content: note?.content || '',
     onUpdate: ({ editor }) => {
       const html = editor.getHTML().trim();
       if (html == note?.content) return;
-      handleChange(html);
+      handleChangeDebounced(html);
     },
   });
 
-  useEffect(() => {
-    if (!editor) return;
-    handleChange(note?.content || '');
-    editor.commands.setContent(note?.content || '');
-  }, [note?.id, editor, searchParams]);
+  const editorContent = editor?.getHTML() || '';
 
   const divider = (
     <Divider
@@ -189,7 +177,7 @@ export default function Main({ noteId }: { noteId: string }) {
 
         <Box display={userStateEditing == true ? 'none' : undefined} mt={'xs'}>
           <LayoutSection id={`note-editor-parser`} containerized={!note ? false : 'md'}>
-            <ParserHtml props={{ html: content }} />
+            <ParserHtml props={{ html: editorContent }} />
           </LayoutSection>
         </Box>
 
@@ -198,16 +186,16 @@ export default function Main({ noteId }: { noteId: string }) {
           containerized={!note ? false : 'md'}
           display={userStateEditing == true ? undefined : 'none'}
         >
-          <RichTextEditor.Content p={0} mt={'xs'} />
+          <RichTextEditor.Content p={0} mt={'xs'} data-autofocus={true} />
         </LayoutSection>
       </RichTextEditor>
 
       <Box mih={30} mt={'md'}>
-        <Transition mounted={!note && content.length > 7}>
+        <Transition mounted={!note && editorContent.length > 7}>
           {(styles) => (
             <div style={styles}>
               <Group gap={'xs'}>
-                <Button onClick={() => noteCreate({ content })} size="xs">
+                <Button onClick={() => noteCreate({ content: editorContent })} size="xs">
                   Save
                 </Button>
               </Group>
