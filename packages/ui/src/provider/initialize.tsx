@@ -40,6 +40,7 @@ export function ProviderInitialize({
   useActiveItemStore();
 
   useLoadAppData({
+    sourceSite: '',
     apiUrl: props.baseUrl,
     clientOnly: false,
     storesToLoad: STORES_TO_LOAD,
