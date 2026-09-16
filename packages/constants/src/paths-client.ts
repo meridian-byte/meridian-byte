@@ -41,7 +41,10 @@ export const resolveHost = (
     if (currentHost.startsWith(projectName)) {
       return currentHost;
     }
-    return currentHost.replace(/^[a-z0-9-]+(?=-git-|-team|\.vercel\.app)/, projectName);
+
+    // SAFE SWAP: Swap the current project prefix with the target project name
+    // e.g. "meridianbyte-atlas-git-fix..." -> "meridianbyte-api-git-fix..."
+    return currentHost.replace(/^meridianbyte-[a-z0-9]+/, projectName);
   }
 
   // 3. Vercel Preview
@@ -91,4 +94,17 @@ export const BASE_URL = {
   ATLAS: `${getUrlPrefix(HOSTNAME_ATLAS)}${HOSTNAME_ATLAS}`,
 };
 
-export const API_URL = `${BASE_URL.API}/api`;
+const API_URL = `${BASE_URL.API}/api`;
+
+export const getClientApiUrl = () => {
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app')) {
+    const apiHost = window.location.hostname.replace(
+      /^meridianbyte-[a-z0-9]+/,
+      `${SHARED_VERCEL_SUBSTRING}-api`,
+    );
+    return `https://${apiHost}/api`;
+  }
+
+  // Fallback to static env configuration
+  return API_URL;
+};

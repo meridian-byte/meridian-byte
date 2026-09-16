@@ -12,7 +12,12 @@ export async function getBaseUrl() {
     hostHeader = headersList.get('x-forwarded-host') || headersList.get('host');
   } catch {
     // Silently caught during static generation (e.g. force-static, generateStaticParams)
+    console.log('[INFO] -- In static server environment: Cannot read headers');
     hostHeader = null;
+  }
+
+  if (!hostHeader) {
+    console.log('[INFO] -- host not found in headers: Falling back to .env hosts');
   }
 
   const hostApi = resolveHost(
