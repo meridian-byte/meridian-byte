@@ -184,6 +184,7 @@ export default function Note() {
         {(tabsJotView || []).map((ati) => (
           <Box
             key={ati.tab}
+            onClick={() => handleMakePersistent(ati.tab)}
             style={{
               display: ati.tab === noteId ? undefined : 'none',
             }}
