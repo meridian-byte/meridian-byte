@@ -43,8 +43,9 @@ export const resolveHost = (
     }
 
     // SAFE SWAP: Swap the current project prefix with the target project name
-    // e.g. "meridianbyte-atlas-git-fix..." -> "meridianbyte-api-git-fix..."
-    return currentHost.replace(/^meridianbyte-[a-z0-9]+/, projectName);
+    // e.g. "hostname-atlas-git-fix..." -> "hostname-api-git-fix..."
+    const pattern = new RegExp(`^${SHARED_VERCEL_SUBSTRING}-[a-z0-9]+`);
+    return currentHost.replace(pattern, projectName);
   }
 
   // 3. Vercel Preview

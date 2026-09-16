@@ -20,21 +20,21 @@ export async function getBaseUrl() {
     console.log('[INFO] -- host not found in headers: Falling back to .env hosts');
   }
 
-  const hostApi = resolveHost(
+  const HOST_API = resolveHost(
     process.env.NEXT_PUBLIC_HOST_API_PROD,
     process.env.NEXT_PUBLIC_HOST_API_DEV,
     `${SHARED_VERCEL_SUBSTRING}-api`,
     hostHeader,
   );
 
-  const hostWeb = resolveHost(
+  const HOST_WEB = resolveHost(
     process.env.NEXT_PUBLIC_HOST_WEB_PROD,
     process.env.NEXT_PUBLIC_HOST_WEB_DEV,
     `${SHARED_VERCEL_SUBSTRING}-web`,
     hostHeader,
   );
 
-  const hostAtlas = resolveHost(
+  const HOST_ATLAS = resolveHost(
     process.env.NEXT_PUBLIC_HOST_ATLAS_PROD,
     process.env.NEXT_PUBLIC_HOST_ATLAS_DEV,
     `${SHARED_VERCEL_SUBSTRING}-atlas`,
@@ -42,9 +42,9 @@ export async function getBaseUrl() {
   );
 
   return {
-    API: `${getUrlPrefix(hostApi)}${hostApi}`,
-    WEB: `${getUrlPrefix(hostWeb)}${hostWeb}`,
-    ATLAS: `${getUrlPrefix(hostAtlas)}${hostAtlas}`,
+    API: `${getUrlPrefix(HOST_API)}${HOST_API}`,
+    WEB: `${getUrlPrefix(HOST_WEB)}${HOST_WEB}`,
+    ATLAS: `${getUrlPrefix(HOST_ATLAS)}${HOST_ATLAS}`,
   };
 }
 
