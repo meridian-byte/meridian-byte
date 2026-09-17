@@ -99,8 +99,11 @@ const API_URL = `${BASE_URL.API}/api`;
 
 export const getClientApiUrl = () => {
   if (typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app')) {
+    // Dynamically construct regex matching `${SHARED_VERCEL_SUBSTRING}-[a-z0-9]+` at the start of the string
+    const dynamicPattern = new RegExp(`^${SHARED_VERCEL_SUBSTRING}-[a-z0-9]+`);
+
     const apiHost = window.location.hostname.replace(
-      /^meridianbyte-[a-z0-9]+/,
+      dynamicPattern,
       `${SHARED_VERCEL_SUBSTRING}-api`,
     );
     return `https://${apiHost}/api`;
