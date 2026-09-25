@@ -152,6 +152,12 @@ function ViewStride() {
         </LayoutMain>
       </DisplayNoneWrapper>
 
+      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.ALL}>
+        <LayoutMain>
+          <PartialViewStrideTaskList />
+        </LayoutMain>
+      </DisplayNoneWrapper>
+
       <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.TODAY}>
         <LayoutMain>
           <PartialViewStrideTaskList />

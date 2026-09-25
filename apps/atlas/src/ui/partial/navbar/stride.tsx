@@ -51,6 +51,11 @@ export default function Stride() {
       action: () => showSubViewStride(SUBVIEW_NAMES.STRIDE.INBOX),
     },
     {
+      icon: IconListCheck,
+      label: capitalizeWords(SUBVIEW_NAMES.STRIDE.ALL),
+      action: () => showSubViewStride(SUBVIEW_NAMES.STRIDE.ALL),
+    },
+    {
       icon: IconCalendarDown,
       label: capitalizeWords(SUBVIEW_NAMES.STRIDE.TODAY),
       action: () => showSubViewStride(SUBVIEW_NAMES.STRIDE.TODAY),

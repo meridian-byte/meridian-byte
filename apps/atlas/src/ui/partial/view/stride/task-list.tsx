@@ -89,6 +89,10 @@ export default function TaskList() {
         filteredTasks = sortedTasks?.filter((ti) => !ti.complete && !ti.taskListId);
         completeTasks = sortedTasks?.filter((ti) => ti.complete && !ti.taskListId);
         break;
+      case SUBVIEW_NAMES.STRIDE.ALL:
+        filteredTasks = sortedTasks?.filter((ti) => !ti.complete);
+        completeTasks = sortedTasks?.filter((ti) => ti.complete);
+        break;
       case SUBVIEW_NAMES.STRIDE.TODAY:
         filteredTasks = sortedTasks?.filter(
           (ti) => !ti.complete && ti.dueDate && isToday(ti.dueDate),

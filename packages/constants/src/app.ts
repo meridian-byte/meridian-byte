@@ -72,6 +72,7 @@ export const SUBVIEW_NAMES = {
   STRIDE: {
     HOME: `home`,
     INBOX: `inbox`,
+    ALL: `all`,
     TODAY: `today`,
     UPCOMING: `upcoming`,
     OVERDUE: `overdue`,
