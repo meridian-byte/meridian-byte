@@ -1,4 +1,4 @@
-import resend from './resend';
+import { resend } from './resend';
 import { emailSendOnboardNewsletter } from './send';
 import { FormValuesInquiry } from '@repo/types';
 import { segmentFullName } from '@repo/utils';

@@ -1,6 +1,6 @@
 import { Center, Stack } from '@mantine/core';
 import { LayoutSection } from '../../layout/section';
-import LoaderMain from '../../loader/main';
+import { LoaderMain } from '../../loader/main';
 
 export function PartialLoadingMain() {
   return (

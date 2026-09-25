@@ -1,4 +1,4 @@
-import resend from './resend';
+import { resend } from './resend';
 import { isProduction } from '@repo/utils';
 import { FormValuesInquiry } from '@repo/types';
 import { COMPANY_NAME, EMAILS } from '@repo/constants';
