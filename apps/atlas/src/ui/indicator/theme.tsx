@@ -45,7 +45,7 @@ export default function Theme() {
   };
 
   if (!mounted) {
-    return <Skeleton w={`${100 / 6}%`} h={SHELL_VALUES.FOOTER.HEIGHT} />;
+    return <Skeleton maw={`${100 / 6}%`} h={SHELL_VALUES.FOOTER.HEIGHT} radius={0} />;
   }
 
   return (

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { IconArrowBarLeft, IconArrowBarRight } from '@tabler/icons-react';
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Skeleton } from '@mantine/core';
 import { ICON_STROKE_WIDTH } from '@repo/constants';
 import { SHELL_VALUES } from '@atlas/constants';
 import { useAppshellChild } from '@repo/hooks';
@@ -19,6 +19,10 @@ export default function Aside({
   };
 
   const label = `${asideChild ? 'Collapse' : 'Expand'} Aside`;
+
+  if (asideChild === undefined) {
+    return <Skeleton w={47.43} h={SHELL_VALUES.FOOTER.HEIGHT - 1} radius={0} />;
+  }
 
   return (
     <ActionIcon
