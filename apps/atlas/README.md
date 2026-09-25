@@ -39,23 +39,23 @@ It provides the authenticated product experience and contains all major producti
 
 Atlas includes:
 
-### 📝 Notes
+### 📝 Notes (Jot)
 
 Capture and organize information while keeping it connected to tasks, events, and other workflows.
 
-### ✅ Tasks & Time
+### ✅ Tasks & Time (Stride)
 
 Manage actions, priorities, schedules, and productivity workflows.
 
-### 📅 Calendar
+### 📅 Calendar (Pave)
 
 Connect time management with tasks, events, and personal planning.
 
-### 💪 Fitness & Diet
+### 💪 Fitness & Diet (Prime)
 
 Track health-related information alongside broader lifestyle data.
 
-### 💰 Finance
+### 💰 Finance (Tally)
 
 Manage financial information and connect it with personal insights.
 
@@ -131,23 +131,9 @@ This enables powerful interactions without tightly coupling domains.
 Atlas is served as a unified application:
 
 ```
-atlas.meridianbyte.app
-```
+atlas.meridianbyte.app (just for protocol. personal use.)
+atlas.mbyte.app (additional. preferred for actual end users.)
 
-All product features live under the same application surface:
-
-```
-atlas.meridianbyte.app/*
-```
-
-Examples:
-
-```
-atlas.meridianbyte.app/notes
-atlas.meridianbyte.app/tasks
-atlas.meridianbyte.app/calendar
-atlas.meridianbyte.app/fitness
-atlas.meridianbyte.app/finance
 ```
 
 ---
