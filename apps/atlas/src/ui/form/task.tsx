@@ -19,12 +19,19 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useAppshellChild, useFormTask } from '@repo/hooks';
-import { Priority, TaskGet } from '@repo/types';
+import { Order, Priority, TaskGet } from '@repo/types';
 import { useStoreTaskList, useSubView, useViewAside, useViewModal } from '@repo/store';
 import { DateInput } from '@mantine/dates';
 import { IconCalendarEvent, IconCategory, IconFlag } from '@tabler/icons-react';
 import { ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH, SUBVIEW_NAMES } from '@repo/constants';
-import { capitalizeWords, getNextWeek, getTomorrow, getYesterday } from '@repo/utils';
+import {
+  capitalizeWords,
+  getNextWeek,
+  getPriorityDetails,
+  getTomorrow,
+  getYesterday,
+  sortArray,
+} from '@repo/utils';
 import dayjs from 'dayjs';
 
 export default function Task({
@@ -37,7 +44,6 @@ export default function Task({
   options?: { modal?: boolean; withoutCheck?: boolean };
 }) {
   const [checked, setChecked] = useState(options?.withoutCheck);
-
   const { form, submitted, handleSubmit, views, taskListId } = useFormTask({
     options: { closeWhenDone: checked },
     defaultValues,
@@ -67,6 +73,7 @@ export default function Task({
             clearable
             searchable
             disabled={creatingTask && (views.inboxView || !!taskListId)}
+            clearSectionMode="clear"
             {...form.getInputProps('taskListId')}
             leftSection={<IconCategory size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             data={(taskLists || []).map((tli) => {
@@ -92,54 +99,86 @@ export default function Task({
             p={options?.modal ? sharedPadding : undefined}
             // mih={'100vh'}
           >
-            {(options?.modal || options?.withoutCheck) && <InputTaskList />}
+            <div>
+              <Text inherit fz={'sm'} fw={500}>
+                Task list
+              </Text>
 
-            <DateInput
-              aria-label={'Due date'}
-              placeholder="Due date"
-              size="xs"
-              clearable
-              disabled={creatingTask && views.todayView}
-              minDate={
-                creatingTask && views.upcomingView
-                  ? dayjs(getTomorrow()).format('YYYY-MM-DD')
-                  : undefined
-              }
-              maxDate={
-                creatingTask && views.overdueView
-                  ? dayjs(getYesterday()).format('YYYY-MM-DD')
-                  : undefined
-              }
-              {...form.getInputProps('dueDate')}
-              leftSection={<IconCalendarEvent size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-            />
+              {(options?.modal || options?.withoutCheck) && <InputTaskList />}
+            </div>
 
-            <Select
-              aria-label="Priority"
-              placeholder="Priority"
-              size="xs"
-              clearable
-              {...form.getInputProps('priority')}
-              leftSection={<IconFlag size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-              data={[
-                {
-                  value: Priority.URGENT_IMPORTANT,
-                  label: capitalizeWords(Priority.URGENT_IMPORTANT),
-                },
-                {
-                  value: Priority.URGENT_UNIMPORTANT,
-                  label: capitalizeWords(Priority.URGENT_UNIMPORTANT),
-                },
-                {
-                  value: Priority.NOT_URGENT_IMPORTANT,
-                  label: capitalizeWords(Priority.NOT_URGENT_IMPORTANT),
-                },
-                {
-                  value: Priority.NOT_URGENT_UNIMPORTANT,
-                  label: capitalizeWords(Priority.NOT_URGENT_UNIMPORTANT),
-                },
-              ]}
-            />
+            <div>
+              <Text inherit fz={'sm'} fw={500}>
+                Due date
+              </Text>
+
+              <DateInput
+                aria-label={'Due date'}
+                placeholder="Due date"
+                size="xs"
+                clearable
+                disabled={creatingTask && views.todayView}
+                minDate={
+                  creatingTask && views.upcomingView
+                    ? dayjs(getTomorrow()).format('YYYY-MM-DD')
+                    : undefined
+                }
+                maxDate={
+                  creatingTask && views.overdueView
+                    ? dayjs(getYesterday()).format('YYYY-MM-DD')
+                    : undefined
+                }
+                {...form.getInputProps('dueDate')}
+                leftSection={<IconCalendarEvent size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+              />
+            </div>
+
+            <div>
+              <Text inherit fz={'sm'} fw={500}>
+                Priority
+              </Text>
+
+              <Select
+                aria-label="Priority"
+                placeholder="Priority"
+                size="xs"
+                // clearable
+                {...form.getInputProps('priority')}
+                leftSection={
+                  <Box
+                    c={
+                      !form.values.priority
+                        ? undefined
+                        : `${getPriorityDetails(form.values.priority as Priority).color}.6`
+                    }
+                  >
+                    <IconFlag size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  </Box>
+                }
+                data={sortArray(
+                  [
+                    {
+                      value: Priority.URGENT_IMPORTANT,
+                      label: getPriorityDetails(Priority.URGENT_IMPORTANT).label,
+                    },
+                    {
+                      value: Priority.URGENT_UNIMPORTANT,
+                      label: getPriorityDetails(Priority.URGENT_UNIMPORTANT).label,
+                    },
+                    {
+                      value: Priority.NOT_URGENT_IMPORTANT,
+                      label: getPriorityDetails(Priority.NOT_URGENT_IMPORTANT).label,
+                    },
+                    {
+                      value: Priority.NOT_URGENT_UNIMPORTANT,
+                      label: getPriorityDetails(Priority.NOT_URGENT_UNIMPORTANT).label,
+                    },
+                  ],
+                  (i) => i.label,
+                  Order.ASCENDING,
+                )}
+              />
+            </div>
           </Flex>
         </ScrollArea>
 
@@ -257,18 +296,6 @@ export default function Task({
                         minRows={1}
                         maxRows={options?.modal ? undefined : 5}
                       />
-
-                      <Group
-                        justify="end"
-                        fz={'xs'}
-                        c={'dimmed'}
-                        opacity={(form.values.description || '').trim().length > 0 ? 1 : 0}
-                        style={{ transition: 'opacity ease .25s' }}
-                      >
-                        <Text inherit>
-                          {(form.values.description || '').trim().length}/{2048}
-                        </Text>
-                      </Group>
                     </div>
                   </div>
 

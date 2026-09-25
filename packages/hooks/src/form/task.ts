@@ -50,7 +50,7 @@ export const useFormTask = (params?: {
     },
     {
       title: hasLength({ min: 2, max: 512 }, true),
-      description: hasLength({ max: 2048 }, true),
+      description: hasLength({ max: 20480 }, true),
     },
     {
       resetOnSuccess: true,
