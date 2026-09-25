@@ -103,6 +103,7 @@ function NavbarHeader() {
         justify="start"
         pl={5}
         radius={0}
+        disabled
         onClick={() => {
           if (view === undefined) return;
           if (view === null) return;
@@ -124,6 +125,7 @@ function NavbarHeader() {
         justify="start"
         pl={5}
         radius={0}
+        disabled
         onClick={showModalViewSearch}
       >
         Global Search
