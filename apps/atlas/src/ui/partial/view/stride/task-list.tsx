@@ -24,6 +24,7 @@ import {
 import {
   capitalizeWords,
   extractUuidFromParam,
+  getPriorityDetails,
   getRegionalDate,
   isOverdue,
   isToday,
@@ -46,7 +47,7 @@ import {
   IconFlag,
   IconPlus,
 } from '@tabler/icons-react';
-import { Order, TaskGet } from '@repo/types';
+import { Order, Priority, TaskGet } from '@repo/types';
 import FormTask from '@atlas/ui/form/task';
 import { useFormTask } from '@repo/hooks';
 import PartialEmpty from '../../empty';
@@ -195,6 +196,8 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
     options: { checkBox: true },
   });
 
+  const priorityDetails = getPriorityDetails((props?.priority || '') as Priority);
+
   return (
     <Box
       style={{
@@ -220,6 +223,7 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
                   {...form.getInputProps('complete')}
                   size="sm"
                   radius={99}
+                  styles={{ input: { borderWidth: 2 } }}
                 />
               )}
             </Box>
@@ -244,7 +248,10 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
                   <Group gap={'xs'} fz={'xs'} c={'dimmed'}>
                     {taskList && (
                       <Group gap={5}>
-                        <IconCategory size={ICON_SIZE - 6} stroke={2} />
+                        <Box c={!taskList.color ? undefined : `${taskList.color}.6`}>
+                          <IconCategory size={ICON_SIZE - 6} stroke={2} />
+                        </Box>
+
                         <Text inherit>{taskList.title}</Text>
                       </Group>
                     )}
@@ -253,7 +260,18 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
 
                     {props?.dueDate && (
                       <Group gap={5}>
-                        <IconCalendarEvent size={ICON_SIZE - 6} stroke={2} />
+                        <Box
+                          c={
+                            isToday(props.dueDate)
+                              ? 'blue.6'
+                              : isOverdue(props.dueDate)
+                                ? 'red.6'
+                                : undefined
+                          }
+                        >
+                          <IconCalendarEvent size={ICON_SIZE - 6} stroke={2} />
+                        </Box>
+
                         <Text inherit>{getRegionalDate(props?.dueDate).date}</Text>
                       </Group>
                     )}
@@ -263,8 +281,11 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
 
                     {props?.priority && (
                       <Group gap={5}>
-                        <IconFlag size={ICON_SIZE - 6} stroke={2} />
-                        <Text inherit>{capitalizeWords(props?.priority)}</Text>
+                        <Box c={`${priorityDetails.color}.6`}>
+                          <IconFlag size={ICON_SIZE - 6} stroke={2} />
+                        </Box>
+
+                        <Text inherit>{priorityDetails.label}</Text>
                       </Group>
                     )}
                   </Group>

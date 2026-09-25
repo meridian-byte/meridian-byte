@@ -1,3 +1,5 @@
+import { Priority } from '@repo/types';
+
 /**
  * Capitalize the first letter of a string
  */
@@ -120,3 +122,34 @@ export function generateCopyTitle(
   // Otherwise, append the next numeric suffix
   return `${baseTitle} ${maxNumber + 1}`;
 }
+
+export interface PriorityDetails {
+  label: string;
+  color: string;
+}
+
+const PRIORITY_MAP: Record<Priority, PriorityDetails> = {
+  [Priority.URGENT_IMPORTANT]: {
+    label: 'Priority 1',
+    color: 'red',
+  },
+  [Priority.NOT_URGENT_IMPORTANT]: {
+    label: 'Priority 2',
+    color: 'yellow',
+  },
+  [Priority.URGENT_UNIMPORTANT]: {
+    label: 'Priority 3',
+    color: 'blue',
+  },
+  [Priority.NOT_URGENT_UNIMPORTANT]: {
+    label: 'Priority 4',
+    color: 'gray',
+  },
+};
+
+/**
+ * Returns the label and color mapping for a given Priority enum value.
+ */
+export const getPriorityDetails = (priority: Priority): PriorityDetails => {
+  return PRIORITY_MAP[priority];
+};
