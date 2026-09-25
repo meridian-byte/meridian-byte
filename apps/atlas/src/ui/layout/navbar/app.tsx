@@ -37,6 +37,7 @@ import { AuthAction } from '@repo/types';
 import Link from 'next/link';
 import { AvatarUser } from '@repo/ui';
 import { useViewModal } from '@repo/store';
+import ModalUser from '@atlas/ui/modal/user';
 
 export default function App() {
   return (
@@ -78,7 +79,13 @@ function NavbarHeader() {
     <Stack p={0} gap={0}>
       <Group wrap="nowrap" gap={0}>
         <Box style={{ flex: 1 }}>
-          {session === undefined ? <Skeleton h={sharedSize} radius={0} /> : <AvatarUser />}
+          {session === undefined ? (
+            <Skeleton h={sharedSize} radius={0} />
+          ) : (
+            <ModalUser>
+              <AvatarUser />
+            </ModalUser>
+          )}
         </Box>
 
         {session === undefined ? (

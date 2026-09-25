@@ -18,6 +18,7 @@
     "@mantine/hooks": "^9.4.2",
     "@mantine/notifications": "^9.4.2",
     "@repo/constants": "workspace:*",
+    "@repo/cloudbase": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/handlers": "workspace:*",
     "@repo/utils": "workspace:*",

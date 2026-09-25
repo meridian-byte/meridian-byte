@@ -9,7 +9,7 @@ import { WrapperActionSignIn } from '../wrapper/actions';
 import { AuthAction } from '@repo/types';
 import { useStoreSession } from '@repo/store';
 
-export function AvatarUser({ size }: { size?: number }) {
+export function AvatarUser({ size, options }: { size?: number; options?: { minimal?: boolean } }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -34,7 +34,7 @@ export function AvatarUser({ size }: { size?: number }) {
             Sign In
           </Button>
         </WrapperActionSignIn>
-      ) : (
+      ) : !options?.minimal ? (
         <Button
           size="xs"
           fullWidth
@@ -56,6 +56,15 @@ export function AvatarUser({ size }: { size?: number }) {
         >
           {session.user_metadata.name || session.email}
         </Button>
+      ) : (
+        <Avatar
+          src={session.user_metadata.avatar_url || null}
+          name={session.user_metadata.name || 'User'}
+          color={'initials'}
+          size={size || ICON_SIZE}
+        >
+          {initialize(session.user_metadata.name || 'User')}
+        </Avatar>
       )}
     </Group>
   );
