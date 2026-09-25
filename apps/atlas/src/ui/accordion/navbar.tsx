@@ -55,22 +55,22 @@ export default function Navbar() {
       },
       content: <PartialNavbarStride />,
     },
-    {
-      value: APP_NAMES_ATLAS.PRIME,
-      actions: {
-        create: () => {},
-        switch: showViewPrime,
-      },
-      content: 'Prime content',
-    },
-    {
-      value: APP_NAMES_ATLAS.TALLY,
-      actions: {
-        create: () => {},
-        switch: showViewTally,
-      },
-      content: 'Tally content',
-    },
+    // {
+    //   value: APP_NAMES_ATLAS.PRIME,
+    //   actions: {
+    //     create: () => {},
+    //     switch: showViewPrime,
+    //   },
+    //   content: 'Prime content',
+    // },
+    // {
+    //   value: APP_NAMES_ATLAS.TALLY,
+    //   actions: {
+    //     create: () => {},
+    //     switch: showViewTally,
+    //   },
+    //   content: 'Tally content',
+    // },
   ];
 
   const items = data.map((item) => {
@@ -115,23 +115,6 @@ export default function Navbar() {
                   }}
                 >
                   <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-
-              <Tooltip label={`Open ${item.value} in new tab`}>
-                <ActionIcon
-                  component="span"
-                  size={30}
-                  radius={0}
-                  color="gray"
-                  variant="subtle"
-                  disabled
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // action goes here
-                  }}
-                >
-                  <IconExternalLink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>
