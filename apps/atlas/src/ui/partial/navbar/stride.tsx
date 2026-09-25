@@ -28,9 +28,11 @@ import {
   IconCircleCheck,
   IconCircleFilled,
   IconDots,
+  IconFolderPlus,
   IconInbox,
   IconListCheck,
   IconPlus,
+  IconTextPlus,
 } from '@tabler/icons-react';
 import { useSubView, useViewAside } from '@repo/store';
 import React from 'react';
@@ -131,7 +133,20 @@ export default function Stride() {
                   radius={0}
                   onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST)}
                 >
-                  <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconTextPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                </ActionIcon>
+              </Tooltip>
+
+              <Tooltip label={`Add task list folder`}>
+                <ActionIcon
+                  size={30}
+                  color="gray"
+                  variant="subtle"
+                  radius={0}
+                  onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER)}
+                  disabled
+                >
+                  <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>

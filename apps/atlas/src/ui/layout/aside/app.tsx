@@ -6,11 +6,15 @@ import { Box, Divider, NavLink, Title } from '@mantine/core';
 import {
   IconCalendar,
   IconCalendarEvent,
+  IconCalendarPlus,
   IconCheckbox,
+  IconFilePlus,
   IconFolder,
+  IconFolderPlus,
   IconListCheck,
   IconNote,
   IconPlus,
+  IconTextPlus,
 } from '@tabler/icons-react';
 import { useNoteActions, useViewAside } from '@repo/store';
 import FormCalendar from '@atlas/ui/form/calendar';
@@ -33,13 +37,18 @@ export default function App() {
       items: [
         {
           icon: IconCalendarEvent,
-          label: 'Event',
+          label: 'event',
           action: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.EVENT),
         },
         {
-          icon: IconCalendar,
-          label: 'Calendar',
+          icon: IconCalendarPlus,
+          label: 'calendar',
           action: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR),
+        },
+        {
+          icon: IconCalendarPlus,
+          label: 'calendar folder',
+          action: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER),
         },
       ],
     },
@@ -47,16 +56,16 @@ export default function App() {
       title: APP_NAMES_ATLAS.JOT,
       items: [
         {
-          icon: IconNote,
-          label: 'Note',
+          icon: IconFilePlus,
+          label: 'note',
           action: () => {
             noteCreate();
             handleToggleChildAside();
           },
         },
         {
-          icon: IconFolder,
-          label: 'Note Folder',
+          icon: IconFolderPlus,
+          label: 'note folder',
           action: () => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER),
         },
       ],
@@ -66,13 +75,18 @@ export default function App() {
       items: [
         {
           icon: IconCheckbox,
-          label: 'Task',
+          label: 'task',
           action: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK),
         },
         {
-          icon: IconListCheck,
-          label: 'Task List',
+          icon: IconTextPlus,
+          label: 'task list',
           action: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST),
+        },
+        {
+          icon: IconFolderPlus,
+          label: 'task list folder',
+          action: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER),
         },
       ],
     },
@@ -94,6 +108,8 @@ export default function App() {
         return 'Add Event';
       case ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR:
         return 'Add Calendar';
+      case ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER:
+        return 'Add Calendar Folder';
       case ASIDE_VIEW_NAMES.NEW.JOT.NOTE:
         return 'Add Note';
       case ASIDE_VIEW_NAMES.NEW.JOT.FOLDER:
@@ -102,6 +118,8 @@ export default function App() {
         return 'Add Task';
       case ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST:
         return 'Add Task List';
+      case ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER:
+        return 'Add Task List Folder';
       default:
         return 'Add Quick Item';
     }
@@ -124,10 +142,12 @@ export default function App() {
         ![
           ASIDE_VIEW_NAMES.NEW.PAVE.EVENT,
           ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR,
+          ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER,
           ASIDE_VIEW_NAMES.NEW.JOT.NOTE,
           ASIDE_VIEW_NAMES.NEW.JOT.FOLDER,
           ASIDE_VIEW_NAMES.NEW.STRIDE.TASK,
           ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST,
+          ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER,
         ].includes(asideViewValue));
 
     return (
@@ -160,13 +180,17 @@ export default function App() {
         </div>
       </LayoutAsideSection>
 
+      <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER}>
+        <div>form calendar folder</div>
+      </LayoutAsideSection>
+
       {/* Jot Views */}
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.JOT.NOTE}>
         <div>add note</div>
       </LayoutAsideSection>
 
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.JOT.FOLDER}>
-        <div>add note folder</div>
+        <div>form note folder</div>
       </LayoutAsideSection>
 
       {/* Stride Views */}
@@ -176,6 +200,10 @@ export default function App() {
 
       <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST}>
         <FormTaskList />
+      </LayoutAsideSection>
+
+      <LayoutAsideSection viewKey={ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER}>
+        <div>form task list folder</div>
       </LayoutAsideSection>
 
       {/* Fallback / Default Navigation Views */}

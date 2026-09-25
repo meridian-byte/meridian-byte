@@ -33,6 +33,7 @@ import {
   IconCircleFilled,
   IconDots,
   IconEdit,
+  IconFolderPlus,
   IconInbox,
   IconLayoutCards,
   IconLayoutDistributeHorizontal,
@@ -131,7 +132,20 @@ export default function Pave() {
                   radius={0}
                   onClick={() => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR)}
                 >
-                  <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconCalendarPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                </ActionIcon>
+              </Tooltip>
+
+              <Tooltip label={`Add calendar folder`}>
+                <ActionIcon
+                  size={30}
+                  color="gray"
+                  variant="subtle"
+                  radius={0}
+                  onClick={() => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER)}
+                  disabled
+                >
+                  <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>

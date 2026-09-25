@@ -27,7 +27,9 @@ import {
   IconCalendarShare,
   IconCircleCheck,
   IconDots,
+  IconFilePlus,
   IconFolder,
+  IconFolderPlus,
   IconHome,
   IconInbox,
   IconNote,
@@ -99,7 +101,7 @@ export default function Jot() {
                   // onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
                   onClick={() => noteCreate()}
                 >
-                  <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconFilePlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
 
@@ -112,7 +114,7 @@ export default function Jot() {
                   onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER)}
                   disabled
                 >
-                  <IconFolder size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
               </Tooltip>
             </Group>
