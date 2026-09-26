@@ -10,6 +10,9 @@ import PartialViewJotNoteList from '@atlas/ui/partial/view/jot/note-list';
 import PartialViewPaveCalendarList from '@atlas/ui/partial/view/pave/calendar-list';
 import ScheduleMain from '@atlas/ui/schedule/main';
 import { SHELL_VALUES } from '@atlas/constants';
+import PartialViewPaveHome from '@atlas/ui/partial/view/pave/home';
+import PartialViewJotHome from '@atlas/ui/partial/view/jot/home';
+import PartialViewStrideHome from '@atlas/ui/partial/view/stride/home';
 
 export default function App() {
   const viewValue = useStoreView((s) => s.view?.view);
@@ -109,7 +112,9 @@ function ViewPave() {
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.PAVE.HOME}>
-        <LayoutMain>Pave Home</LayoutMain>
+        <LayoutMain>
+          <PartialViewPaveHome />
+        </LayoutMain>
       </DisplayNoneWrapper>
     </>
   );
@@ -131,7 +136,9 @@ function ViewJot() {
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.JOT.HOME}>
-        <LayoutMain>Jot Home</LayoutMain>
+        <LayoutMain>
+          <PartialViewJotHome />
+        </LayoutMain>
       </DisplayNoneWrapper>
     </>
   );
@@ -189,7 +196,9 @@ function ViewStride() {
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.STRIDE.HOME}>
-        <LayoutMain>Stride Home</LayoutMain>
+        <LayoutMain>
+          <PartialViewStrideHome />
+        </LayoutMain>
       </DisplayNoneWrapper>
     </>
   );
