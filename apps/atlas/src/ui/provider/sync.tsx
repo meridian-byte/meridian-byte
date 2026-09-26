@@ -46,6 +46,8 @@ export default function Sync({ children }: { children: React.ReactNode }) {
 
 const STORES_TO_SYNC = [
   STORE_NAME.WORKSPACES,
+  STORE_NAME.RECURRING_RULES,
+  STORE_NAME.REMINDERS,
 
   // Pave
   STORE_NAME.CALENDARS,
@@ -57,7 +59,5 @@ const STORES_TO_SYNC = [
 
   // Stride
   STORE_NAME.TASK_LISTS,
-  // STORE_NAME.RECURRING_RULES,
   STORE_NAME.TASKS,
-  // STORE_NAME.REMINDERS,
 ];

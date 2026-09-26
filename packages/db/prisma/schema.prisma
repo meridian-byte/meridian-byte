@@ -66,8 +66,6 @@ enum Frequency {
   DAILY
   WEEKLY
   MONTHLY
-  QUARTERLY
-  SEMI_ANNUALLY
   ANNUALLY
 }
 
@@ -129,6 +127,50 @@ model Workspace {
   @@map("workspaces")
 }
 
+model Reminder {
+  id       String   @id @default(uuid())
+  remindAt DateTime @map("remind_at")
+  sent     Boolean  @default(false)
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String    @map("profile_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String    @map("workspace_id")
+  task        Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId      String?   @map("task_id")
+  event       Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     String?   @map("event_id")
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map(name: "reminders")
+}
+
+model RecurringRule {
+  id        String    @id @default(uuid())
+  frequency Frequency
+  interval  Int       @default(1)
+  endDate   DateTime? @map("end_date")
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String    @map("profile_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String    @map("workspace_id")
+
+  events Event[]
+  tasks  Task[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map(name: "recurring_rules")
+}
+
 //
 // Pave
 //
@@ -163,12 +205,16 @@ model Event {
   allDay      Boolean  @default(false) @map("all_day")
   location    String?
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String    @map("workspace_id")
-  calendar    Calendar? @relation(fields: [calendarId], references: [id], onDelete: SetNull)
-  calendarId  String?   @map("calendar_id")
+  profile         Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId       String         @map("profile_id")
+  workspace       Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId     String         @map("workspace_id")
+  calendar        Calendar?      @relation(fields: [calendarId], references: [id], onDelete: SetNull)
+  calendarId      String?        @map("calendar_id")
+  recurringRule   RecurringRule? @relation(fields: [recurringRuleId], references: [id])
+  recurringRuleId String?        @map("recurring_rule_id")
+
+  reminders Reminder[]
 
   syncStatus SyncStatus @default(SYNCED) @map("sync_status")
 
@@ -250,29 +296,6 @@ model TaskList {
   @@map("task_lists")
 }
 
-model RecurringRule {
-  id        String    @id @default(uuid())
-  frequency Frequency
-  interval  Int       @default(1)
-  endDate   DateTime? @map("end_date")
-  weekdays  String[] // 0 - monday, 6 - sunday. comma separated for multiples. eg. 0,4,6
-  months    String[] // 0 - january, 12 - december. comma separated for multiples. eg. 5,7,11
-
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String    @map("workspace_id")
-
-  tasks Task[]
-
-  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map(name: "recurring_rules")
-}
-
 model Task {
   id          String    @id @default(cuid())
   title       String
@@ -287,34 +310,15 @@ model Task {
   workspaceId     String         @map("workspace_id")
   taskList        TaskList?      @relation(fields: [taskListId], references: [id], onDelete: SetNull)
   taskListId      String?        @map("task_list_id")
-  recurring_rule  RecurringRule? @relation(fields: [recurringRuleId], references: [id])
+  recurringRule   RecurringRule? @relation(fields: [recurringRuleId], references: [id])
   recurringRuleId String?        @map("recurring_rule_id")
 
-  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
-
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
   reminders Reminder[]
-
-  @@map("tasks")
-}
-
-model Reminder {
-  id       String   @id @default(uuid())
-  remindAt DateTime @map("remind_at")
-  sent     Boolean  @default(false)
-
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String    @map("workspace_id")
-  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  taskId      String    @map("task_id")
 
   syncStatus SyncStatus @default(SYNCED) @map("sync_status")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map(name: "reminders")
+  @@map("tasks")
 }

@@ -19,7 +19,7 @@ export const useReminderActions = () => {
     if (!session) return;
     if (!activeWorkspace) return;
 
-    if (!params?.taskId) {
+    if (!params?.taskId && !params?.eventId) {
       // error notification goes here
       return;
     }
@@ -31,7 +31,8 @@ export const useReminderActions = () => {
       id: params?.id || id,
       remindAt: new Date(params?.remindAt || getThreeHoursFromNow()).toISOString() as any,
       sent: params?.sent ?? false,
-      taskId: params.taskId,
+      eventId: params.eventId || null,
+      taskId: params.taskId || null,
       profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,

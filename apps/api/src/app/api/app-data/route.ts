@@ -25,6 +25,16 @@ export async function GET(request: NextRequest) {
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),
+      [STORE_NAME.RECURRING_RULES]: () =>
+        db.recurringRule.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
+      [STORE_NAME.REMINDERS]: () =>
+        db.reminder.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
 
       // Pave
       [STORE_NAME.CALENDARS]: () =>
@@ -56,18 +66,8 @@ export async function GET(request: NextRequest) {
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),
-      [STORE_NAME.RECURRING_RULES]: () =>
-        db.recurringRule.findMany({
-          where: { profileId: userId },
-          orderBy: { createdAt: 'desc' },
-        }),
       [STORE_NAME.TASKS]: () =>
         db.task.findMany({
-          where: { profileId: userId },
-          orderBy: { createdAt: 'desc' },
-        }),
-      [STORE_NAME.REMINDERS]: () =>
-        db.reminder.findMany({
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),

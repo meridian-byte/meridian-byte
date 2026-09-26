@@ -7,6 +7,7 @@ export * from './date-time';
 export * from './storage';
 export * from './url';
 export * from './misc';
+export * from './number';
 export * from './validation';
 export * from './theme';
 export * from './generators';

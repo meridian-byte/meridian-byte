@@ -89,15 +89,16 @@ export const useFormTask = (params?: {
   );
 
   useEffect(() => {
-    if (!params?.options?.checkBox) return;
-    if (!params?.defaultValues) return;
-    if (form.values.complete == params.defaultValues.complete) return;
+    // if (!params?.options?.checkBox) return;
+    if (!form.isDirty()) return;
+    if (!params?.defaultValues?.updatedAt) return;
+    if (JSON.stringify(form.values) == JSON.stringify(params.defaultValues)) return;
 
     taskUpdate({
       ...params?.defaultValues,
-      complete: form.values.complete,
+      ...form.values,
     } as TaskGet);
-  }, [form.values.complete]);
+  }, [form.values]);
 
   return {
     form,

@@ -1,24 +1,49 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
+  ActionIcon,
   Box,
   Button,
   Checkbox,
   Divider,
+  Flex,
   Grid,
   GridCol,
   Group,
+  ScrollArea,
+  ScrollAreaAutosize,
   Select,
+  Stack,
+  Text,
   Textarea,
   TextInput,
+  Tooltip,
 } from '@mantine/core';
-import { DateInput, DateTimePicker } from '@mantine/dates';
+import { DateInput, DateTimePicker, TimePicker } from '@mantine/dates';
 import { useFormEvent } from '@repo/hooks';
 import dayjs from 'dayjs';
-import { useEventActions, useStoreCalendar, useStoreEvent } from '@repo/store';
+import {
+  useEventActions,
+  useReminderActions,
+  useStoreCalendar,
+  useStoreEvent,
+  useStoreReminder,
+  useViewModal,
+} from '@repo/store';
 import { EventFormData } from '@repo/types';
 import { useAppshellChild } from '@repo/hooks';
+import {
+  IconAlignJustified,
+  IconBell,
+  IconClock,
+  IconCursorText,
+  IconMapPin,
+  IconPin,
+  IconTrash,
+} from '@tabler/icons-react';
+import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from '@repo/constants';
+import { generateUUID, prependZeros } from '@repo/utils';
 
 interface EventFormProps {
   modal?: boolean;
@@ -29,6 +54,7 @@ interface EventFormProps {
 export default function Event({ modal, initialData, onClose }: EventFormProps) {
   const [checked, setChecked] = useState(true);
 
+  const { closeModalView } = useViewModal();
   const { handleToggleChildAside } = useAppshellChild();
 
   const events = useStoreEvent((s) => s.events);
@@ -88,6 +114,127 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
     },
   };
 
+  const sharedPadding = 'md';
+  const sharedHeight = modal ? 400 : undefined;
+
+  function InputCalendar() {
+    return (
+      <Select
+        label="Calendar"
+        placeholder="Select calendar"
+        disabled={!calendars}
+        loading={calendars === undefined}
+        {...form.getInputProps('calendarId')}
+        data={(calendars || []).map((ci) => {
+          return {
+            label: ci.title,
+            value: ci.id,
+          };
+        })}
+      />
+    );
+  }
+
+  function SectionReminder() {
+    const reminders = useStoreReminder((s) => s.reminders);
+    const reminder = reminders?.find((ri) => ri.eventId == initialData?.id);
+
+    const [withReminder, setWithReminder] = useState<boolean>(!!reminder);
+
+    const [reminderState, seReminderState] = useState<string | null>(
+      !reminder ? null : getTimeFormat(new Date(reminder.remindAt)),
+    );
+
+    const { reminderCreate, reminderUpdate, reminderDelete } = useReminderActions();
+
+    useEffect(() => {
+      if (reminderState) return;
+      setWithReminder(false);
+    }, [reminderState]);
+
+    useEffect(() => {
+      if (reminders === undefined) return;
+      if (reminders === null) return;
+      if (!form.values.start) return;
+
+      const [hours, minutes] = (reminderState || '').split(':').map(Number);
+
+      const dateValue = form.values.start;
+
+      const updatedDate = new Date(
+        new Date(dateValue).getFullYear(),
+        new Date(dateValue).getMonth(),
+        new Date(dateValue).getDate(),
+        hours,
+        minutes,
+      );
+
+      if (!reminder) {
+        if (!reminderState) {
+          return;
+        } else {
+          // console.log('create reminder');
+          if (initialData) {
+            reminderCreate({
+              id: generateUUID(),
+              remindAt: updatedDate.toISOString() as any,
+              eventId: initialData.id,
+            });
+          }
+        }
+      } else {
+        if (!reminderState) {
+          // console.log('delete reminder');
+          reminderDelete(reminder);
+        } else {
+          if (getTimeFormat(new Date(reminder.remindAt)) == reminderState) {
+            return;
+          } else {
+            // console.log('update reminder');
+            reminderUpdate({
+              ...reminder,
+              remindAt: updatedDate as any,
+            });
+          }
+        }
+      }
+    }, [reminderState]);
+
+    return (
+      <Stack gap={5}>
+        <Checkbox
+          label={'With reminder'}
+          // defaultChecked={withReminder}
+          checked={withReminder}
+          onChange={(event) => setWithReminder(event.currentTarget.checked)}
+          disabled={!!withReminder && !!reminderState}
+          // mt={'xs'}
+        />
+
+        <Box
+          style={{
+            transition: '.1s all ease',
+            height: withReminder ? (modal ? 54.8 : 30) : 0,
+            overflow: 'hidden',
+          }}
+        >
+          <TimePicker
+            label={!modal ? undefined : 'Reminder'}
+            aria-label={'Reminder'}
+            size="xs"
+            clearable
+            leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+            format="12h"
+            max={!form.values.start ? undefined : getTimeFormat(form.values.start)}
+            value={reminderState || undefined}
+            onChange={seReminderState}
+            withDropdown
+          />
+        </Box>
+      </Stack>
+    );
+  }
+
   return (
     <Box
       component="form"
@@ -96,150 +243,216 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
         if (onClose) onClose();
       })}
       noValidate
-      p={'xs'}
+      // p={'xs'}
     >
-      <Grid gap={'xs'}>
-        <GridCol span={{ base: 12 }}>
-          <TextInput
-            required
-            label={'Title'}
-            placeholder="Title"
-            {...form.getInputProps('title')}
-          />
+      <Grid gap={0}>
+        <GridCol span={{ base: 12, md: modal ? 8 : 12 }}>
+          <ScrollAreaAutosize mah={sharedHeight}>
+            <Grid
+              gap={0}
+              p={sharedPadding}
+              mih={!modal ? undefined : sharedHeight}
+              bg={
+                !modal
+                  ? undefined
+                  : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
+              }
+            >
+              <GridCol span={{ base: 12 }}>
+                <TextInput
+                  required
+                  aria-label={'Title'}
+                  label={!modal ? 'Title' : undefined}
+                  placeholder="Title"
+                  variant="unstyled"
+                  styles={{
+                    input: { backgroundColor: 'transparent', padding: 0, fontWeight: 'bold' },
+                  }}
+                  {...form.getInputProps('title')}
+                  size="md"
+                />
+              </GridCol>
+
+              <GridCol span={{ base: 12 }}>
+                <Textarea
+                  aria-label="Description"
+                  label={!modal ? 'Description' : undefined}
+                  placeholder="Description"
+                  variant="unstyled"
+                  styles={{
+                    input: { backgroundColor: 'transparent', padding: 0, fontWeight: 500 },
+                  }}
+                  {...form.getInputProps('description')}
+                  autosize
+                  minRows={2}
+                  maxRows={5}
+                  size="sm"
+                />
+              </GridCol>
+
+              <GridCol span={{ base: 12 }}>
+                <Textarea
+                  aria-label="Location"
+                  label={!modal ? 'Location' : undefined}
+                  placeholder="Location"
+                  variant="unstyled"
+                  leftSection={<IconMapPin size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+                  styles={{
+                    input: {
+                      backgroundColor: 'transparent',
+                      fontWeight: 500,
+                    },
+                  }}
+                  {...form.getInputProps('location')}
+                  autosize
+                  minRows={1}
+                  maxRows={3}
+                />
+              </GridCol>
+
+              <GridCol span={{ base: 12 }}>
+                <Divider mt={!modal ? 'xs' : SECTION_SPACING} mb={'xs'} />
+              </GridCol>
+
+              {!modal && (
+                <GridCol span={{ base: 12 }}>
+                  <Checkbox
+                    label={'Close when done'}
+                    checked={checked}
+                    onChange={(event) => setChecked(event.currentTarget.checked)}
+                  />
+                </GridCol>
+              )}
+            </Grid>
+          </ScrollAreaAutosize>
         </GridCol>
 
-        <GridCol span={{ base: 12 }}>
-          <Textarea
-            label={'Description'}
-            placeholder="Description"
-            {...form.getInputProps('description')}
-            autosize
-            minRows={2}
-            maxRows={5}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }}>
-          <Checkbox
-            label={'All day event'}
-            {...form.getInputProps('allDay')}
-            mt={'xs'}
-            defaultChecked={initialData?.allDay}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }} display={!form.values.allDay ? 'none' : undefined}>
-          <DateInput {...allDayProps.props} valueFormat={'DD MMM YYYY'} />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }} display={form.values.allDay ? 'none' : undefined}>
-          <DateTimePicker
-            {...allDayProps.props}
-            timePickerProps={{
-              withDropdown: true,
-              popoverProps: { withinPortal: false },
-              format: '12h',
-            }}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }}>
-          <DateTimePicker
-            required
-            label="End"
-            placeholder="End"
-            {...form.getInputProps('end')}
-            valueFormat={allDayProps.props.valueFormat}
-            disabled={form.values.allDay}
-
-            timePickerProps={{
-              withDropdown: true,
-              popoverProps: { withinPortal: false },
-              format: '12h',
-            }}
-
-            presets={[
-              {
-                value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                label: 'Yesterday',
-              },
-              { value: dayjs().format('YYYY-MM-DD HH:mm:ss'), label: 'Today' },
-              { value: dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'), label: 'Tomorrow' },
-              { value: dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm:ss'), label: 'Next month' },
-            ]}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }}>
-          <Select
-            label="Calendar"
-            placeholder="Select calendar"
-            disabled={!calendars}
-            loading={calendars === undefined}
-            {...form.getInputProps('calendarId')}
-            data={(calendars || []).map((ci) => {
-              return {
-                label: ci.title,
-                value: ci.id,
-              };
-            })}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }}>
-          <Textarea
-            label={'Location'}
-            placeholder="Location"
-            {...form.getInputProps('location')}
-            autosize
-            minRows={2}
-            maxRows={5}
-          />
-        </GridCol>
-
-        <GridCol span={{ base: 12 }}>
-          <Divider my={'xs'} />
-        </GridCol>
-
-        {!modal && (
-          <GridCol span={{ base: 12 }}>
-            <Checkbox
-              label={'Close when done'}
-              checked={checked}
-              onChange={(event) => setChecked(event.currentTarget.checked)}
-            />
-          </GridCol>
-        )}
-
-        <GridCol span={{ base: 12 }}>
-          <Group justify="space-between">
-            {initialData?.id && (
-              <Button color="red" variant="light" onClick={handleDelete}>
-                Delete
-              </Button>
-            )}
-
-            <Group gap="xs" style={{ marginLeft: 'auto' }}>
-              <Button
-                variant="default"
-                onClick={() => {
-                  if (onClose) {
-                    onClose();
-                  } else {
-                    handleToggleChildAside();
-                  }
-                }}
+        <GridCol span={{ base: 12, md: 4 }}>
+          <Stack h={sharedHeight} gap={0}>
+            <ScrollArea flex={1}>
+              <Flex
+                align={modal ? undefined : 'center'}
+                direction={modal ? 'column' : 'row'}
+                p={modal ? sharedPadding : undefined}
+                // mih={'100vh'}
               >
-                Cancel
-              </Button>
+                {modal && <InputCalendar />}
 
-              <Button type="submit" loading={submitted}>
-                {initialData?.id ? 'Update' : 'Add'}
-              </Button>
-            </Group>
-          </Group>
+                <Divider my={16} />
+
+                <Stack gap={5}>
+                  <Checkbox
+                    label={'All day event'}
+                    {...form.getInputProps('allDay')}
+                    defaultChecked={initialData?.allDay}
+                  />
+
+                  <div>
+                    <Box display={!form.values.allDay ? 'none' : undefined}>
+                      <DateInput {...allDayProps.props} valueFormat={'DD MMM YYYY'} />
+                    </Box>
+
+                    <Box display={form.values.allDay ? 'none' : undefined}>
+                      <DateTimePicker
+                        {...allDayProps.props}
+                        timePickerProps={{
+                          withDropdown: true,
+                          popoverProps: { withinPortal: false },
+                          format: '12h',
+                        }}
+                      />
+                    </Box>
+                  </div>
+                </Stack>
+
+                <DateTimePicker
+                  required
+                  label="End"
+                  placeholder="End"
+                  {...form.getInputProps('end')}
+                  valueFormat={allDayProps.props.valueFormat}
+                  disabled={form.values.allDay}
+
+                  timePickerProps={{
+                    withDropdown: true,
+                    popoverProps: { withinPortal: false },
+                    format: '12h',
+                  }}
+
+                  presets={[
+                    {
+                      value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                      label: 'Yesterday',
+                    },
+                    { value: dayjs().format('YYYY-MM-DD HH:mm:ss'), label: 'Today' },
+                    {
+                      value: dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                      label: 'Tomorrow',
+                    },
+                    {
+                      value: dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm:ss'),
+                      label: 'Next month',
+                    },
+                  ]}
+                />
+
+                <Divider my={16} />
+
+                {modal && <SectionReminder />}
+              </Flex>
+            </ScrollArea>
+
+            {modal && (
+              <>
+                <Divider my={modal ? undefined : 16} />
+
+                <Group
+                  justify={modal ? 'end' : 'space-between'}
+                  gap="xs"
+                  p={modal ? sharedPadding : undefined}
+                >
+                  {!modal && <InputCalendar />}
+
+                  <Group gap={'xs'}>
+                    <Button
+                      disabled={submitted}
+                      variant="default"
+                      size="xs"
+                      onClick={() => {
+                        if (!initialData) {
+                          handleToggleChildAside();
+                        } else {
+                          closeModalView();
+                        }
+                      }}
+                    >
+                      {'Close'}
+                    </Button>
+
+                    <Divider orientation="vertical" h={16} my={'auto'} />
+
+                    <Tooltip label={'Delete task'}>
+                      <ActionIcon
+                        size={ICON_WRAPPER_SIZE}
+                        color="red"
+                        variant="light"
+                        onClick={() => {}}
+                      >
+                        <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Group>
+                </Group>
+              </>
+            )}
+          </Stack>
         </GridCol>
       </Grid>
     </Box>
   );
 }
+
+const getTimeFormat = (date: Date | string) => {
+  const dateObject = new Date(date);
+  return `${prependZeros(Number(dateObject.getHours()), 2)}:${prependZeros(Number(dateObject.getMinutes()), 2)}`;
+};

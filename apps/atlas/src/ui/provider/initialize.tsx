@@ -53,6 +53,8 @@ export default function Initialize({
 
 const STORES_TO_LOAD = {
   [STORE_NAME.WORKSPACES]: true,
+  [STORE_NAME.RECURRING_RULES]: true,
+  [STORE_NAME.REMINDERS]: true,
 
   // Pave
   [STORE_NAME.CALENDARS]: true,
@@ -64,7 +66,5 @@ const STORES_TO_LOAD = {
 
   // Stride
   [STORE_NAME.TASK_LISTS]: true,
-  // [STORE_NAME.RECURRING_RULES]: true,
   [STORE_NAME.TASKS]: true,
-  // [STORE_NAME.REMINDERS]: true,
 };

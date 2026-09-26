@@ -28,8 +28,6 @@ export const useFormRecurringRule = (params?: {
       endDate: params?.defaultValues?.endDate || null,
       frequency: params?.defaultValues?.frequency || Frequency.WEEKLY,
       interval: params?.defaultValues?.interval || 1,
-      months: params?.defaultValues?.months || [],
-      weekdays: params?.defaultValues?.weekdays || [],
     },
     {
       frequency: hasLength({ min: 1 }, 'Frequency required'),

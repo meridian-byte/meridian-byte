@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {
+  ActionIcon,
   Box,
   Button,
   Center,
@@ -17,15 +18,37 @@ import {
   Text,
   Textarea,
   TextInput,
+  Tooltip,
 } from '@mantine/core';
 import { useAppshellChild, useFormTask } from '@repo/hooks';
 import { Order, Priority, TaskGet } from '@repo/types';
-import { useStoreTaskList, useSubView, useViewAside, useViewModal } from '@repo/store';
-import { DateInput } from '@mantine/dates';
-import { IconCalendarEvent, IconCategory, IconFlag } from '@tabler/icons-react';
-import { ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH, SUBVIEW_NAMES } from '@repo/constants';
+import {
+  useReminderActions,
+  useStoreReminder,
+  useStoreTaskList,
+  useSubView,
+  useViewAside,
+  useViewModal,
+} from '@repo/store';
+import { DateInput, DateTimePicker } from '@mantine/dates';
+import {
+  IconBell,
+  IconCalendarEvent,
+  IconCategory,
+  IconClock,
+  IconFlag,
+  IconTrash,
+} from '@tabler/icons-react';
+import {
+  ASIDE_VIEW_NAMES,
+  ICON_SIZE,
+  ICON_STROKE_WIDTH,
+  ICON_WRAPPER_SIZE,
+  SUBVIEW_NAMES,
+} from '@repo/constants';
 import {
   capitalizeWords,
+  generateUUID,
   getNextWeek,
   getPriorityDetails,
   getTomorrow,
@@ -63,17 +86,16 @@ export default function Task({
   function InputTaskList() {
     return (
       <div>
-        {taskLists === undefined ? (
-          <>loading</>
-        ) : (
+        {
           <Select
             aria-label={'Task list'}
+            label={!options?.modal ? undefined : 'Task List'}
             placeholder={views.inboxView ? 'Inbox' : 'Task list'}
             size="xs"
             clearable
+            clearSectionMode="clear"
             searchable
             disabled={creatingTask && (views.inboxView || !!taskListId)}
-            clearSectionMode="clear"
             {...form.getInputProps('taskListId')}
             leftSection={<IconCategory size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             data={(taskLists || []).map((tli) => {
@@ -83,8 +105,113 @@ export default function Task({
               };
             })}
           />
-        )}
+        }
       </div>
+    );
+  }
+
+  function SectionReminder() {
+    const reminders = useStoreReminder((s) => s.reminders);
+    const reminder = reminders?.find((ri) => ri.taskId == defaultValues?.id);
+
+    const [withReminder, setWithReminder] = useState<boolean>(!!reminder);
+    const [reminderState, seReminderState] = useState<string | null>(
+      !reminder?.remindAt ? null : new Date(reminder?.remindAt).toISOString(),
+    );
+
+    const { reminderCreate, reminderUpdate, reminderDelete } = useReminderActions();
+
+    useEffect(() => {
+      if (reminderState) return;
+      setWithReminder(false);
+    }, [reminderState]);
+
+    useEffect(() => {
+      if (reminders === undefined) return;
+      if (reminders === null) return;
+
+      const now = new Date();
+
+      if (!reminder) {
+        if (!reminderState) {
+          return;
+        } else {
+          // console.log('create reminder');
+          if (defaultValues?.updatedAt) {
+            reminderCreate({
+              id: generateUUID(),
+              remindAt: now.toISOString() as any,
+              taskId: defaultValues.id,
+            });
+          }
+        }
+      } else {
+        if (!reminderState) {
+          // console.log('delete reminder');
+          reminderDelete(reminder);
+        } else {
+          if (new Date(reminder.remindAt).toISOString() == reminderState) {
+            return;
+          } else {
+            // console.log('update reminder');
+            reminderUpdate({
+              ...reminder,
+              remindAt: reminderState as any,
+            });
+          }
+        }
+      }
+    }, [reminderState]);
+
+    return (
+      <Stack
+        gap={5}
+        style={{
+          transition: '.1s all ease',
+          height:
+            !defaultValues?.dueDate && !form.values?.dueDate
+              ? 0
+              : withReminder
+                ? options?.modal
+                  ? 16 + 5 + 54.8
+                  : 16 + 5 + 30
+                : 16,
+          overflow: 'hidden',
+        }}
+      >
+        <Checkbox
+          label={'With reminder'}
+          // defaultChecked={withReminder}
+          checked={withReminder}
+          onChange={(event) => setWithReminder(event.currentTarget.checked)}
+          disabled={!!withReminder && !!reminderState}
+        />
+
+        <Box
+          style={{
+            transition: '.1s all ease',
+            height: withReminder ? (options?.modal ? 54.8 : 30) : 0,
+            overflow: 'hidden',
+          }}
+        >
+          <DateTimePicker
+            aria-label={'Reminder'}
+            label={!options?.modal ? undefined : 'Reminder'}
+            placeholder="Reminder"
+            size="xs"
+            clearable
+            leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+            value={reminderState}
+            onChange={seReminderState}
+            minDate={dayjs(defaultValues?.dueDate || form.values?.dueDate).format('YYYY-MM-DD')}
+            timePickerProps={{
+              withDropdown: true,
+              popoverProps: { withinPortal: false },
+              format: '12h',
+            }}
+          />
+        </Box>
+      </Stack>
     );
   }
 
@@ -93,53 +220,19 @@ export default function Task({
       <Stack h={sharedHeight} gap={0}>
         <ScrollArea flex={1}>
           <Flex
-            gap={'xs'}
             align={options?.modal || options?.withoutCheck ? undefined : 'center'}
             direction={options?.modal || options?.withoutCheck ? 'column' : 'row'}
-            p={options?.modal ? sharedPadding : undefined}
+            pt={options?.modal ? sharedPadding : undefined}
+            px={options?.modal ? sharedPadding : undefined}
+            gap={options?.modal ? undefined : 5}
             // mih={'100vh'}
           >
-            <div>
-              <Text inherit fz={'sm'} fw={500}>
-                Task list
-              </Text>
-
-              {(options?.modal || options?.withoutCheck) && <InputTaskList />}
-            </div>
+            {(options?.modal || options?.withoutCheck) && <InputTaskList />}
 
             <div>
-              <Text inherit fz={'sm'} fw={500}>
-                Due date
-              </Text>
-
-              <DateInput
-                aria-label={'Due date'}
-                placeholder="Due date"
-                size="xs"
-                clearable
-                disabled={creatingTask && views.todayView}
-                minDate={
-                  creatingTask && views.upcomingView
-                    ? dayjs(getTomorrow()).format('YYYY-MM-DD')
-                    : undefined
-                }
-                maxDate={
-                  creatingTask && views.overdueView
-                    ? dayjs(getYesterday()).format('YYYY-MM-DD')
-                    : undefined
-                }
-                {...form.getInputProps('dueDate')}
-                leftSection={<IconCalendarEvent size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-              />
-            </div>
-
-            <div>
-              <Text inherit fz={'sm'} fw={500}>
-                Priority
-              </Text>
-
               <Select
                 aria-label="Priority"
+                label={!options?.modal ? undefined : 'Priority'}
                 placeholder="Priority"
                 size="xs"
                 // clearable
@@ -179,6 +272,35 @@ export default function Task({
                 )}
               />
             </div>
+
+            <Divider mt={16} mb={8} />
+
+            <div>
+              <DateInput
+                aria-label={'Due date'}
+                label={!options?.modal ? undefined : 'Due date'}
+                placeholder="Due date"
+                size="xs"
+                clearable
+                disabled={creatingTask && views.todayView}
+                minDate={
+                  creatingTask && views.upcomingView
+                    ? dayjs(getTomorrow()).format('YYYY-MM-DD')
+                    : undefined
+                }
+                maxDate={
+                  creatingTask && views.overdueView
+                    ? dayjs(getYesterday()).format('YYYY-MM-DD')
+                    : undefined
+                }
+                {...form.getInputProps('dueDate')}
+                leftSection={<IconCalendarEvent size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+              />
+            </div>
+
+            <Divider my={16} />
+
+            {options?.modal && <SectionReminder />}
           </Flex>
         </ScrollArea>
 
@@ -195,6 +317,7 @@ export default function Task({
             <Button
               disabled={submitted}
               variant="default"
+              size="xs"
               onClick={() => {
                 if (onUnmount && !options?.withoutCheck) {
                   onUnmount(false);
@@ -210,15 +333,24 @@ export default function Task({
               {'Close'}
             </Button>
 
-            <Button type="submit" loading={submitted}>
-              {submitted
-                ? defaultValues?.updatedAt
-                  ? 'Saving'
-                  : 'Adding'
-                : defaultValues?.updatedAt
-                  ? 'Save'
-                  : 'Add'}
-            </Button>
+            {options?.modal && (
+              <>
+                <Divider orientation="vertical" h={16} my={'auto'} />
+
+                {
+                  <Tooltip label={'Delete task'}>
+                    <ActionIcon
+                      size={ICON_WRAPPER_SIZE}
+                      color="red"
+                      variant="light"
+                      onClick={() => {}}
+                    >
+                      <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                    </ActionIcon>
+                  </Tooltip>
+                }
+              </>
+            )}
           </Group>
         </Group>
       </Stack>
@@ -255,7 +387,7 @@ export default function Task({
                       disabled={creatingTask && views.completeView}
                       size="sm"
                       radius={99}
-                      mt={8}
+                      mt={12}
                     />
                   </Group>
                 </GridCol>
@@ -268,7 +400,7 @@ export default function Task({
                       required
                       aria-label={'Title'}
                       placeholder="Title"
-                      size="sm"
+                      size="md"
                       variant="unstyled"
                       styles={{
                         input: {
@@ -288,7 +420,7 @@ export default function Task({
                         styles={{
                           input: {
                             backgroundColor: 'transparent',
-                            fontWeight: '500',
+                            fontWeight: 500,
                           },
                         }}
                         {...form.getInputProps('description')}

@@ -28,6 +28,7 @@ export const useEventActions = () => {
       end: new Date(params?.end || now).toISOString() as any,
       allDay: params?.allDay || false,
       location: params?.location || null,
+      recurringRuleId: params?.recurringRuleId || null,
       profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       calendarId: params?.calendarId || null,
