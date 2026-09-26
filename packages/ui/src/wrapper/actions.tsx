@@ -22,6 +22,7 @@ export function WrapperActionSignIn({
 
   return (
     <span
+      style={{ width: '100%' }}
       onClick={() => {
         router.push(
           setRedirectUrl({
