@@ -182,9 +182,9 @@ export const useViewModal = () => {
   const setModalViewValue = useStoreView((s) => s.setModalViewValue);
 
   // handle modal search open
-  const showModalViewSearch = () => {
+  const showModalViewSearch = (v?: string) => {
     if (modalViewValue != MODAL_VIEW_NAMES.SEARCH) {
-      setModalViewValue(MODAL_VIEW_NAMES.SEARCH);
+      setModalViewValue(`${MODAL_VIEW_NAMES.SEARCH}${!v ? '' : `-${v}`}`);
     }
   };
 

@@ -131,8 +131,7 @@ function NavbarHeader() {
         justify="start"
         pl={5}
         radius={0}
-        disabled
-        onClick={showModalViewSearch}
+        onClick={() => showModalViewSearch()}
       >
         Global Search
       </Button>

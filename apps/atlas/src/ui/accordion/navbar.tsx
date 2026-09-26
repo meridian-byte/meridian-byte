@@ -18,8 +18,9 @@ import {
   IconExternalLink,
   IconHome,
   IconPlus,
+  IconSearch,
 } from '@tabler/icons-react';
-import { useView, useViewAside, useViewNavbar } from '@repo/store';
+import { useView, useViewAside, useViewModal, useViewNavbar } from '@repo/store';
 import PartialNavbarPave from '../partial/navbar/pave';
 import PartialNavbarStride from '../partial/navbar/stride';
 import PartialNavbarJot from '../partial/navbar/jot';
@@ -29,6 +30,7 @@ export default function Navbar() {
 
   const { showAsideViewPave, showAsideViewJot, showAsideViewStride } = useViewAside();
   const { showViewPave, showViewJot, showViewStride, showViewPrime, showViewTally } = useView();
+  const { showModalViewSearch } = useViewModal();
 
   const data = [
     {
@@ -85,6 +87,22 @@ export default function Navbar() {
             {item.value}
 
             <Group component={'span'} justify="end" gap={0}>
+              <Tooltip label={`Search in ${item.value}`}>
+                <ActionIcon
+                  component="span"
+                  size={30}
+                  radius={0}
+                  color="gray"
+                  variant="subtle"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    showModalViewSearch(item.value);
+                  }}
+                >
+                  <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                </ActionIcon>
+              </Tooltip>
+
               <Tooltip label={`Add item in ${item.value}`}>
                 <ActionIcon
                   component="span"

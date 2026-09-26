@@ -16,8 +16,8 @@ export async function proxy(request: NextRequest) {
   // Set CORS headers for the response
   setCorsHeaders({ request, response });
 
-  // Update the session in the response
-  response = await updateSession(request, response, (await getBaseUrl()).ATLAS);
+  // // Update the session in the response
+  // response = await updateSession(request, response, (await getBaseUrl()).ATLAS);
 
   response = getColorScheme(request, response);
 
