@@ -28,7 +28,7 @@ export default function Initialize({
 
   useSessionStore({
     sessionUser: props?.sessionUser || null,
-    options: { clientOnly: true },
+    options: { clientOnly: false },
   });
 
   // useUserRoleStore();
@@ -42,7 +42,7 @@ export default function Initialize({
   useLoadAppData({
     sourceSite: 'atlas',
     apiUrl: props.baseUrl,
-    clientOnly: true,
+    clientOnly: false,
     storesToLoad: STORES_TO_LOAD,
   });
 

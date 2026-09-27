@@ -43,8 +43,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // const supabase = await createClientcloudbaseServer();
-  // const { data: session } = await supabase.auth.getUser();
+  const supabase = await createClientcloudbaseServer();
+  const { data: session } = await supabase.auth.getUser();
 
   // 1. Get the CALCULATED theme from middleware (not the 'auto' state)
   const theme = (await getCookieServer(COOKIE_NAME.COLOR_SCHEME)) || DEFAULT_COLOR_SCHEME;
@@ -106,8 +106,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <ProviderInitialize
             props={{
               baseUrl: await getApiUrl(),
-              // sessionUser: session.user
-              sessionUser: null,
+              sessionUser: session.user,
             }}
           >
             <ProviderSync>{children}</ProviderSync>
