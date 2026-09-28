@@ -11,6 +11,7 @@ import {
   Grid,
   GridCol,
   Group,
+  NumberInput,
   ScrollArea,
   ScrollAreaAutosize,
   Select,
@@ -25,13 +26,15 @@ import { useFormEvent } from '@repo/hooks';
 import dayjs from 'dayjs';
 import {
   useEventActions,
+  useRecurringRuleActions,
   useReminderActions,
   useStoreCalendar,
   useStoreEvent,
+  useStoreRecurringRule,
   useStoreReminder,
   useViewModal,
 } from '@repo/store';
-import { EventFormData } from '@repo/types';
+import { EventFormData, Frequency } from '@repo/types';
 import { useAppshellChild } from '@repo/hooks';
 import {
   IconAlignJustified,
@@ -40,7 +43,9 @@ import {
   IconCursorText,
   IconMapPin,
   IconPin,
+  IconRepeat,
   IconTrash,
+  IconX,
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from '@repo/constants';
 import { generateUUID, prependZeros } from '@repo/utils';
@@ -201,25 +206,22 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
     }, [reminderState]);
 
     return (
-      <Stack gap={5}>
+      <Stack gap={withReminder ? 'xs' : 0}>
         <Checkbox
-          label={'With reminder'}
-          // defaultChecked={withReminder}
+          label={'Remind'}
           checked={withReminder}
           onChange={(event) => setWithReminder(event.currentTarget.checked)}
           disabled={!!withReminder && !!reminderState}
-          // mt={'xs'}
         />
 
         <Box
           style={{
             transition: '.1s all ease',
-            height: withReminder ? (modal ? 54.8 : 30) : 0,
+            height: withReminder ? 30 : 0,
             overflow: 'hidden',
           }}
         >
           <TimePicker
-            label={!modal ? undefined : 'Reminder'}
             aria-label={'Reminder'}
             size="xs"
             clearable
@@ -231,6 +233,178 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
             withDropdown
           />
         </Box>
+      </Stack>
+    );
+  }
+
+  function SectionRecurring() {
+    const events = useStoreEvent((s) => s.events);
+    const event = events?.find((ti) => ti.id == initialData?.id);
+
+    const recurringRules = useStoreRecurringRule((s) => s.recurringRules);
+    const recurringRule = recurringRules?.find((ri) => ri.id == event?.recurringRuleId);
+
+    const [withRecurringRule, setWithRecurringRule] = useState<boolean>(!!recurringRule);
+    const [frequencyState, setFrequencyState] = useState<string | null>(
+      recurringRule?.frequency || null,
+    );
+    const [intervalState, setIntervalState] = useState<number | string>(
+      recurringRule?.interval || '',
+    );
+
+    const { recurringRuleCreate, recurringRuleUpdate, recurringRuleDelete } =
+      useRecurringRuleActions();
+    const { eventUpdate } = useEventActions();
+
+    useEffect(() => {
+      if (!withRecurringRule) return;
+      setIntervalState(recurringRule?.interval || 1);
+      setFrequencyState(recurringRule?.frequency || Frequency.WEEKLY);
+    }, [withRecurringRule]);
+
+    useEffect(() => {
+      if (intervalState) return;
+      if (frequencyState) return;
+
+      setWithRecurringRule(false);
+    }, [intervalState, frequencyState]);
+
+    useEffect(() => {
+      if (recurringRules === undefined) return;
+      if (recurringRules === null) return;
+
+      if (!recurringRule) {
+        if (!frequencyState && !intervalState) {
+          return;
+        } else {
+          console.log('create recurringRule');
+
+          if (event) {
+            if (frequencyState && intervalState) {
+              const newRule = recurringRuleCreate({
+                id: generateUUID(),
+                frequency: frequencyState as Frequency,
+                interval: typeof intervalState == 'string' ? 1 : intervalState,
+              });
+
+              if (newRule) {
+                eventUpdate({
+                  ...event,
+                  recurringRuleId: newRule.id,
+                });
+              }
+            }
+          }
+        }
+      } else {
+        if (!frequencyState && !intervalState) {
+          console.log('delete recurringRule');
+
+          // recurringRuleDelete(recurringRule);
+
+          // if (event) {
+          //   eventUpdate({
+          //     ...event,
+          //     recurringRuleId: null,
+          //   });
+          // }
+        } else {
+          if (
+            recurringRule.frequency == frequencyState &&
+            recurringRule.interval == intervalState
+          ) {
+            return;
+          } else {
+            console.log('update recurringRule');
+
+            // if (frequencyState && intervalState) {
+            //   recurringRuleUpdate({
+            //     ...recurringRule,
+            //     frequency: frequencyState as Frequency,
+            //     interval: typeof intervalState == 'string' ? 1 : intervalState,
+            //   });
+            // }
+          }
+        }
+      }
+    }, [intervalState, frequencyState]);
+
+    return (
+      <Stack
+        gap={withRecurringRule ? 'xs' : 0}
+        style={{
+          transition: '.1s all ease',
+          height: !event?.start ? 0 : withRecurringRule ? 16 + 10 + 18.6 + 2 + 30 : 16,
+          overflow: 'hidden',
+        }}
+      >
+        <Checkbox
+          label={'Repeat'}
+          checked={withRecurringRule}
+          onChange={(event) => setWithRecurringRule(event.currentTarget.checked)}
+          disabled={!!intervalState || !!frequencyState}
+        />
+
+        <Stack gap={2}>
+          <Text inherit fz={'xs'} fw={500}>
+            Every
+          </Text>
+
+          <Group gap={5} wrap="nowrap">
+            <NumberInput
+              w={'30%'}
+              aria-label={'Int.'}
+              placeholder="Int."
+              size="xs"
+              value={intervalState}
+              onChange={setIntervalState}
+            />
+
+            <Select
+              w={'70%'}
+              aria-label={'Frequency'}
+              placeholder="Frequency"
+              size="xs"
+              clearable
+              value={frequencyState}
+              onChange={setFrequencyState}
+              disabled={!intervalState}
+              leftSection={<IconRepeat size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+              data={[
+                {
+                  value: Frequency.DAILY,
+                  label: `Day${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+                {
+                  value: Frequency.WEEKLY,
+                  label: `Week${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+                {
+                  value: Frequency.MONTHLY,
+                  label: `Month${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+                {
+                  value: Frequency.ANNUALLY,
+                  label: `Year${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+              ]}
+            />
+
+            <Tooltip label={'Delete rule'}>
+              <ActionIcon
+                size={ICON_WRAPPER_SIZE}
+                color="red"
+                variant="light"
+                onClick={() => {
+                  setIntervalState('');
+                  setFrequencyState('');
+                }}
+              >
+                <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Stack>
       </Stack>
     );
   }
@@ -334,6 +508,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                 align={modal ? undefined : 'center'}
                 direction={modal ? 'column' : 'row'}
                 p={modal ? sharedPadding : undefined}
+                pb={sharedPadding}
                 // mih={'100vh'}
               >
                 {modal && <InputCalendar />}
@@ -365,40 +540,62 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                   </div>
                 </Stack>
 
-                <DateTimePicker
-                  required
-                  label="End"
-                  placeholder="End"
-                  {...form.getInputProps('end')}
-                  valueFormat={allDayProps.props.valueFormat}
-                  disabled={form.values.allDay}
-
-                  timePickerProps={{
-                    withDropdown: true,
-                    popoverProps: { withinPortal: false },
-                    format: '12h',
+                <Box
+                  style={{
+                    transition: '.1s all ease',
+                    height: form.values.allDay ? 0 : 54.8,
+                    overflow: 'hidden',
                   }}
+                >
+                  <DateTimePicker
+                    required
+                    label="End"
+                    placeholder="End"
+                    {...form.getInputProps('end')}
+                    valueFormat={allDayProps.props.valueFormat}
+                    disabled={form.values.allDay}
 
-                  presets={[
-                    {
-                      value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                      label: 'Yesterday',
-                    },
-                    { value: dayjs().format('YYYY-MM-DD HH:mm:ss'), label: 'Today' },
-                    {
-                      value: dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                      label: 'Tomorrow',
-                    },
-                    {
-                      value: dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm:ss'),
-                      label: 'Next month',
-                    },
-                  ]}
-                />
+                    timePickerProps={{
+                      withDropdown: true,
+                      popoverProps: { withinPortal: false },
+                      format: '12h',
+                    }}
 
-                <Divider my={16} />
+                    presets={[
+                      {
+                        value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                        label: 'Yesterday',
+                      },
+                      { value: dayjs().format('YYYY-MM-DD HH:mm:ss'), label: 'Today' },
+                      {
+                        value: dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                        label: 'Tomorrow',
+                      },
+                      {
+                        value: dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm:ss'),
+                        label: 'Next month',
+                      },
+                    ]}
+                  />
+                </Box>
 
-                {modal && <SectionReminder />}
+                {modal && (
+                  <>
+                    {initialData?.id && (
+                      <>
+                        <Divider my={16} />
+                        <SectionReminder />
+                      </>
+                    )}
+
+                    {initialData?.id && (
+                      <>
+                        <Divider my={16} />
+                        <SectionRecurring />
+                      </>
+                    )}
+                  </>
+                )}
               </Flex>
             </ScrollArea>
 
@@ -429,9 +626,13 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                       {'Close'}
                     </Button>
 
+                    <Button type="submit" size="xs" loading={submitted}>
+                      {initialData?.id ? 'Update' : 'Add'}
+                    </Button>
+
                     <Divider orientation="vertical" h={16} my={'auto'} />
 
-                    <Tooltip label={'Delete task'}>
+                    <Tooltip label={'Delete event'}>
                       <ActionIcon
                         size={ICON_WRAPPER_SIZE}
                         color="red"

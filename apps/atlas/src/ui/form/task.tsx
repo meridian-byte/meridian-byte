@@ -12,6 +12,7 @@ import {
   Grid,
   GridCol,
   Group,
+  NumberInput,
   ScrollArea,
   Select,
   Stack,
@@ -21,12 +22,16 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useAppshellChild, useFormTask } from '@repo/hooks';
-import { Order, Priority, TaskGet } from '@repo/types';
+import { Frequency, Order, Priority, TaskGet } from '@repo/types';
 import {
+  useRecurringRuleActions,
   useReminderActions,
+  useStoreRecurringRule,
   useStoreReminder,
+  useStoreTask,
   useStoreTaskList,
   useSubView,
+  useTaskActions,
   useViewAside,
   useViewModal,
 } from '@repo/store';
@@ -37,7 +42,9 @@ import {
   IconCategory,
   IconClock,
   IconFlag,
+  IconRepeat,
   IconTrash,
+  IconX,
 } from '@tabler/icons-react';
 import {
   ASIDE_VIEW_NAMES,
@@ -89,7 +96,7 @@ export default function Task({
         {
           <Select
             aria-label={'Task list'}
-            label={!options?.modal ? undefined : 'Task List'}
+            label={!options?.modal ? undefined : 'Task list'}
             placeholder={views.inboxView ? 'Inbox' : 'Task list'}
             size="xs"
             clearable
@@ -111,6 +118,9 @@ export default function Task({
   }
 
   function SectionReminder() {
+    const tasks = useStoreTask((s) => s.tasks);
+    const task = tasks?.find((ti) => ti.id == defaultValues?.id);
+
     const reminders = useStoreReminder((s) => s.reminders);
     const reminder = reminders?.find((ri) => ri.taskId == defaultValues?.id);
 
@@ -125,6 +135,21 @@ export default function Task({
       if (reminderState) return;
       setWithReminder(false);
     }, [reminderState]);
+
+    useEffect(() => {
+      if (tasks === undefined) return;
+      if (tasks === null) return;
+      if (reminders === undefined) return;
+      if (reminders === null) return;
+
+      if (!task) return;
+      if (task.dueDate) return;
+      if (!reminder) return;
+
+      // console.log('delete reminder (auto)');
+
+      reminderDelete(reminder);
+    }, [task?.dueDate]);
 
     useEffect(() => {
       if (reminders === undefined) return;
@@ -165,52 +190,235 @@ export default function Task({
 
     return (
       <Stack
-        gap={5}
+        gap={withReminder ? 'xs' : 0}
         style={{
           transition: '.1s all ease',
           height:
-            !defaultValues?.dueDate && !form.values?.dueDate
-              ? 0
-              : withReminder
-                ? options?.modal
-                  ? 16 + 5 + 54.8
-                  : 16 + 5 + 30
-                : 16,
+            !defaultValues?.dueDate && !form.values?.dueDate ? 0 : withReminder ? 16 + 10 + 30 : 16,
           overflow: 'hidden',
         }}
       >
         <Checkbox
-          label={'With reminder'}
-          // defaultChecked={withReminder}
+          label={'Remind'}
           checked={withReminder}
           onChange={(event) => setWithReminder(event.currentTarget.checked)}
           disabled={!!withReminder && !!reminderState}
         />
 
-        <Box
-          style={{
-            transition: '.1s all ease',
-            height: withReminder ? (options?.modal ? 54.8 : 30) : 0,
-            overflow: 'hidden',
+        <DateTimePicker
+          aria-label={'Remind at'}
+          placeholder="Remind at"
+          size="xs"
+          clearable
+          leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          value={reminderState}
+          onChange={seReminderState}
+          minDate={dayjs(defaultValues?.dueDate || form.values?.dueDate).format('YYYY-MM-DD')}
+          timePickerProps={{
+            withDropdown: true,
+            popoverProps: { withinPortal: false },
+            format: '12h',
           }}
-        >
-          <DateTimePicker
-            aria-label={'Reminder'}
-            label={!options?.modal ? undefined : 'Reminder'}
-            placeholder="Reminder"
-            size="xs"
-            clearable
-            leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-            value={reminderState}
-            onChange={seReminderState}
-            minDate={dayjs(defaultValues?.dueDate || form.values?.dueDate).format('YYYY-MM-DD')}
-            timePickerProps={{
-              withDropdown: true,
-              popoverProps: { withinPortal: false },
-              format: '12h',
-            }}
-          />
-        </Box>
+        />
+      </Stack>
+    );
+  }
+
+  function SectionRecurring() {
+    const tasks = useStoreTask((s) => s.tasks);
+    const task = tasks?.find((ti) => ti.id == defaultValues?.id);
+
+    const recurringRules = useStoreRecurringRule((s) => s.recurringRules);
+    const recurringRule = recurringRules?.find((ri) => ri.id == defaultValues?.recurringRuleId);
+
+    const [withRecurringRule, setWithRecurringRule] = useState<boolean>(!!recurringRule);
+    const [frequencyState, setFrequencyState] = useState<string | null>(
+      recurringRule?.frequency || null,
+    );
+    const [intervalState, setIntervalState] = useState<number | string>(
+      recurringRule?.interval || '',
+    );
+
+    const { recurringRuleCreate, recurringRuleUpdate, recurringRuleDelete } =
+      useRecurringRuleActions();
+    const { taskUpdate } = useTaskActions();
+
+    useEffect(() => {
+      if (!withRecurringRule) return;
+      setIntervalState(recurringRule?.interval || 1);
+      setFrequencyState(recurringRule?.frequency || Frequency.WEEKLY);
+    }, [withRecurringRule]);
+
+    useEffect(() => {
+      if (intervalState) return;
+      if (frequencyState) return;
+
+      setWithRecurringRule(false);
+    }, [intervalState, frequencyState]);
+
+    useEffect(() => {
+      if (tasks === undefined) return;
+      if (tasks === null) return;
+      if (recurringRule === undefined) return;
+      if (recurringRule === null) return;
+
+      if (!task) return;
+      if (task.dueDate) return;
+      if (!recurringRule) return;
+
+      // console.log('delete recurringRule (auto)');
+
+      recurringRuleDelete(recurringRule);
+
+      if (defaultValues?.updatedAt) {
+        taskUpdate({
+          ...(defaultValues as TaskGet),
+          recurringRuleId: null,
+        });
+      }
+    }, [task?.dueDate]);
+
+    useEffect(() => {
+      if (recurringRules === undefined) return;
+      if (recurringRules === null) return;
+
+      if (!recurringRule) {
+        if (!frequencyState && !intervalState) {
+          return;
+        } else {
+          // console.log('create recurringRule');
+
+          if (defaultValues?.updatedAt) {
+            if (frequencyState && intervalState) {
+              const newRule = recurringRuleCreate({
+                id: generateUUID(),
+                frequency: frequencyState as Frequency,
+                interval: typeof intervalState == 'string' ? 1 : intervalState,
+              });
+
+              if (newRule) {
+                taskUpdate({
+                  ...(defaultValues as TaskGet),
+                  recurringRuleId: newRule.id,
+                });
+              }
+            }
+          }
+        }
+      } else {
+        if (!frequencyState && !intervalState) {
+          // console.log('delete recurringRule');
+
+          recurringRuleDelete(recurringRule);
+
+          if (defaultValues?.updatedAt) {
+            taskUpdate({
+              ...(defaultValues as TaskGet),
+              recurringRuleId: null,
+            });
+          }
+        } else {
+          if (
+            recurringRule.frequency == frequencyState &&
+            recurringRule.interval == intervalState
+          ) {
+            return;
+          } else {
+            // console.log('update recurringRule');
+
+            if (frequencyState && intervalState) {
+              recurringRuleUpdate({
+                ...recurringRule,
+                frequency: frequencyState as Frequency,
+                interval: typeof intervalState == 'string' ? 1 : intervalState,
+              });
+            }
+          }
+        }
+      }
+    }, [intervalState, frequencyState]);
+
+    return (
+      <Stack
+        gap={withRecurringRule ? 'xs' : 0}
+        style={{
+          transition: '.1s all ease',
+          height:
+            !defaultValues?.dueDate && !form.values?.dueDate
+              ? 0
+              : withRecurringRule
+                ? 16 + 10 + 18.6 + 2 + 30
+                : 16,
+          overflow: 'hidden',
+        }}
+      >
+        <Checkbox
+          label={'Repeat'}
+          checked={withRecurringRule}
+          onChange={(event) => setWithRecurringRule(event.currentTarget.checked)}
+          disabled={!!intervalState || !!frequencyState}
+        />
+
+        <Stack gap={2}>
+          <Text inherit fz={'xs'} fw={500}>
+            Every
+          </Text>
+
+          <Group gap={5} wrap="nowrap">
+            <NumberInput
+              w={'30%'}
+              aria-label={'Int.'}
+              placeholder="Int."
+              size="xs"
+              value={intervalState}
+              onChange={setIntervalState}
+            />
+
+            <Select
+              w={'70%'}
+              aria-label={'Frequency'}
+              placeholder="Frequency"
+              size="xs"
+              clearable
+              value={frequencyState}
+              onChange={setFrequencyState}
+              disabled={!intervalState}
+              leftSection={<IconRepeat size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+              data={[
+                {
+                  value: Frequency.DAILY,
+                  label: `Day${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+                {
+                  value: Frequency.WEEKLY,
+                  label: `Week${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+                {
+                  value: Frequency.MONTHLY,
+                  label: `Month${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+                {
+                  value: Frequency.ANNUALLY,
+                  label: `Year${Number(intervalState) > 1 ? 's' : ''}`,
+                },
+              ]}
+            />
+
+            <Tooltip label={'Delete rule'}>
+              <ActionIcon
+                size={ICON_WRAPPER_SIZE}
+                color="red"
+                variant="light"
+                onClick={() => {
+                  setIntervalState('');
+                  setFrequencyState('');
+                }}
+              >
+                <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Stack>
       </Stack>
     );
   }
@@ -225,6 +433,7 @@ export default function Task({
             pt={options?.modal ? sharedPadding : undefined}
             px={options?.modal ? sharedPadding : undefined}
             gap={options?.modal ? undefined : 5}
+            pb={sharedPadding}
             // mih={'100vh'}
           >
             {(options?.modal || options?.withoutCheck) && <InputTaskList />}
@@ -298,9 +507,19 @@ export default function Task({
               />
             </div>
 
-            <Divider my={16} />
+            {options?.modal && (
+              <>
+                {defaultValues?.dueDate && <Divider my={16} />}
+                <SectionReminder />
+              </>
+            )}
 
-            {options?.modal && <SectionReminder />}
+            {options?.modal && (
+              <>
+                {defaultValues?.dueDate && <Divider my={16} />}
+                <SectionRecurring />
+              </>
+            )}
           </Flex>
         </ScrollArea>
 
@@ -331,6 +550,16 @@ export default function Task({
               }}
             >
               {'Close'}
+            </Button>
+
+            <Button type="submit" size="xs" loading={submitted}>
+              {submitted
+                ? defaultValues?.updatedAt
+                  ? 'Saving'
+                  : 'Adding'
+                : defaultValues?.updatedAt
+                  ? 'Save'
+                  : 'Add'}
             </Button>
 
             {options?.modal && (

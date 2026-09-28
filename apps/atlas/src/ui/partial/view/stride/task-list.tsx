@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { TasksValue, useStoreTask, useStoreTaskList, useSubView, useViewModal } from '@repo/store';
+import {
+  TasksValue,
+  useStoreRecurringRule,
+  useStoreReminder,
+  useStoreTask,
+  useStoreTaskList,
+  useSubView,
+  useViewModal,
+} from '@repo/store';
 import {
   Box,
   Button,
@@ -24,6 +32,7 @@ import {
 import {
   capitalizeWords,
   extractUuidFromParam,
+  getFrequencyDetails,
   getPriorityDetails,
   getRegionalDate,
   isOverdue,
@@ -41,13 +50,15 @@ import {
   SUBVIEW_NAMES,
 } from '@repo/constants';
 import {
+  IconBell,
   IconCalendarEvent,
   IconCategory,
   IconCircleFilled,
   IconFlag,
   IconPlus,
+  IconRepeat,
 } from '@tabler/icons-react';
-import { Order, Priority, TaskGet } from '@repo/types';
+import { Frequency, Order, Priority, TaskGet } from '@repo/types';
 import FormTask from '@atlas/ui/form/task';
 import { useFormTask } from '@repo/hooks';
 import PartialEmpty from '../../empty';
@@ -187,7 +198,14 @@ export default function TaskList() {
 }
 
 function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boolean } }) {
-  const taskList = useStoreTaskList((s) => s.taskLists?.find((tli) => tli.id == props?.taskListId));
+  const taskLists = useStoreTaskList((s) => s.taskLists);
+  const taskList = taskLists?.find((tli) => tli.id == props?.taskListId);
+  const reminders = useStoreReminder((s) => s.reminders);
+  const reminder = reminders?.find((ri) => ri.taskId == props?.id);
+  const reminderDate = !reminder ? undefined : getRegionalDate(reminder.remindAt);
+  const recurringRules = useStoreRecurringRule((s) => s.recurringRules);
+  const recurringRule = recurringRules?.find((rri) => rri.id == props?.recurringRuleId);
+
   const circleIcon = <IconCircleFilled size={4} />;
   const { showModalViewTaskCrud } = useViewModal();
 
@@ -276,7 +294,39 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
                       </Group>
                     )}
 
-                    {((props?.dueDate && props?.priority) || (taskList && props?.priority)) &&
+                    {((taskList && reminder) || (props?.dueDate && reminder)) && circleIcon}
+
+                    {reminder && (
+                      <Group gap={5}>
+                        <IconBell size={ICON_SIZE - 6} stroke={2} />
+
+                        <Text
+                          inherit
+                        >{`${reminderDate?.date}, ${reminderDate?.time.toUpperCase()}`}</Text>
+                      </Group>
+                    )}
+
+                    {((taskList && recurringRule) ||
+                      (props?.dueDate && recurringRule) ||
+                      (reminder && recurringRule)) &&
+                      circleIcon}
+
+                    {recurringRule && (
+                      <Group gap={5}>
+                        <IconRepeat size={ICON_SIZE - 6} stroke={2} />
+
+                        <Text inherit>
+                          Every {recurringRule.interval == 1 ? '' : recurringRule.interval}{' '}
+                          {getFrequencyDetails(recurringRule.frequency as Frequency).label +
+                            (recurringRule.interval > 1 ? 's' : '')}
+                        </Text>
+                      </Group>
+                    )}
+
+                    {((taskList && props?.priority) ||
+                      (props?.dueDate && props?.priority) ||
+                      (reminder && props?.priority) ||
+                      (recurringRule && props?.priority)) &&
                       circleIcon}
 
                     {props?.priority && (

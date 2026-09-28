@@ -1,4 +1,4 @@
-import { Priority } from '@repo/types';
+import { Frequency, Priority } from '@repo/types';
 
 /**
  * Capitalize the first letter of a string
@@ -152,4 +152,30 @@ const PRIORITY_MAP: Record<Priority, PriorityDetails> = {
  */
 export const getPriorityDetails = (priority: Priority): PriorityDetails => {
   return PRIORITY_MAP[priority];
+};
+
+export interface FrequencyDetails {
+  label: string;
+}
+
+const FREQUENCY_MAP: Record<Frequency, FrequencyDetails> = {
+  [Frequency.DAILY]: {
+    label: 'Day',
+  },
+  [Frequency.WEEKLY]: {
+    label: 'Week',
+  },
+  [Frequency.MONTHLY]: {
+    label: 'Month',
+  },
+  [Frequency.ANNUALLY]: {
+    label: 'Year',
+  },
+};
+
+/**
+ * Returns the label and color mapping for a given Frequency enum value.
+ */
+export const getFrequencyDetails = (frequency: Frequency): FrequencyDetails => {
+  return FREQUENCY_MAP[frequency];
 };
