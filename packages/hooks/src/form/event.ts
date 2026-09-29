@@ -5,6 +5,7 @@ import { EventGet } from '@repo/types';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useAppshellChild } from '../appshell';
+import { useDebouncedCallback } from '@mantine/hooks';
 
 export type FormEventValues = {
   id: string;
@@ -70,22 +71,21 @@ export const useFormEvent = (params?: {
     },
   );
 
-  // Watch allDay state and format start/end accordingly
+  const handleUpdate = useDebouncedCallback(() => {
+    eventUpdate({
+      ...params?.defaultValues,
+      ...form.values,
+    } as EventGet);
+  }, 500);
+
+  // update state when values change
   useEffect(() => {
-    if (!form.values.start) return;
+    if (!form.isDirty()) return;
+    if (!params?.defaultValues?.updatedAt) return;
+    if (JSON.stringify(form.values) == JSON.stringify(params.defaultValues)) return;
 
-    if (form.values.allDay) {
-      // Set to start of current selected day, and start of next day for the end
-      const newStart = dayjs(form.values.start).format('YYYY-MM-DD 00:00:00');
-      const newEnd = dayjs(form.values.start)
-        .add(1, 'day')
-        .startOf('day')
-        .format('YYYY-MM-DD HH:mm:ss');
-
-      form.setFieldValue('start', newStart as any);
-      form.setFieldValue('end', newEnd as any);
-    }
-  }, [form.values.allDay]);
+    handleUpdate();
+  }, [form.values]);
 
   return {
     form,

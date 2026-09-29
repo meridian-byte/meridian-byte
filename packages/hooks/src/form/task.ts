@@ -7,6 +7,7 @@ import { useViewModal } from '@repo/store';
 import { SUBVIEW_NAMES } from '@repo/constants';
 import { useEffect } from 'react';
 import { extractUuidFromParam, getTomorrow } from '@repo/utils';
+import { useDebouncedCallback } from '@mantine/hooks';
 
 export type FormTaskValues = {
   id: string;
@@ -88,16 +89,20 @@ export const useFormTask = (params?: {
     },
   );
 
+  const handleUpdate = useDebouncedCallback(() => {
+    taskUpdate({
+      ...params?.defaultValues,
+      ...form.values,
+    } as TaskGet);
+  }, 500);
+
   useEffect(() => {
     // if (!params?.options?.checkBox) return;
     if (!form.isDirty()) return;
     if (!params?.defaultValues?.updatedAt) return;
     if (JSON.stringify(form.values) == JSON.stringify(params.defaultValues)) return;
 
-    taskUpdate({
-      ...params?.defaultValues,
-      ...form.values,
-    } as TaskGet);
+    handleUpdate();
   }, [form.values]);
 
   return {

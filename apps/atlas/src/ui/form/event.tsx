@@ -518,8 +518,22 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                 <Stack gap={5}>
                   <Checkbox
                     label={'All day event'}
-                    {...form.getInputProps('allDay')}
-                    defaultChecked={initialData?.allDay}
+                    checked={form.values.allDay}
+                    onChange={(event) => {
+                      const isChecked = event.currentTarget.checked;
+                      form.setFieldValue('allDay', isChecked);
+
+                      if (isChecked && form.values.start) {
+                        const newStart = dayjs(form.values.start).format('YYYY-MM-DD 00:00:00');
+                        const newEnd = dayjs(form.values.start)
+                          .add(1, 'day')
+                          .startOf('day')
+                          .format('YYYY-MM-DD HH:mm:ss');
+
+                        form.setFieldValue('start', newStart as any);
+                        form.setFieldValue('end', newEnd as any);
+                      }
+                    }}
                   />
 
                   <div>
