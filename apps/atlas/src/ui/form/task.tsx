@@ -213,7 +213,7 @@ export default function Task({
           leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           value={reminderState}
           onChange={seReminderState}
-          minDate={dayjs(defaultValues?.dueDate || form.values?.dueDate).format('YYYY-MM-DD')}
+          maxDate={dayjs(defaultValues?.dueDate || form.values?.dueDate).format('YYYY-MM-DD')}
           timePickerProps={{
             withDropdown: true,
             popoverProps: { withinPortal: false },
