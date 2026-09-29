@@ -105,7 +105,6 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
       required: true,
       label: 'Start',
       placeholder: 'Start',
-      ...form.getInputProps('start'),
       valueFormat: `DD MMM YYYY${form.values.allDay ? '' : ' HH:mm A'}`,
       presets: [
         {
@@ -548,12 +547,39 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
 
                   <div>
                     <Box display={!form.values.allDay ? 'none' : undefined}>
-                      <DateInput {...allDayProps.props} valueFormat={'DD MMM YYYY'} />
+                      <DateInput
+                        {...allDayProps.props}
+                        {...form.getInputProps('start')}
+                        valueFormat={'DD MMM YYYY'}
+                      />
                     </Box>
 
                     <Box display={form.values.allDay ? 'none' : undefined}>
                       <DateTimePicker
                         {...allDayProps.props}
+                        value={form.values.start}
+                        onChange={(value) => {
+                          const newStart = value;
+                          let newEnd: any = form.values.end;
+
+                          if (newStart) {
+                            // If end date doesn't exist or new start is >= current end date
+                            if (!newEnd || new Date(newStart) >= new Date(newEnd)) {
+                              // Calculate a date 1 hour ahead of the new start time
+                              const oneHourLater = new Date(
+                                new Date(newStart).getTime() + 60 * 60 * 1000,
+                              );
+
+                              newEnd = oneHourLater;
+                            }
+                          }
+
+                          form.setValues({
+                            ...form.values,
+                            start: newStart as any,
+                            end: newEnd,
+                          });
+                        }}
                         timePickerProps={{
                           withDropdown: true,
                           popoverProps: { withinPortal: false },
@@ -575,7 +601,29 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                     required
                     label="End"
                     placeholder="End"
-                    {...form.getInputProps('end')}
+                    value={form.values.end}
+                    onChange={(value) => {
+                      const newEnd = value;
+                      let newStart: any = form.values.start;
+
+                      if (newEnd) {
+                        // If start date doesn't exist or new end is <= current start date
+                        if (!newStart || new Date(newEnd) <= new Date(newStart)) {
+                          // Calculate a date 1 hour before the new end time
+                          const oneHourEarlier = new Date(
+                            new Date(newEnd).getTime() - 60 * 60 * 1000,
+                          );
+
+                          newStart = oneHourEarlier;
+                        }
+                      }
+
+                      form.setValues({
+                        ...form.values,
+                        start: newStart,
+                        end: newEnd as any,
+                      });
+                    }}
                     valueFormat={allDayProps.props.valueFormat}
                     disabled={form.values.allDay}
 
