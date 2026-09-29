@@ -552,14 +552,13 @@ export default function Task({
               {'Close'}
             </Button>
 
-            <Button type="submit" size="xs" loading={submitted}>
-              {submitted
-                ? defaultValues?.updatedAt
-                  ? 'Saving'
-                  : 'Adding'
-                : defaultValues?.updatedAt
-                  ? 'Save'
-                  : 'Add'}
+            <Button
+              display={!defaultValues?.updatedAt ? undefined : 'none'}
+              type="submit"
+              size="xs"
+              loading={submitted}
+            >
+              {submitted ? 'Adding' : 'Add'}
             </Button>
 
             {options?.modal && (

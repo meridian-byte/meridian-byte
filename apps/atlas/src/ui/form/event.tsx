@@ -640,18 +640,27 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                       variant="default"
                       size="xs"
                       onClick={() => {
-                        if (!initialData) {
-                          handleToggleChildAside();
+                        if (modal) {
+                          if (onClose) onClose();
                         } else {
-                          closeModalView();
+                          if (!initialData) {
+                            handleToggleChildAside();
+                          } else {
+                            closeModalView();
+                          }
                         }
                       }}
                     >
                       {'Close'}
                     </Button>
 
-                    <Button type="submit" size="xs" loading={submitted}>
-                      {initialData?.id ? 'Update' : 'Add'}
+                    <Button
+                      display={!initialData?.id ? undefined : 'none'}
+                      type="submit"
+                      size="xs"
+                      loading={submitted}
+                    >
+                      {submitted ? 'Adding' : 'Add'}
                     </Button>
 
                     <Divider orientation="vertical" h={16} my={'auto'} />
@@ -661,7 +670,9 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                         size={ICON_WRAPPER_SIZE}
                         color="red"
                         variant="light"
-                        onClick={() => {}}
+                        onClick={() => {
+                          handleDelete();
+                        }}
                       >
                         <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                       </ActionIcon>
