@@ -416,14 +416,14 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
         if (onClose) onClose();
       })}
       noValidate
-      // p={'xs'}
     >
       <Grid gap={0}>
         <GridCol span={{ base: 12, md: modal ? 8 : 12 }}>
           <ScrollAreaAutosize mah={sharedHeight}>
-            <Grid
+            <Stack
               gap={0}
               p={sharedPadding}
+              py={modal ? undefined : 0}
               mih={!modal ? undefined : sharedHeight}
               bg={
                 !modal
@@ -431,93 +431,67 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                   : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
               }
             >
-              <GridCol span={{ base: 12 }}>
-                <TextInput
-                  required
-                  aria-label={'Title'}
-                  label={!modal ? 'Title' : undefined}
-                  placeholder="Title"
-                  variant="unstyled"
-                  styles={{
-                    input: { backgroundColor: 'transparent', padding: 0, fontWeight: 'bold' },
-                  }}
-                  {...form.getInputProps('title')}
-                  size="md"
-                />
-              </GridCol>
+              <TextInput
+                required
+                aria-label={'Title'}
+                placeholder="Title"
+                variant="unstyled"
+                data-autofocus
+                styles={{
+                  input: { backgroundColor: 'transparent', padding: 0, fontWeight: 'bold' },
+                }}
+                {...form.getInputProps('title')}
+                size={'md'}
+              />
 
-              <GridCol span={{ base: 12 }}>
-                <Textarea
-                  aria-label="Description"
-                  label={!modal ? 'Description' : undefined}
-                  placeholder="Description"
-                  variant="unstyled"
-                  styles={{
-                    input: { backgroundColor: 'transparent', padding: 0, fontWeight: 500 },
-                  }}
-                  {...form.getInputProps('description')}
-                  autosize
-                  minRows={2}
-                  maxRows={5}
-                  size="sm"
-                />
-              </GridCol>
+              <Textarea
+                aria-label="Description"
+                placeholder="Description"
+                variant="unstyled"
+                styles={{
+                  input: { backgroundColor: 'transparent', padding: 0, fontWeight: 500 },
+                }}
+                {...form.getInputProps('description')}
+                autosize
+                minRows={1}
+                maxRows={5}
+                size={'sm'}
+              />
 
-              <GridCol span={12}>
+              {modal && (
                 <Divider
                   mt={'xs'}
                   mb={5}
                   color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))"
                 />
-              </GridCol>
-
-              <GridCol span={{ base: 12 }}>
-                <Textarea
-                  aria-label="Location"
-                  label={!modal ? 'Location' : undefined}
-                  placeholder="Location"
-                  variant="unstyled"
-                  leftSection={<IconMapPin size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-                  styles={{
-                    input: {
-                      backgroundColor: 'transparent',
-                      fontWeight: 500,
-                    },
-                  }}
-                  {...form.getInputProps('location')}
-                  autosize
-                  minRows={1}
-                  maxRows={3}
-                />
-              </GridCol>
-
-              {!modal && (
-                <GridCol span={{ base: 12 }}>
-                  <Divider mt={!modal ? 'xs' : SECTION_SPACING} mb={'xs'} />
-                </GridCol>
               )}
 
-              {!modal && (
-                <GridCol span={{ base: 12 }}>
-                  <Checkbox
-                    label={'Close when done'}
-                    checked={checked}
-                    onChange={(event) => setChecked(event.currentTarget.checked)}
-                  />
-                </GridCol>
-              )}
-            </Grid>
+              <TextInput
+                aria-label="Location"
+                label={!modal ? 'Location' : undefined}
+                placeholder="Location"
+                variant="unstyled"
+                leftSection={<IconMapPin size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+                styles={{
+                  input: {
+                    backgroundColor: 'transparent',
+                    fontWeight: 500,
+                  },
+                }}
+                {...form.getInputProps('location')}
+              />
+            </Stack>
           </ScrollAreaAutosize>
         </GridCol>
 
-        <GridCol span={{ base: 12, md: 4 }}>
-          <Stack h={sharedHeight} gap={0}>
+        <GridCol span={{ base: 12, md: modal ? 4 : 12 }}>
+          <Stack h={modal ? sharedHeight : undefined} gap={0}>
             <ScrollArea flex={1}>
-              <Flex
-                align={modal ? undefined : 'center'}
-                direction={modal ? 'column' : 'row'}
-                p={modal ? sharedPadding : undefined}
-                pb={sharedPadding}
+              <Stack
+                pt={modal ? undefined : 0}
+                p={sharedPadding}
+                py={modal ? undefined : 0}
+                gap={0}
                 // mih={'100vh'}
               >
                 {modal && <InputCalendar />}
@@ -668,13 +642,15 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                     )}
                   </>
                 )}
-              </Flex>
+              </Stack>
             </ScrollArea>
+
+            <Box px={modal ? undefined : sharedPadding}>
+              <Divider my={modal ? undefined : sharedPadding} />
+            </Box>
 
             {modal && (
               <>
-                <Divider my={modal ? undefined : 16} />
-
                 <Group
                   justify={modal ? 'end' : 'space-between'}
                   gap="xs"
@@ -702,35 +678,77 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                       {'Close'}
                     </Button>
 
-                    <Button
-                      display={!initialData?.id ? undefined : 'none'}
-                      type="submit"
-                      size="xs"
-                      loading={submitted}
-                    >
-                      {submitted ? 'Adding' : 'Add'}
-                    </Button>
-
-                    <Divider orientation="vertical" h={16} my={'auto'} />
-
-                    <Tooltip label={'Delete event'}>
-                      <ActionIcon
-                        size={ICON_WRAPPER_SIZE}
-                        color="red"
-                        variant="light"
-                        onClick={() => {
-                          handleDelete();
-                        }}
+                    {!initialData?.id && (
+                      <Button
+                        display={!initialData?.id ? undefined : 'none'}
+                        type="submit"
+                        size="xs"
+                        loading={submitted}
                       >
-                        <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                      </ActionIcon>
-                    </Tooltip>
+                        {submitted ? 'Adding' : 'Add'}
+                      </Button>
+                    )}
+
+                    {initialData?.id && (
+                      <>
+                        <Divider orientation="vertical" h={16} my={'auto'} />
+
+                        <Tooltip label={'Delete event'}>
+                          <ActionIcon
+                            size={ICON_WRAPPER_SIZE}
+                            color="red"
+                            variant="light"
+                            onClick={() => {
+                              handleDelete();
+                            }}
+                          >
+                            <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </>
+                    )}
                   </Group>
                 </Group>
               </>
             )}
           </Stack>
         </GridCol>
+
+        {!modal && (
+          <GridCol span={{ base: 12 }} px={sharedPadding}>
+            <Stack>
+              {!modal && (
+                <Checkbox
+                  label={'Close when done'}
+                  checked={checked}
+                  onChange={(event) => setChecked(event.currentTarget.checked)}
+                />
+              )}
+
+              <Group>
+                <Button
+                  disabled={submitted}
+                  variant="default"
+                  size="xs"
+                  onClick={() => {
+                    handleToggleChildAside();
+                  }}
+                >
+                  {'Close'}
+                </Button>
+
+                <Button
+                  display={!initialData?.id ? undefined : 'none'}
+                  type="submit"
+                  size="xs"
+                  loading={submitted}
+                >
+                  {submitted ? 'Adding' : 'Add'}
+                </Button>
+              </Group>
+            </Stack>
+          </GridCol>
+        )}
       </Grid>
     </Box>
   );

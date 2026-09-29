@@ -102,7 +102,7 @@ export default function Task({
             clearable
             clearSectionMode="clear"
             searchable
-            disabled={creatingTask && (views.inboxView || !!taskListId)}
+            // disabled={creatingTask && (views.inboxView || !!taskListId)}
             {...form.getInputProps('taskListId')}
             leftSection={<IconCategory size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             data={(taskLists || []).map((tli) => {
@@ -433,7 +433,7 @@ export default function Task({
             pt={options?.modal ? sharedPadding : undefined}
             px={options?.modal ? sharedPadding : undefined}
             gap={options?.modal ? undefined : 5}
-            pb={sharedPadding}
+            pb={options?.modal ? sharedPadding : 0}
             // mih={'100vh'}
           >
             {(options?.modal || options?.withoutCheck) && <InputTaskList />}
@@ -482,7 +482,7 @@ export default function Task({
               />
             </div>
 
-            <Divider mt={16} mb={8} />
+            <Divider mt={options?.modal ? 16 : 8} mb={8} />
 
             <div>
               <DateInput
@@ -524,6 +524,19 @@ export default function Task({
         </ScrollArea>
 
         <Divider my={options?.modal ? undefined : sharedPadding} />
+
+        {!defaultValues?.updatedAt &&
+          asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK &&
+          options?.withoutCheck && (
+            <div>
+              <Checkbox
+                label={'Close when done'}
+                checked={checked}
+                onChange={(event) => setChecked(event.currentTarget.checked)}
+                mb={'xs'}
+              />
+            </div>
+          )}
 
         <Group
           justify={options?.modal ? 'end' : 'space-between'}
@@ -603,7 +616,11 @@ export default function Task({
               : undefined
           }
         >
-          <ScrollArea h={sharedHeight} p={options?.withoutCheck ? 'xs' : sharedPadding}>
+          <ScrollArea
+            h={sharedHeight}
+            py={options?.modal ? undefined : 0}
+            p={options?.withoutCheck ? 'xs' : sharedPadding}
+          >
             <Grid gap={0}>
               {!options?.withoutCheck && (
                 <GridCol span={options?.modal ? 1 : 0.5}>
@@ -612,8 +629,8 @@ export default function Task({
                       aria-label={'Complete'}
                       defaultChecked={form.values.complete}
                       {...form.getInputProps('complete')}
-                      disabled={creatingTask && views.completeView}
                       size="sm"
+                      disabled={creatingTask && views.completeView}
                       radius={99}
                       mt={12}
                     />
@@ -628,7 +645,6 @@ export default function Task({
                       required
                       aria-label={'Title'}
                       placeholder="Title"
-                      size="md"
                       variant="unstyled"
                       styles={{
                         input: {
@@ -637,21 +653,23 @@ export default function Task({
                         },
                       }}
                       {...form.getInputProps('title')}
+                      size="md"
                     />
 
                     <div>
                       <Textarea
                         aria-label={'Description'}
                         placeholder="Description"
-                        size="sm"
                         variant="unstyled"
                         styles={{
                           input: {
                             backgroundColor: 'transparent',
+                            padding: 0,
                             fontWeight: 500,
                           },
                         }}
                         {...form.getInputProps('description')}
+                        size="sm"
                         autosize
                         minRows={1}
                         maxRows={options?.modal ? undefined : 5}
@@ -660,19 +678,6 @@ export default function Task({
                   </div>
 
                   {!options?.modal && <TaskProperties />}
-
-                  {!defaultValues?.updatedAt &&
-                    asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK &&
-                    options?.withoutCheck && (
-                      <div>
-                        <Checkbox
-                          label={'Close when done'}
-                          checked={checked}
-                          onChange={(event) => setChecked(event.currentTarget.checked)}
-                          mt={'xs'}
-                        />
-                      </div>
-                    )}
                 </Stack>
               </GridCol>
             </Grid>
