@@ -50,6 +50,8 @@ export const useEventActions = () => {
 
     const newEvent: EventGet = {
       ...params,
+      recurringRuleId: params.recurringRuleId || null,
+      calendarId: params.calendarId || null,
       start: new Date(params.start).toISOString() as any,
       end: new Date(params.end).toISOString() as any,
       syncStatus: SyncStatus.PENDING,

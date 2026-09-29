@@ -53,6 +53,8 @@ export const useReminderActions = () => {
 
     const newReminder: ReminderGet = {
       ...params,
+      eventId: params.eventId || null,
+      taskId: params.taskId || null,
       remindAt: new Date(params?.remindAt || getThreeHoursFromNow()).toISOString() as any,
       syncStatus: SyncStatus.PENDING,
       updatedAt: new Date(now).toISOString() as any,

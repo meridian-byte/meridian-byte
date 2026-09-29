@@ -51,6 +51,8 @@ export const useTaskActions = () => {
 
     const newTask: TaskGet = {
       ...params,
+      recurringRuleId: params.recurringRuleId || null,
+      taskListId: params.taskListId || null,
       dueDate: !params?.dueDate ? null : (new Date(params.dueDate).toISOString() as any),
       syncStatus: SyncStatus.PENDING,
       updatedAt: new Date(now).toISOString() as any,
