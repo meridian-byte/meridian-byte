@@ -123,8 +123,8 @@ export default function Main() {
               onEventClick={eventCrud.scheduleHandlers.onEventClick}
 
               dayViewProps={{
-                startTime: '05:00:00',
-                endTime: '23:00:00',
+                // startTime: '05:00:00',
+                // endTime: '23:00:00',
                 intervalMinutes: 15,
                 // slotHeight: 80,
                 startScrollTime: '09:00:00',
@@ -145,12 +145,12 @@ export default function Main() {
               }}
 
               weekViewProps={{
-                startTime: '05:00:00',
-                endTime: '23:00:00',
+                // startTime: '05:00:00',
+                // endTime: '23:00:00',
                 intervalMinutes: 30,
                 // slotHeight: 80,
                 startScrollTime: '09:00:00',
-                scrollAreaProps: { mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 61}px)` },
+                scrollAreaProps: { mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 62}px)` },
                 weekdayFormat: 'dd',
                 highlightToday: true,
                 withWeekendDays: true,
