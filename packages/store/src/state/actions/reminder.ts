@@ -46,16 +46,20 @@ export const useReminderActions = () => {
   };
 
   const reminderUpdate = (params: ReminderGet) => {
-    if (!session) return;
-    if (!activeWorkspace) return;
+    if (!session || !activeWorkspace) return;
 
     const now = new Date();
+    const newRemindAt = new Date(params?.remindAt || getThreeHoursFromNow());
+
+    const isFutureDate = newRemindAt.getTime() > now.getTime();
+    const shouldResetSent = isFutureDate && params.sent === true;
 
     const newReminder: ReminderGet = {
       ...params,
       eventId: params.eventId || null,
       taskId: params.taskId || null,
-      remindAt: new Date(params?.remindAt || getThreeHoursFromNow()).toISOString() as any,
+      remindAt: new Date(newRemindAt).toISOString() as any,
+      sent: shouldResetSent ? false : params.sent,
       syncStatus: SyncStatus.PENDING,
       updatedAt: new Date(now).toISOString() as any,
     };

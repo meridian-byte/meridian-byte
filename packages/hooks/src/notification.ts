@@ -11,17 +11,19 @@ export const useNotification = () => {
       title,
       desc,
       icon,
+      autoClose,
     }: {
-      variant: Variant;
+      variant?: Variant;
       title?: string;
       desc?: string;
       icon?: React.ReactNode;
+      autoClose?: number;
     },
     response?: Response,
     result?: any,
   ) => {
     try {
-      const notificationTitle = title || response?.statusText || capitalizeWord(variant);
+      const notificationTitle = title || response?.statusText || capitalizeWord(variant || 'Alert');
       const notificationMessage =
         desc || (variant === Variant.SUCCESS ? result?.message : result?.error) || null;
 
@@ -31,7 +33,7 @@ export const useNotification = () => {
         title: notificationTitle,
         message: notificationMessage,
         variant,
-        autoClose: 5000,
+        autoClose: autoClose || 5000,
         withBorder: false,
       });
     } catch (error) {
