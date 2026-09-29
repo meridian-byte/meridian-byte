@@ -277,6 +277,8 @@ export default function Main() {
             <Modal
               opened={eventCrud.formOpened}
               onClose={eventCrud.closeForm}
+              size={'xl'}
+              padding={0}
               // onExited={eventCrud.handleExitTransitionEnd}
             >
               <FormEvent

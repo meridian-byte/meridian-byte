@@ -464,6 +464,14 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                 />
               </GridCol>
 
+              <GridCol span={12}>
+                <Divider
+                  mt={'xs'}
+                  mb={5}
+                  color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))"
+                />
+              </GridCol>
+
               <GridCol span={{ base: 12 }}>
                 <Textarea
                   aria-label="Location"
@@ -484,9 +492,11 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                 />
               </GridCol>
 
-              <GridCol span={{ base: 12 }}>
-                <Divider mt={!modal ? 'xs' : SECTION_SPACING} mb={'xs'} />
-              </GridCol>
+              {!modal && (
+                <GridCol span={{ base: 12 }}>
+                  <Divider mt={!modal ? 'xs' : SECTION_SPACING} mb={'xs'} />
+                </GridCol>
+              )}
 
               {!modal && (
                 <GridCol span={{ base: 12 }}>
