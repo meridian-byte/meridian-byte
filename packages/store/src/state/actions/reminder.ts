@@ -80,8 +80,6 @@ export const useReminderActions = () => {
       createdAt: new Date(params.createdAt).toISOString() as any,
       updatedAt: new Date(now).toISOString() as any,
     });
-
-    if (!!modalViewValue) closeModalView();
   };
 
   return {
