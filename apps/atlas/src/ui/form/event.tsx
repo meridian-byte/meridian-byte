@@ -151,37 +151,60 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
 
     const { reminderCreate, reminderUpdate, reminderDelete } = useReminderActions();
 
+    const currentStartDate = form.values.start || initialData?.start || new Date();
+
     useEffect(() => {
       if (reminderState) return;
       setWithReminder(false);
     }, [reminderState]);
+
+    const getDefaultReminderTime = (dueDate: Date | string) => {
+      // Always return 9:00 AM on the due date
+      return dayjs(dueDate).hour(9).minute(0).second(0).millisecond(0).toDate();
+    };
+
+    useEffect(() => {
+      if (withReminder) {
+        // Case 1: Checkbox turned ON, but state is currently empty -> populate default
+        if (!reminderState) {
+          seReminderState(getTimeFormat(getDefaultReminderTime(currentStartDate).toISOString()));
+          return;
+        }
+
+        // Case 2: Startdate shifted earlier than active reminder -> reset/clamp time
+        const dueDateEnd = dayjs(currentStartDate).endOf('day');
+        if (dayjs(reminder?.remindAt).isAfter(dueDateEnd)) {
+          seReminderState(getTimeFormat(getDefaultReminderTime(currentStartDate).toISOString()));
+        }
+      }
+    }, [currentStartDate, withReminder]);
 
     useEffect(() => {
       if (reminders === undefined) return;
       if (reminders === null) return;
       if (!form.values.start) return;
 
-      const [hours, minutes] = (reminderState || '').split(':').map(Number);
-
-      const dateValue = form.values.start;
-
-      const updatedDate = new Date(
-        new Date(dateValue).getFullYear(),
-        new Date(dateValue).getMonth(),
-        new Date(dateValue).getDate(),
-        hours,
-        minutes,
-      );
-
       if (!reminder) {
         if (!reminderState) {
           return;
         } else {
           // console.log('create reminder');
+          const [hours, minutes] = (getTimeFormat(currentStartDate) || '').split(':').map(Number);
+
+          const newDate = new Date(
+            new Date(currentStartDate).getFullYear(),
+            new Date(currentStartDate).getMonth(),
+            new Date(currentStartDate).getDate(),
+            hours,
+            minutes,
+          );
+
           if (initialData) {
             reminderCreate({
               id: generateUUID(),
-              remindAt: updatedDate.toISOString() as any,
+              remindAt: getDefaultReminderTime(
+                new Date(newDate).toISOString(),
+              ).toISOString() as any,
               eventId: initialData.id,
             });
           }
@@ -191,13 +214,31 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
           // console.log('delete reminder');
           reminderDelete(reminder);
         } else {
-          if (getTimeFormat(new Date(reminder.remindAt)) == reminderState) {
+          const timeMatches = getTimeFormat(new Date(reminder.remindAt)) == reminderState;
+          const dayMatches =
+            new Date(reminder.remindAt).getDay() == new Date(currentStartDate).getDay();
+
+          if (timeMatches && dayMatches) {
             return;
           } else {
             // console.log('update reminder');
+
+            const dateToUse =
+              (!timeMatches && !dayMatches) || !dayMatches ? currentStartDate : reminder.remindAt;
+
+            const [hours, minutes] = reminderState.split(':').map(Number);
+
+            const updatedDate = new Date(
+              new Date(dateToUse).getFullYear(),
+              new Date(dateToUse).getMonth(),
+              new Date(dateToUse).getDate(),
+              hours,
+              minutes,
+            );
+
             reminderUpdate({
               ...reminder,
-              remindAt: updatedDate as any,
+              remindAt: new Date(updatedDate).toISOString() as any,
             });
           }
         }
@@ -226,7 +267,9 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
             clearable
             leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             format="12h"
-            max={!form.values.start ? undefined : getTimeFormat(form.values.start)}
+            max={
+              !form.values?.start ? undefined : getTimeFormat(dayjs(form.values?.start).toDate())
+            }
             value={reminderState || undefined}
             onChange={seReminderState}
             withDropdown

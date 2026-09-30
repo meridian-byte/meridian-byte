@@ -131,10 +131,41 @@ export default function Task({
 
     const { reminderCreate, reminderUpdate, reminderDelete } = useReminderActions();
 
+    const currentDueDate = form.values?.dueDate || defaultValues?.dueDate;
+
     useEffect(() => {
       if (reminderState) return;
       setWithReminder(false);
     }, [reminderState]);
+
+    // Clamp or reset reminder when Due Date changes
+
+    const getDefaultReminderTime = (dueDate: Date | string) => {
+      // Always return 9:00 AM on the due date
+      return dayjs(dueDate).hour(9).minute(0).second(0).millisecond(0).toDate();
+    };
+
+    useEffect(() => {
+      // Case 1: Due date removed or checkbox unticked -> clear reminder state
+      if (!currentDueDate || !withReminder) {
+        if (reminderState !== null) {
+          seReminderState(null);
+        }
+        return;
+      }
+
+      // Case 2: Checkbox turned ON, but state is currently empty -> populate default
+      if (!reminderState) {
+        seReminderState(getDefaultReminderTime(currentDueDate).toISOString());
+        return;
+      }
+
+      // Case 3: Due date shifted earlier than active reminder -> reset/clamp time
+      const dueDateEnd = dayjs(currentDueDate).endOf('day');
+      if (dayjs(reminderState).isAfter(dueDateEnd)) {
+        seReminderState(getDefaultReminderTime(currentDueDate).toISOString());
+      }
+    }, [currentDueDate, withReminder]);
 
     useEffect(() => {
       if (tasks === undefined) return;
@@ -165,7 +196,9 @@ export default function Task({
           if (defaultValues?.updatedAt) {
             reminderCreate({
               id: generateUUID(),
-              remindAt: now.toISOString() as any,
+              remindAt: getDefaultReminderTime(
+                new Date(currentDueDate || now).toISOString(),
+              ).toISOString() as any,
               taskId: defaultValues.id,
             });
           }
@@ -213,7 +246,13 @@ export default function Task({
           leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           value={reminderState}
           onChange={seReminderState}
-          maxDate={dayjs(defaultValues?.dueDate || form.values?.dueDate).format('YYYY-MM-DD')}
+          maxDate={
+            defaultValues?.dueDate || form.values?.dueDate
+              ? dayjs(defaultValues?.dueDate || form.values?.dueDate)
+                  .endOf('day')
+                  .toDate()
+              : undefined
+          }
           timePickerProps={{
             withDropdown: true,
             popoverProps: { withinPortal: false },
