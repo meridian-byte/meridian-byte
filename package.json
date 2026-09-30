@@ -2,6 +2,7 @@
   "name": "repo-root",
   "private": true,
   "scripts": {
+    "purge": "find . \\( -name \"node_modules\" -o -name \".turbo\" -o -name \".next\" -o -name \"pnpm-lock.yaml\" -o -name \"package-lock.json\" \\) -exec rm -rf {} +",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
