@@ -214,9 +214,15 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
           // console.log('delete reminder');
           reminderDelete(reminder);
         } else {
-          const timeMatches = getTimeFormat(new Date(reminder.remindAt)) == reminderState;
+          const remindDate = new Date(reminder.remindAt);
+          const startDate = new Date(currentStartDate);
+
           const dayMatches =
-            new Date(reminder.remindAt).getDay() == new Date(currentStartDate).getDay();
+            remindDate.getDate() == startDate.getDate() &&
+            remindDate.getMonth() == startDate.getMonth() &&
+            remindDate.getFullYear() == startDate.getFullYear();
+
+          const timeMatches = getTimeFormat(new Date(reminder.remindAt)) == reminderState;
 
           if (timeMatches && dayMatches) {
             return;
@@ -224,7 +230,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
             // console.log('update reminder');
 
             const dateToUse =
-              (!timeMatches && !dayMatches) || !dayMatches ? currentStartDate : reminder.remindAt;
+              !dayMatches || (!dayMatches && !timeMatches) ? currentStartDate : reminder.remindAt;
 
             const [hours, minutes] = reminderState.split(':').map(Number);
 
@@ -268,7 +274,11 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
             leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             format="12h"
             max={
-              !form.values?.start ? undefined : getTimeFormat(dayjs(form.values?.start).toDate())
+              !form.values?.start
+                ? undefined
+                : form.values.allDay
+                  ? getTimeFormat(dayjs(form.values?.start).endOf('day').toDate())
+                  : getTimeFormat(dayjs(form.values?.start).toDate())
             }
             value={reminderState || undefined}
             onChange={seReminderState}
@@ -566,8 +576,45 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                     <Box display={!form.values.allDay ? 'none' : undefined}>
                       <DateInput
                         {...allDayProps.props}
-                        {...form.getInputProps('start')}
                         valueFormat={'DD MMM YYYY'}
+                        value={form.values.start}
+                        onChange={(value) => {
+                          const newStart = value;
+                          let newEnd: any = form.values.start;
+
+                          if (newStart) {
+                            if (!form.values.allDay) {
+                              // Calculate a date 1 hour after the new start time
+                              const oneHourLater = new Date(
+                                new Date(newStart).getTime() - 60 * 60 * 1000,
+                              ).toISOString();
+
+                              newEnd = oneHourLater;
+                            } else {
+                              // Calculate 12:00 AM (start) of the following day
+                              const endOfDay = newStart
+                                ? dayjs(newStart)
+                                    .add(1, 'day')
+                                    .startOf('day')
+                                    .toDate()
+                                    .toISOString()
+                                : null;
+
+                              newEnd = endOfDay;
+                            }
+                          }
+
+                          // Force start hours to 00:00:00 local time
+                          const startOfDay = newStart
+                            ? dayjs(newStart).startOf('day').toDate().toISOString()
+                            : null;
+
+                          form.setValues({
+                            ...form.values,
+                            start: (form.values.allDay ? startOfDay : newStart) as any,
+                            end: newEnd as any,
+                          });
+                        }}
                       />
                     </Box>
 
