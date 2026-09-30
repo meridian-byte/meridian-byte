@@ -156,6 +156,9 @@ importers:
       '@repo/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
+      '@repo/notifications':
+        specifier: workspace:*
+        version: link:../../services/notifications
       '@repo/store':
         specifier: workspace:*
         version: link:../../packages/store
@@ -486,6 +489,9 @@ importers:
       '@repo/handlers':
         specifier: workspace:*
         version: link:../handlers
+      '@repo/notifications':
+        specifier: workspace:*
+        version: link:../../services/notifications
       '@repo/store':
         specifier: workspace:*
         version: link:../store

@@ -21,6 +21,7 @@
     "@repo/cloudbase": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/handlers": "workspace:*",
+    "@repo/notifications": "workspace:*",
     "@repo/utils": "workspace:*",
     "@repo/store": "workspace:*",
     "dayjs": "^1.11.21",

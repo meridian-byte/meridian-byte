@@ -28,6 +28,7 @@
     "@repo/utils": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/hooks": "workspace:*",
+    "@repo/notifications": "workspace:*",
     "@tabler/icons-react": "^3.44.0",
     "@tiptap/extension-highlight": "^3.30.1",
     "@tiptap/extension-link": "^3.30.1",

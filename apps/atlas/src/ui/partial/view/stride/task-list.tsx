@@ -42,6 +42,7 @@ import {
 } from '@repo/utils';
 import { LayoutSection } from '@repo/ui';
 import {
+  audios,
   ICON_SIZE,
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
@@ -62,6 +63,7 @@ import { Frequency, Order, Priority, TaskGet } from '@repo/types';
 import FormTask from '@atlas/ui/form/task';
 import { useFormTask } from '@repo/hooks';
 import PartialEmpty from '../../empty';
+import { playNotificationSound } from '@repo/notifications';
 
 export default function TaskList() {
   const taskLists = useStoreTaskList((s) => s.taskLists);

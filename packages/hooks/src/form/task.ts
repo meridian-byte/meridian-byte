@@ -4,10 +4,11 @@ import { useFormBase } from '../form';
 import { Priority, TaskGet } from '@repo/types';
 import { useAppshellChild } from '../appshell';
 import { useViewModal } from '@repo/store';
-import { SUBVIEW_NAMES } from '@repo/constants';
+import { audios, SUBVIEW_NAMES } from '@repo/constants';
 import { useEffect } from 'react';
 import { extractUuidFromParam, getTomorrow } from '@repo/utils';
 import { useDebouncedCallback } from '@mantine/hooks';
+import { playNotificationSound } from '@repo/notifications';
 
 export type FormTaskValues = {
   id: string;
@@ -101,6 +102,13 @@ export const useFormTask = (params?: {
     if (!form.isDirty()) return;
     if (!params?.defaultValues?.updatedAt) return;
     if (JSON.stringify(form.values) == JSON.stringify(params.defaultValues)) return;
+
+    if (form.values.complete) {
+      playNotificationSound({ audioFile: audios.notification.longPop });
+    } else {
+      // find wav for uncheck online
+      // playNotificationSound({ audioFile: audios.notification.longPop });
+    }
 
     handleUpdate();
   }, [form.values]);

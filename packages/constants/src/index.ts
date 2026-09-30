@@ -1,6 +1,7 @@
 export * from './configs/next';
 export * from './configs/postcss';
 export * from './app';
+export * from './audios';
 export * from './colors';
 export * from './icons';
 export * from './images';

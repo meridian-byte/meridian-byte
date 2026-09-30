@@ -4,6 +4,7 @@ import { audios } from '@repo/constants';
 import { useNotification } from '@repo/hooks';
 import { useReminderActions, useStoreEvent, useStoreReminder, useStoreTask } from '@repo/store';
 import { getRegionalDate } from '@repo/utils';
+import { playNotificationSound, playSynthChime } from '@repo/notifications';
 import React, { useEffect, useRef } from 'react';
 
 export default function Notification({ children }: { children: React.ReactNode }) {
@@ -75,6 +76,9 @@ export default function Notification({ children }: { children: React.ReactNode }
               desc: targetItem.desc,
             });
           }, 1000);
+
+          playNotificationSound({ audioFile: audios.notification.correctAnswer });
+          // playSynthChime();
 
           // 1. Mark in session ref to block immediate duplicate frames
           notifiedReminderIds.current.add(reminder.id);
