@@ -15,6 +15,7 @@ import { useStoreTaskList } from '../task-list';
 import { useStoreTask } from '../task';
 import { useStoreRecurringRule } from '../recurring-rule';
 import { useStoreReminder } from '../reminder';
+import { useStoreFolder } from '../folder';
 
 const mergeItems = async (
   dataStore: string,
@@ -138,10 +139,15 @@ type LoadStoreConfig<TItems = any, THookReturn = any> = {
 };
 
 export const LOAD_STORES: Record<string, LoadStoreConfig> = {
-  workspaces: {
+  [STORE_NAME.WORKSPACES]: {
     dataStore: STORE_NAME.WORKSPACES,
     useStoreHook: useStoreWorkspace,
     setState: (store, items) => store.setWorkspaces(items),
+  },
+  [STORE_NAME.FOLDERS]: {
+    dataStore: STORE_NAME.FOLDERS,
+    useStoreHook: useStoreFolder,
+    setState: (store, items) => store.setFolders(items),
   },
 
   // Pave
@@ -203,6 +209,7 @@ export const useLoadAppData = (options: {
 
   const stores = {
     [STORE_NAME.WORKSPACES]: useStoreWorkspace(),
+    [STORE_NAME.FOLDERS]: useStoreFolder(),
 
     // Pave
     [STORE_NAME.CALENDARS]: useStoreCalendar(),

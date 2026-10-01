@@ -52,6 +52,7 @@ export default function Initialize({
 }
 
 const STORES_TO_LOAD = {
+  [STORE_NAME.FOLDERS]: true,
   [STORE_NAME.WORKSPACES]: true,
   [STORE_NAME.RECURRING_RULES]: true,
   [STORE_NAME.REMINDERS]: true,

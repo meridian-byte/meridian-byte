@@ -12,16 +12,16 @@ import {
   MenuDivider,
   Tooltip,
 } from '@mantine/core';
-import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
-import { TaskListGet } from '@repo/types';
-import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
+import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
+import { FolderGet } from '@repo/types';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 
-export default function TaskList({
+export default function Folder({
   defaultValues,
   children,
   ...restProps
-}: { defaultValues: TaskListGet; children: React.ReactNode } & MenuProps) {
-  const { showModalViewTaskListCrud } = useViewModal();
+}: { defaultValues: FolderGet; children: React.ReactNode } & MenuProps) {
+  const { showModalViewFolderCrud } = useViewModal();
 
   return (
     <Menu
@@ -44,20 +44,26 @@ export default function TaskList({
       {...restProps}
     >
       <MenuTarget>
-        <div>{children}</div>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          {children}
+        </div>
       </MenuTarget>
 
       <MenuDropdown>
         <MenuLabel>
           <Tooltip
-            label={defaultValues.title}
+            label={defaultValues.name}
             multiline
             maw={320}
             position="top-start"
             arrowOffset={16}
           >
             <Text inherit lineClamp={1}>
-              {defaultValues.title}
+              {defaultValues.name}
             </Text>
           </Tooltip>
         </MenuLabel>
@@ -66,26 +72,12 @@ export default function TaskList({
 
         <MenuItem
           leftSection={<IconEdit size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-          onClick={() =>
-            showModalViewTaskListCrud(
-              defaultValues.id,
-              MODAL_VIEW_NAMES.CRUD.STRIDE.TASK_LIST.UPDATE,
-            )
-          }
+          onClick={(e) => {
+            e.stopPropagation();
+            showModalViewFolderCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.FOLDER.UPDATE);
+          }}
         >
           Edit
-        </MenuItem>
-
-        <MenuItem
-          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-          onClick={() =>
-            showModalViewTaskListCrud(
-              defaultValues.id,
-              `${MODAL_VIEW_NAMES.CRUD.STRIDE.TASK_LIST.MOVE}-${APP_NAMES_ATLAS.STRIDE}`,
-            )
-          }
-        >
-          Move to...
         </MenuItem>
 
         <MenuDivider />
@@ -93,12 +85,10 @@ export default function TaskList({
         <MenuItem
           leftSection={<IconTrash size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           color="red"
-          onClick={() =>
-            showModalViewTaskListCrud(
-              defaultValues.id,
-              MODAL_VIEW_NAMES.CRUD.STRIDE.TASK_LIST.DELETE,
-            )
-          }
+          onClick={(e) => {
+            e.stopPropagation();
+            showModalViewFolderCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.FOLDER.DELETE);
+          }}
         >
           Delete
         </MenuItem>

@@ -93,6 +93,7 @@ model Profile {
   tasks          Task[]
   recurringRules RecurringRule[]
   reminders      Reminder[]
+  folders        Folder[]
 
   syncStatus SyncStatus @default(SYNCED) @map("sync_status")
 
@@ -125,6 +126,27 @@ model Workspace {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("workspaces")
+}
+
+model Folder {
+  id           String  @id @default(cuid())
+  name         String
+  location     String
+  parentFolder String? @map("parent_folder")
+
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String  @map("profile_id")
+
+  calendars Calendar[]
+  notes     Note[]
+  taskLists TaskList[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("folders")
 }
 
 model Reminder {
@@ -185,6 +207,8 @@ model Calendar {
   profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
+  folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId    String?   @map("folder_id")
 
   events Event[]
 
@@ -237,6 +261,8 @@ model Note {
   profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
+  folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId    String?   @map("folder_id")
 
   linksFrom Link[] @relation("FromLinks") // for outgoing links
   linksTo   Link[] @relation("ToLinks") // for incoming links (backlinks)
@@ -285,6 +311,8 @@ model TaskList {
   profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
+  folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId    String?   @map("folder_id")
 
   tasks Task[]
 

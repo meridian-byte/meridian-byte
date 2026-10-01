@@ -16,6 +16,7 @@ import {
   recurringRulesUpdate,
   tasksUpdate,
   remindersUpdate,
+  foldersUpdate,
 } from '@repo/handlers';
 
 import { SessionValue, useStoreSession } from './state/session';
@@ -29,6 +30,7 @@ import { useStoreTaskList } from './state/task-list';
 import { useStoreRecurringRule } from './state/recurring-rule';
 import { useStoreTask } from './state/task';
 import { useStoreReminder } from './state/reminder';
+import { useStoreFolder } from './state/folder';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -49,6 +51,16 @@ type SyncStoreConfig<TItems = any, THookReturn = any> = {
 };
 
 export const SYNC_STORES: Record<string, SyncStoreConfig> = {
+  [STORE_NAME.FOLDERS]: {
+    dataStore: STORE_NAME.FOLDERS,
+    useStoreHook: useStoreFolder,
+    serverUpdate: foldersUpdate,
+    getItems: (store) => store.folders,
+    getDeleted: (store) => store.deleted,
+    setItems: (store, items) => store.setFolders(items),
+    clearDeleted: (store) => store.clearDeletedFolders(),
+  },
+
   [STORE_NAME.WORKSPACES]: {
     dataStore: STORE_NAME.WORKSPACES,
     useStoreHook: useStoreWorkspace,
@@ -146,6 +158,11 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
     updateState: (items: any) => useStoreWorkspace.getState().mergeWorkspaces(items),
     clearDeleted: () => useStoreWorkspace.getState().clearDeletedWorkspaces(),
   },
+  [STORE_NAME.FOLDERS]: {
+    store: useStoreFolder,
+    updateState: (items: any) => useStoreFolder.getState().mergeFolders(items),
+    clearDeleted: () => useStoreFolder.getState().clearDeletedFolders(),
+  },
 
   // Pave
   [STORE_NAME.CALENDARS]: {
@@ -197,6 +214,7 @@ const SYNC_REGISTRY: Record<SyncStoreKey, any> = {
 // Define a shape for the payload
 export interface MergedSyncPayload {
   [STORE_NAME.WORKSPACES]?: { items: any[]; deleted: any[] };
+  [STORE_NAME.FOLDERS]?: { items: any[]; deleted: any[] };
 
   // Pave
   [STORE_NAME.CALENDARS]?: { items: any[]; deleted: any[] };
@@ -246,6 +264,7 @@ export const useMergedSync = (params: {
 
     const stores = {
       [STORE_NAME.WORKSPACES]: useStoreWorkspace.getState(),
+      [STORE_NAME.FOLDERS]: useStoreFolder.getState(),
       [STORE_NAME.CALENDARS]: useStoreCalendar.getState(),
       [STORE_NAME.EVENTS]: useStoreEvent.getState(),
       [STORE_NAME.NOTES]: useStoreNote.getState(),

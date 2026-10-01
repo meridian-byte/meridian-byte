@@ -12,6 +12,7 @@ export * from './view';
 export * from './models/calendar';
 export * from './models/enums';
 export * from './models/event';
+export * from './models/folder';
 export * from './models/link';
 export * from './models/note';
 export * from './models/profile';

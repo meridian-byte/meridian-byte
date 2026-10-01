@@ -28,6 +28,7 @@ export const useTaskListActions = () => {
       title: params?.title || 'New TaskList',
       description: params?.description || null,
       color: params?.color || getUniqueColor(),
+      folderId: params?.folderId || null,
       profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,

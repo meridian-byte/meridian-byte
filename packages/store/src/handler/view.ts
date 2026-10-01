@@ -188,10 +188,24 @@ export const useViewModal = () => {
     }
   };
 
+  // handle modal folder crud open
+  const showModalViewFolderCrud = (folderId: string, action: string) => {
+    if (!modalViewValue?.includes(action)) {
+      setModalViewValue(`${action}-${folderId}`);
+    }
+  };
+
   // handle modal calendar crud open
   const showModalViewCalendarCrud = (calendarId: string, action: string) => {
     if (!modalViewValue?.includes(action)) {
       setModalViewValue(`${action}-${calendarId}`);
+    }
+  };
+
+  // handle modal note crud open
+  const showModalViewNoteCrud = (noteId: string, action: string) => {
+    if (!modalViewValue?.includes(action)) {
+      setModalViewValue(`${action}-${noteId}`);
     }
   };
 
@@ -220,7 +234,9 @@ export const useViewModal = () => {
     modalViewValue,
     setModalViewValue,
     showModalViewSearch,
+    showModalViewFolderCrud,
     showModalViewCalendarCrud,
+    showModalViewNoteCrud,
     showModalViewTaskListCrud,
     showModalViewTaskCrud,
     closeModalView,

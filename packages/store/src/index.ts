@@ -9,6 +9,7 @@ export * from './state/initialize/view';
 
 export * from './state/actions/calendar';
 export * from './state/actions/event';
+export * from './state/actions/folder';
 export * from './state/actions/link';
 export * from './state/actions/note';
 export * from './state/actions/workspace';
@@ -21,6 +22,7 @@ export * from './state/calendar';
 export * from './state/active-items';
 export * from './state/appshell';
 export * from './state/event';
+export * from './state/folder';
 export * from './state/link';
 export * from './state/note';
 export * from './state/recurring-rule';
