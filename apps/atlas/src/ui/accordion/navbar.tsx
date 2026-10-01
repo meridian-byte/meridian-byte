@@ -75,73 +75,77 @@ export default function Navbar() {
     // },
   ];
 
-  const items = data.map((item) => {
+  const items = data.map((item, i) => {
     const props = {
       icon: (navbarViewValue || []).includes(item.value) ? IconChevronDown : IconChevronRight,
     };
 
     return (
       <AccordionItem key={item.value} value={item.value}>
-        <AccordionControl icon={<props.icon size={ICON_SIZE} />}>
-          <Group justify="space-between">
-            {item.value}
+        {i > 0 && <Divider />}
 
-            <Group component={'span'} justify="end" gap={0}>
-              <Tooltip label={`Search in ${item.value}`}>
-                <ActionIcon
-                  component="span"
-                  size={30}
-                  radius={0}
-                  color="gray"
-                  variant="subtle"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    showModalViewSearch(item.value);
-                  }}
-                >
-                  <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
+        <>
+          <AccordionControl icon={<props.icon size={ICON_SIZE} />}>
+            <Group justify="space-between">
+              {item.value}
 
-              <Tooltip label={`Add item in ${item.value}`}>
-                <ActionIcon
-                  component="span"
-                  size={30}
-                  radius={0}
-                  color="gray"
-                  variant="subtle"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    item.actions.create();
-                  }}
-                >
-                  <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
+              <Group component={'span'} justify="end" gap={0}>
+                <Tooltip label={`Search in ${item.value}`}>
+                  <ActionIcon
+                    component="span"
+                    size={30}
+                    radius={0}
+                    color="gray"
+                    variant="subtle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showModalViewSearch(item.value);
+                    }}
+                  >
+                    <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  </ActionIcon>
+                </Tooltip>
 
-              <Tooltip label={`Go to ${item.value}`}>
-                <ActionIcon
-                  component="span"
-                  size={30}
-                  radius={0}
-                  color="gray"
-                  variant="subtle"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    item.actions.switch();
-                  }}
-                >
-                  <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
+                <Tooltip label={`Add item in ${item.value}`}>
+                  <ActionIcon
+                    component="span"
+                    size={30}
+                    radius={0}
+                    color="gray"
+                    variant="subtle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      item.actions.create();
+                    }}
+                  >
+                    <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  </ActionIcon>
+                </Tooltip>
+
+                <Tooltip label={`Go to ${item.value}`}>
+                  <ActionIcon
+                    component="span"
+                    size={30}
+                    radius={0}
+                    color="gray"
+                    variant="subtle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      item.actions.switch();
+                    }}
+                  >
+                    <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
             </Group>
-          </Group>
-        </AccordionControl>
+          </AccordionControl>
 
-        <AccordionPanel>
-          <Divider />
-          {item.content}
-        </AccordionPanel>
+          <AccordionPanel>
+            <Divider />
+            {item.content}
+          </AccordionPanel>
+        </>
       </AccordionItem>
     );
   });
@@ -159,6 +163,7 @@ export default function Navbar() {
         control: { height: 30, padding: 0, paddingLeft: '5px' },
         label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: '500', padding: '0' },
         content: { padding: 0 },
+        item: { borderBottomWidth: 0 },
       }}
     >
       {items}

@@ -59,7 +59,9 @@ export default function Jot() {
 
   const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
-  const jotFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.JOT);
+  const jotFolders = folders?.filter(
+    (fi) => fi.location == APP_NAMES_ATLAS.JOT && !fi.parentFolder,
+  );
 
   const notes = useStoreNote((s) => s.notes);
   const notesWithoutFolder = notes?.filter((ci) => !ci.folderId);
@@ -140,6 +142,7 @@ export default function Jot() {
           <div>
             {jotFolders?.map((fi) => (
               <div key={fi.id}>
+                <Divider />
                 <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
               </div>
             ))}

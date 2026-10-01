@@ -51,7 +51,9 @@ export default function Stride() {
 
   const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
-  const strideFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.STRIDE);
+  const strideFolders = folders?.filter(
+    (fi) => fi.location == APP_NAMES_ATLAS.STRIDE && !fi.parentFolder,
+  );
 
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const taskListsWithoutFolder = taskLists?.filter((ci) => !ci.folderId);
@@ -167,6 +169,7 @@ export default function Stride() {
           <div>
             {strideFolders?.map((fi) => (
               <div key={fi.id}>
+                <Divider />
                 <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
               </div>
             ))}
