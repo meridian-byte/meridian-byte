@@ -5,7 +5,6 @@ import { SyncStatus } from '@repo/types';
 import { generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { getUniqueColor } from '@repo/constants';
-import { useViewModal } from '../../handler/view';
 
 export const useTaskListActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -14,7 +13,6 @@ export const useTaskListActions = () => {
   const updateTaskList = useStoreTaskList((s) => s.updateTaskList);
   const deleteTaskList = useStoreTaskList((s) => s.deleteTaskList);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
-  const { modalViewValue, closeModalView } = useViewModal();
 
   const taskListCreate = (params?: Partial<TaskListGet>) => {
     if (!session) return;
@@ -25,7 +23,7 @@ export const useTaskListActions = () => {
 
     const newTaskList: TaskListGet = {
       id: params?.id || id,
-      title: params?.title || 'New TaskList',
+      title: params?.title || 'New Task List',
       description: params?.description || null,
       color: params?.color || getUniqueColor(),
       folderId: params?.folderId || null,
@@ -69,8 +67,6 @@ export const useTaskListActions = () => {
       createdAt: new Date(params.createdAt).toISOString() as any,
       updatedAt: new Date(now).toISOString() as any,
     });
-
-    if (!!modalViewValue) closeModalView();
   };
 
   return {

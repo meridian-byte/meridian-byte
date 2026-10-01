@@ -5,7 +5,6 @@ import { SyncStatus } from '@repo/types';
 import { generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { getUniqueColor } from '@repo/constants';
-import { useViewModal } from '../../handler/view';
 
 export const useCalendarActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -14,7 +13,6 @@ export const useCalendarActions = () => {
   const updateCalendar = useStoreCalendar((s) => s.updateCalendar);
   const deleteCalendar = useStoreCalendar((s) => s.deleteCalendar);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
-  const { modalViewValue, closeModalView } = useViewModal();
 
   const calendarCreate = (params?: Partial<CalendarGet>) => {
     if (!session) return;
@@ -69,8 +67,6 @@ export const useCalendarActions = () => {
       createdAt: new Date(params.createdAt).toISOString() as any,
       updatedAt: new Date(now).toISOString() as any,
     });
-
-    if (!!modalViewValue) closeModalView();
   };
 
   return {
