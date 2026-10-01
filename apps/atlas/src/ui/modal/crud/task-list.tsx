@@ -63,6 +63,7 @@ function TaskListDelete({ taskList, onClose }: { taskList?: TaskListGet; onClose
               onCancel: onClose,
               onConfirm: () => {
                 if (taskList) taskListDelete(taskList);
+                onClose();
               },
             }}
           />

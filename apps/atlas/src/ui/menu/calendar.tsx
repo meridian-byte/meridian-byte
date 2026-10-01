@@ -12,9 +12,9 @@ import {
   MenuDivider,
   Tooltip,
 } from '@mantine/core';
-import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
+import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { CalendarGet } from '@repo/types';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
 
 export default function Calendar({
   defaultValues,
@@ -71,6 +71,18 @@ export default function Calendar({
           }
         >
           Edit
+        </MenuItem>
+
+        <MenuItem
+          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          onClick={() =>
+            showModalViewCalendarCrud(
+              defaultValues.id,
+              `${MODAL_VIEW_NAMES.CRUD.PAVE.CALENDAR.MOVE}-${APP_NAMES_ATLAS.PAVE}`,
+            )
+          }
+        >
+          Move to...
         </MenuItem>
 
         <MenuDivider />

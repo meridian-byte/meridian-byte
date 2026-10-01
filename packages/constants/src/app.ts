@@ -83,6 +83,10 @@ export const SUBVIEW_NAMES = {
 export const ASIDE_VIEW_NAMES = {
   NEW: {
     ITEM: 'new',
+    FOLDER: {
+      ITEM: 'new-folder-item',
+    },
+
     PAVE: {
       ITEM: 'new-pave-item',
       FOLDER: 'new-pave-folder',
@@ -106,20 +110,24 @@ export const ASIDE_VIEW_NAMES = {
 export const MODAL_VIEW_NAMES = {
   SEARCH: 'search',
   CRUD: {
+    FOLDER: {
+      MOVE: 'crud-folder-move',
+      UPDATE: 'crud-folder-update',
+      DELETE: 'crud-folder-delete',
+    },
+
     PAVE: {
       CALENDAR: {
+        MOVE: 'crud-calendar-move',
         UPDATE: 'crud-calendar-update',
         DELETE: 'crud-calendar-delete',
       },
     },
     JOT: {
       NOTE: {
+        MOVE: 'crud-note-move',
         UPDATE: 'crud-note-update',
         DELETE: 'crud-note-delete',
-      },
-      FOLDER: {
-        UPDATE: 'crud-folder-update',
-        DELETE: 'crud-folder-delete',
       },
     },
     STRIDE: {
@@ -128,6 +136,7 @@ export const MODAL_VIEW_NAMES = {
         DELETE: 'crud-task-delete',
       },
       TASK_LIST: {
+        MOVE: 'crud-task-list-move',
         UPDATE: 'crud-task-list-update',
         DELETE: 'crud-task-list-delete',
       },

@@ -63,6 +63,7 @@ function CalendarDelete({ calendar, onClose }: { calendar?: CalendarGet; onClose
               onCancel: onClose,
               onConfirm: () => {
                 if (calendar) calendarDelete(calendar);
+                onClose();
               },
             }}
           />

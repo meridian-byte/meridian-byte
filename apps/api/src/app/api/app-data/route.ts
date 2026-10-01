@@ -25,6 +25,11 @@ export async function GET(request: NextRequest) {
           where: { profileId: userId },
           orderBy: { createdAt: 'desc' },
         }),
+      [STORE_NAME.FOLDERS]: () =>
+        db.folder.findMany({
+          where: { profileId: userId },
+          orderBy: { createdAt: 'desc' },
+        }),
       [STORE_NAME.RECURRING_RULES]: () =>
         db.recurringRule.findMany({
           where: { profileId: userId },
@@ -104,6 +109,7 @@ export async function GET(request: NextRequest) {
 
 const PRISMA_MODEL_MAP: Record<string, any> = {
   [STORE_NAME.WORKSPACES]: db.workspace,
+  [STORE_NAME.FOLDERS]: db.folder,
 
   // Pave
   [STORE_NAME.CALENDARS]: db.calendar,
@@ -122,20 +128,21 @@ const PRISMA_MODEL_MAP: Record<string, any> = {
 
 const SYNC_PRIORITY: Record<string, number> = {
   [STORE_NAME.WORKSPACES]: 1,
+  [STORE_NAME.FOLDERS]: 2,
 
   // Pave
-  [STORE_NAME.CALENDARS]: 2,
-  [STORE_NAME.EVENTS]: 3,
+  [STORE_NAME.CALENDARS]: 3,
+  [STORE_NAME.EVENTS]: 4,
 
   // Jot
-  [STORE_NAME.NOTES]: 4,
-  [STORE_NAME.LINKS]: 5,
+  [STORE_NAME.NOTES]: 5,
+  [STORE_NAME.LINKS]: 6,
 
   // Stride
-  [STORE_NAME.TASK_LISTS]: 6,
-  [STORE_NAME.RECURRING_RULES]: 7,
-  [STORE_NAME.TASKS]: 8,
-  [STORE_NAME.REMINDERS]: 9,
+  [STORE_NAME.TASK_LISTS]: 7,
+  [STORE_NAME.RECURRING_RULES]: 8,
+  [STORE_NAME.TASKS]: 9,
+  [STORE_NAME.REMINDERS]: 10,
 };
 
 export async function POST(request: NextRequest) {

@@ -40,6 +40,7 @@ export const STORE_NAME = {
 
   SETTINGS: 'settings',
   WORKSPACES: 'workspaces',
+  FOLDERS: 'folders',
 
   ACCOUNTS: 'accounts',
   ACCOUNT_GROUPS: 'accountGroups',

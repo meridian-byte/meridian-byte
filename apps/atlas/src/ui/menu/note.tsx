@@ -12,16 +12,16 @@ import {
   MenuDivider,
   Tooltip,
 } from '@mantine/core';
-import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
+import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { NoteGet } from '@repo/types';
-import { IconCopy, IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconCopy, IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
 
 export default function Note({
   defaultValues,
   children,
   ...restProps
 }: { defaultValues: NoteGet; children: React.ReactNode } & MenuProps) {
-  const { showModalViewCalendarCrud } = useViewModal();
+  const { showModalViewNoteCrud } = useViewModal();
   const { noteCopy } = useNoteActions();
 
   return (
@@ -68,7 +68,7 @@ export default function Note({
         <MenuItem
           leftSection={<IconEdit size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           onClick={() =>
-            showModalViewCalendarCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.JOT.NOTE.UPDATE)
+            showModalViewNoteCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.JOT.NOTE.UPDATE)
           }
         >
           Rename
@@ -81,13 +81,25 @@ export default function Note({
           Make a copy
         </MenuItem>
 
+        <MenuItem
+          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          onClick={() =>
+            showModalViewNoteCrud(
+              defaultValues.id,
+              `${MODAL_VIEW_NAMES.CRUD.JOT.NOTE.MOVE}-${APP_NAMES_ATLAS.JOT}`,
+            )
+          }
+        >
+          Move to...
+        </MenuItem>
+
         <MenuDivider />
 
         <MenuItem
           leftSection={<IconTrash size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           color="red"
           onClick={() =>
-            showModalViewCalendarCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.JOT.NOTE.DELETE)
+            showModalViewNoteCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.JOT.NOTE.DELETE)
           }
         >
           Delete

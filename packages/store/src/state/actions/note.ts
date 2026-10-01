@@ -44,6 +44,7 @@ export const useNoteActions = () => {
       id: params?.id || id,
       title,
       content: params?.content || '<p></p>',
+      folderId: params?.folderId || null,
       profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,

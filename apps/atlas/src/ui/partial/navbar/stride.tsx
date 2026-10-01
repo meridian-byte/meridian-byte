@@ -14,13 +14,14 @@ import {
   Tooltip,
 } from '@mantine/core';
 import {
+  APP_NAMES_ATLAS,
   ASIDE_VIEW_NAMES,
   ICON_SIZE,
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords, extractUuidFromParam, generateUUID } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam, generateUUID, sortArray } from '@repo/utils';
 import {
   IconCalendarCancel,
   IconCalendarDown,
@@ -34,17 +35,27 @@ import {
   IconPlus,
   IconTextPlus,
 } from '@tabler/icons-react';
-import { useSubView, useViewAside } from '@repo/store';
+import { useFolderActions, useStoreFolder, useSubView, useViewAside } from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreTaskList } from '@repo/store';
 import MenuTaskList from '@atlas/ui/menu/task-list';
 import PartialEmpty from '../empty';
+import NavlinkTaskList from '@atlas/ui/navlink/task-list';
+import { Order } from '@repo/types';
+import AccordionFolder from '@atlas/ui/accordion/folder';
 
 export default function Stride() {
   const { subViewValue, showSubViewStride } = useSubView();
   const { showAsideViewStride } = useViewAside();
+
+  const { folderCreate } = useFolderActions();
+  const folders = useStoreFolder((s) => s.folders);
+  const strideFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.STRIDE);
+
   const taskLists = useStoreTaskList((s) => s.taskLists);
+  const taskListsWithoutFolder = taskLists?.filter((ci) => !ci.folderId);
+  const sortedNotes = sortArray(taskListsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING);
 
   const navLinks = [
     {
@@ -143,8 +154,9 @@ export default function Stride() {
                   color="gray"
                   variant="subtle"
                   radius={0}
-                  onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER)}
-                  disabled
+                  onClick={() => {
+                    folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.STRIDE });
+                  }}
                 >
                   <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
@@ -153,64 +165,21 @@ export default function Stride() {
           </Group>
 
           <div>
+            {strideFolders?.map((fi) => (
+              <div key={fi.id}>
+                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
+              </div>
+            ))}
+
             {taskLists === undefined || !taskLists?.length ? (
               <PartialEmpty loading={taskLists === undefined} label={`No task lists.`} />
             ) : (
-              taskLists.map((tli, i) => {
-                const taskListActive =
-                  subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == tli.id;
-
-                return (
-                  <React.Fragment key={tli.title}>
-                    {<Divider />}
-
-                    <Group gap={0} wrap="nowrap">
-                      <NavLink
-                        label={
-                          <Tooltip
-                            label={tli.title}
-                            multiline
-                            maw={320}
-                            position="top-start"
-                            arrowOffset={16}
-                          >
-                            <Text component="span" inherit lineClamp={1} lh={2}>
-                              {tli.title}
-                            </Text>
-                          </Tooltip>
-                        }
-                        color="gray"
-                        px={'xs'}
-                        py={3}
-                        fw={500}
-                        leftSection={
-                          <ThemeIcon
-                            size={ICON_SIZE - 4}
-                            variant="transparent"
-                            mt={4}
-                            c={`${tli.color}.6` || 'pri'}
-                          >
-                            <IconCircleFilled size={6} />
-                          </ThemeIcon>
-                        }
-                        styles={{
-                          label: {
-                            fontSize: 'var(--mantine-font-size-xs)',
-                            color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
-                          },
-                        }}
-                        onClick={() => showSubViewStride(`list: ${tli.id}`)}
-                      />
-
-                      <MenuTaskList defaultValues={tli}>
-                        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-                          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                        </ActionIcon>
-                      </MenuTaskList>
-                    </Group>
-                  </React.Fragment>
-                );
-              })
+              sortedNotes.map((tli) => (
+                <React.Fragment key={tli.id}>
+                  {<Divider />}
+                  <NavlinkTaskList props={tli} />
+                </React.Fragment>
+              ))
             )}
           </div>
         </div>

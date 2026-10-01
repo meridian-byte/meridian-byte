@@ -15,6 +15,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import {
+  APP_NAMES_ATLAS,
   ASIDE_VIEW_NAMES,
   ICON_SIZE,
   ICON_STROKE_WIDTH,
@@ -22,7 +23,7 @@ import {
   SECTION_SPACING,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords, extractUuidFromParam, sortArray } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam, generateUUID, sortArray } from '@repo/utils';
 import {
   IconCalendar,
   IconCalendarCancel,
@@ -41,19 +42,31 @@ import {
   IconLayoutList,
   IconPlus,
 } from '@tabler/icons-react';
-import { useSubView, useViewAside } from '@repo/store';
+import { useFolderActions, useStoreFolder, useSubView, useViewAside } from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreCalendar } from '@repo/store';
 import MenuCalendar from '@atlas/ui/menu/calendar';
-import { Order } from '@repo/types';
+import { CalendarGet, Order } from '@repo/types';
 import PartialEmpty from '../empty';
+import AccordionFolder from '@atlas/ui/accordion/folder';
+import NavlinkCalendar from '@atlas/ui/navlink/calendar';
 
 export default function Pave() {
   const { subViewValue, showSubViewPave } = useSubView();
   const { showAsideViewPave } = useViewAside();
+
+  const { folderCreate } = useFolderActions();
+  const folders = useStoreFolder((s) => s.folders);
+  const paveFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.PAVE);
+
   const calendars = useStoreCalendar((s) => s.calendars);
-  const sortedCalendars = sortArray(calendars || [], (i) => i.createdAt, Order.DESCENDING);
+  const calendarsWithoutFolder = calendars?.filter((ci) => !ci.folderId);
+  const sortedCalendars = sortArray(
+    calendarsWithoutFolder || [],
+    (i) => i.createdAt,
+    Order.DESCENDING,
+  );
 
   const navLinks = [
     {
@@ -142,8 +155,9 @@ export default function Pave() {
                   color="gray"
                   variant="subtle"
                   radius={0}
-                  onClick={() => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER)}
-                  disabled
+                  onClick={() => {
+                    folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.PAVE });
+                  }}
                 >
                   <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
@@ -152,65 +166,23 @@ export default function Pave() {
           </Group>
 
           <div>
+            {paveFolders === undefined || !paveFolders.length
+              ? null
+              : paveFolders.map((fi) => (
+                  <div key={fi.id}>
+                    <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.PAVE} />
+                  </div>
+                ))}
+
             {calendars === undefined || !calendars?.length ? (
               <PartialEmpty loading={calendars === undefined} label={`No calendars.`} />
             ) : (
-              sortedCalendars.map((ci, i) => {
-                const calendarActive =
-                  subViewValue?.includes('calendar: ') &&
-                  extractUuidFromParam(subViewValue) == ci.id;
-
-                return (
-                  <React.Fragment key={ci.title}>
-                    <Divider />
-
-                    <Group gap={0} wrap="nowrap">
-                      <NavLink
-                        label={
-                          <Tooltip
-                            label={ci.title}
-                            multiline
-                            maw={320}
-                            position="top-start"
-                            arrowOffset={16}
-                          >
-                            <Text component="span" inherit lineClamp={1} lh={2}>
-                              {ci.title}
-                            </Text>
-                          </Tooltip>
-                        }
-                        color="gray"
-                        px={'xs'}
-                        py={3}
-                        fw={500}
-                        leftSection={
-                          <ThemeIcon
-                            size={ICON_SIZE - 4}
-                            variant="transparent"
-                            mt={4}
-                            c={`${ci.color}.6` || 'pri'}
-                          >
-                            <IconCircleFilled size={6} />
-                          </ThemeIcon>
-                        }
-                        styles={{
-                          label: {
-                            fontSize: 'var(--mantine-font-size-xs)',
-                            color: !calendarActive ? undefined : 'var(--mantine-color-pri-6)',
-                          },
-                        }}
-                        onClick={() => showSubViewPave(`calendar: ${ci.id}`)}
-                      />
-
-                      <MenuCalendar defaultValues={ci}>
-                        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-                          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                        </ActionIcon>
-                      </MenuCalendar>
-                    </Group>
-                  </React.Fragment>
-                );
-              })
+              sortedCalendars.map((ci) => (
+                <React.Fragment key={ci.id}>
+                  <Divider />
+                  <NavlinkCalendar props={ci} />
+                </React.Fragment>
+              ))
             )}
           </div>
         </div>

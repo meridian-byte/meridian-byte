@@ -45,6 +45,7 @@ export default function Sync({ children }: { children: React.ReactNode }) {
 }
 
 const STORES_TO_SYNC = [
+  STORE_NAME.FOLDERS,
   STORE_NAME.WORKSPACES,
   STORE_NAME.RECURRING_RULES,
   STORE_NAME.REMINDERS,

@@ -5,7 +5,7 @@ import { linkify } from '@repo/utils';
 
 export const config: DBConfig = {
   name: linkify(COMPANY_NAME),
-  version: 4,
+  version: 6,
   stores: [
     // {
     //   name: STORE_NAME.SETTINGS,
@@ -13,6 +13,10 @@ export const config: DBConfig = {
     // },
     {
       name: STORE_NAME.WORKSPACES,
+      keyPath: 'id',
+    },
+    {
+      name: STORE_NAME.FOLDERS,
       keyPath: 'id',
     },
 

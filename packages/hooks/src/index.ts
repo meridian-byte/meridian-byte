@@ -6,6 +6,7 @@ export * from './form/auth';
 export * from './form/calendar';
 export * from './form/note';
 export * from './form/event';
+export * from './form/folder';
 export * from './form/task-list';
 export * from './form/recurring-rule';
 export * from './form/task';

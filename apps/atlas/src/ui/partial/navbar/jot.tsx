@@ -14,13 +14,14 @@ import {
   Tooltip,
 } from '@mantine/core';
 import {
+  APP_NAMES_ATLAS,
   ASIDE_VIEW_NAMES,
   ICON_SIZE,
   ICON_STROKE_WIDTH,
   ICON_WRAPPER_SIZE,
   SUBVIEW_NAMES,
 } from '@repo/constants';
-import { capitalizeWords, extractUuidFromParam, sortArray } from '@repo/utils';
+import { capitalizeWords, extractUuidFromParam, generateUUID, sortArray } from '@repo/utils';
 import {
   IconCalendarCancel,
   IconCalendarDown,
@@ -35,19 +36,34 @@ import {
   IconNote,
   IconPlus,
 } from '@tabler/icons-react';
-import { useNoteActions, useStoreNote, useSubView, useViewAside } from '@repo/store';
+import {
+  useFolderActions,
+  useNoteActions,
+  useStoreFolder,
+  useStoreNote,
+  useSubView,
+  useViewAside,
+} from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import MenuNote from '@atlas/ui/menu/note';
 import { Order } from '@repo/types';
 import PartialEmpty from '../empty';
+import NavlinkNote from '@atlas/ui/navlink/note';
+import AccordionFolder from '@atlas/ui/accordion/folder';
 
 export default function Jot() {
-  const { subViewValue, showSubViewJot } = useSubView();
+  // const { subViewValue, showSubViewJot } = useSubView();
   const { noteCreate } = useNoteActions();
-  const { showAsideViewJot } = useViewAside();
+  // const { showAsideViewJot } = useViewAside();
+
+  const { folderCreate } = useFolderActions();
+  const folders = useStoreFolder((s) => s.folders);
+  const jotFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.JOT);
+
   const notes = useStoreNote((s) => s.notes);
-  const sortedNotes = sortArray(notes || [], (i) => i.createdAt, Order.DESCENDING);
+  const notesWithoutFolder = notes?.filter((ci) => !ci.folderId);
+  const sortedNotes = sortArray(notesWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING);
 
   const navLinks: any[] = [
     // {
@@ -111,8 +127,9 @@ export default function Jot() {
                   color="gray"
                   variant="subtle"
                   radius={0}
-                  onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER)}
-                  disabled
+                  onClick={() => {
+                    folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.JOT });
+                  }}
                 >
                   <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ActionIcon>
@@ -121,59 +138,21 @@ export default function Jot() {
           </Group>
 
           <div>
+            {jotFolders?.map((fi) => (
+              <div key={fi.id}>
+                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
+              </div>
+            ))}
+
             {notes === undefined || !notes?.length ? (
               <PartialEmpty loading={notes === undefined} label={`No notes.`} />
             ) : (
-              sortedNotes.map((ni, i) => {
-                const noteActive =
-                  subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == ni.id;
-
-                return (
-                  <React.Fragment key={ni.id}>
-                    {<Divider />}
-
-                    <Group gap={0} wrap="nowrap">
-                      <NavLink
-                        label={
-                          <Tooltip
-                            label={ni.title}
-                            multiline
-                            maw={320}
-                            position="top-start"
-                            arrowOffset={16}
-                          >
-                            <Text component="span" inherit lineClamp={1} lh={2}>
-                              {ni.title}
-                            </Text>
-                          </Tooltip>
-                        }
-                        color="gray"
-                        px={'xs'}
-                        py={3}
-                        fw={500}
-                        leftSection={
-                          <ThemeIcon size={ICON_SIZE - 4} color="gray" variant="transparent">
-                            <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                          </ThemeIcon>
-                        }
-                        styles={{
-                          label: {
-                            fontSize: 'var(--mantine-font-size-xs)',
-                            color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
-                          },
-                        }}
-                        onClick={() => showSubViewJot(`note: ${ni.id}`)}
-                      />
-
-                      <MenuNote defaultValues={ni}>
-                        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-                          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                        </ActionIcon>
-                      </MenuNote>
-                    </Group>
-                  </React.Fragment>
-                );
-              })
+              sortedNotes.map((ni) => (
+                <React.Fragment key={ni.id}>
+                  <Divider />
+                  <NavlinkNote props={ni} />
+                </React.Fragment>
+              ))
             )}
           </div>
         </div>
