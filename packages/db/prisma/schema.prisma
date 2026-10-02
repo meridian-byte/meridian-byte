@@ -129,10 +129,10 @@ model Workspace {
 }
 
 model Folder {
-  id           String  @id @default(cuid())
-  name         String
-  location     String
-  parentFolder String? @map("parent_folder")
+  id       String  @id @default(cuid())
+  name     String
+  location String
+  folderId String? @map("folder_id")
 
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId String  @map("profile_id")

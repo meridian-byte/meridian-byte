@@ -31,7 +31,7 @@ export const useFolderActions = () => {
       id: params.id || id,
       name: params.name || 'New Folder',
       location: params.location || '',
-      parentFolder: params.parentFolder || null,
+      folderId: params.folderId || null,
       profileId: params.profileId || session.id,
       syncStatus: SyncStatus.PENDING,
       createdAt: new Date(params.createdAt || now).toISOString() as any,

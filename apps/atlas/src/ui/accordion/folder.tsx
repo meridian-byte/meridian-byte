@@ -57,7 +57,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
   if (!currentFolder) return null;
 
   // 1. Get child folders inside this folder
-  const childFolders = folders?.filter((f) => f.parentFolder === folderId);
+  const childFolders = folders?.filter((f) => f.folderId === folderId);
 
   let locationProps: {
     navLinkItems: any[];
@@ -177,7 +177,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                   radius={0}
                   onClick={(e) => {
                     e.stopPropagation();
-                    folderCreate({ id: generateUUID(), location, parentFolder: folderId });
+                    folderCreate({ id: generateUUID(), location, folderId });
                   }}
                 >
                   <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
@@ -206,16 +206,24 @@ export default function Folder({ folderId, location }: { folderId: string; locat
             ) : (
               <>
                 {/* 2. Render nested child folders recursively */}
-                {childFolders?.map((childFolder) => (
+                {childFolders?.map((childFolder, i) => (
                   <div key={childFolder.id}>
+                    {i > 0 && <Divider />}
+
                     <Folder folderId={childFolder.id} location={location} />
-                    <Divider />
+
+                    {!!(
+                      childFolders.indexOf(childFolder) == childFolders.length - 1 &&
+                      locationProps.navLinkItems.length
+                    ) && <Divider />}
                   </div>
                 ))}
 
                 {/* 3. Render items in current folder level */}
-                {locationProps.navLinkItems.map((nli: any) => (
+                {locationProps.navLinkItems.map((nli: any, i) => (
                   <div key={nli.id}>
+                    {i > 0 && <Divider />}
+
                     <locationProps.component props={nli} />
                   </div>
                 ))}
@@ -246,6 +254,6 @@ function isFolderOrChildrenActive(
 
   // 2. Recursively check child folders
   return folders
-    .filter((f) => f.parentFolder == folderId)
+    .filter((f) => f.folderId == folderId)
     .some((child) => isFolderOrChildrenActive(child.id, folders, items, activeItemId));
 }

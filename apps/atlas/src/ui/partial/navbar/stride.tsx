@@ -52,7 +52,7 @@ export default function Stride() {
   const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
   const strideFolders = folders?.filter(
-    (fi) => fi.location == APP_NAMES_ATLAS.STRIDE && !fi.parentFolder,
+    (fi) => fi.location == APP_NAMES_ATLAS.STRIDE && !fi.folderId,
   );
 
   const taskLists = useStoreTaskList((s) => s.taskLists);

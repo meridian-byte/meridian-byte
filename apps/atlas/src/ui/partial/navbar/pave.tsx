@@ -58,9 +58,7 @@ export default function Pave() {
 
   const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
-  const paveFolders = folders?.filter(
-    (fi) => fi.location === APP_NAMES_ATLAS.PAVE && !fi.parentFolder,
-  );
+  const paveFolders = folders?.filter((fi) => fi.location === APP_NAMES_ATLAS.PAVE && !fi.folderId);
 
   const calendars = useStoreCalendar((s) => s.calendars);
   const calendarsWithoutFolder = calendars?.filter((ci) => !ci.folderId);

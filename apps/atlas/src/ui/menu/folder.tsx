@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { FolderGet } from '@repo/types';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
 
 export default function Folder({
   defaultValues,
@@ -78,6 +78,19 @@ export default function Folder({
           }}
         >
           Edit
+        </MenuItem>
+
+        <MenuItem
+          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          onClick={(e) => {
+            e.stopPropagation();
+            showModalViewFolderCrud(
+              defaultValues.id,
+              `${MODAL_VIEW_NAMES.CRUD.FOLDER.MOVE}-${defaultValues.location}`,
+            );
+          }}
+        >
+          Move to...
         </MenuItem>
 
         <MenuDivider />
