@@ -1,8 +1,9 @@
 export * from './handler/view';
 
 export * from './state/initialize/active-item';
-export * from './state/initialize/appshell';
 export * from './state/initialize/app-data';
+export * from './state/initialize/appshell';
+export * from './state/initialize/network';
 export * from './state/initialize/session';
 export * from './state/initialize/user-state';
 export * from './state/initialize/view';
@@ -24,6 +25,7 @@ export * from './state/appshell';
 export * from './state/event';
 export * from './state/folder';
 export * from './state/link';
+export * from './state/network';
 export * from './state/note';
 export * from './state/recurring-rule';
 export * from './state/reminder';

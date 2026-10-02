@@ -5,7 +5,9 @@ import {
   useActiveItemStore,
   useAppshellInitialize,
   useLoadAppData,
+  useNetworkInitialize,
   useSessionStore,
+  useStoreNetwork,
   useUserStatesStore,
   useViewInitialize,
 } from '@repo/store';
@@ -25,10 +27,16 @@ export default function Initialize({
   children: React.ReactNode;
 }) {
   // initialize stores
+  const network = useStoreNetwork((s) => s.network);
+  const isOnline = network?.online ?? false;
+
+  useNetworkInitialize();
 
   useSessionStore({
     sessionUser: props?.sessionUser || null,
-    options: { clientOnly: false },
+    options: {
+      clientOnly: !isOnline,
+    },
   });
 
   // useUserRoleStore();
@@ -42,7 +50,7 @@ export default function Initialize({
   useLoadAppData({
     sourceSite: 'atlas',
     apiUrl: props.baseUrl,
-    clientOnly: false,
+    clientOnly: !isOnline,
     storesToLoad: STORES_TO_LOAD,
   });
 

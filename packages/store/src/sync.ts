@@ -4,7 +4,7 @@ import { config } from './indexed-db/config';
 import { openDatabase } from './indexed-db/actions';
 import { Database, DatabaseError } from './indexed-db/transactions';
 
-import { STORE_NAME } from '@repo/constants';
+import { getClientApiUrl, STORE_NAME } from '@repo/constants';
 import { SyncParams, SyncStatus } from '@repo/types';
 import {
   eventsUpdate,
@@ -31,6 +31,7 @@ import { useStoreRecurringRule } from './state/recurring-rule';
 import { useStoreTask } from './state/task';
 import { useStoreReminder } from './state/reminder';
 import { useStoreFolder } from './state/folder';
+import { useNetworkSync } from './state/sync/network';
 
 const useSessionCheck = () => {
   const session = useStoreSession((s) => s.session);
@@ -248,6 +249,7 @@ export const useMergedSync = (params: {
   const { online } = params;
   const idle = useIdle(4000, { events: ['keypress', 'click'] });
   const { noSession } = useSessionCheck();
+  const { refreshNetworkStatus } = useNetworkSync();
 
   // Store params in a ref so sync always reads fresh state without re-triggering useEffect
   const paramsRef = useRef(params);
@@ -318,8 +320,9 @@ export const useMergedSync = (params: {
 
   // Effect ONLY re-runs when idle, online, or session state actually transitions
   useEffect(() => {
-    if (!noSession && idle && online) {
-      triggerSync();
+    if (!noSession) {
+      refreshNetworkStatus();
+      if (idle) triggerSync();
     }
   }, [online, noSession, idle, triggerSync]);
 };
@@ -328,13 +331,13 @@ export const handleMergedSync = async (
   params: MergedSyncParams & {
     setSyncStatus: (data: SyncStatusValue) => void;
     session: SessionValue;
-    networkStatus: UserNetworkReturnValue;
+    online: boolean;
     syncStatus: SyncStatusValue;
     debounceMergedSyncToServer: (...args: any) => void;
     clientOnly?: boolean;
   },
 ) => {
-  const { payload, networkStatus, session, setSyncStatus, debounceMergedSyncToServer, clientOnly } =
+  const { payload, online, session, setSyncStatus, debounceMergedSyncToServer, clientOnly } =
     params;
 
   try {
@@ -353,7 +356,7 @@ export const handleMergedSync = async (
         dataStore: config!.dataStore,
         stateUpdateFunction: registry.updateState,
         stateUpdateFunctionDeleted: registry.clearDeleted,
-        online: networkStatus.online,
+        online,
         clientOnly,
         sameDate: true,
         db,
@@ -362,7 +365,7 @@ export const handleMergedSync = async (
     }
 
     // 2. PHASE TWO: Batch Sync to Server
-    if (networkStatus.online && session) {
+    if (online && session) {
       // Instead of multiple debounced calls, we pass the WHOLE payload
       // to one debounced function that hits a single /api/sync/batch endpoint
       debounceMergedSyncToServer({ ...payload, db, ...params });
@@ -440,7 +443,8 @@ const prepareStorePayload = (
 
 export const handleServerResponse = async (
   responsePayload: Record<string, any>,
-  networkStatus: UserNetworkReturnValue,
+  online: boolean,
+  // networkStatus: UserNetworkReturnValue,
   db: Database,
 ) => {
   // 1. Iterate through the keys returned by the server
@@ -462,7 +466,7 @@ export const handleServerResponse = async (
       dataStore: config.dataStore,
       stateUpdateFunction: registry.updateState,
       stateUpdateFunctionDeleted: registry.clearDeleted,
-      online: networkStatus.online,
+      online,
       cleanup: true, // This removes DELETED items from IndexedDB
       options: { fromServer: true },
       db,
@@ -474,12 +478,13 @@ export const syncToServerAfterDelay = async (
   params: MergedSyncParams & {
     setSyncStatus: (data: SyncStatusValue) => void;
     session: SessionValue;
-    networkStatus: UserNetworkReturnValue;
+    online: boolean;
+    // networkStatus: UserNetworkReturnValue;
     syncStatus: SyncStatusValue;
     db: Database;
   },
 ) => {
-  const { setSyncStatus, networkStatus, payload } = params;
+  const { setSyncStatus, online, payload } = params;
 
   try {
     setSyncStatus(SyncStatus.PENDING);
@@ -495,7 +500,7 @@ export const syncToServerAfterDelay = async (
 
     // 2. Process the successful return to update local state
     if (result?.data) {
-      await handleServerResponse(result.data.items, networkStatus, params.db);
+      await handleServerResponse(result.data.items, online, params.db);
     }
 
     setSyncStatus(SyncStatus.SYNCED);
