@@ -209,7 +209,10 @@ export async function POST(request: NextRequest) {
     });
 
     // Execute everything in ONE transaction
-    const flatResults = await db.$transaction(allOperations);
+    const flatResults = await db.$transaction(allOperations, {
+      timeout: 30000, // adjust as needed
+      maxWait: 5000, // max time to wait to acquire a connection from pool
+    });
 
     // Map the flat results back to the store keys
     const responsePayload = requestedStores.reduce(
