@@ -6,6 +6,7 @@ export * from './form';
 export * from './fsa';
 export * from './indexed-db';
 export * from './layout';
+export * from './network';
 export * from './sync';
 export * from './view';
 

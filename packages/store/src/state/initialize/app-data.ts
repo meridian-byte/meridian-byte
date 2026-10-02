@@ -238,23 +238,26 @@ export const useLoadAppData = (options: {
 
         if (activeStoreKeys.length === 0) return;
 
-        // 2. Fetch only the required data
-        // Pass the requested stores as a query param so the server can optimize
-        const storeQuery = activeStoreKeys.join(',');
+        let fullPayload: Record<string, any> = {};
 
-        const res = await fetch(
-          `${options.apiUrl}/app-data?userId=${session.id}&sourceSite=${options.sourceSite}&stores=${storeQuery}`,
-        );
+        // 2. Fetch data from the server ONLY if clientOnly is NOT true
+        if (!options.clientOnly) {
+          const storeQuery = activeStoreKeys.join(',');
 
-        if (!res.ok) {
-          const errorText = await res.text().catch(() => 'No response body');
-
-          throw new Error(
-            `Failed to fetch app data (${res.status} ${res.statusText}): ${errorText}`,
+          const res = await fetch(
+            `${options.apiUrl}/app-data?userId=${session.id}&sourceSite=${options.sourceSite}&stores=${storeQuery}`,
           );
-        }
 
-        const fullPayload = await res.json();
+          if (!res.ok) {
+            const errorText = await res.text().catch(() => 'No response body');
+
+            throw new Error(
+              `Failed to fetch app data (${res.status} ${res.statusText}): ${errorText}`,
+            );
+          }
+
+          fullPayload = await res.json();
+        }
 
         // 2. Process each store in parallel (only the active stores)
         const syncPromises = activeStoreKeys.map(async (key) => {

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useDebouncedCallback, useNetwork } from '@mantine/hooks';
+import { useDebouncedCallback } from '@mantine/hooks';
 import {
   useStoreSession,
   useStoreSyncStatus,
@@ -9,11 +9,13 @@ import {
   MergedSyncPayload,
   syncToServerAfterDelay,
   useMergedSync,
+  useStoreNetwork,
 } from '@repo/store';
 import { getClientApiUrl, STORE_NAME } from '@repo/constants';
 
 export default function Sync({ children }: { children: React.ReactNode }) {
-  const networkStatus = useNetwork();
+  const network = useStoreNetwork((s) => s.network);
+  const isOnline = network?.online ?? false;
 
   const session = useStoreSession((s) => s.session);
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
@@ -25,15 +27,15 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   const restProps = {
     setSyncStatus,
     session,
-    networkStatus,
+    online: isOnline,
     syncStatus,
     debounceMergedSyncToServer,
-    clientOnly: false,
+    clientOnly: !isOnline,
   };
 
   useMergedSync({
     syncStatus: restProps.syncStatus,
-    online: networkStatus.online,
+    online: isOnline,
     // Use an array of keys for stability in the hook's dependency array
     storesToSync: STORES_TO_SYNC,
     // The payload (i) passed here is now the MergedSyncPayload { notes, categories }
