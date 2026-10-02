@@ -56,7 +56,7 @@ const STORES_TO_SYNC = [
 
   // Jot
   STORE_NAME.NOTES,
-  STORE_NAME.LINKS,
+  // STORE_NAME.LINKS,
 
   // Stride
   STORE_NAME.TASK_LISTS,
