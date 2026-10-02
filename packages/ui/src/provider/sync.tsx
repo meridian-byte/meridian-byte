@@ -9,11 +9,13 @@ import {
   MergedSyncPayload,
   syncToServerAfterDelay,
   useMergedSync,
+  useStoreNetwork,
 } from '@repo/store';
 import { getClientApiUrl, STORE_NAME } from '@repo/constants';
 
 export function ProviderSync({ children }: { children: React.ReactNode }) {
-  const networkStatus = useNetwork();
+  const network = useStoreNetwork((s) => s.network);
+  const isOnline = network?.online ?? false;
 
   const session = useStoreSession((s) => s.session);
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
@@ -25,15 +27,15 @@ export function ProviderSync({ children }: { children: React.ReactNode }) {
   const restProps = {
     setSyncStatus,
     session,
-    networkStatus,
+    online: isOnline,
     syncStatus,
     debounceMergedSyncToServer,
-    clientOnly: false,
+    clientOnly: !isOnline,
   };
 
   useMergedSync({
     syncStatus: restProps.syncStatus,
-    online: networkStatus.online,
+    online: isOnline,
     // Use an array of keys for stability in the hook's dependency array
     storesToSync: STORES_TO_SYNC,
     // The payload (i) passed here is now the MergedSyncPayload { notes, categories }
@@ -53,7 +55,7 @@ const STORES_TO_SYNC = [
 
   // Jot
   STORE_NAME.NOTES,
-  STORE_NAME.LINKS,
+  // STORE_NAME.LINKS,
 
   // Stride
   STORE_NAME.TASK_LISTS,
