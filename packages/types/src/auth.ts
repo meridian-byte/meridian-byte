@@ -1,13 +1,22 @@
 import { AuthAction } from './enums';
-import { User } from '@supabase/supabase-js';
+import { SessionGet } from './models/session';
+import { UserGet } from './models/user';
+import { AccountGet } from './models/account';
+import { ProfileGet } from './models/profile';
+import { WorkspaceGet } from './models/workspace';
 
 export type SignIn = {
-  formData: { email: string; otp?: string };
-  options: { action?: AuthAction; redirectUrl?: string; baseUrl?: string };
+  values: { email: string; otp?: string };
+  options: { action?: AuthAction };
+  appData?: { workspaces?: WorkspaceGet[] };
 };
 
 export type SignOut = {
   options: { baseUrl: string };
 };
 
-export interface UserObject extends User {}
+export type SessionCookie = SessionGet & {
+  user: UserGet;
+  accounts: AccountGet[];
+  profile: ProfileGet;
+};

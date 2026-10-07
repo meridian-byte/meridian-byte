@@ -73,18 +73,95 @@ enum Frequency {
 // CORE
 //
 
+model User {
+  id       String @id @default(cuid())
+  userCode String @map("user_code") // more user friendly identification string than cuid
+
+  accounts Account[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userCode])
+  @@map("users")
+}
+
+model Account {
+  id    String @id @default(cuid())
+  email String
+  role  Role   @default(USER)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  sessions   Session[]
+  profiles   Profile[]
+  workspaces Workspace[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([email])
+  @@map("accounts")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime @map("expires_at")
+  otp       String?
+
+  // additional data that might change per session, or during a session
+  timezone String?
+
+  // allows more than 1 account per session
+  accounts Account[]
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sessions")
+}
+
+//
+// APP DATA
+//
+
 model Profile {
   id         String  @id @default(cuid())
-  email      String
   userName   String? @map("user_name")
   firstName  String? @map("first_name")
   lastName   String? @map("last_name")
+  phone      String?
+  address    String?
   avatar     String?
-  timezone   String?
   customized Boolean @default(false)
-  role       Role    @default(USER)
 
-  workspaces     Workspace[]
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @map("account_id")
+
+  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([accountId])
+  @@unique([userName])
+  @@map("profiles")
+}
+
+model Workspace {
+  id   String @id @default(cuid())
+  name String
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @map("account_id")
+
   events         Event[]
   notes          Note[]
   links          Link[]
@@ -100,33 +177,12 @@ model Profile {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([email])
-  @@map("profiles")
-}
-
-model Workspace {
-  id   String @id @default(cuid())
-  name String
-
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String  @map("profile_id")
-
-  events         Event[]
-  notes          Note[]
-  links          Link[]
-  calendars      Calendar[]
-  taskLists      TaskList[]
-  tasks          Task[]
-  recurringRules RecurringRule[]
-  reminders      Reminder[]
-
-  syncStatus SyncStatus @default(SYNCED) @map("sync_status")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
   @@map("workspaces")
 }
+
+//
+// APP DATA (Actual)
+//
 
 model Folder {
   id       String  @id @default(cuid())
@@ -134,8 +190,8 @@ model Folder {
   location String
   folderId String? @map("folder_id")
 
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String  @map("profile_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String    @map("workspace_id")
 
   calendars Calendar[]
   notes     Note[]
@@ -154,8 +210,6 @@ model Reminder {
   remindAt DateTime @map("remind_at")
   sent     Boolean  @default(false)
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
   task        Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
@@ -177,8 +231,6 @@ model RecurringRule {
   interval  Int       @default(1)
   endDate   DateTime? @map("end_date")
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
 
@@ -193,18 +245,12 @@ model RecurringRule {
   @@map(name: "recurring_rules")
 }
 
-//
-// Pave
-//
-
 model Calendar {
   id          String  @id @default(cuid())
   title       String
   description String?
   color       String?
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
   folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
@@ -229,8 +275,6 @@ model Event {
   allDay      Boolean  @default(false) @map("all_day")
   location    String?
 
-  profile         Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId       String         @map("profile_id")
   workspace       Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId     String         @map("workspace_id")
   calendar        Calendar?      @relation(fields: [calendarId], references: [id], onDelete: SetNull)
@@ -248,17 +292,11 @@ model Event {
   @@map("events")
 }
 
-//
-// Jot
-//
-
 model Note {
   id      String  @id @default(uuid())
   title   String
   content String?
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
   folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
@@ -283,8 +321,6 @@ model Link {
   to     Note   @relation("ToLinks", fields: [toId], references: [id], onDelete: Cascade)
   toId   String @map("to_id")
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
 
@@ -297,18 +333,12 @@ model Link {
   @@map(name: "links")
 }
 
-//
-// Stride
-//
-
 model TaskList {
   id          String  @id @default(cuid())
   title       String
   description String?
   color       String?
 
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    @map("profile_id")
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String    @map("workspace_id")
   folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
@@ -332,8 +362,6 @@ model Task {
   complete    Boolean   @default(false)
   priority    Priority  @default(NOT_URGENT_UNIMPORTANT)
 
-  profile         Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId       String         @map("profile_id")
   workspace       Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId     String         @map("workspace_id")
   taskList        TaskList?      @relation(fields: [taskListId], references: [id], onDelete: SetNull)

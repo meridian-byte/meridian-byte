@@ -1,4 +1,8 @@
+export * from './db/account';
 export * from './db/profile';
+export * from './db/session';
+export * from './db/user';
+export * from './db/workspace';
 
 export * from './requests/auth';
 
@@ -14,8 +18,4 @@ export * from './requests/database/recurring-rules';
 export * from './requests/database/tasks';
 export * from './requests/database/reminders';
 
-export * from './route/auth/callback/email';
-export * from './route/auth/callback/oauth';
-export * from './route/auth/sign-in';
-export * from './route/auth/sign-out';
 export * from './route/profiles';

@@ -7,91 +7,131 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.nextUrl.searchParams.get('userId');
-    const stores = request.nextUrl.searchParams.get('stores');
+    const searchParams = request.nextUrl.searchParams;
+    const rawAccountIds = searchParams.get('accountIds');
 
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    // Split string into an array, filtering out empty strings
+    const accountIds = rawAccountIds ? rawAccountIds.split(',').filter(Boolean) : [];
+
+    if (!accountIds.length) {
+      return NextResponse.json({ error: 'Account ID(s) required' }, { status: 400 });
     }
 
-    // 1. Parse the requested stores into an array
-    const requestedStores = stores ? stores.split(',') : [];
+    const stores = searchParams.get('stores');
+    const requestedStores = stores ? stores.split(',').filter(Boolean) : [];
 
-    // 2. Define the Query Map
-    // This maps the URL string to the actual Prisma call
+    // Step 1: Fetch all workspaces matching any of the accountIds
+    const workspaces = await db.workspace.findMany({
+      where: { accountId: { in: accountIds } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const workspaceIds = workspaces.map((w) => w.id);
+
+    // If no workspaces exist, return early or empty arrays for requested stores
+    if (workspaceIds.length === 0) {
+      const emptyResponse = requestedStores.reduce(
+        (acc, key) => {
+          acc[key] = [];
+          return acc;
+        },
+        {} as Record<string, any[]>,
+      );
+
+      // Make sure workspaces key is present if requested
+      if (requestedStores.includes(STORE_NAME.WORKSPACES)) {
+        emptyResponse[STORE_NAME.WORKSPACES] = [];
+      }
+
+      return NextResponse.json(emptyResponse, { status: 200 });
+    }
+
+    // Step 2: Define the Query Map using the fetched workspaceIds (with `in`)
     const queryMap: Record<string, () => any> = {
-      [STORE_NAME.WORKSPACES]: () =>
-        db.workspace.findMany({
-          where: { profileId: userId },
+      [STORE_NAME.ACCOUNTS]: () =>
+        db.account.findMany({
+          where: { id: { in: accountIds } },
           orderBy: { createdAt: 'desc' },
         }),
+
+      [STORE_NAME.WORKSPACES]: () => Promise.resolve(workspaces), // Already fetched above
+
       [STORE_NAME.FOLDERS]: () =>
         db.folder.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
       [STORE_NAME.RECURRING_RULES]: () =>
         db.recurringRule.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
       [STORE_NAME.REMINDERS]: () =>
         db.reminder.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
 
       // Pave
       [STORE_NAME.CALENDARS]: () =>
         db.calendar.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
       [STORE_NAME.EVENTS]: () =>
         db.event.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
 
       // Jot
       [STORE_NAME.NOTES]: () =>
         db.note.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
       [STORE_NAME.LINKS]: () =>
         db.link.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
 
       // Stride
       [STORE_NAME.TASK_LISTS]: () =>
         db.taskList.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
       [STORE_NAME.TASKS]: () =>
         db.task.findMany({
-          where: { profileId: userId },
+          where: { workspaceId: { in: workspaceIds } },
           orderBy: { createdAt: 'desc' },
         }),
     };
 
-    // 3. Filter the map to only include valid requested stores
+    // Step 3: Filter queries that need database execution
     const validQueries = requestedStores.filter((key) => !!queryMap[key]);
-    const activeQueries = validQueries.map((key) => queryMap[key]());
 
-    // 4. Execute the transaction
-    const results = await db.$transaction(activeQueries, {
-      maxWait: 10000, // Wait up to 10s to acquire a connection
-      timeout: 15000, // Allow the transaction to run for up to 15s
-    });
+    // Separate WORKSPACES (already resolved) from DB queries to avoid redundant DB hits in transaction
+    const dbQueriesToRun = validQueries.filter((key) => key !== STORE_NAME.WORKSPACES);
+    const activeDbPromises = dbQueriesToRun.map((key) => queryMap[key]());
 
-    // 5. Format into a clean object using the VALID keys array so indices match 1:1
+    // Step 4: Execute active DB queries in a transaction (or Promise.all)
+    const dbResults =
+      activeDbPromises.length > 0
+        ? await db.$transaction(activeDbPromises, { maxWait: 10000, timeout: 15000 })
+        : [];
+
+    // Step 5: Map results back into responsePayload
+    let dbResultIndex = 0;
     const responsePayload = validQueries.reduce(
-      (acc, key, index) => {
-        acc[key] = results[index];
+      (acc, key) => {
+        if (key === STORE_NAME.WORKSPACES) {
+          acc[key] = workspaces;
+        } else {
+          acc[key] = dbResults[dbResultIndex];
+          dbResultIndex++;
+        }
         return acc;
       },
       {} as Record<string, any>,
@@ -108,6 +148,7 @@ export async function GET(request: NextRequest) {
 }
 
 const PRISMA_MODEL_MAP: Record<string, any> = {
+  [STORE_NAME.ACCOUNTS]: db.account,
   [STORE_NAME.WORKSPACES]: db.workspace,
   [STORE_NAME.FOLDERS]: db.folder,
 
@@ -127,22 +168,23 @@ const PRISMA_MODEL_MAP: Record<string, any> = {
 };
 
 const SYNC_PRIORITY: Record<string, number> = {
-  [STORE_NAME.WORKSPACES]: 1,
-  [STORE_NAME.FOLDERS]: 2,
+  [STORE_NAME.ACCOUNTS]: 1,
+  [STORE_NAME.WORKSPACES]: 2,
+  [STORE_NAME.FOLDERS]: 3,
 
   // Pave
-  [STORE_NAME.CALENDARS]: 3,
-  [STORE_NAME.EVENTS]: 4,
+  [STORE_NAME.CALENDARS]: 4,
+  [STORE_NAME.EVENTS]: 5,
 
   // Jot
-  [STORE_NAME.NOTES]: 5,
-  [STORE_NAME.LINKS]: 6,
+  [STORE_NAME.NOTES]: 6,
+  [STORE_NAME.LINKS]: 7,
 
   // Stride
-  [STORE_NAME.TASK_LISTS]: 7,
-  [STORE_NAME.RECURRING_RULES]: 8,
-  [STORE_NAME.TASKS]: 9,
-  [STORE_NAME.REMINDERS]: 10,
+  [STORE_NAME.TASK_LISTS]: 8,
+  [STORE_NAME.RECURRING_RULES]: 9,
+  [STORE_NAME.TASKS]: 10,
+  [STORE_NAME.REMINDERS]: 11,
 };
 
 export async function POST(request: NextRequest) {

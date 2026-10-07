@@ -7,6 +7,10 @@ export * from './state/initialize/network';
 export * from './state/initialize/session';
 export * from './state/initialize/user-state';
 export * from './state/initialize/view';
+export * from './state/initialize/workspace';
+
+export * from './state/sync/network';
+export * from './state/sync/workspace';
 
 export * from './state/actions/calendar';
 export * from './state/actions/event';
@@ -19,6 +23,7 @@ export * from './state/actions/recurring-rule';
 export * from './state/actions/task';
 export * from './state/actions/reminder';
 
+export * from './state/account';
 export * from './state/calendar';
 export * from './state/active-items';
 export * from './state/appshell';

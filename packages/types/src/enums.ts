@@ -5,8 +5,10 @@ export enum Hashing {
   SHA512 = 'SHA-512',
 }
 
-export enum Jwt {
+export enum EncryptionAlg {
   HS256 = 'HS256',
+  HS384 = 'HS384',
+  HS512 = 'HS512',
 }
 
 export enum AuthAction {

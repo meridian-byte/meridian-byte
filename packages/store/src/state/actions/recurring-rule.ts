@@ -27,7 +27,6 @@ export const useRecurringRuleActions = () => {
       endDate: !params?.endDate ? null : (new Date(params.endDate).toISOString() as any),
       frequency: params?.frequency || Frequency.WEEKLY,
       interval: params?.interval || 1,
-      profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,
       createdAt: new Date(params?.createdAt || now).toISOString() as any,

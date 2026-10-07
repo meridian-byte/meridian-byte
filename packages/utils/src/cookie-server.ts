@@ -19,14 +19,12 @@ export const getCookieServer = async <T = string>(cookieName: string): Promise<T
     const cookieStore = await cookies();
     const cookie = cookieStore.get(cookieName);
 
-    if (!cookie) return null;
-
-    const value = decodeURIComponent(cookie.value);
+    if (!cookie?.value) return null;
 
     try {
-      return JSON.parse(value) as T;
+      return JSON.parse(cookie.value) as T;
     } catch {
-      return value as unknown as T;
+      return cookie.value as unknown as T;
     }
   } catch (error) {
     console.error('---> utility error (get cookie value):', error);
@@ -46,9 +44,7 @@ export const setCookieServer = async (
 ): Promise<void> => {
   try {
     const cookieValue =
-      value && typeof value === 'object'
-        ? encodeURIComponent(JSON.stringify(value))
-        : encodeURIComponent(value);
+      value && typeof value === 'object' ? JSON.stringify(value) : String(value ?? '');
 
     const expires = new Date(Date.now() + options.expiryInSeconds * 1000);
 
@@ -60,7 +56,8 @@ export const setCookieServer = async (
       path: options.path || '/',
       sameSite: options.sameSite || 'strict',
       secure: options.secure ?? false,
-      httpOnly: options.httpOnly ?? true, // default HttpOnly true for server cookies
+      // IMPORTANT: Must be false if you intend to read this cookie via document.cookie on client
+      httpOnly: options.httpOnly ?? true,
     });
   } catch (error) {
     console.error('---> utility error (set cookie value):', error);

@@ -2,17 +2,17 @@
 
 import React from 'react';
 import {
-  useActiveItemStore,
+  useActiveItemInitialize,
   useAppshellInitialize,
   useLoadAppData,
   useNetworkInitialize,
-  useSessionStore,
+  useSessionInitialize,
   useStoreNetwork,
   useUserStatesStore,
   useViewInitialize,
+  useWorkspaceInitialize,
 } from '@repo/store';
-import { UserObject } from '@repo/types';
-import { AppShellValue } from '@repo/store';
+import { SessionCookie } from '@repo/types';
 import { STORE_NAME } from '@repo/constants';
 
 export default function Initialize({
@@ -21,23 +21,20 @@ export default function Initialize({
 }: {
   props: {
     baseUrl: string;
-    sessionUser: UserObject | null;
-    cookie?: AppShellValue;
+    session: SessionCookie | null;
   };
   children: React.ReactNode;
 }) {
   // initialize stores
-  const network = useStoreNetwork((s) => s.network);
-  const isOnline = network?.online ?? false;
 
   useNetworkInitialize();
 
-  useSessionStore({
-    sessionUser: props?.sessionUser || null,
-    options: {
-      clientOnly: !isOnline,
-    },
-  });
+  const network = useStoreNetwork((s) => s.network);
+  const isOnline = network?.online ?? false;
+
+  useSessionInitialize(props.session || null);
+
+  useWorkspaceInitialize(props.session);
 
   // useUserRoleStore();
 
@@ -45,23 +42,27 @@ export default function Initialize({
 
   useViewInitialize();
 
-  useActiveItemStore();
+  useActiveItemInitialize();
+
+  useUserStatesStore();
 
   useLoadAppData({
     sourceSite: 'atlas',
     apiUrl: props.baseUrl,
-    clientOnly: !isOnline,
+    clientOnly: !props.session || !isOnline,
     storesToLoad: STORES_TO_LOAD,
   });
-
-  useUserStatesStore();
 
   return <div>{children}</div>;
 }
 
 const STORES_TO_LOAD = {
-  [STORE_NAME.FOLDERS]: true,
+  [STORE_NAME.ACCOUNTS]: true,
+
   [STORE_NAME.WORKSPACES]: true,
+
+  [STORE_NAME.FOLDERS]: true,
+
   [STORE_NAME.RECURRING_RULES]: true,
   [STORE_NAME.REMINDERS]: true,
 

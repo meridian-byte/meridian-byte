@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateSession } from '@repo/cloudbase';
 import { getColorScheme, setCorsHeaders } from '@repo/utils';
-import { getBaseUrl } from '@repo/constants';
+import { updateSession, validateRouteAccess } from '@repo/auth';
 
 export async function proxy(request: NextRequest) {
-  // Handle preflight
+  // handle preflight
   if (request.method === 'OPTIONS') {
     const response = NextResponse.json({}, { status: 200 });
     setCorsHeaders({ request, response });
@@ -13,12 +12,23 @@ export async function proxy(request: NextRequest) {
 
   let response = NextResponse.next({ request });
 
-  // Set CORS headers for the response
+  // handle CORS
   setCorsHeaders({ request, response });
 
-  // Update the session in the response
-  response = await updateSession(request, response, (await getBaseUrl()).ATLAS);
+  // check auth status & handle route protection
+  const redirect = await validateRouteAccess(request);
+  // if route doesn't match auth status, stop here and redirect
+  if (redirect) return redirect;
 
+  // check session & handle rolling update
+  response = await updateSession(request);
+
+  /**
+   * place other logic below this section
+   * (ie. only after preflight, CORS, route protection, and auth session are handled)
+   */
+
+  // handle global color scheme
   response = getColorScheme(request, response);
 
   // Disable SEO/indexing globally for all responses passing through middleware

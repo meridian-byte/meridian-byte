@@ -3,6 +3,7 @@ import { useStoreSession } from '../session';
 import { WorkspaceGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
 import { generateUUID } from '@repo/utils';
+import { useStoreActiveItems } from '../active-items';
 
 export const useWorkspaceActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -10,8 +11,11 @@ export const useWorkspaceActions = () => {
   const updateWorkspace = useStoreWorkspace((s) => s.updateWorkspace);
   const deleteWorkspace = useStoreWorkspace((s) => s.deleteWorkspace);
 
+  const activeAccount = useStoreActiveItems((s) => s.activeItems?.account);
+
   const workspaceCreate = (params: Omit<Partial<WorkspaceGet>, 'type'>) => {
     if (!session) return;
+    if (!activeAccount) return;
 
     const id = generateUUID();
     const now = new Date();
@@ -19,7 +23,7 @@ export const useWorkspaceActions = () => {
     const newWorkspace: WorkspaceGet = {
       id: params.id || id,
       name: params.name || 'New Workspace',
-      profileId: params.profileId || session.id,
+      accountId: params.accountId || activeAccount.id,
       syncStatus: SyncStatus.PENDING,
       createdAt: new Date(params.createdAt || now).toISOString() as any,
       updatedAt: new Date(params.updatedAt || now).toISOString() as any,

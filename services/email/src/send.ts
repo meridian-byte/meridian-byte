@@ -67,6 +67,13 @@ export const emailSendInquiry = async (params: FormValuesInquiry) => {
   });
 };
 
+export const emailSendOtp = async (params: { to: string; otp: string }) =>
+  emailSendBase({
+    to: params.to,
+    subject: 'Confirm Your Sign In',
+    template: { id: 'otp', variables: { OTP: params.otp } },
+  });
+
 export const emailSendOnboardNewsletter = async (params: { to: string; appName: string }) =>
   emailSendBase({ to: params.to, template: { id: 'onboarding-newsletter' } });
 

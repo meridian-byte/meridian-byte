@@ -12,6 +12,6 @@ export type FolderGet = Folder;
 // Type for fetched item with relations
 export type FolderRelations = Prisma.FolderGetPayload<{
   include: {
-    profile: true;
+    workspace: true;
   };
 }>;

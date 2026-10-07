@@ -16,6 +16,7 @@ import { useStoreTask } from '../task';
 import { useStoreRecurringRule } from '../recurring-rule';
 import { useStoreReminder } from '../reminder';
 import { useStoreFolder } from '../folder';
+import { useStoreAccount } from '../account';
 
 const mergeItems = async (
   dataStore: string,
@@ -72,25 +73,11 @@ const loadInitialData = async (params: {
   stateUpdateFunction: (items: any[]) => void;
 }) => {
   const { clientOnly, fileSyncAdapter } = params.options || {};
-  const { session, dataStore, serverItems, stateUpdateFunction } = params;
+  const { dataStore, serverItems, stateUpdateFunction } = params;
 
   try {
     const db = await openDatabase(config);
     let clientItems: any[] = (await db.get(dataStore)) || [];
-
-    // 1. Attach profileId for offline-created items if session exists
-    if (session?.id) {
-      clientItems = clientItems.map((i) => {
-        // Only set profileId if the property already exists on the object
-        if (Object.hasOwn(i, 'profileId')) {
-          return {
-            ...i,
-            profileId: i.profileId || session.id,
-          };
-        }
-        return i;
-      });
-    }
 
     let combinedItems: any[] = [];
 
@@ -139,11 +126,17 @@ type LoadStoreConfig<TItems = any, THookReturn = any> = {
 };
 
 export const LOAD_STORES: Record<string, LoadStoreConfig> = {
+  [STORE_NAME.ACCOUNTS]: {
+    dataStore: STORE_NAME.ACCOUNTS,
+    useStoreHook: useStoreAccount,
+    setState: (store, items) => store.setAccounts(items),
+  },
   [STORE_NAME.WORKSPACES]: {
     dataStore: STORE_NAME.WORKSPACES,
     useStoreHook: useStoreWorkspace,
     setState: (store, items) => store.setWorkspaces(items),
   },
+
   [STORE_NAME.FOLDERS]: {
     dataStore: STORE_NAME.FOLDERS,
     useStoreHook: useStoreFolder,
@@ -208,6 +201,7 @@ export const useLoadAppData = (options: {
   const session = useStoreSession((s) => s.session);
 
   const stores = {
+    [STORE_NAME.ACCOUNTS]: useStoreAccount(),
     [STORE_NAME.WORKSPACES]: useStoreWorkspace(),
     [STORE_NAME.FOLDERS]: useStoreFolder(),
 
@@ -244,9 +238,15 @@ export const useLoadAppData = (options: {
         if (!options.clientOnly) {
           const storeQuery = activeStoreKeys.join(',');
 
-          const res = await fetch(
-            `${options.apiUrl}/app-data?userId=${session.id}&sourceSite=${options.sourceSite}&stores=${storeQuery}`,
-          );
+          const accountIds = session.accounts.map((ai) => ai.id);
+
+          const queryParams = new URLSearchParams({
+            accountIds: accountIds.join(','),
+            sourceSite: options.sourceSite,
+            stores: storeQuery,
+          });
+
+          const res = await fetch(`${options.apiUrl}/app-data?${queryParams.toString()}`);
 
           if (!res.ok) {
             const errorText = await res.text().catch(() => 'No response body');

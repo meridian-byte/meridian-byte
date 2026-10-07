@@ -16,12 +16,15 @@
   "dependencies": {
     "@repo/cloudbase": "workspace:*",
     "@repo/constants": "workspace:*",
+    "@repo/handlers": "workspace:*",
+    "@repo/db": "workspace:*",
     "@repo/email": "workspace:*",
-    "@repo/utils": "workspace:*",
-    "@repo/types": "workspace:*"
+    "@repo/types": "workspace:*",
+    "@repo/utils": "workspace:*"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
+    "next": "16.2.10",
     "typescript": "^5.6.2"
   }
 }

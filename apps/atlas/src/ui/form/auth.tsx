@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
 import {
   ActionIcon,
   Alert,
@@ -11,7 +10,6 @@ import {
   Grid,
   GridCol,
   Group,
-  Overlay,
   Stack,
   Text,
   TextInput,
@@ -22,20 +20,16 @@ import {
 import AuthProviders from '../button/auth-providers';
 import { useFormAuth } from '@repo/hooks';
 import { AuthAction } from '@repo/types';
-import NextLink from '../anchor/next-link';
-import { AUTH_URLS } from '@repo/constants';
 import {
   IconBackspace,
-  IconExclamationCircle,
+  IconCircleX,
   IconInfoCircle,
   IconMail,
   IconPassword,
-  IconX,
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
-import { setCookieClient } from '@repo/utils';
-import { COOKIE_NAME, PARAM_NAME } from '@repo/constants';
-import { getUrlParam } from '@repo/utils';
+import { isProduction, setCookieClient } from '@repo/utils';
+import { COOKIE_NAME } from '@repo/constants';
 
 export default function Auth({
   action,
@@ -49,40 +43,29 @@ export default function Auth({
     desc: string;
   };
 }) {
-  const [redirecting, setRedirecting] = useState(false);
+  const { form, submitted, submitOps, step, display, setDisplay } = useFormAuth({
+    action,
+    baseUrl,
+  });
 
-  const {
-    form: formAuth,
-    submitted: submittedAuth,
-    handleSubmit: handleSubmitAuth,
-    message: messageAuth,
-    setMessage: setMessageAuth,
-    error: errorAuth,
-    setError: setErrorAuth,
-    resent: resentAuth,
-    setResent: setResentAuth,
-  } = useFormAuth({ action, baseUrl });
+  const hideOauth = step == 'otp' || (form.values.email && submitted);
 
   return (
     <Stack>
-      <form onSubmit={formAuth.onSubmit(() => handleSubmitAuth())} noValidate>
+      <form noValidate>
         <Stack>
           {header && <AuthHeader title={header.title} desc={header.desc} />}
 
-          <Box pos={'relative'}>
-            {redirecting && <Overlay zIndex={1000} radius={8} backgroundOpacity={0.3} />}
+          <AuthProviders props={{ baseUrl }} />
 
-            <AuthProviders props={{ baseUrl }} />
-          </Box>
-
-          <Divider label="or" />
+          <Divider label="or" display={hideOauth ? 'none' : undefined} />
 
           <Grid>
             <GridCol span={{ base: 12, sm: 12 }}>
               <TextInput
                 required
-                aria-label="Email"
-                placeholder="john@example.com"
+                aria-label="Email Address"
+                placeholder="Email Address"
                 variant="filled"
                 styles={{
                   input: {
@@ -92,192 +75,162 @@ export default function Auth({
                   },
                   error: { textAlign: 'center' },
                 }}
-                disabled={!!messageAuth}
+                disabled={step == 'otp'}
                 leftSection={
-                  <ThemeIcon color="gray" variant="transparent" size={ICON_WRAPPER_SIZE}>
+                  <ThemeIcon
+                    color="gray"
+                    c={'dimmed'}
+                    variant="transparent"
+                    size={ICON_WRAPPER_SIZE}
+                  >
                     <IconMail size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                   </ThemeIcon>
                 }
                 rightSection={
-                  <Tooltip label={'Clear email'} disabled={!formAuth.values.email?.trim().length}>
+                  <Tooltip label={'Clear email'} disabled={!form.values.email?.trim().length}>
                     <ActionIcon
                       color="red.6"
-                      variant="subtle"
+                      variant="transparent"
                       size={ICON_WRAPPER_SIZE}
+                      display={step == 'email' ? undefined : 'none'}
+                      disabled={submitted}
                       onClick={() => {
                         setCookieClient(COOKIE_NAME.AUTH.EMAIL, '', {
                           expiryInSeconds: 10,
+                          secure: isProduction(),
+                          sameSite: 'Lax',
                         });
-                        setMessageAuth(undefined);
-                        setErrorAuth(undefined);
-                        formAuth.reset();
+                        setDisplay(null);
+                        form.reset();
                       }}
                       style={{
                         transition: '.25s all ease',
-                        opacity: formAuth.values.email?.trim().length ? 1 : 0,
+                        opacity: form.values.email?.trim().length ? 1 : 0,
                       }}
                     >
                       <IconBackspace size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                     </ActionIcon>
                   </Tooltip>
                 }
-                {...formAuth.getInputProps('email')}
+                {...form.getInputProps('email')}
               />
             </GridCol>
 
-            {!messageAuth ? (
-              <GridCol span={12}>
-                <Button fullWidth type="submit" loading={submittedAuth}>
-                  {action === AuthAction.SIGN_IN ? 'Sign In' : 'Sign Up'}
-                </Button>
-              </GridCol>
-            ) : (
-              <>
-                <GridCol span={{ base: 12, sm: 12 }}>
-                  <TextInput
-                    required
-                    aria-label="Otp"
-                    placeholder="********"
-                    maxLength={8}
-                    variant="filled"
-                    inputMode="numeric"
-                    styles={{
-                      input: {
-                        textAlign: 'center',
-                        letterSpacing: 5,
-                        backgroundColor:
-                          'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
-                      },
-                      error: { textAlign: 'center' },
-                    }}
-                    leftSection={
-                      <ThemeIcon color="gray" variant="transparent" size={ICON_WRAPPER_SIZE}>
-                        <IconPassword size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                      </ThemeIcon>
-                    }
-                    rightSection={
-                      <Tooltip label={'Clear OTP'} disabled={!formAuth.values.otp?.trim().length}>
-                        <ActionIcon
-                          color="red.6"
-                          variant="subtle"
-                          size={ICON_WRAPPER_SIZE}
-                          onClick={() => {
-                            formAuth.setFieldValue('otp', '');
-                          }}
-                          style={{
-                            transition: '.25s all ease',
-                            opacity: formAuth.values.otp?.trim().length ? 1 : 0,
-                          }}
-                        >
-                          <IconBackspace size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                        </ActionIcon>
-                      </Tooltip>
-                    }
-                    {...formAuth.getInputProps('otp')}
-                  />
-                </GridCol>
+            <GridCol span={12} display={step == 'email' ? undefined : 'none'}>
+              <Button
+                fullWidth
+                loading={submitted}
+                onClick={async () => {
+                  await submitOps.submitEmail(form.getValues());
+                }}
+              >
+                {action === AuthAction.SIGN_IN ? 'Sign In' : 'Sign Up'}
+              </Button>
+            </GridCol>
 
-                <GridCol span={12}>
-                  <Group grow>
-                    <Button
-                      variant="light"
-                      loading={resentAuth}
-                      disabled={redirecting}
-                      onClick={() => {
-                        setResentAuth(true);
-                        setMessageAuth('OTP resent successfully');
-                        formAuth.setFieldValue('otp', '');
-                        handleSubmitAuth({ options: { resent: true } });
+            <GridCol span={{ base: 12, sm: 12 }} display={step == 'otp' ? undefined : 'none'}>
+              <TextInput
+                required
+                aria-label="Otp"
+                placeholder="********"
+                maxLength={8}
+                variant="filled"
+                inputMode="numeric"
+                styles={{
+                  input: {
+                    textAlign: 'center',
+                    letterSpacing: 5,
+                    backgroundColor:
+                      'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
+                  },
+                  error: { textAlign: 'center' },
+                }}
+                disabled={step == 'otp' && submitted}
+                leftSection={
+                  <ThemeIcon
+                    color="gray"
+                    c={'dimmed'}
+                    variant="transparent"
+                    size={ICON_WRAPPER_SIZE}
+                  >
+                    <IconPassword size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                  </ThemeIcon>
+                }
+                rightSection={
+                  <Tooltip label={'Clear OTP'} disabled={!form.values.otp?.trim().length}>
+                    <ActionIcon
+                      color="red.6"
+                      variant="transparent"
+                      size={ICON_WRAPPER_SIZE}
+                      display={step == 'otp' && !submitted ? undefined : 'none'}
+                      disabled={submitted}
+                      onClick={() => form.setFieldValue('otp', '')}
+                      style={{
+                        transition: '.25s all ease',
+                        opacity: form.values.otp?.trim().length ? 1 : 0,
                       }}
                     >
-                      {'Resend'}
-                    </Button>
+                      <IconBackspace size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                    </ActionIcon>
+                  </Tooltip>
+                }
+                {...form.getInputProps('otp')}
+              />
+            </GridCol>
 
-                    {!resentAuth && (
-                      <Button
-                        loading={redirecting}
-                        onClick={() => {
-                          const formValues = formAuth.values;
+            <GridCol span={12} display={step == 'otp' ? undefined : 'none'}>
+              <Group grow>
+                <Button
+                  variant="light"
+                  color="gray"
+                  disabled={submitted}
+                  onClick={async () => {
+                    await submitOps.submitEmail(form.getValues(), { resend: true });
+                  }}
+                >
+                  {'Resend'}
+                </Button>
 
-                          if (formValues.otp?.length != 8) {
-                            formAuth.setErrors({ otp: 'Invalid OTP' });
-                          } else {
-                            setRedirecting(true);
-
-                            const redirect =
-                              (getUrlParam(PARAM_NAME.REDIRECT) as string) ||
-                              AUTH_URLS.REDIRECT.DEFAULT;
-                            const redirectUrl = encodeURIComponent(redirect);
-                            const callbackUrl = `${baseUrl}/api/auth/callback/email?email=${formValues.email}&otp=${formValues.otp}&redirectUrl=${redirectUrl}&baseUrl=${baseUrl}`;
-                            window.location.href = callbackUrl;
-                          }
-                        }}
-                      >
-                        {'Confirm'}
-                      </Button>
-                    )}
-                  </Group>
-                </GridCol>
-              </>
-            )}
+                <Button
+                  loading={submitted}
+                  onClick={async () => {
+                    await submitOps.submitOtp(form.getValues());
+                  }}
+                >
+                  {'Confirm'}
+                </Button>
+              </Group>
+            </GridCol>
           </Grid>
         </Stack>
       </form>
 
-      {/* {action == AuthAction.SIGN_IN ? (
-        <Text fz={'xs'} ta={'center'}>
-          Don&apos;t have an account?{' '}
-          <NextLink
-            inherit
-            fw={500}
-            href={AUTH_URLS.SIGN_UP}
-            underline="hover"
-            onClick={() => {
-              setCookieClient(COOKIE_NAME.AUTH.EMAIL, '', {
-                expiryInSeconds: 10,
-              });
-            }}
-          >
-            Sign Up
-          </NextLink>
-        </Text>
-      ) : (
-        <Text fz={'xs'} ta={'center'}>
-          Already have an account?{' '}
-          <NextLink
-            inherit
-            fw={500}
-            href={AUTH_URLS.SIGN_IN}
-            underline="hover"
-            onClick={() => {
-              setCookieClient(COOKIE_NAME.AUTH.EMAIL, '', {
-                expiryInSeconds: 10,
-              });
-            }}
-          >
-            Sign In
-          </NextLink>
-        </Text>
-      )} */}
-
-      {!submittedAuth && (errorAuth || messageAuth) && (
-        <>
-          <Alert
-            variant="light"
-            color={errorAuth ? 'red.6' : 'blue.6'}
-            title={errorAuth ? 'Error' : 'OTP Sent'}
-            icon={
-              errorAuth ? (
-                <IconExclamationCircle size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              ) : (
-                <IconInfoCircle size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              )
-            }
-          >
-            {errorAuth || messageAuth}
-          </Alert>
-        </>
-      )}
+      <Box
+        style={{
+          transition: '.25s all ease',
+          height: !display ? 0 : 77,
+          overflow: 'hidden',
+          opacity: !display ? 0 : 1,
+        }}
+      >
+        <Alert
+          p={'xs'}
+          style={{ transition: '.25s all ease' }}
+          display={display ? undefined : 'none'}
+          variant="light"
+          color={display?.error ? 'red' : 'blue'}
+          title={undefined}
+          icon={
+            display?.error ? (
+              <IconCircleX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            ) : (
+              <IconInfoCircle size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            )
+          }
+        >
+          {display?.error || display?.message}
+        </Alert>
+      </Box>
     </Stack>
   );
 }
