@@ -367,14 +367,7 @@ export function AddTask({ options }: { options?: { adding?: boolean } }) {
       </Box>
 
       {adding && (
-        <Card
-          // px={15}
-          // py={'xs'}
-          padding={0}
-          // bg={'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'}
-          bg={'transparent'}
-          withBorder={options?.adding === undefined}
-        >
+        <Card px={0} pt={8} bg={'transparent'} withBorder={options?.adding === undefined}>
           <FormTask
             onUnmount={setAdding}
             options={{ withoutCheck: options?.adding !== undefined }}

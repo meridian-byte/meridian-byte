@@ -3,7 +3,7 @@
 }
 
 .toolbar {
-  padding: var(--mantine-spacing-xs) 0;
+  padding: var(--mantine-spacing-xs) 0 !important;
   border: 0px solid transparent !important;
   gap: 2 !important;
 }
@@ -13,12 +13,12 @@
 }
 
 .controlsGroup {
-  background-color: transparent;
-  border-radius: var(--mantine-radius-md);
+  background-color: transparent !important;
+  border-radius: var(--mantine-radius-md) !important;
 }
 
 .control {
-  transition: 0.25s all ease;
+  transition: 0.25s all ease !important;
   background-color: transparent !important;
   border: 0px solid transparent !important;
 }
