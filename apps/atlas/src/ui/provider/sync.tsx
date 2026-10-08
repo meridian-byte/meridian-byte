@@ -35,7 +35,7 @@ export default function Sync({
   const restProps = {
     setSyncStatus,
     session,
-    online: !!props.serverSession && isOnline,
+    online: isOnline,
     syncStatus,
     debounceMergedSyncToServer,
     clientOnly: !props.serverSession || !isOnline,
@@ -45,7 +45,7 @@ export default function Sync({
 
   useMergedSync({
     syncStatus: restProps.syncStatus,
-    online: !!props.serverSession && isOnline,
+    online: isOnline,
     // Use an array of keys for stability in the hook's dependency array
     storesToSync: STORES_TO_SYNC,
     // The payload (i) passed here is now the MergedSyncPayload { notes, categories }

@@ -242,7 +242,6 @@ export const useMergedSync = (params: {
 }) => {
   const { online } = params;
   const idle = useIdle(4000, { events: ['keypress', 'click'] });
-  const session = useStoreSession((s) => s.session);
   const { refreshNetworkStatus } = useNetworkSync();
 
   // Store params in a ref so sync always reads fresh state without re-triggering useEffect
@@ -357,7 +356,7 @@ export const handleMergedSync = async (
     }
 
     // 2. PHASE TWO: Batch Sync to Server
-    if (online && !!session) {
+    if (online && !clientOnly) {
       // Instead of multiple debounced calls, we pass the WHOLE payload
       // to one debounced function that hits a single /api/sync/batch endpoint
       debounceMergedSyncToServer({ ...payload, db, ...params });
