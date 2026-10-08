@@ -16,14 +16,16 @@ export default function Fullscreen() {
   };
 
   return (
-    <ActionIcon
-      radius={0}
-      size={SHELL_VALUES.FOOTER.HEIGHT}
-      onClick={toggle}
-      variant="subtle"
-      color="gray"
-    >
-      <buttonProps.icon size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
-    </ActionIcon>
+    <Tooltip label={buttonProps.label}>
+      <ActionIcon
+        radius={0}
+        size={SHELL_VALUES.FOOTER.HEIGHT}
+        onClick={toggle}
+        variant="subtle"
+        color="gray"
+      >
+        <buttonProps.icon size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+      </ActionIcon>
+    </Tooltip>
   );
 }

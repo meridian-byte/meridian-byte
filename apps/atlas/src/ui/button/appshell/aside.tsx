@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { IconArrowBarLeft, IconArrowBarRight } from '@tabler/icons-react';
-import { ActionIcon, Skeleton } from '@mantine/core';
+import { ActionIcon, Skeleton, Tooltip } from '@mantine/core';
 import { ICON_STROKE_WIDTH } from '@repo/constants';
 import { SHELL_VALUES } from '@atlas/constants';
 import { useAppshellChild } from '@repo/hooks';
@@ -25,17 +25,19 @@ export default function Aside({
   }
 
   return (
-    <ActionIcon
-      radius={0}
-      variant="subtle"
-      color="gray"
-      aria-label={label}
-      size={SHELL_VALUES.FOOTER.HEIGHT - 1}
-      onClick={handleToggleChildAside}
-      display={!options?.hideWhenClosed ? undefined : asideChild ? undefined : 'none'}
-      miw={47.43}
-    >
-      <states.iconRight size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
-    </ActionIcon>
+    <Tooltip label={label}>
+      <ActionIcon
+        radius={0}
+        variant="subtle"
+        color="gray"
+        aria-label={label}
+        size={SHELL_VALUES.FOOTER.HEIGHT - 1}
+        onClick={handleToggleChildAside}
+        display={!options?.hideWhenClosed ? undefined : asideChild ? undefined : 'none'}
+        miw={47.43}
+      >
+        <states.iconRight size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+      </ActionIcon>
+    </Tooltip>
   );
 }
