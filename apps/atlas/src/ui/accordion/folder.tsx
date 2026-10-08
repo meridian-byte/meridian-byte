@@ -177,7 +177,15 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                   radius={0}
                   onClick={(e) => {
                     e.stopPropagation();
+
+                    // create folder
                     folderCreate({ id: generateUUID(), location, folderId });
+
+                    // Check if current folder is already expanded, if not, add it
+                    const currentOpened = navbarViewValue || '';
+                    if (!currentOpened.includes(folderId)) {
+                      setNavbarViewValue([...currentOpened, folderId]);
+                    }
                   }}
                 >
                   <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
