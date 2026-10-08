@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { COOKIE_NAME, SECONDS_WEEK } from '@repo/constants';
+import { COOKIE_NAME, SECONDS_MINUTE, SECONDS_WEEK } from '@repo/constants';
 import { AUTH_URLS } from '@repo/constants';
 import { getCookieServer, isProduction, jwtOps } from '@repo/utils';
 import { SessionCookie, SignIn } from '@repo/types';
@@ -45,7 +45,11 @@ export async function POST(request: NextRequest) {
     if (!baseUrl) throw new Error('Base url is required.');
     const redirectUrl = searchParams.get('redirectUrl');
 
-    const { authCookieValue } = await handlePostAuth(values, loginCookie, appData?.workspaces);
+    const { authCookieValue, defaultWorkspaceId } = await handlePostAuth(
+      values,
+      loginCookie,
+      appData?.workspaces,
+    );
 
     // Ensure absolute URL construction
     const redirectPath = redirectUrl || AUTH_URLS.REDIRECT.DEFAULT;
@@ -66,6 +70,15 @@ export async function POST(request: NextRequest) {
     response.cookies.delete({
       name: COOKIE_NAME.AUTH.LOGIN,
       path: '/',
+    });
+
+    // Set default workspace id
+    response.cookies.set(COOKIE_NAME.DEFAULT_WORKSPACE, defaultWorkspaceId, {
+      maxAge: SECONDS_MINUTE * 5,
+      path: '/',
+      httpOnly: false, // needed in the client for initial sync
+      secure: isProduction(),
+      sameSite: 'lax',
     });
 
     // Set auth session cookie

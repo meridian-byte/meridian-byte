@@ -4,7 +4,7 @@ import { config } from './indexed-db/config';
 import { openDatabase } from './indexed-db/actions';
 import { Database, DatabaseError } from './indexed-db/transactions';
 
-import { getClientApiUrl, STORE_NAME } from '@repo/constants';
+import { COOKIE_NAME, getClientApiUrl, STORE_NAME } from '@repo/constants';
 import { SyncParams, SyncStatus } from '@repo/types';
 import {
   eventsUpdate,
@@ -33,6 +33,7 @@ import { useStoreReminder } from './state/reminder';
 import { useStoreFolder } from './state/folder';
 import { useNetworkSync } from './state/sync/network';
 import { useStoreActiveItems } from './state/active-items';
+import { getCookieClient } from '@repo/utils';
 
 type SyncStoreConfig<TItems = any, THookReturn = any> = {
   dataStore: (typeof STORE_NAME)[keyof typeof STORE_NAME];
@@ -416,11 +417,25 @@ const prepareStorePayload = (
   const upserts = data.items
     .filter((i) => i.syncStatus !== SyncStatus.SYNCED && i.syncStatus !== SyncStatus.DELETED)
     // ... rest of map
-    .map((item) => ({
-      ...item,
-      updatedAt: now.toISOString(),
-      syncStatus: SyncStatus.SYNCED,
-    }));
+    .map((item) => {
+      let resolvedItem = item;
+
+      const hasWorkspaceProperty = Object.hasOwn(resolvedItem, 'workspaceId');
+
+      if (hasWorkspaceProperty) {
+        const defaultWorkspaceId = getCookieClient(COOKIE_NAME.DEFAULT_WORKSPACE);
+
+        if (defaultWorkspaceId) {
+          resolvedItem = { ...resolvedItem, workspaceId: defaultWorkspaceId };
+        }
+      }
+
+      return {
+        ...resolvedItem,
+        updatedAt: now.toISOString(),
+        syncStatus: SyncStatus.SYNCED,
+      };
+    });
 
   // 2. Get the IDs of items marked for deletion
   // This is where your cart items live after orderUpdate runs
@@ -530,13 +545,25 @@ export const syncToClientDB = async (
 
     if (unsyncedItems.length) {
       savedItems = unsyncedItems.map((item) => {
+        let resolvedItem = item;
+
+        const hasWorkspaceProperty = Object.hasOwn(resolvedItem, 'workspaceId');
+
+        if (hasWorkspaceProperty) {
+          const defaultWorkspaceId = getCookieClient(COOKIE_NAME.DEFAULT_WORKSPACE);
+
+          if (defaultWorkspaceId) {
+            resolvedItem = { ...resolvedItem, workspaceId: defaultWorkspaceId };
+          }
+        }
+
         return {
-          ...item,
-          updatedAt: params.sameDate ? item.updatedAt : new Date().toISOString(),
+          ...resolvedItem,
+          updatedAt: params.sameDate ? resolvedItem.updatedAt : new Date().toISOString(),
           syncStatus:
-            item.syncStatus == SyncStatus.DELETED
+            resolvedItem.syncStatus == SyncStatus.DELETED
               ? SyncStatus.DELETED
-              : item.syncStatus == SyncStatus.ERROR
+              : resolvedItem.syncStatus == SyncStatus.ERROR
                 ? SyncStatus.ERROR
                 : params.online && !params.clientOnly
                   ? SyncStatus.SYNCED_CLIENT

@@ -114,7 +114,11 @@ export const handlePostAuth = async (
   values: SignIn['values'],
   loginCookie: SessionCookie,
   workspaces?: WorkspaceGet[],
-): Promise<{ sessionObject: SessionCookie; authCookieValue: string }> => {
+): Promise<{
+  sessionObject: SessionCookie;
+  authCookieValue: string;
+  defaultWorkspaceId: string;
+}> => {
   // handle user db record
   const { user } = await dbUserUpsert(loginCookie.user, values.email);
 
@@ -148,7 +152,7 @@ export const handlePostAuth = async (
 
   // handle workspace db records
   if (!workspaces) throw new Error('Workspaces are required.');
-  await dbWorkspaceUpsert(workspaces, accountObjects[0]!.id);
+  const { defaultWorkspaceId } = await dbWorkspaceUpsert(workspaces, accountObjects[0]!.id);
 
   // handle session profile record
   const extrapolatedName = getEmailLocalPart(accountObjects[0]!.email);
@@ -206,5 +210,5 @@ export const handlePostAuth = async (
   const jwt = await jwtOps();
   const { signature } = await jwt.sign(sessionObject, SECONDS_WEEK);
 
-  return { sessionObject, authCookieValue: signature };
+  return { sessionObject, authCookieValue: signature, defaultWorkspaceId };
 };

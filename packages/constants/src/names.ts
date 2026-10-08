@@ -1,4 +1,5 @@
 export const COOKIE_NAME = {
+  DEFAULT_WORKSPACE: 'default-workspace',
   APP_DATA: { WORKSPACES: 'app-data.workspaces' },
   USER_ROLE: 'user.role',
   APP_SHELL: 'appshell',

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEmailLocalPart, isProduction, segmentFullName } from '@repo/utils';
-import { AUTH_URLS, COOKIE_NAME, SECONDS_WEEK } from '@repo/constants';
+import { AUTH_URLS, COOKIE_NAME, SECONDS_MINUTE, SECONDS_WEEK } from '@repo/constants';
 import {
   exchangeCodeForTokens,
   getGoogleUserProfile,
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     const nameSegment = segmentFullName(userProfile.name);
 
-    const { authCookieValue } = await handlePostAuth(
+    const { authCookieValue, defaultWorkspaceId } = await handlePostAuth(
       { email: userProfile.email },
       {
         ...sessionData,
@@ -102,6 +102,15 @@ export async function GET(request: NextRequest) {
     response.cookies.delete('oauth_code_verifier');
     response.cookies.delete(COOKIE_NAME.AUTH.LOGIN);
     response.cookies.delete(COOKIE_NAME.APP_DATA.WORKSPACES);
+
+    // Set default workspace id
+    response.cookies.set(COOKIE_NAME.DEFAULT_WORKSPACE, defaultWorkspaceId, {
+      maxAge: SECONDS_MINUTE * 5,
+      path: '/',
+      httpOnly: false, // needed in the client for initial sync
+      secure: isProduction(),
+      sameSite: 'lax',
+    });
 
     // Set auth session cookie
     response.cookies.set(COOKIE_NAME.AUTH.SESSION, authCookieValue, {

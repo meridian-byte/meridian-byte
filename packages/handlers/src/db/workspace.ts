@@ -4,7 +4,10 @@ import { DEFAULT_NAMES } from '@repo/constants';
 import { db } from '@repo/db';
 import { SyncStatus, WorkspaceGet } from '@repo/types';
 
-export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: string) => {
+export const dbWorkspaceUpsert = async (
+  workspaces: WorkspaceGet[],
+  accountId: string,
+): Promise<{ workspaces: WorkspaceGet[]; defaultWorkspaceId: string }> => {
   try {
     const transaction = await db.$transaction(
       async (tx) => {
@@ -69,7 +72,12 @@ export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: s
       },
     );
 
-    return transaction;
+    // find default workspace
+    const defaultWorkspace = transaction.workspaces.find(
+      (wi) => wi.name == DEFAULT_NAMES.WORKSPACE,
+    );
+
+    return { ...transaction, defaultWorkspaceId: defaultWorkspace!.id };
   } catch (error) {
     console.error('---> service error - (create workspace):', error);
     throw error;
