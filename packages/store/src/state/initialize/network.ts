@@ -28,7 +28,7 @@ export const getNetworkStatus = async (): Promise<NetworkValue> => {
       using a production domain so it returns expected boolean for development
       avoids truthy when api server is local
        */
-      `${'https://meridianbyte-api.vercel.app/api'}/app-data?userId=none`,
+      `${'https://meridianbyte-api.vercel.app/api'}/app-data?accountIds=none`,
       {
         method: 'HEAD',
         cache: 'no-store',
