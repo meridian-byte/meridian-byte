@@ -7,7 +7,7 @@ import { SyncStatus, WorkspaceGet } from '@repo/types';
 export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: string) => {
   try {
     const transaction = await db.$transaction(
-      async (db) => {
+      async (tx) => {
         const newWorkspaces: WorkspaceGet[] = [];
         const now = new Date();
 
@@ -17,14 +17,14 @@ export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: s
 
           // 1. Check if this specific workspace exists by ID
           let existingWorkspace = id
-            ? await db.workspace.findFirst({
+            ? await tx.workspace.findFirst({
                 where: { id, accountId },
               })
             : null;
 
           // 2. If not found by ID, but it's a DEFAULT workspace, check if a default workspace already exists for this accountId
           if (!existingWorkspace && isDefaultWorkspace) {
-            existingWorkspace = await db.workspace.findFirst({
+            existingWorkspace = await tx.workspace.findFirst({
               where: {
                 accountId,
                 name: DEFAULT_NAMES.WORKSPACE,
@@ -34,7 +34,7 @@ export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: s
 
           if (existingWorkspace) {
             // 3. Existing workspace found (by ID or default name match) -> UPDATE
-            const updated = await db.workspace.update({
+            const updated = await tx.workspace.update({
               where: { id: existingWorkspace.id },
               data: {
                 ...wspaceData,
@@ -47,7 +47,7 @@ export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: s
             newWorkspaces.push(updated);
           } else {
             // 4. Truly new non-default workspace (or first default workspace) -> CREATE
-            const created = await db.workspace.create({
+            const created = await tx.workspace.create({
               data: {
                 ...wspaceData,
                 ...(id ? { id } : {}), // Preserves client-generated UUID if provided
@@ -64,7 +64,8 @@ export const dbWorkspaceUpsert = async (workspaces: WorkspaceGet[], accountId: s
         return { workspaces: newWorkspaces };
       },
       {
-        timeout: 15000,
+        maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+        timeout: 15000, // Allow 15s total execution time inside the transaction
       },
     );
 

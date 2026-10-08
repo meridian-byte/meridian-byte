@@ -119,7 +119,10 @@ export async function GET(request: NextRequest) {
     // Step 4: Execute active DB queries in a transaction (or Promise.all)
     const dbResults =
       activeDbPromises.length > 0
-        ? await db.$transaction(activeDbPromises, { maxWait: 10000, timeout: 15000 })
+        ? await db.$transaction(activeDbPromises, {
+            maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+            timeout: 15000, // Allow 15s total execution time inside the transaction
+          })
         : [];
 
     // Step 5: Map results back into responsePayload
@@ -252,8 +255,8 @@ export async function POST(request: NextRequest) {
 
     // Execute everything in ONE transaction
     const flatResults = await db.$transaction(allOperations, {
-      timeout: 30000, // adjust as needed
-      maxWait: 5000, // max time to wait to acquire a connection from pool
+      maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+      timeout: 30000, // Allow 30s total execution time inside the transaction
     });
 
     // Map the flat results back to the store keys

@@ -6,14 +6,14 @@ import { SyncStatus, SessionGet, AccountGet } from '@repo/types';
 export const dbSessionCreate = async (session: SessionGet, upsertedAccounts: AccountGet[]) => {
   try {
     const transaction = await db.$transaction(
-      async (db) => {
+      async (tx) => {
         const now = new Date();
 
         // Destructure 'id' if you want Prisma to generate a fresh ID automatically,
         // or keep it if session.id is a pre-generated UUID/cuid.
         const { id, ...sessionData } = session;
 
-        const newSession = await db.session.create({
+        const newSession = await tx.session.create({
           data: {
             ...sessionData,
             ...(id ? { id } : {}), // Uses pre-generated ID if provided, otherwise Prisma auto-generates
@@ -32,7 +32,8 @@ export const dbSessionCreate = async (session: SessionGet, upsertedAccounts: Acc
         return { session: newSession };
       },
       {
-        timeout: 15000,
+        maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+        timeout: 15000, // Allow 15s total execution time inside the transaction
       },
     );
 

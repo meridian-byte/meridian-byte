@@ -6,10 +6,10 @@ import { AccountGet, ProfileGet, SyncStatus } from '@repo/types';
 export const dbProfileUpsert = async (params: ProfileGet, userId: string, account: AccountGet) => {
   try {
     const transaction = await db.$transaction(
-      async (db) => {
+      async (tx) => {
         const now = new Date();
 
-        const dbAccounts = await db.account.findMany({
+        const dbAccounts = await tx.account.findMany({
           where: { userId },
           select: { id: true },
         });
@@ -23,7 +23,7 @@ export const dbProfileUpsert = async (params: ProfileGet, userId: string, accoun
 
         // 1. Check if a profile exists by targetAccountId (since accountId is @unique)
         //    or fallback to params.id
-        let existingProfile = await db.profile.findFirst({
+        let existingProfile = await tx.profile.findFirst({
           where: {
             OR: [{ accountId: targetAccountId }, ...(params.id ? [{ id: params.id }] : [])],
             accountId: { in: accountIds }, // Security check
@@ -36,7 +36,7 @@ export const dbProfileUpsert = async (params: ProfileGet, userId: string, accoun
 
         if (existingProfile) {
           // 2. Profile exists for this account -> UPDATE existing record
-          upsertProfile = await db.profile.update({
+          upsertProfile = await tx.profile.update({
             where: { id: existingProfile.id },
             data: {
               ...paramData,
@@ -55,7 +55,7 @@ export const dbProfileUpsert = async (params: ProfileGet, userId: string, accoun
           });
         } else {
           // 3. No profile exists for this account -> CREATE new record
-          upsertProfile = await db.profile.create({
+          upsertProfile = await tx.profile.create({
             data: {
               ...paramData,
               ...(id ? { id } : {}), // Preserves passed id if defined, otherwise auto-generated
@@ -73,7 +73,8 @@ export const dbProfileUpsert = async (params: ProfileGet, userId: string, accoun
         };
       },
       {
-        timeout: 15000,
+        maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+        timeout: 15000, // Allow 15s total execution time inside the transaction
       },
     );
 

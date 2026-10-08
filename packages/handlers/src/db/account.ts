@@ -6,7 +6,7 @@ import { SyncStatus, AccountGet, Role } from '@repo/types';
 export const dbAccountUpsert = async (accounts: AccountGet[], userId?: string) => {
   try {
     const transaction = await db.$transaction(
-      async (db) => {
+      async (tx) => {
         const newAccounts: AccountGet[] = [];
         const now = new Date();
 
@@ -14,7 +14,7 @@ export const dbAccountUpsert = async (accounts: AccountGet[], userId?: string) =
           // Destructure 'id' out so it isn't passed into the update block
           const { id, ...accData } = acc;
 
-          const upserted = await db.account.upsert({
+          const upserted = await tx.account.upsert({
             where: { email: acc.email },
 
             update: {
@@ -42,7 +42,8 @@ export const dbAccountUpsert = async (accounts: AccountGet[], userId?: string) =
         return { accounts: newAccounts };
       },
       {
-        timeout: 15000,
+        maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+        timeout: 15000, // Allow 15s total execution time inside the transaction
       },
     );
 
