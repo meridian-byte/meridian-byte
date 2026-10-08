@@ -56,7 +56,9 @@ export default function Auth({
         <Stack>
           {header && <AuthHeader title={header.title} desc={header.desc} />}
 
-          <AuthProviders props={{ baseUrl }} />
+          <Box display={hideOauth ? 'none' : undefined}>
+            <AuthProviders props={{ baseUrl }} />
+          </Box>
 
           <Divider label="or" display={hideOauth ? 'none' : undefined} />
 
