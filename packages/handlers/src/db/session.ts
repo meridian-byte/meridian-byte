@@ -43,3 +43,17 @@ export const dbSessionCreate = async (session: SessionGet, upsertedAccounts: Acc
     throw error;
   }
 };
+
+export const dbSessionSignOut = async (sessionId: string) => {
+  const now = new Date();
+
+  const updatedSession = await db.session.update({
+    where: { id: sessionId },
+    data: {
+      expiresAt: now,
+      updatedAt: now,
+    },
+  });
+
+  return { updatedSession };
+};
