@@ -33,7 +33,6 @@ export const useReminderActions = () => {
       sent: params?.sent ?? false,
       eventId: params.eventId || null,
       taskId: params.taskId || null,
-      profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,
       createdAt: new Date(params?.createdAt || now).toISOString() as any,

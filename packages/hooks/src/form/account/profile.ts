@@ -7,25 +7,26 @@
 
 import { hasLength } from '@mantine/form';
 import { capitalizeWords, segmentFullName } from '@repo/utils';
-import { createClientcloudbaseClient } from '@repo/cloudbase';
 import { profileUpdate } from '@repo/handlers';
 import { useFormBase } from '../../form';
 import { useStoreSession } from '@repo/store';
 import { getClientApiUrl } from '@repo/constants';
+import { SessionCookie } from '@repo/types';
+import { setSession as setSessionServer } from '@repo/auth';
 
 export const useFormUserProfile = () => {
-  const supabase = createClientcloudbaseClient();
-
   const session = useStoreSession((s) => s.session);
   const setSession = useStoreSession((s) => s.setSession);
+
+  const fullname = `${session?.profile.firstName || ''} ${session?.profile.lastName || ''}`.trim();
 
   const { form, submitted, handleSubmit } = useFormBase<{
     name: string;
     user_name: string;
   }>(
     {
-      name: session?.user_metadata.name || 'Set Name',
-      user_name: session?.user_metadata.user_name || 'Set username',
+      name: fullname || 'Set Name',
+      user_name: session?.profile.userName || 'Set username',
     },
     {
       name: hasLength({ min: 2, max: 24 }, 'Between 2 and 24 characters'),
@@ -37,12 +38,12 @@ export const useFormUserProfile = () => {
         if (!session) throw new Error('You must be signed in');
         if (!form.isDirty()) throw new Error('Update at least one form field');
 
-        const segment = segmentFullName(rawValues.name || '');
+        const nameSegments = segmentFullName(rawValues.name || '');
 
         const cleanValues = {
           name: capitalizeWords(rawValues.name.trim()),
-          firstName: segment.first.trim(),
-          lastName: segment.last.trim(),
+          firstName: nameSegments.first.trim(),
+          lastName: nameSegments.last.trim(),
           userName: rawValues.user_name.trim(),
         };
 
@@ -59,25 +60,28 @@ export const useFormUserProfile = () => {
           throw new Error(result?.message || 'Failed to update profile');
         }
 
+        const updatedSession: SessionCookie = {
+          ...session,
+          profile: {
+            ...session.profile,
+            firstName: cleanValues.firstName,
+            lastName: cleanValues.lastName,
+            userName: cleanValues.userName,
+          },
+        };
+
         setSession({
           ...session,
-          user_metadata: {
-            ...session.user_metadata,
-            name: cleanValues.name,
-            full_name: cleanValues.name,
-            user_name: cleanValues.userName,
+          profile: {
+            ...session.profile,
+            firstName: cleanValues.firstName,
+            lastName: cleanValues.lastName,
+            userName: cleanValues.userName,
           },
         });
 
-        const { error } = await supabase.auth.updateUser({
-          data: {
-            name: cleanValues.name,
-            full_name: cleanValues.name,
-            user_name: cleanValues.userName,
-          },
-        });
-
-        if (error) throw error;
+        // update server session cookie
+        await setSessionServer(updatedSession);
 
         window.location.reload();
 

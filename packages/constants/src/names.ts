@@ -1,22 +1,30 @@
 export const COOKIE_NAME = {
+  APP_DATA: { WORKSPACES: 'app-data.workspaces' },
   USER_ROLE: 'user.role',
   APP_SHELL: 'appshell',
   CONSENT_COOKIES: 'consent.cookies',
   LOCAL: { COUNTRY: 'local.country', COUNTRIES: 'local.countries' },
   COLOR_SCHEME: 'theme.color-scheme',
   COLOR_SCHEME_STATE: 'theme.color-scheme-state',
-  AUTH: { EMAIL: 'auth.email' },
+  AUTH: {
+    EMAIL: 'auth.email',
+    SESSION: 'auth.session',
+    LOGIN: 'auth.login',
+    CLEAR_LOCAL_DATA: 'auth.clear-local-data',
+    LAST_DB_SESSION_QUERY: 'auth.last-db-session-query',
+  },
 };
 
-export const LOCAL_STORAGE_NAME = {
-  TEMPID: 'temp-id',
+export const STORAGE_NAME = {
+  AUTH: { SESSION: 'auth.session' },
   COUNTRY: 'country',
   COUNTRIES: 'countries',
-  ACTIVE_WORKSPACE: 'active-workspace',
+  WORKSPACES: 'workspaces',
+  ACTIVE: {
+    WORKSPACE: 'active-workspace',
+    ACCOUNT: 'active-account',
+  },
   MANTINE_COLOR_SCHEME_VALUE: 'mantine-color-scheme-value',
-};
-
-export const SESSION_STORAGE_NAME = {
   VIEW: 'view',
 };
 
@@ -39,10 +47,11 @@ export const STORE_NAME = {
   SESSION: 'session',
 
   SETTINGS: 'settings',
+  ACCOUNTS: 'accounts',
+  SESSIONS: 'sessions',
   WORKSPACES: 'workspaces',
   FOLDERS: 'folders',
 
-  ACCOUNTS: 'accounts',
   ACCOUNT_GROUPS: 'accountGroups',
   BUDGETS: 'budgets',
   TRANSACTIONS: 'transactions',

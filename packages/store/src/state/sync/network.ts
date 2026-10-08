@@ -7,7 +7,7 @@ export const useNetworkSync = () => {
 
   const refreshNetworkStatus = async () => {
     if (network === undefined) return;
-    if (!network) return;
+    if (network === null) return;
 
     const newStatus = await getNetworkStatus();
     if (!newStatus) return;

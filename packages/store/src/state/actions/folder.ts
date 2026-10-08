@@ -7,6 +7,7 @@ import { generateUUID } from '@repo/utils';
 import { useStoreCalendar } from '../calendar';
 import { useStoreNote } from '../note';
 import { useStoreTaskList } from '../task-list';
+import { useStoreActiveItems } from '../active-items';
 
 export const useFolderActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -20,9 +21,11 @@ export const useFolderActions = () => {
   const setNotes = useStoreNote((s) => s.setNotes);
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const setTaskLists = useStoreTaskList((s) => s.setTaskLists);
+  const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
 
   const folderCreate = (params: Omit<Partial<FolderGet>, 'type'>) => {
     if (!session) return;
+    if (!activeWorkspace) return;
 
     const id = generateUUID();
     const now = new Date();
@@ -32,7 +35,7 @@ export const useFolderActions = () => {
       name: params.name || 'New Folder',
       location: params.location || '',
       folderId: params.folderId || null,
-      profileId: params.profileId || session.id,
+      workspaceId: params.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,
       createdAt: new Date(params.createdAt || now).toISOString() as any,
       updatedAt: new Date(params.updatedAt || now).toISOString() as any,

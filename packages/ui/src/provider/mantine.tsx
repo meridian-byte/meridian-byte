@@ -7,11 +7,10 @@ import {
   MantineThemeOverride,
   CSSVariablesResolver,
 } from '@mantine/core';
-import { linkify } from '@repo/utils';
+import { isProduction, linkify } from '@repo/utils';
 import { Notifications } from '@mantine/notifications';
-import { DEFAULT_COLOR_SCHEME } from '@repo/constants';
+import { DEFAULT_COLOR_SCHEME, SECONDS_WEEK } from '@repo/constants';
 import { COOKIE_NAME } from '@repo/constants';
-import { WEEK } from '@repo/constants';
 import { setCookieClient, getCookieClient } from '@repo/utils';
 import { getOSTheme } from '@repo/utils';
 import { MantineColorSchemeManager } from '@mantine/core';
@@ -71,17 +70,23 @@ const customColorSchemeManager = (): MantineColorSchemeManager => {
         if (currentState === 'auto' && value === systemScheme) {
           // Only update the result cookie for the middleware/server
           setCookieClient(COOKIE_NAME.COLOR_SCHEME, value, {
-            expiryInSeconds: WEEK,
+            expiryInSeconds: SECONDS_WEEK,
+            secure: isProduction(),
+            sameSite: 'Lax',
           });
           return;
         }
 
         // 3. Otherwise, this is a manual user selection. Save both.
         setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, value, {
-          expiryInSeconds: WEEK,
+          expiryInSeconds: SECONDS_WEEK,
+          secure: isProduction(),
+          sameSite: 'Lax',
         });
         setCookieClient(COOKIE_NAME.COLOR_SCHEME, getOSTheme(value as ColorScheme), {
-          expiryInSeconds: WEEK,
+          expiryInSeconds: SECONDS_WEEK,
+          secure: isProduction(),
+          sameSite: 'Lax',
         });
       });
     },

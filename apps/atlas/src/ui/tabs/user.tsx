@@ -42,7 +42,7 @@ import { capitalizeWords } from '@repo/utils';
 import { useFormUserProfile } from '@repo/hooks';
 import { AvatarUser } from '@repo/ui';
 import { useMediaQuery } from '@mantine/hooks';
-import { useStoreSession } from '@repo/store';
+import { useStoreActiveItems, useStoreSession } from '@repo/store';
 
 export default function User({ props }: { props?: { close?: () => void } }) {
   const mobile = useMediaQuery('(max-width: 36em)');
@@ -373,7 +373,7 @@ function Data() {
 }
 
 function Account() {
-  const session = useStoreSession((s) => s.session);
+  const activeAccount = useStoreActiveItems((s) => s.activeItems?.account);
 
   return (
     <>
@@ -381,7 +381,7 @@ function Account() {
         <Text fz={'sm'}>Email</Text>
 
         <Text inherit fz={'sm'} ta={'end'}>
-          {session?.email || 'No email associated'}
+          {activeAccount?.email || 'No email associated'}
         </Text>
       </Group>
 

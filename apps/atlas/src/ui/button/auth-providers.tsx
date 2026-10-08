@@ -2,50 +2,59 @@
 
 import { useState } from 'react';
 import { Button, Grid, GridCol } from '@mantine/core';
-import { capitalizeWords } from '@repo/utils';
+import { capitalizeWords, getFromLocalStorage, isProduction, setCookieClient } from '@repo/utils';
 import ImageDefault from '../image/default';
-import { AUTH_URLS } from '@repo/constants';
+import {
+  AUTH_URLS,
+  BASE_URL,
+  COOKIE_NAME,
+  getClientApiUrl,
+  SECONDS_HOUR,
+  STORAGE_NAME,
+} from '@repo/constants';
 import { PARAM_NAME } from '@repo/constants';
 import { getUrlParam } from '@repo/utils';
 import { icons } from '@repo/constants';
-import { createClientcloudbaseClient } from '@repo/cloudbase';
+import { signIn } from '@repo/handlers';
+import { AuthAction } from '@repo/types';
+import { useStoreWorkspace } from '@repo/store';
 
 export default function Providers({ props }: { props: { baseUrl: string } }) {
-  const supabase = createClientcloudbaseClient();
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
 
   const [loading, setLoading] = useState('');
 
-  const getButton = (providerDetails: { image: string; provider: string }) => {
+  const getButton = (providerDetails: (typeof providers)[0]) => {
     const handleClick = async () => {
       setLoading(providerDetails.provider);
 
-      setTimeout(() => {
-        // Clear storage
-        localStorage.clear();
-        sessionStorage.clear();
+      const localSession = getFromLocalStorage(STORAGE_NAME.AUTH.SESSION);
 
-        // clear client cookies
-        document.cookie.split(';').forEach((c) => {
-          document.cookie = c
-            .replace(/^ +/, '')
-            .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-        });
-      }, 0);
+      setCookieClient(COOKIE_NAME.AUTH.LOGIN, localSession, {
+        expiryInSeconds: SECONDS_HOUR,
+        secure: isProduction(),
+        sameSite: 'Lax',
+      });
 
-      setTimeout(async () => {
-        await supabase.auth.signInWithOAuth({
-          provider: providerDetails.provider.toLocaleLowerCase() as any,
-          options: {
-            redirectTo: `${props.baseUrl}/api/auth/callback/oauth?next=${encodeURIComponent((getUrlParam(PARAM_NAME.REDIRECT) as string) || AUTH_URLS.REDIRECT.DEFAULT)}`,
-            // The following options are commented out because they are not needed for most OAuth flows.
-            // These options can be uncommented if you need offline access or to prompt for consent.
-            // queryParams: {
-            //   access_type: 'offline',
-            //   prompt: 'consent',
-            // },
-          },
-        });
-      }, 1000);
+      const nextValue = encodeURIComponent(getUrlParam(PARAM_NAME.REDIRECT) as string);
+      const targetUrl = `${providerDetails.authUrl}?baseUrl=${props.baseUrl}&next=${nextValue || AUTH_URLS.REDIRECT.DEFAULT}`;
+
+      const response = await signIn(
+        {
+          values: { email: '' },
+          appData: { workspaces: workspaces || undefined },
+          options: { action: AuthAction.SIGN_IN },
+        },
+        `${BASE_URL.ATLAS}/api`,
+        targetUrl,
+      );
+
+      const data = await response.json();
+
+      if (data.redirectUrl) {
+        // Perform top-level window navigation to Google OAuth
+        window.location.href = data.redirectUrl;
+      }
     };
 
     return (
@@ -85,5 +94,6 @@ const providers = [
   {
     image: icons.google,
     provider: 'google',
+    authUrl: AUTH_URLS.SIGN_IN_OAUTH.GOOGLE,
   },
 ];

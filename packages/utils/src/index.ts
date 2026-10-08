@@ -3,6 +3,7 @@ export * from './hooks';
 export * from './string';
 export * from './cookie-client';
 export * from './cookie-server';
+export * from './cryptography';
 export * from './date-time';
 export * from './storage';
 export * from './url';

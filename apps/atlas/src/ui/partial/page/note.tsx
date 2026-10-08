@@ -9,7 +9,7 @@ import NextLink from '@atlas/ui/anchor/next-link';
 import { LayoutSection } from '@repo/ui';
 import { useStoreActiveItems } from '@repo/store';
 import { extractUuidFromParam, saveToLocalStorage, saveToSessionStorage } from '@repo/utils';
-import { LOCAL_STORAGE_NAME } from '@repo/constants';
+import { STORAGE_NAME } from '@repo/constants';
 import { useStoreWorkspace } from '@repo/store';
 import { WorkspaceGet } from '@repo/types';
 import TabsNote from '@atlas/ui/tabs/note';
@@ -95,10 +95,9 @@ export default function Note() {
               }
 
               if (resolvedWorkspace) {
-                // save new active workspace to local storage
-                saveToLocalStorage(LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE, resolvedWorkspace.id);
                 // save new active workspace to session storage
-                saveToSessionStorage(LOCAL_STORAGE_NAME.ACTIVE_WORKSPACE, resolvedWorkspace.id);
+                saveToSessionStorage(STORAGE_NAME.ACTIVE.WORKSPACE, resolvedWorkspace.id);
+
                 // set new global active workspace state
                 setActiveItems({ workspace: resolvedWorkspace });
               }

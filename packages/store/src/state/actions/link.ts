@@ -24,7 +24,6 @@ export const useLinkActions = () => {
       id: params?.id || id,
       fromId: params?.fromId || '',
       toId: params?.toId || '',
-      profileId: params?.profileId || session.id,
       workspaceId: params?.workspaceId || activeWorkspace.id,
       syncStatus: SyncStatus.PENDING,
       createdAt: new Date(params?.createdAt || now).toISOString() as any,

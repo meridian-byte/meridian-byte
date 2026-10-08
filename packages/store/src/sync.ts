@@ -32,14 +32,7 @@ import { useStoreTask } from './state/task';
 import { useStoreReminder } from './state/reminder';
 import { useStoreFolder } from './state/folder';
 import { useNetworkSync } from './state/sync/network';
-
-const useSessionCheck = () => {
-  const session = useStoreSession((s) => s.session);
-  const noSession =
-    session === undefined || (!session && (!(session as SessionValue)?.email as any));
-
-  return { noSession };
-};
+import { useStoreActiveItems } from './state/active-items';
 
 type SyncStoreConfig<TItems = any, THookReturn = any> = {
   dataStore: (typeof STORE_NAME)[keyof typeof STORE_NAME];
@@ -248,7 +241,7 @@ export const useMergedSync = (params: {
 }) => {
   const { online } = params;
   const idle = useIdle(4000, { events: ['keypress', 'click'] });
-  const { noSession } = useSessionCheck();
+  const session = useStoreSession((s) => s.session);
   const { refreshNetworkStatus } = useNetworkSync();
 
   // Store params in a ref so sync always reads fresh state without re-triggering useEffect
@@ -318,13 +311,11 @@ export const useMergedSync = (params: {
     }
   }, []);
 
-  // Effect ONLY re-runs when idle, online, or session state actually transitions
+  // Effect ONLY re-runs when idle, or online
   useEffect(() => {
-    if (!noSession) {
-      refreshNetworkStatus();
-      if (idle) triggerSync();
-    }
-  }, [online, noSession, idle, triggerSync]);
+    refreshNetworkStatus();
+    if (idle) triggerSync();
+  }, [online, idle, triggerSync]);
 };
 
 export const handleMergedSync = async (
@@ -365,7 +356,7 @@ export const handleMergedSync = async (
     }
 
     // 2. PHASE TWO: Batch Sync to Server
-    if (online && session) {
+    if (online && !!session) {
       // Instead of multiple debounced calls, we pass the WHOLE payload
       // to one debounced function that hits a single /api/sync/batch endpoint
       debounceMergedSyncToServer({ ...payload, db, ...params });

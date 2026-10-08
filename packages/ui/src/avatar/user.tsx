@@ -7,19 +7,23 @@ import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
 import { IconUser } from '@tabler/icons-react';
 import { WrapperActionSignIn } from '../wrapper/actions';
 import { AuthAction } from '@repo/types';
-import { useStoreSession } from '@repo/store';
+import { useStoreActiveItems, useStoreSession } from '@repo/store';
 
 export function AvatarUser({ size, options }: { size?: number; options?: { minimal?: boolean } }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const session = useStoreSession((s) => s.session);
+  const activeAccount = useStoreActiveItems((s) => s.activeItems?.account);
+
+  const fullName = `${session?.profile.firstName || ''} ${session?.profile.lastName || ''}`.trim();
+  const profilePicture = session?.profile.avatar;
 
   return (
     <Group w={size} h={size}>
       {!mounted || session === undefined ? (
         <Skeleton h={size} w={size} radius={999} />
-      ) : !session?.email ? (
+      ) : !activeAccount?.email ? (
         <WrapperActionSignIn options={{ action: AuthAction.SIGN_IN }}>
           <Button
             size="xs"
@@ -42,28 +46,28 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
           color="gray"
           leftSection={
             <Avatar
-              src={session.user_metadata.avatar_url || null}
-              name={session.user_metadata.name || 'User'}
+              src={profilePicture || null}
+              name={fullName || 'User'}
               color={'initials'}
               size={ICON_SIZE}
             >
-              {initialize(session.user_metadata.name || 'User')}
+              {initialize(fullName || 'User')}
             </Avatar>
           }
           justify="start"
           pl={5}
           radius={0}
         >
-          {session.user_metadata.name || session.email}
+          {fullName || activeAccount.email}
         </Button>
       ) : (
         <Avatar
-          src={session.user_metadata.avatar_url || null}
-          name={session.user_metadata.name || 'User'}
+          src={profilePicture || null}
+          name={fullName || 'User'}
           color={'initials'}
           size={size || ICON_SIZE}
         >
-          {initialize(session.user_metadata.name || 'User')}
+          {initialize(fullName || 'User')}
         </Avatar>
       )}
     </Group>

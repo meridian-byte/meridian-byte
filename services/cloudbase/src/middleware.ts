@@ -1,6 +1,5 @@
 import { PARAM_NAME } from '@repo/constants';
 import { AUTH_URLS } from '@repo/constants';
-import { validateRoute } from '@repo/utils';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -51,29 +50,6 @@ export const updateSession = async (
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const { redirectToAuth, redirectFromAuth, redirectToHome } = validateRoute({
-    request,
-    user,
-    pathname: request.nextUrl.pathname,
-  });
-
-  if (redirectToHome) {
-    const redirectUrl = new URL(baseUrl, request.url);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (redirectToAuth) {
-    const redirectUrl = new URL(AUTH_URLS.SIGN_IN, request.url);
-    redirectUrl.searchParams.set(PARAM_NAME.REDIRECT, request.nextUrl.pathname);
-
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (redirectFromAuth) {
-    const redirectUrl = new URL(baseUrl, request.url);
-    return NextResponse.redirect(redirectUrl);
-  }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:

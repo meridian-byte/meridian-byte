@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { getCookieClient, getFromSessionStorage, setCookieClient } from '@repo/utils';
-import { WEEK, COOKIE_NAME, SESSION_STORAGE_NAME } from '@repo/constants';
+import { getCookieClient, getFromSessionStorage, isProduction, setCookieClient } from '@repo/utils';
+import { COOKIE_NAME, SECONDS_WEEK, STORAGE_NAME } from '@repo/constants';
 import { AppShellValue, useStoreAppShell } from '../../state/appshell';
 import { useStoreView } from '../view';
 import { useMediaQuery } from '@mantine/hooks';
@@ -28,7 +28,7 @@ export const useAppshellInitialize = (params?: { cookie?: AppShellValue }) => {
       };
 
     // 2. Read session storage to see if an aside view is active
-    const sessionView = getFromSessionStorage(SESSION_STORAGE_NAME.VIEW);
+    const sessionView = getFromSessionStorage(STORAGE_NAME.VIEW);
     const hasAsideView = !!sessionView?.asideView;
 
     // 3. Apply Mobile Constraints & View Overrides
@@ -45,7 +45,9 @@ export const useAppshellInitialize = (params?: { cookie?: AppShellValue }) => {
 
     setTimeout(() => {
       setCookieClient(COOKIE_NAME.APP_SHELL, resolvedShell, {
-        expiryInSeconds: WEEK,
+        expiryInSeconds: SECONDS_WEEK,
+        secure: isProduction(),
+        sameSite: 'Lax',
       });
     }, 100);
 
@@ -80,7 +82,9 @@ export const useAppshellInitialize = (params?: { cookie?: AppShellValue }) => {
 
     setTimeout(() => {
       setCookieClient(COOKIE_NAME.APP_SHELL, appshell, {
-        expiryInSeconds: WEEK,
+        expiryInSeconds: SECONDS_WEEK,
+        secure: isProduction(),
+        sameSite: 'Lax',
       });
     }, 100);
   }, [appshell]);

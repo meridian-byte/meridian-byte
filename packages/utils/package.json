@@ -16,9 +16,10 @@
   "dependencies": {
     "@repo/constants": "workspace:*",
     "@repo/types": "workspace:*",
-    "uuid": "^13.0.0",
+    "jose": "^6.2.12",
     "next": "16.2.10",
-    "react": "19.2.4"
+    "react": "19.2.4",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",

@@ -30,24 +30,30 @@ export async function routeProfilesPut(request: NextRequest) {
       });
     }
 
-    // Prepare upsert operations
-    const operations = profiles.map((profile) =>
-      db.profile.upsert({
-        where: { id: profile.id },
-        update: {
-          ...profile,
-          updatedAt: new Date(profile.updatedAt),
-        },
-        create: {
-          ...profile,
-          createdAt: new Date(profile.createdAt),
-          updatedAt: new Date(profile.updatedAt),
-        },
-      }),
-    );
-
     // Run all operations in one transaction
-    const updateProfiles = await db.$transaction(operations);
+    const updateProfiles = await db.$transaction(
+      async (tx) => {
+        // upsert operations
+        profiles.map((profile) =>
+          tx.profile.upsert({
+            where: { id: profile.id },
+            update: {
+              ...profile,
+              updatedAt: new Date(profile.updatedAt),
+            },
+            create: {
+              ...profile,
+              createdAt: new Date(profile.createdAt),
+              updatedAt: new Date(profile.updatedAt),
+            },
+          }),
+        );
+      },
+      {
+        maxWait: 10000, // Wait up to 10s to acquire a connection from the pool
+        timeout: 15000, // Allow 15s total execution time inside the transaction
+      },
+    );
 
     return NextResponse.json(
       { items: updateProfiles },

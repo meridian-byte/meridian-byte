@@ -1,80 +1,168 @@
 'use client';
 
-import { validators } from '@repo/utils';
-import { signIn } from '@repo/handlers';
-import { AuthAction } from '@repo/types';
-import { COOKIE_NAME } from '@repo/constants';
-import { useFormBase } from '../form';
+import { getFromLocalStorage, getUrlParam, isProduction, validators } from '@repo/utils';
+import { signIn, signInCallback } from '@repo/handlers';
+import { AuthAction, SessionCookie } from '@repo/types';
+import {
+  AUTH_URLS,
+  COOKIE_NAME,
+  STORAGE_NAME,
+  PARAM_NAME,
+  SECONDS_HOUR,
+  SECONDS_MINUTE,
+} from '@repo/constants';
 import { useEffect, useState } from 'react';
 import { getCookieClient, setCookieClient } from '@repo/utils';
-import { WEEK } from '@repo/constants';
-
-type FormValuesAuth = {
-  email: string;
-  remember: boolean;
-  otp?: string;
-};
+import { useForm } from '@mantine/form';
+import { useStoreWorkspace } from '@repo/store';
 
 export const useFormAuth = (params: { action: AuthAction; baseUrl: string }) => {
-  const [message, setMessage] = useState<string | undefined>(undefined);
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [resent, setResent] = useState(false);
+  const [step, setStep] = useState<'email' | 'otp'>('email');
+  const [display, setDisplay] = useState<{ error?: string; message?: string } | null>(null);
 
-  const { form, submitted, handleSubmit } = useFormBase<FormValuesAuth>(
-    { email: '', otp: '', remember: false },
-    { email: (value) => validators.email(value.trim()) },
-    {
-      resetOnSuccess: false,
-      hideSuccessNotification: true,
+  const [submitted, setSubmitted] = useState(false);
 
-      onSubmit: async (rawValues, options) => {
-        const email = rawValues.email.trim().toLowerCase();
-        const otp = rawValues.otp?.trim();
+  const form = useForm({ initialValues: { email: '', otp: '' } });
 
-        if (!otp || options?.resent) {
-          setError(undefined);
+  const workspaces = useStoreWorkspace((s) => s.workspaces);
 
-          const response = await signIn({
-            formData: { email },
-            options: { action: params.action },
-            apiUrl: `${params.baseUrl}/api`,
-          });
+  const submitOps = {
+    submitEmail: async (values: typeof form.values, options?: { resend?: boolean }) => {
+      if (submitted) return;
+      if (display) setDisplay(null);
 
-          const result = await response.json();
+      if (options?.resend) {
+        let loginCookie: SessionCookie | null = getCookieClient(COOKIE_NAME.AUTH.LOGIN);
 
-          if (result.data.error) {
-            setError(result.data.error);
-          } else {
-            setMessage(result.data.message);
-            setCookieClient(COOKIE_NAME.AUTH.EMAIL, email, {
-              expiryInSeconds: WEEK,
-            });
+        if (loginCookie && new Date(loginCookie.updatedAt)) {
+          // get 1 min from previous OTP request
+          const nextMinute = new Date(
+            new Date(loginCookie.updatedAt).getTime() + 1 * SECONDS_MINUTE * 1000,
+          );
+
+          if (new Date() < nextMinute) {
+            setDisplay({ error: 'You can request code again after 1 minute.' });
+            return;
           }
-
-          if (options?.resent) setResent(false);
         }
-      },
+      }
+
+      if (step != 'email') setStep('email');
+
+      if (options?.resend) {
+        if (values.otp) form.setFieldValue('otp', '');
+      }
+
+      // manual validate
+      if (!!validators.email(values.email.trim())) {
+        form.setFieldError('email', true);
+        setDisplay({ error: 'Invalid email format.' });
+        return;
+      }
+
+      setSubmitted(true);
+
+      const localSession = getFromLocalStorage(STORAGE_NAME.AUTH.SESSION);
+
+      setCookieClient(COOKIE_NAME.AUTH.EMAIL, values.email, {
+        expiryInSeconds: SECONDS_HOUR,
+        secure: isProduction(),
+        sameSite: 'Lax',
+      });
+
+      setCookieClient(COOKIE_NAME.AUTH.LOGIN, localSession, {
+        expiryInSeconds: SECONDS_HOUR,
+        secure: isProduction(),
+        sameSite: 'Lax',
+      });
+
+      const response = await signIn(
+        {
+          values,
+          options: { action: params.action },
+        },
+        `${params.baseUrl}/api`,
+      );
+
+      const data = await response.json();
+
+      setDisplay({ ...data });
+
+      if (!data.error) {
+        // all well. otp sent to email. proceed to otp step.
+        setStep('otp');
+      }
+
+      setSubmitted(false);
     },
-  );
+
+    submitOtp: async (values: typeof form.values) => {
+      if (submitted) return;
+      if (display) setDisplay(null);
+
+      // manual validate
+      if (values.otp.length != 8) {
+        form.setFieldError('otp', true);
+        setDisplay({ error: 'OTP must be exactly 8 characters long.' });
+        return;
+      }
+
+      setSubmitted(true);
+
+      const loginCookie = getCookieClient(COOKIE_NAME.AUTH.LOGIN);
+
+      if (!loginCookie) {
+        // login cooke shouldn't be missing if otp has already been sent
+        setDisplay({ error: 'An unexpected error occured.' });
+        setSubmitted(false);
+      } else {
+        const redirect = getUrlParam(PARAM_NAME.REDIRECT) || AUTH_URLS.REDIRECT.DEFAULT;
+        const redirectUrl = encodeURIComponent(redirect as string);
+
+        const response = await signInCallback(
+          {
+            values,
+            appData: { workspaces: workspaces || undefined },
+            options: { action: params.action },
+          },
+          `${params.baseUrl}/api`,
+          redirectUrl,
+          params.baseUrl,
+        );
+
+        const data = await response.json();
+
+        setDisplay({ ...data });
+
+        if (data.error) {
+          form.setFieldValue('otp', '');
+          setSubmitted(false);
+        } else {
+          // redirect after auth
+          window.location.href = decodeURIComponent(redirectUrl);
+        }
+      }
+    },
+  };
 
   useEffect(() => {
     const savedEmail = getCookieClient(COOKIE_NAME.AUTH.EMAIL);
 
     if (savedEmail) {
       form.setFieldValue('email', savedEmail);
-      setMessage('Check your email for an OTP');
+
+      if (step == 'otp') {
+        setDisplay({ message: 'Check your email for an OTP' });
+      }
     }
   }, []);
 
   return {
     form,
     submitted,
-    handleSubmit,
-    message,
-    setMessage,
-    error,
-    setError,
-    resent,
-    setResent,
+    submitOps,
+    step,
+    display,
+    setDisplay,
   };
 };

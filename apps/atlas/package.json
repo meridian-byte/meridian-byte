@@ -22,6 +22,7 @@
     "@repo/cloudbase": "workspace:*",
     "@repo/constants": "workspace:*",
     "@repo/db": "workspace:*",
+    "@repo/email": "workspace:*",
     "@repo/handlers": "workspace:*",
     "@repo/store": "workspace:*",
     "@repo/types": "workspace:*",

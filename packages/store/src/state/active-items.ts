@@ -1,10 +1,12 @@
 import { create } from 'zustand';
-import { WorkspaceGet } from '@repo/types';
+import { AccountGet, WorkspaceGet } from '@repo/types';
 
 export type ActiveWorkspaceValue = WorkspaceGet | null;
+export type ActiveAccountValue = AccountGet | null;
 export type ActiveItemsValue =
   | {
       workspace?: ActiveWorkspaceValue;
+      account?: ActiveAccountValue;
     }
   | null
   | undefined;
@@ -14,6 +16,9 @@ interface ActiveItemsState {
 
   addActiveWorkspace: (data: WorkspaceGet) => void;
   removeActiveWorkspace: () => void;
+
+  addActiveAccount: (data: AccountGet) => void;
+  removeActiveAccount: () => void;
 
   setActiveItems: (data: ActiveItemsValue) => void;
   clearActiveItems: () => void;
@@ -30,6 +35,16 @@ export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   removeActiveWorkspace: () =>
     set((state) => ({
       activeItems: { ...state.activeItems, workspace: null },
+    })),
+
+  addActiveAccount: (data) =>
+    set((state) => ({
+      activeItems: { ...state.activeItems, account: data },
+    })),
+
+  removeActiveAccount: () =>
+    set((state) => ({
+      activeItems: { ...state.activeItems, account: null },
     })),
 
   setActiveItems: (data) => set({ activeItems: data }),

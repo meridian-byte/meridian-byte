@@ -10,10 +10,18 @@ import {
   syncToServerAfterDelay,
   useMergedSync,
   useStoreNetwork,
+  useWorkspaceSync,
 } from '@repo/store';
 import { getClientApiUrl, STORE_NAME } from '@repo/constants';
+import { SessionCookie } from '@repo/types';
 
-export default function Sync({ children }: { children: React.ReactNode }) {
+export default function Sync({
+  props,
+  children,
+}: {
+  props: { serverSession: SessionCookie | null };
+  children: React.ReactNode;
+}) {
   const network = useStoreNetwork((s) => s.network);
   const isOnline = network?.online ?? false;
 
@@ -27,15 +35,17 @@ export default function Sync({ children }: { children: React.ReactNode }) {
   const restProps = {
     setSyncStatus,
     session,
-    online: isOnline,
+    online: !!props.serverSession && isOnline,
     syncStatus,
     debounceMergedSyncToServer,
-    clientOnly: !isOnline,
+    clientOnly: !props.serverSession || !isOnline,
   };
+
+  useWorkspaceSync(props.serverSession);
 
   useMergedSync({
     syncStatus: restProps.syncStatus,
-    online: isOnline,
+    online: !!props.serverSession && isOnline,
     // Use an array of keys for stability in the hook's dependency array
     storesToSync: STORES_TO_SYNC,
     // The payload (i) passed here is now the MergedSyncPayload { notes, categories }

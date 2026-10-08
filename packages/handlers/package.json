@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "next": "16.2.10",
-    "@repo/auth": "workspace:*",
     "@repo/cloudbase": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",

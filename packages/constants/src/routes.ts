@@ -7,8 +7,7 @@ export const authRoutes = [
 ];
 
 export const protectedRoutes = [
-  '/',
-
+  // '/',
   // Add other protected routes
 ];
 

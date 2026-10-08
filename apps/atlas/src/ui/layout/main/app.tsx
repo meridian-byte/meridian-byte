@@ -42,7 +42,9 @@ export default function App() {
       </DisplayNoneWrapper>
 
       <DisplayNoneWrapper visible={!viewValue}>
-        <LayoutMain>App main</LayoutMain>
+        <LayoutMain>
+          <div>App main</div>
+        </LayoutMain>
       </DisplayNoneWrapper>
     </>
   );
