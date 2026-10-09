@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { Box, Divider, NavLink, Title } from '@mantine/core';
+import { Box, Divider, NavLink, Stack, ThemeIcon, Title } from '@mantine/core';
 import {
   IconCalendar,
   IconCalendarEvent,
@@ -45,11 +45,11 @@ export default function App() {
           label: 'calendar',
           action: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR),
         },
-        {
-          icon: IconCalendarPlus,
-          label: 'calendar folder',
-          action: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER),
-        },
+        // {
+        //   icon: IconCalendarPlus,
+        //   label: 'calendar folder',
+        //   action: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER),
+        // },
       ],
     },
     {
@@ -63,11 +63,11 @@ export default function App() {
             handleToggleChildAside();
           },
         },
-        {
-          icon: IconFolderPlus,
-          label: 'note folder',
-          action: () => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER),
-        },
+        // {
+        //   icon: IconFolderPlus,
+        //   label: 'note folder',
+        //   action: () => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.FOLDER),
+        // },
       ],
     },
     {
@@ -83,11 +83,11 @@ export default function App() {
           label: 'task list',
           action: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST),
         },
-        {
-          icon: IconFolderPlus,
-          label: 'task list folder',
-          action: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER),
-        },
+        // {
+        //   icon: IconFolderPlus,
+        //   label: 'task list folder',
+        //   action: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER),
+        // },
       ],
     },
   ];
@@ -108,18 +108,18 @@ export default function App() {
         return 'Add Event';
       case ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR:
         return 'Add Calendar';
-      case ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER:
-        return 'Add Calendar Folder';
+      // case ASIDE_VIEW_NAMES.NEW.PAVE.FOLDER:
+      //   return 'Add Calendar Folder';
       case ASIDE_VIEW_NAMES.NEW.JOT.NOTE:
         return 'Add Note';
-      case ASIDE_VIEW_NAMES.NEW.JOT.FOLDER:
-        return 'Add Note Folder';
+      // case ASIDE_VIEW_NAMES.NEW.JOT.FOLDER:
+      //   return 'Add Note Folder';
       case ASIDE_VIEW_NAMES.NEW.STRIDE.TASK:
         return 'Add Task';
       case ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST:
         return 'Add Task List';
-      case ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER:
-        return 'Add Task List Folder';
+      // case ASIDE_VIEW_NAMES.NEW.STRIDE.FOLDER:
+      //   return 'Add Task List Folder';
       default:
         return 'Add Quick Item';
     }
@@ -158,7 +158,7 @@ export default function App() {
           </Title>
         </Box>
 
-        <Divider size={3} />
+        {/* <Divider size={1} mb={4} /> */}
 
         <div>{children}</div>
       </div>
@@ -208,48 +208,56 @@ export default function App() {
 
       {/* Fallback / Default Navigation Views */}
       <LayoutAsideSection viewKey="DEFAULT">
-        <div>
+        <Stack gap={'xs'}>
           {resolvedItems.map((gi, i) => (
             <React.Fragment key={gi.title}>
-              {i > 0 && <Divider />}
+              {/* {i > 0 && <Divider />} */}
 
-              <div>
+              <Box px={4}>
                 <Box px={'xs'} py={5}>
-                  <Title order={2} fz={'sm'} fw={500}>
+                  <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
                     {gi.title}
                   </Title>
                 </Box>
 
-                <Divider />
+                <Divider mb={4} />
 
                 {gi.items.map((ci, i) => (
                   <React.Fragment key={ci.label}>
-                    {i > 0 && <Divider />}
+                    {/* {i > 0 && <Divider />} */}
 
                     <NavLink
                       label={`Add ${ci.label}`}
                       leftSection={
-                        <ci.icon
-                          size={ICON_SIZE - 4}
-                          stroke={ICON_STROKE_WIDTH}
-                          style={{ marginTop: 2 }}
-                        />
+                        <ThemeIcon size={30} variant="transparent" color="gray">
+                          <ci.icon
+                            size={ICON_SIZE - 4}
+                            stroke={ICON_STROKE_WIDTH}
+                            style={{ marginTop: 2 }}
+                          />
+                        </ThemeIcon>
                       }
-                      rightSection={<IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+                      rightSection={
+                        <ThemeIcon size={30} variant="transparent" color="gray">
+                          <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                        </ThemeIcon>
+                      }
                       onClick={ci.action}
                       color="gray"
-                      px={'xs'}
-                      py={3}
+                      p={0}
                       fw={500}
-                      styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
+                      style={{ borderRadius: 'var(--mantine-radius-md)' }}
+                      styles={{
+                        section: { marginInlineEnd: 0 },
+                        label: { fontSize: 'var(--mantine-font-size-xs)' },
+                      }}
                     />
                   </React.Fragment>
                 ))}
-              </div>
+              </Box>
             </React.Fragment>
           ))}
-        </div>
-        <Divider />
+        </Stack>
       </LayoutAsideSection>
     </>
   );

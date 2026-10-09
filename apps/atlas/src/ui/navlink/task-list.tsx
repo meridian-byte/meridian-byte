@@ -15,7 +15,7 @@ export default function TaskList({ props }: { props: TaskListGet }) {
     subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == props.id;
 
   return (
-    <Group gap={0} wrap="nowrap">
+    <div className="group/list">
       <NavLink
         label={
           <Tooltip label={props.title} multiline maw={320} position="top-start" arrowOffset={16}>
@@ -25,20 +25,34 @@ export default function TaskList({ props }: { props: TaskListGet }) {
           </Tooltip>
         }
         color="gray"
-        px={'xs'}
-        py={3}
-        fw={500}
+        p={0}
+        fw={600}
         leftSection={
-          <ThemeIcon
-            size={ICON_SIZE - 4}
-            variant="transparent"
-            mt={4}
-            c={`${props.color}.6` || 'pri'}
-          >
+          <ThemeIcon size={30} variant="transparent" c={`${props.color}.6` || 'pri'}>
             <IconCircleFilled size={6} />
           </ThemeIcon>
         }
+        rightSection={
+          <Group
+            gap={0}
+            wrap="nowrap"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-250"
+            miw={30}
+            pr={4}
+          >
+            <MenuTaskList defaultValues={props}>
+              <ActionIcon size={30 - 6} color="gray" variant="subtle">
+                <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </MenuTaskList>
+          </Group>
+        }
+        style={{ borderRadius: 'var(--mantine-radius-md)' }}
         styles={{
+          section: { marginInlineEnd: 0 },
           label: {
             fontSize: 'var(--mantine-font-size-xs)',
             color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
@@ -47,11 +61,13 @@ export default function TaskList({ props }: { props: TaskListGet }) {
         onClick={() => showSubViewStride(`list: ${props.id}`)}
       />
 
-      <MenuTaskList defaultValues={props}>
-        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-        </ActionIcon>
-      </MenuTaskList>
-    </Group>
+      {/* <div className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-250">
+        <MenuTaskList defaultValues={props}>
+          <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
+            <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          </ActionIcon>
+        </MenuTaskList>
+      </div> */}
+    </div>
   );
 }

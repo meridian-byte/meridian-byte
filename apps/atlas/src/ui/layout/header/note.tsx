@@ -55,31 +55,33 @@ export default function Note() {
     >
       <LayoutSection id={`note-details-header`} containerized={false}>
         <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-          <Group justify="space-between" wrap="nowrap">
+          <Group justify="space-between" wrap="nowrap" mih={30} p={5}>
             <Group gap={5} wrap="nowrap">
               {/* <BreadcrumbAppNote props={{ noteId: note?.id }} /> */}
             </Group>
 
-            <Group gap={0} wrap="nowrap" justify="end">
+            <Group gap={5}>
               <BadgeUpdatedTimestamp />
 
-              <BadgeNoteStatus />
+              <Group gap={0} wrap="nowrap" justify="end">
+                <BadgeNoteStatus />
 
-              {note === undefined ? (
-                <Skeleton h={30} w={30} radius={0} />
-              ) : (
-                note && (
-                  <MenuNote defaultValues={note}>
-                    <Group>
-                      <Tooltip label={'More options'}>
-                        <ActionIcon size={30} variant={'subtle'} color="gray" radius={0}>
-                          <IconDotsVertical size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
-                  </MenuNote>
-                )
-              )}
+                {note === undefined ? (
+                  <Skeleton h={30 - 6} w={30 - 6} />
+                ) : (
+                  note && (
+                    <MenuNote defaultValues={note}>
+                      <Group>
+                        <Tooltip label={'More options'}>
+                          <ActionIcon size={30 - 6} variant={'subtle'} color="gray">
+                            <IconDotsVertical size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    </MenuNote>
+                  )
+                )}
+              </Group>
             </Group>
           </Group>
         </WrapperUnderlayGlass>

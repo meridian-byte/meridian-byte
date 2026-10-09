@@ -2,7 +2,7 @@ import { useStoreCalendar } from '../calendar';
 import { useStoreSession } from '../session';
 import { CalendarGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
-import { generateUUID } from '@repo/utils';
+import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { getUniqueColor } from '@repo/constants';
 
@@ -17,13 +17,20 @@ export const useCalendarActions = () => {
   const calendarCreate = (params?: Partial<CalendarGet>) => {
     if (!session) return;
     if (!activeWorkspace) return;
+    if (calendars === undefined || calendars === null) return;
 
     const id = generateUUID();
     const now = new Date();
 
+    // Extracts existing titles to check for collision
+    const existingTitles = calendars.map((n) => n.title);
+
+    // Handles cleanly: if params?.title is undefined, defaults to "New ..." / "New ... 1"
+    const title = generateCopyTitle(params?.title, existingTitles, 'New Calendar');
+
     const newCalendar: CalendarGet = {
       id: params?.id || id,
-      title: params?.title || 'New Calendar',
+      title,
       description: params?.description || null,
       color: params?.color || getUniqueColor(),
       folderId: params?.folderId || null,

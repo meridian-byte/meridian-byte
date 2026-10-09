@@ -3,7 +3,7 @@ import { useStoreFolder } from '../folder';
 import { useStoreSession } from '../session';
 import { FolderGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
-import { generateUUID } from '@repo/utils';
+import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreCalendar } from '../calendar';
 import { useStoreNote } from '../note';
 import { useStoreTaskList } from '../task-list';
@@ -11,6 +11,7 @@ import { useStoreActiveItems } from '../active-items';
 
 export const useFolderActions = () => {
   const session = useStoreSession((s) => s.session);
+  const folders = useStoreFolder((s) => s.folders);
   const addFolder = useStoreFolder((s) => s.addFolder);
   const updateFolder = useStoreFolder((s) => s.updateFolder);
   const deleteFolder = useStoreFolder((s) => s.deleteFolder);
@@ -26,13 +27,22 @@ export const useFolderActions = () => {
   const folderCreate = (params: Omit<Partial<FolderGet>, 'type'>) => {
     if (!session) return;
     if (!activeWorkspace) return;
+    if (folders === undefined || folders === null) return;
 
     const id = generateUUID();
     const now = new Date();
 
+    // Extracts existing titles to check for collision
+    const existingTitles = folders
+      .filter((fi) => fi.location == params.location)
+      .map((n) => n.name);
+
+    // Handles cleanly: if params?.name is undefined, defaults to "New ..." / "New ... 1"
+    const folderName = generateCopyTitle(params?.name, existingTitles, 'New Folder');
+
     const newFolder: FolderGet = {
       id: params.id || id,
-      name: params.name || 'New Folder',
+      name: folderName,
       location: params.location || '',
       folderId: params.folderId || null,
       workspaceId: params.workspaceId || activeWorkspace.id,

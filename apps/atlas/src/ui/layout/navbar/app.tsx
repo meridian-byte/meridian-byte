@@ -9,9 +9,11 @@ import {
   ButtonGroup,
   Divider,
   Group,
+  NavLink,
   ScrollArea,
   Skeleton,
   Stack,
+  ThemeIcon,
 } from '@mantine/core';
 import { SHELL_VALUES } from '@atlas/constants';
 import {
@@ -43,10 +45,11 @@ export default function App() {
   return (
     <>
       <AppShellSection>
+        {/* <Box style={{ boxShadow: 'var(--mantine-shadow-xs)' }}> */}
         <NavbarHeader />
+        <Divider my={4} />
+        {/* </Box> */}
       </AppShellSection>
-
-      <Divider size={3} />
 
       <AppShellSection
         grow
@@ -69,47 +72,34 @@ export default function App() {
 function NavbarHeader() {
   const view = useStoreView((s) => s.view);
   const setView = useStoreView((s) => s.setView);
-  const session = useStoreSession((s) => s.session);
-
   const { showModalViewSearch } = useViewModal();
 
-  const sharedSize = 30;
-
   return (
-    <Stack p={0} gap={0}>
-      <Group wrap="nowrap" gap={0}>
-        <Box style={{ flex: 1 }}>
-          {session === undefined ? (
-            <Skeleton h={sharedSize} radius={0} />
-          ) : (
-            <ModalUser>
-              <AvatarUser />
-            </ModalUser>
-          )}
-        </Box>
+    <Stack gap={0} px={5} pt={5}>
+      <ModalUser>
+        <AvatarUser />
+      </ModalUser>
 
-        {session === undefined ? (
-          <Skeleton h={sharedSize} w={sharedSize} radius={0} />
-        ) : !session?.accounts[0].email ? null : (
-          <Link href={AUTH_URLS.SIGN_OUT}>
-            <ActionIcon size={sharedSize} variant="subtle" color="red.6" radius={0}>
-              <IconLogout size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </Link>
-        )}
-      </Group>
+      <Divider my={4} />
 
-      <Divider />
-
-      <Button
-        size="xs"
-        fullWidth
-        variant="subtle"
+      <NavLink
+        label={'Home View'}
         color="gray"
-        leftSection={<IconHome size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-        justify="start"
-        pl={5}
-        radius={0}
+        p={0}
+        fw={600}
+        style={{ borderRadius: 'var(--mantine-radius-md)' }}
+        styles={{
+          section: { marginInlineEnd: 0 },
+          body: { marginBottom: 4 },
+          label: {
+            fontSize: 'var(--mantine-font-size-xs)',
+          },
+        }}
+        leftSection={
+          <ThemeIcon size={30} variant="transparent" color={'gray'}>
+            <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          </ThemeIcon>
+        }
         onClick={() => {
           if (view === undefined) return;
           if (view === null) return;
@@ -118,61 +108,63 @@ function NavbarHeader() {
             setView({ ...view, view: null, subView: null });
           }
         }}
-      >
-        Home View
-      </Button>
+      />
 
-      <Button
-        size="xs"
-        fullWidth
-        variant="subtle"
+      <NavLink
+        label={'Global Search'}
         color="gray"
-        leftSection={<IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-        justify="start"
-        pl={5}
-        radius={0}
+        p={0}
+        fw={600}
+        style={{ borderRadius: 'var(--mantine-radius-md)' }}
+        styles={{
+          section: { marginInlineEnd: 0 },
+          body: { marginBottom: 4 },
+          label: {
+            fontSize: 'var(--mantine-font-size-xs)',
+          },
+        }}
+        leftSection={
+          <ThemeIcon size={30} variant="transparent" color={'gray'}>
+            <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          </ThemeIcon>
+        }
         onClick={() => showModalViewSearch()}
-      >
-        Global Search
-      </Button>
+      />
 
-      <Group wrap="nowrap" gap={0}>
-        <Box style={{ flex: 1 }}>
-          <Button
-            size="xs"
-            fullWidth
-            variant="subtle"
-            color="gray"
-            leftSection={<IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-            justify="start"
-            pl={5}
-            radius={0}
-            onClick={() => {
-              if (view === undefined) return;
-              if (view === null) return;
+      <NavLink
+        label={'Add Quick Item'}
+        color="gray"
+        p={0}
+        fw={600}
+        style={{ borderRadius: 'var(--mantine-radius-md)' }}
+        styles={{
+          section: { marginInlineEnd: 0 },
+          body: { marginBottom: 4 },
+          label: {
+            fontSize: 'var(--mantine-font-size-xs)',
+          },
+        }}
+        leftSection={
+          <ThemeIcon size={30} variant="transparent" color={'gray'}>
+            <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          </ThemeIcon>
+        }
+        onClick={() => {
+          if (view === undefined) return;
+          if (view === null) return;
 
-              if (view.asideView != ASIDE_VIEW_NAMES.NEW.ITEM) {
-                setView({ ...view, asideView: ASIDE_VIEW_NAMES.NEW.ITEM });
-              }
-            }}
-          >
-            Add Quick Item
-          </Button>
-        </Box>
-
-        {/* <MenuNew>
-          <ActionIcon size={30} variant="subtle" color={'gray'} radius={0}>
-            <IconChevronDown size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </MenuNew> */}
-      </Group>
+          if (view.asideView != ASIDE_VIEW_NAMES.NEW.ITEM) {
+            setView({ ...view, asideView: ASIDE_VIEW_NAMES.NEW.ITEM });
+          }
+        }}
+      />
     </Stack>
   );
 }
 
 function NavbarMain() {
   return (
-    <ScrollArea w={SHELL_VALUES.NAVBAR.WIDTH} scrollbars={'x'}>
+    <ScrollArea w={SHELL_VALUES.NAVBAR.WIDTH} scrollbars={'x'} px={5}>
       <AccordionNavbar />
     </ScrollArea>
   );

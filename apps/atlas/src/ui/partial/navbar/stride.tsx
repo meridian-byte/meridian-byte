@@ -93,100 +93,106 @@ export default function Stride() {
   ];
 
   return (
-    <LayoutPartialNavbar>
-      <Stack gap={'xs'}>
-        <Box>
-          {navLinks.map((nl, i) => {
-            const active = nl.label.toLocaleLowerCase() == subViewValue;
+    <Stack gap={'xs'}>
+      <div>
+        {navLinks.map((nl, i) => {
+          const active = nl.label.toLocaleLowerCase() == subViewValue;
 
-            return (
-              <React.Fragment key={nl.label}>
-                {i > 0 && <Divider />}
+          return (
+            <React.Fragment key={nl.label}>
+              {/* {i > 0 && <Divider />} */}
 
-                <NavLink
-                  label={nl.label}
-                  color="gray"
-                  px={'xs'}
-                  py={3}
-                  fw={500}
-                  styles={{
-                    label: {
-                      fontSize: 'var(--mantine-font-size-xs)',
-                      color: active ? 'var(--mantine-color-pri-6)' : undefined,
-                    },
-                  }}
-                  onClick={nl.action}
-                  leftSection={
-                    <div style={{ color: active ? 'var(--mantine-color-pri-6)' : undefined }}>
-                      <nl.icon
-                        size={ICON_SIZE - 4}
-                        stroke={ICON_STROKE_WIDTH}
-                        style={{ marginTop: 2 }}
-                      />
-                    </div>
-                  }
-                />
-              </React.Fragment>
-            );
-          })}
-        </Box>
+              <NavLink
+                label={nl.label}
+                color="gray"
+                p={0}
+                fw={600}
+                style={{ borderRadius: 'var(--mantine-radius-md)' }}
+                styles={{
+                  section: { marginInlineEnd: 0 },
+                  body: { marginBottom: 4 },
+                  label: {
+                    fontSize: 'var(--mantine-font-size-xs)',
+                    color: active ? 'var(--mantine-color-pri-6)' : undefined,
+                  },
+                }}
+                onClick={nl.action}
+                leftSection={
+                  <div style={{ color: active ? 'var(--mantine-color-pri-6)' : undefined }}>
+                    <ThemeIcon
+                      size={30}
+                      variant="transparent"
+                      color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
+                    >
+                      <nl.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    </ThemeIcon>
+                  </div>
+                }
+              />
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      <div className="group/strideLists">
+        <Group justify="space-between" pl={5}>
+          <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+            Task Lists
+          </Title>
+
+          <Group
+            justify="end"
+            gap={0}
+            className="opacity-0 group-hover/strideLists:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/strideLists:pointer-events-auto"
+            mih={30}
+            pr={4}
+          >
+            <Tooltip label={`Add task list`}>
+              <ActionIcon
+                size={30 - 6}
+                color="gray"
+                variant="subtle"
+                onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST)}
+              >
+                <IconTextPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label={`Add task list folder`}>
+              <ActionIcon
+                size={30 - 6}
+                color="gray"
+                variant="subtle"
+                onClick={() => {
+                  folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.STRIDE });
+                }}
+              >
+                <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Group>
 
         <div>
-          <Group justify="space-between" pl={'xs'}>
-            <Title order={2} fz={'sm'} fw={500} c={'dimmed'}>
-              Task Lists
-            </Title>
+          <Divider mb={4} />
 
-            <Group justify="end" gap={0}>
-              <Tooltip label={`Add task list`}>
-                <ActionIcon
-                  size={30}
-                  color="gray"
-                  variant="subtle"
-                  radius={0}
-                  onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST)}
-                >
-                  <IconTextPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
+          {strideFolders?.map((fi) => (
+            <div key={fi.id}>
+              <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
+            </div>
+          ))}
 
-              <Tooltip label={`Add task list folder`}>
-                <ActionIcon
-                  size={30}
-                  color="gray"
-                  variant="subtle"
-                  radius={0}
-                  onClick={() => {
-                    folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.STRIDE });
-                  }}
-                >
-                  <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </Group>
-
-          <div>
-            {strideFolders?.map((fi) => (
-              <div key={fi.id}>
-                <Divider />
-                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
+          {taskLists === undefined || !taskLists?.length ? (
+            <PartialEmpty loading={taskLists === undefined} label={`No task lists.`} />
+          ) : (
+            sortedNotes.map((tli) => (
+              <div key={tli.id}>
+                <NavlinkTaskList props={tli} />
               </div>
-            ))}
-
-            {taskLists === undefined || !taskLists?.length ? (
-              <PartialEmpty loading={taskLists === undefined} label={`No task lists.`} />
-            ) : (
-              sortedNotes.map((tli) => (
-                <React.Fragment key={tli.id}>
-                  {<Divider />}
-                  <NavlinkTaskList props={tli} />
-                </React.Fragment>
-              ))
-            )}
-          </div>
+            ))
+          )}
         </div>
-      </Stack>
-    </LayoutPartialNavbar>
+      </div>
+    </Stack>
   );
 }

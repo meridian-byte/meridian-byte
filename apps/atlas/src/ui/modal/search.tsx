@@ -5,6 +5,7 @@ import {
   Box,
   Center,
   Divider,
+  Group,
   Loader,
   Modal,
   NavLink,
@@ -14,6 +15,8 @@ import {
   Text,
   TextInput,
   TextInputProps,
+  ThemeIcon,
+  Title,
   Tooltip,
 } from '@mantine/core';
 import React, { useState } from 'react';
@@ -35,7 +38,7 @@ import {
   MODAL_VIEW_NAMES,
 } from '@repo/constants';
 import { LayoutModal } from '@repo/ui';
-import { IconBackspace, IconSearch } from '@tabler/icons-react';
+import { IconBackspace, IconCircleFilled, IconNote, IconSearch } from '@tabler/icons-react';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { capitalizeWords } from '@repo/utils';
 
@@ -169,7 +172,7 @@ function SearchResults({
   };
 
   return (
-    <ScrollAreaAutosize mah={400} scrollbars={'y'}>
+    <ScrollAreaAutosize mah={400} scrollbars={'y'} px={4}>
       <Box mt={queryEmpty ? 0 : 'xs'}>
         {/* <Box display={getRender(APP_NAMES_ATLAS.PAVE) ? 'none' : undefined}>
         <PartialResultsEvents query={query} setQuery={setQuery} />
@@ -210,7 +213,12 @@ function SectionResults({
 
   return (
     <Box display={queryEmpty || options?.hide ? 'none' : undefined}>
-      <Divider label={title} labelPosition="left" px={'xs'} />
+      <Box px={'xs'} py={5}>
+        <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+          {title}
+        </Title>
+      </Box>
+      {/* <Divider label={title} l/abelPosition="left" px={'xs'} /> */}
 
       <Box display={!queryEmpty ? undefined : 'none'} mb={'xs'}>
         {children}
@@ -301,7 +309,22 @@ function PartialResultsCalendars({
           <NavLink
             label={item.title}
             onClick={() => handleSelect(item.id)}
-            styles={{ root: { padding: '3px var(--mantine-spacing-xs)' } }}
+            color="gray"
+            p={0}
+            fw={600}
+            leftSection={
+              <ThemeIcon
+                size={30}
+                color={item.color ? `${item.color}.6` : 'pri'}
+                variant="transparent"
+              >
+                <IconCircleFilled size={6} />
+              </ThemeIcon>
+            }
+            style={{ borderRadius: 'var(--mantine-radius-md)' }}
+            styles={{
+              section: { marginInlineEnd: 0 },
+            }}
           />
         </div>
       ))}
@@ -358,10 +381,17 @@ function PartialResultsNotes({
             <NavLink
               label={item.title}
               onClick={() => handleSelect(item.id)}
+              color="gray"
+              p={0}
+              fw={600}
+              leftSection={
+                <ThemeIcon size={30} color={'gray'} variant="transparent">
+                  <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                </ThemeIcon>
+              }
+              style={{ borderRadius: 'var(--mantine-radius-md)' }}
               styles={{
-                root: {
-                  padding: '3px var(--mantine-spacing-xs)',
-                },
+                section: { marginInlineEnd: 0 },
               }}
             />
           </div>
@@ -402,10 +432,12 @@ function PartialResultsTasks({
           <div key={item.id}>
             <NavLink
               label={item.title}
+              color="gray"
+              p={0}
+              fw={600}
+              style={{ borderRadius: 'var(--mantine-radius-md)' }}
               styles={{
-                root: {
-                  padding: '3px var(--mantine-spacing-xs)',
-                },
+                section: { marginInlineEnd: 0 },
               }}
             />
           </div>
@@ -464,10 +496,21 @@ function PartialResultsTaskLists({
             <NavLink
               label={item.title}
               onClick={() => handleSelect(item.id)}
+              color="gray"
+              p={0}
+              fw={600}
+              leftSection={
+                <ThemeIcon
+                  size={30}
+                  variant="transparent"
+                  color={item.color ? `${item.color}.6` : 'pri'}
+                >
+                  <IconCircleFilled size={6} />
+                </ThemeIcon>
+              }
+              style={{ borderRadius: 'var(--mantine-radius-md)' }}
               styles={{
-                root: {
-                  padding: '3px var(--mantine-spacing-xs)',
-                },
+                section: { marginInlineEnd: 0 },
               }}
             />
           </div>

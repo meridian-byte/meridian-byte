@@ -9,6 +9,8 @@ import {
   Button,
   Divider,
   Group,
+  Text,
+  ThemeIcon,
   Tooltip,
 } from '@mantine/core';
 import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
@@ -24,6 +26,7 @@ import { useView, useViewAside, useViewModal, useViewNavbar } from '@repo/store'
 import PartialNavbarPave from '../partial/navbar/pave';
 import PartialNavbarStride from '../partial/navbar/stride';
 import PartialNavbarJot from '../partial/navbar/jot';
+import LayoutPartialNavbar from '../layout/partial/navbar';
 
 export default function Navbar() {
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
@@ -81,20 +84,40 @@ export default function Navbar() {
     };
 
     return (
-      <AccordionItem key={item.value} value={item.value}>
-        {i > 0 && <Divider />}
+      <AccordionItem
+        key={item.value}
+        value={item.value}
+        className="group/accordionNavbar"
+        // mb={4}
+      >
+        {/* {i > 0 && <Divider my={4} />} */}
 
         <>
-          <AccordionControl icon={<props.icon size={ICON_SIZE} />}>
+          <AccordionControl
+            icon={
+              <ThemeIcon size={30} variant="transparent" color={'gray'}>
+                <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ThemeIcon>
+            }
+            // mb={4}
+          >
             <Group justify="space-between">
-              {item.value}
+              <Text inherit fw={600}>
+                {item.value}
+              </Text>
 
-              <Group component={'span'} justify="end" gap={0}>
+              <Group
+                component={'span'}
+                justify="end"
+                gap={0}
+                className="opacity-0 group-hover/accordionNavbar:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionNavbar:pointer-events-auto"
+                mih={30}
+                pr={4}
+              >
                 <Tooltip label={`Search in ${item.value}`}>
                   <ActionIcon
                     component="span"
-                    size={30}
-                    radius={0}
+                    size={30 - 6}
                     color="gray"
                     variant="subtle"
                     onClick={(e) => {
@@ -109,8 +132,7 @@ export default function Navbar() {
                 <Tooltip label={`Add item in ${item.value}`}>
                   <ActionIcon
                     component="span"
-                    size={30}
-                    radius={0}
+                    size={30 - 6}
                     color="gray"
                     variant="subtle"
                     onClick={(e) => {
@@ -125,8 +147,7 @@ export default function Navbar() {
                 <Tooltip label={`Go to ${item.value}`}>
                   <ActionIcon
                     component="span"
-                    size={30}
-                    radius={0}
+                    size={30 - 6}
                     color="gray"
                     variant="subtle"
                     onClick={(e) => {
@@ -142,8 +163,9 @@ export default function Navbar() {
           </AccordionControl>
 
           <AccordionPanel>
-            <Divider />
-            {item.content}
+            {/* <Divider my={4} /> */}
+
+            <LayoutPartialNavbar>{item.content}</LayoutPartialNavbar>
           </AccordionPanel>
         </>
       </AccordionItem>
@@ -160,10 +182,11 @@ export default function Navbar() {
       // keepMounted
       multiple
       styles={{
-        control: { height: 30, padding: 0, paddingLeft: '5px' },
+        control: { padding: 0, paddingLeft: 0, borderRadius: 'var(--mantine-radius-md)' },
         label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: '500', padding: '0' },
         content: { padding: 0 },
         item: { borderBottomWidth: 0 },
+        icon: { marginInlineEnd: 0 },
       }}
     >
       {items}

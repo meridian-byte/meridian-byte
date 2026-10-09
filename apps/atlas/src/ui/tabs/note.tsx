@@ -116,15 +116,19 @@ export default function Note() {
       value={noteId}
       keepMounted
       styles={{
-        tab: { borderRadius: 0, padding: '6px 10px' },
+        tab: {
+          borderRadius: 'var(--mantine-radius-md)',
+          borderBottomColor: 'transparent',
+        },
         tabLabel: { lineHeight: 1.3 },
       }}
     >
-      <TabsList>
+      <TabsList px={4}>
         <ScrollArea w={'100%'} scrollbars={'x'} scrollbarSize={0}>
-          <Group wrap="nowrap" gap={0}>
+          <Group wrap="nowrap" gap={4}>
             {(tabsJotView || []).map((ati, i) => {
               const note = notes?.find((ni) => ni.id == ati.tab);
+              const active = ati.tab == noteId;
 
               return (
                 <TabsTab
@@ -138,20 +142,32 @@ export default function Note() {
                   onDoubleClick={() => handleMakePersistent(ati.tab)}
                   rightSection={
                     (tabsJotView || []).length > 1 && (
-                      <ActionIcon
-                        component="span"
-                        size={ICON_SIZE - 4}
-                        color="gray"
-                        variant="subtle"
-                        radius={0}
-                        onClick={(e) => handleCloseTab(e, ati.tab)}
-                      >
-                        <IconX size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                      </ActionIcon>
+                      <Group gap={0} wrap="nowrap" mih={30} pr={4}>
+                        <ActionIcon
+                          component="span"
+                          size={30 - 6}
+                          color="gray"
+                          variant="subtle"
+                          onClick={(e) => handleCloseTab(e, ati.tab)}
+                        >
+                          <IconX size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                        </ActionIcon>
+                      </Group>
                     )
                   }
+                  my={5}
                   styles={{
                     tab: {
+                      minHeight: 30,
+                      backgroundColor: active
+                        ? 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))'
+                        : undefined,
+                      paddingTop: 0,
+                      paddingRight: 0,
+                      paddingBottom: 0,
+                      paddingLeft: 'var(--mantine-spacing-xs)',
+                      display: 'flex',
+
                       // Allows tab to grow up to 240px, but shrink down to 120px
                       flex: `1 1 ${MAX_TAB_WIDTH}px`,
                       maxWidth: MAX_TAB_WIDTH,
@@ -159,6 +175,7 @@ export default function Note() {
                     },
                     tabLabel: {
                       overflow: 'hidden',
+                      textAlign: 'start',
                     },
                   }}
                 >
@@ -168,7 +185,7 @@ export default function Note() {
                       inherit
                       lineClamp={1}
                       fs={ati.persistent ? 'normal' : 'italic'}
-                      pr={'xs'}
+                      fw={600}
                     >
                       {note?.title}
                     </Text>

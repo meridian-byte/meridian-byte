@@ -53,7 +53,7 @@ import NavlinkNote from '@atlas/ui/navlink/note';
 import AccordionFolder from '@atlas/ui/accordion/folder';
 
 export default function Jot() {
-  // const { subViewValue, showSubViewJot } = useSubView();
+  const { subViewValue, showSubViewJot } = useSubView();
   const { noteCreate } = useNoteActions();
   // const { showAsideViewJot } = useViewAside();
 
@@ -74,90 +74,106 @@ export default function Jot() {
   ];
 
   return (
-    <LayoutPartialNavbar>
-      <Stack gap={0}>
-        <Box>
-          {navLinks.map((nl, i) => (
-            <React.Fragment key={nl.label}>
-              {i > 0 && <Divider />}
+    <Stack gap={'xs'}>
+      {!!navLinks.length && (
+        <div>
+          {navLinks.map((nl, i) => {
+            const active = nl.label.toLocaleLowerCase() == subViewValue;
 
-              <NavLink
-                label={nl.label}
+            return (
+              <React.Fragment key={nl.label}>
+                {/* {i > 0 && <Divider />} */}
+
+                <NavLink
+                  label={nl.label}
+                  color="gray"
+                  p={0}
+                  fw={600}
+                  style={{ borderRadius: 'var(--mantine-radius-md)' }}
+                  styles={{
+                    section: { marginInlineEnd: 0 },
+                    body: { marginBottom: 4 },
+                    label: { fontSize: 'var(--mantine-font-size-xs)' },
+                  }}
+                  onClick={nl.action}
+                  leftSection={
+                    <ThemeIcon
+                      size={30}
+                      variant="transparent"
+                      color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
+                    >
+                      <nl.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    </ThemeIcon>
+                  }
+                />
+              </React.Fragment>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="group/jotNotes">
+        <Group justify="space-between" pl={5}>
+          <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+            Notes
+          </Title>
+
+          <Group
+            justify="end"
+            gap={0}
+            className="opacity-0 group-hover/jotNotes:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/jotNotes:pointer-events-auto"
+            mih={30}
+            pr={4}
+          >
+            <Tooltip label={`Add note`}>
+              <ActionIcon
+                size={30 - 6}
                 color="gray"
-                px={'xs'}
-                py={3}
-                fw={500}
-                styles={{ label: { fontSize: 'var(--mantine-font-size-xs)' } }}
-                onClick={nl.action}
-                leftSection={
-                  <nl.icon
-                    size={ICON_SIZE - 4}
-                    stroke={ICON_STROKE_WIDTH}
-                    style={{ marginTop: 2 }}
-                  />
-                }
-              />
-            </React.Fragment>
-          ))}
-        </Box>
+                variant="subtle"
+                // onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
+                onClick={() => noteCreate()}
+              >
+                <IconFilePlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label={`Add note folder`}>
+              <ActionIcon
+                size={30 - 6}
+                color="gray"
+                variant="subtle"
+                onClick={() => {
+                  folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.JOT });
+                }}
+              >
+                <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Group>
 
         <div>
-          <Group justify="space-between" pl={'xs'}>
-            <Title order={2} fz={'sm'} fw={500} c={'dimmed'}>
-              Notes
-            </Title>
+          <Divider mb={4} />
 
-            <Group justify="end" gap={0}>
-              <Tooltip label={`Add note`}>
-                <ActionIcon
-                  size={30}
-                  color="gray"
-                  variant="subtle"
-                  radius={0}
-                  // onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
-                  onClick={() => noteCreate()}
-                >
-                  <IconFilePlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
+          {jotFolders === undefined || !jotFolders.length
+            ? null
+            : jotFolders.map((fi) => (
+                <div key={fi.id}>
+                  <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
+                </div>
+              ))}
 
-              <Tooltip label={`Add note folder`}>
-                <ActionIcon
-                  size={30}
-                  color="gray"
-                  variant="subtle"
-                  radius={0}
-                  onClick={() => {
-                    folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.JOT });
-                  }}
-                >
-                  <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </Group>
-
-          <div>
-            {jotFolders?.map((fi) => (
-              <div key={fi.id}>
-                <Divider />
-                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
+          {notes === undefined || !notes?.length ? (
+            <PartialEmpty loading={notes === undefined} label={`No notes.`} />
+          ) : (
+            sortedNotes.map((ni) => (
+              <div key={ni.id}>
+                <NavlinkNote props={ni} />
               </div>
-            ))}
-
-            {notes === undefined || !notes?.length ? (
-              <PartialEmpty loading={notes === undefined} label={`No notes.`} />
-            ) : (
-              sortedNotes.map((ni) => (
-                <React.Fragment key={ni.id}>
-                  <Divider />
-                  <NavlinkNote props={ni} />
-                </React.Fragment>
-              ))
-            )}
-          </div>
+            ))
+          )}
         </div>
-      </Stack>
-    </LayoutPartialNavbar>
+      </div>
+    </Stack>
   );
 }

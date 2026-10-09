@@ -37,7 +37,7 @@ export const useNoteActions = () => {
     // Extracts existing titles to check for collision
     const existingTitles = notes.map((n) => n.title);
 
-    // Handles cleanly: if params?.title is undefined, defaults to "New Note" / "New Note 1"
+    // Handles cleanly: if params?.title is undefined, defaults to "New ..." / "New ... 1"
     const title = generateCopyTitle(params?.title, existingTitles, 'New Note');
 
     const newNote: NoteGet = {

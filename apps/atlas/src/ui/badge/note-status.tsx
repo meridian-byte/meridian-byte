@@ -39,7 +39,7 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
   };
 
   return userStateEditing === undefined ? (
-    <Skeleton h={30} w={ICON_WRAPPER_SIZE} radius={0} />
+    <Skeleton h={30 - 6} w={30 - 6} />
   ) : (
     <Transition mounted={true}>
       {(styles) => (
@@ -57,8 +57,7 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
               <ActionIcon
                 variant={'subtle'}
                 color={'gray'}
-                size={ICON_WRAPPER_SIZE}
-                radius={0}
+                size={30 - 6}
                 onClick={() => toggleUserStateEditing()}
               >
                 <buttonProps.icon size={ICON_SIZE - 2} stroke={ICON_STROKE_WIDTH} />

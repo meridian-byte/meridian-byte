@@ -2,7 +2,7 @@ import { useStoreTaskList } from '../task-list';
 import { useStoreSession } from '../session';
 import { TaskListGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
-import { generateUUID } from '@repo/utils';
+import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { getUniqueColor } from '@repo/constants';
 
@@ -17,13 +17,20 @@ export const useTaskListActions = () => {
   const taskListCreate = (params?: Partial<TaskListGet>) => {
     if (!session) return;
     if (!activeWorkspace) return;
+    if (taskLists === undefined || taskLists === null) return;
 
     const id = generateUUID();
     const now = new Date();
 
+    // Extracts existing titles to check for collision
+    const existingTitles = taskLists.map((n) => n.title);
+
+    // Handles cleanly: if params?.title is undefined, defaults to "New ..." / "New ... 1"
+    const title = generateCopyTitle(params?.title, existingTitles, 'New Task List');
+
     const newTaskList: TaskListGet = {
       id: params?.id || id,
-      title: params?.title || 'New Task List',
+      title,
       description: params?.description || null,
       color: params?.color || getUniqueColor(),
       folderId: params?.folderId || null,

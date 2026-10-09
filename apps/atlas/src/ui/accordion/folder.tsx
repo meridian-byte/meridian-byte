@@ -6,10 +6,12 @@ import {
   AccordionItem,
   AccordionPanel,
   ActionIcon,
+  Box,
   Center,
   Divider,
   Group,
   Text,
+  ThemeIcon,
   Tooltip,
 } from '@mantine/core';
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
@@ -126,29 +128,52 @@ export default function Folder({ folderId, location }: { folderId: string; locat
       chevron={null}
       multiple
       styles={{
-        control: { height: 30, padding: 0, paddingLeft: '5px' },
+        control: {
+          height: 30,
+          padding: 0,
+          paddingLeft: 0,
+          borderRadius: 'var(--mantine-radius-md)',
+        },
         label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: '500', padding: '0' },
         content: { padding: 0 },
         item: { borderBottomWidth: 0 },
+        icon: { marginInlineEnd: 0 },
       }}
     >
-      <AccordionItem key={currentFolder.id} value={currentFolder.id}>
-        <AccordionControl icon={<props.icon size={ICON_SIZE} />}>
+      <AccordionItem
+        key={currentFolder.id}
+        value={currentFolder.id}
+        className="group/accordionFolder"
+      >
+        <AccordionControl
+          icon={
+            <ThemeIcon size={30} variant="transparent" color={'gray'}>
+              <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+            </ThemeIcon>
+          }
+        >
           <Group justify="space-between">
             <Text
               component="span"
               inherit
               c={isActive ? 'var(--mantine-color-pri-6)' : 'var(--mantine-color-text)'}
+              fw={600}
             >
               {currentFolder.name}
             </Text>
 
-            <Group component={'span'} justify="end" gap={0}>
+            <Group
+              component={'span'}
+              justify="end"
+              gap={0}
+              className="opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto"
+              mih={30}
+              pr={4}
+            >
               <Tooltip label={`Add item in ${currentFolder.name}`}>
                 <ActionIcon
                   component="span"
-                  size={30}
-                  radius={0}
+                  size={30 - 6}
                   color="gray"
                   variant="subtle"
                   onClick={(e) => {
@@ -171,10 +196,9 @@ export default function Folder({ folderId, location }: { folderId: string; locat
               <Tooltip label={`Add sub-folder in ${currentFolder.name}`}>
                 <ActionIcon
                   component="span"
-                  size={30}
+                  size={30 - 6}
                   color="gray"
                   variant="subtle"
-                  radius={0}
                   onClick={(e) => {
                     e.stopPropagation();
 
@@ -194,7 +218,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
 
               <Tooltip label={`Edit ${currentFolder.name}`}>
                 <MenuFolder defaultValues={currentFolder}>
-                  <ActionIcon component="span" size={30} radius={0} color="gray" variant="subtle">
+                  <ActionIcon component="span" size={30 - 6} color="gray" variant="subtle">
                     <IconDots size={ICON_SIZE - 4} />
                   </ActionIcon>
                 </MenuFolder>
@@ -204,7 +228,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
         </AccordionControl>
 
         <AccordionPanel>
-          <Divider />
+          {/* <Divider my={4} /> */}
 
           <LayoutPartialNavbar>
             {!hasContent ? (
@@ -216,21 +240,16 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                 {/* 2. Render nested child folders recursively */}
                 {childFolders?.map((childFolder, i) => (
                   <div key={childFolder.id}>
-                    {i > 0 && <Divider />}
+                    {/* {i > 0 && <Divider mb={4} />} */}
 
                     <Folder folderId={childFolder.id} location={location} />
-
-                    {!!(
-                      childFolders.indexOf(childFolder) == childFolders.length - 1 &&
-                      locationProps.navLinkItems.length
-                    ) && <Divider />}
                   </div>
                 ))}
 
                 {/* 3. Render items in current folder level */}
                 {locationProps.navLinkItems.map((nli: any, i) => (
                   <div key={nli.id}>
-                    {i > 0 && <Divider />}
+                    {/* {i > 0 && <Divider />} */}
 
                     <locationProps.component props={nli} />
                   </div>

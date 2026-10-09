@@ -15,7 +15,7 @@ export default function Note({ props }: { props: NoteGet }) {
     subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == props.id;
 
   return (
-    <Group gap={0} wrap="nowrap">
+    <div className="group/note">
       <NavLink
         label={
           <Tooltip label={props.title} multiline maw={320} position="top-start" arrowOffset={16}>
@@ -25,15 +25,34 @@ export default function Note({ props }: { props: NoteGet }) {
           </Tooltip>
         }
         color="gray"
-        px={'xs'}
-        py={3}
-        fw={500}
+        p={0}
+        fw={600}
         leftSection={
-          <ThemeIcon size={ICON_SIZE - 4} color="gray" variant="transparent">
+          <ThemeIcon size={30} color="gray" variant="transparent">
             <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
+        rightSection={
+          <Group
+            gap={0}
+            wrap="nowrap"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="opacity-0 group-hover/note:opacity-100 transition-opacity duration-250"
+            mih={30}
+            pr={4}
+          >
+            <MenuNote defaultValues={props}>
+              <ActionIcon size={30 - 6} color="gray" variant="subtle">
+                <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ActionIcon>
+            </MenuNote>
+          </Group>
+        }
+        style={{ borderRadius: 'var(--mantine-radius-md)' }}
         styles={{
+          section: { marginInlineEnd: 0 },
           label: {
             fontSize: 'var(--mantine-font-size-xs)',
             color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
@@ -41,12 +60,6 @@ export default function Note({ props }: { props: NoteGet }) {
         }}
         onClick={() => showSubViewJot(`note: ${props.id}`)}
       />
-
-      <MenuNote defaultValues={props}>
-        <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-          <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-        </ActionIcon>
-      </MenuNote>
-    </Group>
+    </div>
   );
 }
