@@ -1,16 +1,16 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: local_postgres_meridian
+    container_name: local_postgres_meridianbyte
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: local_db
+      POSTGRES_DB: meridianbyte
     ports:
-      - '5432:5432'
+      - '5435:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_meridianbyte:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres_data_meridianbyte:
