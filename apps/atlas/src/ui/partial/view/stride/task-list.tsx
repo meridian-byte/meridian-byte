@@ -171,27 +171,32 @@ export default function TaskList() {
                 <AddTask />
               </div>
             </Stack>
+          </Stack>
+        )}
 
-            <Stack display={completeTasks && completeTasks.length > 0 ? undefined : 'none'}>
-              <Group>
-                <Title order={1} fz={'xl'}>
-                  Complete
-                </Title>
-              </Group>
+        {tasks === undefined || !completeTasks?.length ? null : (
+          <Stack
+            mt={SECTION_SPACING}
+            display={completeTasks && completeTasks.length > 0 ? undefined : 'none'}
+          >
+            <Group>
+              <Title order={1} fz={'xl'}>
+                Complete
+              </Title>
+            </Group>
 
-              <div>
-                {completeTasks?.map((cti, i) => (
-                  <div key={cti.id}>
-                    {i > 0 && (
-                      <Box px={SECTION_SPACING - 8}>
-                        <Divider />
-                      </Box>
-                    )}
-                    <TaskCard props={cti} />
-                  </div>
-                ))}
-              </div>
-            </Stack>
+            <div>
+              {completeTasks?.map((cti, i) => (
+                <div key={cti.id}>
+                  {i > 0 && (
+                    <Box px={SECTION_SPACING - 8}>
+                      <Divider />
+                    </Box>
+                  )}
+                  <TaskCard props={cti} />
+                </div>
+              ))}
+            </div>
           </Stack>
         )}
       </Box>
