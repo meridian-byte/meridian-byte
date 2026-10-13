@@ -1,15 +1,13 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { APP_DESC, APP_NAME, DEFAULT_COLOR_SCHEME, getApiUrl } from '@repo/constants';
-import { getCookieServer, jwtOps } from '@repo/utils';
+import { APP_DESC, APP_NAME, DEFAULT_COLOR_SCHEME } from '@repo/constants';
+import { getCookieServer } from '@repo/utils';
 import { COOKIE_NAME } from '@repo/constants';
 import { ProviderMantine } from '@repo/ui';
-import ProviderInitialize from '@atlas/ui/provider/initialize';
-import ProviderSync from '@atlas/ui/provider/sync';
 import { ColorSchemeScript, MantineColorScheme, mantineHtmlProps } from '@mantine/core';
 import { getAppTheme } from '@repo/constants';
 import { getAppResolver } from '@atlas/resolver';
-import { ColorScheme, SessionCookie } from '@repo/types';
+import { ColorScheme } from '@repo/types';
 
 import './globals.css';
 
@@ -21,7 +19,6 @@ import '@mantine/dates/styles.css';
 import '@mantine/schedule/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
-import { getSession } from '@repo/auth';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,9 +40,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // get session
-  const session = await getSession();
-
   // 1. Get the CALCULATED theme from middleware (not the 'auto' state)
   const theme = (await getCookieServer(COOKIE_NAME.COLOR_SCHEME)) || DEFAULT_COLOR_SCHEME;
   const resolvedTheme = (theme || DEFAULT_COLOR_SCHEME) as MantineColorScheme;
@@ -103,9 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           theme={getAppTheme}
           cssVariablesResolver={getAppResolver}
         >
-          <ProviderInitialize props={{ baseUrl: await getApiUrl(), session }}>
-            <ProviderSync props={{ serverSession: session }}>{children}</ProviderSync>
-          </ProviderInitialize>
+          {children}
         </ProviderMantine>
       </body>
     </html>

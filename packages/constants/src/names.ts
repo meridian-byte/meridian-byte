@@ -17,7 +17,7 @@ export const COOKIE_NAME = {
 };
 
 export const STORAGE_NAME = {
-  AUTH: { SESSION: 'auth.session' },
+  AUTH: { SESSION: 'auth.session', LOCAL_PIN: 'auth.local-pin' },
   COUNTRY: 'country',
   COUNTRIES: 'countries',
   WORKSPACES: 'workspaces',
