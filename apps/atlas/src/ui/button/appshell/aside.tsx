@@ -27,17 +27,18 @@ export default function Aside({
   return (
     <Tooltip label={label}>
       <ActionIcon
-        radius={0}
         variant="subtle"
         color="gray"
         aria-label={label}
-        size={SHELL_VALUES.FOOTER.HEIGHT - 1}
+        size={sharedHeight - 1}
         onClick={handleToggleChildAside}
         display={!options?.hideWhenClosed ? undefined : asideChild ? undefined : 'none'}
         miw={47.43}
       >
-        <states.iconRight size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+        <states.iconRight size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
       </ActionIcon>
     </Tooltip>
   );
 }
+
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;

@@ -45,7 +45,7 @@ export default function Theme() {
   };
 
   if (!mounted) {
-    return <Skeleton maw={`${100 / 6}%`} h={SHELL_VALUES.FOOTER.HEIGHT} radius={0} />;
+    return <Skeleton maw={`${100 / 6}%`} h={sharedHeight} />;
   }
 
   return (
@@ -58,9 +58,8 @@ export default function Theme() {
       }
     >
       <ActionIcon
-        radius={0}
         variant={'subtle'}
-        size={SHELL_VALUES.FOOTER.HEIGHT}
+        size={sharedHeight}
         color="gray"
         onClick={() => {
           startTransition(() => {
@@ -68,8 +67,10 @@ export default function Theme() {
           });
         }}
       >
-        <buttonProps.icon size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+        <buttonProps.icon size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
       </ActionIcon>
     </Tooltip>
   );
 }
+
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;

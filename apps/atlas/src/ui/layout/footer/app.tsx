@@ -16,25 +16,22 @@ import { Box } from '@mantine/core';
 export default function App() {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
 
+  const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
+
   return (
     <Group justify={'space-between'}>
       <Group
         grow
         preventGrowOverflow={false}
-        gap={0}
+        gap={4}
         w={SHELL_VALUES.NAVBAR.WIDTH}
         style={{ borderRight: '1px solid var(--mantine-color-default-border)' }}
+        p={5}
       >
         <ButtonAppshellNavbar />
 
-        <ActionIcon
-          size={SHELL_VALUES.FOOTER.HEIGHT}
-          radius={0}
-          color="gray"
-          variant="subtle"
-          disabled
-        >
-          <IconSettings size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+        <ActionIcon size={sharedHeight} color="gray" variant="subtle" disabled>
+          <IconSettings size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
 
         <ButtonFullscreen />
@@ -43,18 +40,12 @@ export default function App() {
 
         <IndicatorNetworkStatus props={{ syncStatus }} />
 
-        <ActionIcon
-          size={SHELL_VALUES.FOOTER.HEIGHT}
-          radius={0}
-          color="gray"
-          variant="subtle"
-          disabled
-        >
-          <IconBell size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+        <ActionIcon size={sharedHeight} color="gray" variant="subtle" disabled>
+          <IconBell size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
       </Group>
 
-      <Group justify="end">
+      <Group justify="end" gap={4} p={5}>
         <ButtonAppshellAside options={{ hideWhenClosed: true }} />
       </Group>
     </Group>

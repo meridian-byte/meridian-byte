@@ -60,15 +60,15 @@ export default function NetworkStatus({
     return (
       <Tooltip label={!networkStatus.online ? 'Back online' : 'Working Offline'}>
         <ThemeIcon
-          size={SHELL_VALUES.FOOTER.HEIGHT}
-          variant="transparent"
-          color={!networkStatus.online ? 'yellow.6' : 'green.6'}
+          size={sharedHeight}
+          variant="light"
+          color={!networkStatus.online ? 'yellow' : 'green'}
           display={offline ? undefined : 'none'}
         >
           {!networkStatus.online ? (
-            <IconWifiOff size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+            <IconWifiOff size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
           ) : (
-            <IconWifi size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+            <IconWifi size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
           )}
         </ThemeIcon>
       </Tooltip>
@@ -78,10 +78,10 @@ export default function NetworkStatus({
   return (
     <Tooltip label={syncStatusProps.label}>
       <ThemeIcon
-        size={SHELL_VALUES.FOOTER.HEIGHT}
-        variant="transparent"
-        color={`${syncStatusProps.color}.6`}
-        c={`${syncStatusProps.color}.6`}
+        size={sharedHeight}
+        variant="light"
+        color={`${syncStatusProps.color}`}
+        c={`${syncStatusProps.color}`}
         display={offline ? 'none' : undefined}
       >
         {syncStatusProps.icon}
@@ -90,8 +90,10 @@ export default function NetworkStatus({
   );
 }
 
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
+
 const getSycnStatusProps = (params: { syncStatus: SyncStatus; mobile: boolean }) => {
-  const spinner = <SpinnerApp props={{ size: SHELL_VALUES.FOOTER.HEIGHT - 8 }} />;
+  const spinner = <SpinnerApp props={{ size: sharedHeight - 8 }} />;
 
   const iconProp = {
     icon: params.mobile ? IconDeviceMobileCheck : IconDeviceDesktopCheck,
@@ -102,7 +104,7 @@ const getSycnStatusProps = (params: { syncStatus: SyncStatus; mobile: boolean })
       return {
         label: 'Sync error',
         color: 'red',
-        icon: <IconCloudX size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />,
+        icon: <IconCloudX size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />,
       };
     case SyncStatus.PENDING:
       return {
@@ -114,13 +116,13 @@ const getSycnStatusProps = (params: { syncStatus: SyncStatus; mobile: boolean })
       return {
         label: 'Saved to device',
         color: 'yellow',
-        icon: <iconProp.icon size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />,
+        icon: <iconProp.icon size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />,
       };
     case SyncStatus.SYNCED:
       return {
         label: 'Synced to cloud',
         color: 'green',
-        icon: <IconCheck size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />,
+        icon: <IconCheck size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />,
       };
     default:
       return {

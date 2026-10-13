@@ -19,23 +19,24 @@ export default function Navbar({ options }: { options?: { hideWhenOpen?: boolean
   const label = `${navbarChild ? 'Collapse' : 'Expand'} Navbar`;
 
   if (navbarChild === undefined) {
-    return <Skeleton maw={`${100 / 6}%`} h={SHELL_VALUES.FOOTER.HEIGHT} radius={0} />;
+    return <Skeleton maw={`${100 / 6}%`} h={sharedHeight} />;
   }
 
   return (
     <Tooltip label={label}>
       <ActionIcon
-        radius={0}
         variant="subtle"
         color="gray"
         aria-label={label}
-        size={SHELL_VALUES.FOOTER.HEIGHT - 1}
+        size={sharedHeight - 1}
         onClick={toggleNavbarChild}
         display={!options?.hideWhenOpen ? undefined : navbarChild ? 'none' : undefined}
         miw={47.43} // temporary hard code
       >
-        <states.iconLeft size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+        <states.iconLeft size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
       </ActionIcon>
     </Tooltip>
   );
 }
+
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;

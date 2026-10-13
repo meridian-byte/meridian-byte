@@ -17,15 +17,11 @@ export default function Fullscreen() {
 
   return (
     <Tooltip label={buttonProps.label}>
-      <ActionIcon
-        radius={0}
-        size={SHELL_VALUES.FOOTER.HEIGHT}
-        onClick={toggle}
-        variant="subtle"
-        color="gray"
-      >
-        <buttonProps.icon size={SHELL_VALUES.FOOTER.HEIGHT - 8} stroke={ICON_STROKE_WIDTH} />
+      <ActionIcon size={sharedHeight} onClick={toggle} variant="subtle" color="gray">
+        <buttonProps.icon size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
       </ActionIcon>
     </Tooltip>
   );
 }
+
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
