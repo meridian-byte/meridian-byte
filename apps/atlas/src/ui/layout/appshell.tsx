@@ -41,7 +41,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       }}
       footer={{ height: SHELL_VALUES.FOOTER.HEIGHT }}
     >
-      <AppShellNavbar>
+      <AppShellNavbar style={{ borderColor: 'var(--mantine-color-default-border)' }}>
         <LayoutNavbarApp />
       </AppShellNavbar>
 
@@ -57,11 +57,14 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </ScrollContext.Provider>
       </AppShellMain>
 
-      <AppShellAside>
+      <AppShellAside style={{ borderColor: 'var(--mantine-color-default-border)' }}>
         <LayoutAsideApp />
       </AppShellAside>
 
-      <AppShellFooter h={SHELL_VALUES.FOOTER.HEIGHT}>
+      <AppShellFooter
+        style={{ borderColor: 'var(--mantine-color-default-border)' }}
+        h={SHELL_VALUES.FOOTER.HEIGHT}
+      >
         <LayoutFooterApp />
       </AppShellFooter>
     </AppShell>
