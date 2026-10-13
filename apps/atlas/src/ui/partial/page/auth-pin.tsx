@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Group, PinInput, Stack } from '@mantine/core';
 import { getFromLocalStorage, saveToLocalStorage } from '@repo/utils';
 import { STORAGE_NAME } from '@repo/constants';
@@ -16,6 +16,8 @@ export default function AuthPin({
   serverSession: SessionCookie | null;
   children: React.ReactNode;
 }) {
+  const [hydrated, setHydrated] = useState(false);
+
   const { showNotification } = useNotification();
 
   const [pin, setPin] = useState('');
@@ -35,6 +37,12 @@ export default function AuthPin({
 
     setPin('');
   };
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) return null;
 
   if (!serverSession) {
     const localPin = getFromLocalStorage(STORAGE_NAME.AUTH.LOCAL_PIN);
