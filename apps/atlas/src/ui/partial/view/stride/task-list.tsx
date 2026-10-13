@@ -142,16 +142,18 @@ export default function TaskList() {
       <Box py={SECTION_SPACING}>
         <Stack>
           <div>
-            {/* <Title order={1} fz={'xl'}>
-              {capitalizeWords(taskList?.title)}
-            </Title> */}
-
-            <InputTextEditorTitle
-              inputProps={field.getInputProps()}
-              inputRef={inputRef}
-              onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
-            />
+            {!taskList ? (
+              <Title order={1} fz={'xl'}>
+                {capitalizeWords(subViewValue)}
+              </Title>
+            ) : (
+              <InputTextEditorTitle
+                inputProps={field.getInputProps()}
+                inputRef={inputRef}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
           </div>
 
           {tasks === undefined || !filteredTasks?.length ? (
