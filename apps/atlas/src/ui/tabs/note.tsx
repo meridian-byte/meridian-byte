@@ -186,8 +186,9 @@ export default function Note() {
                 >
                   <Tooltip label={note?.title} multiline maw={320}>
                     <Text
-                      component="span"
                       inherit
+                      component="span"
+                      style={{ display: 'inline-block', maxWidth: '100%', marginTop: 4 }}
                       lineClamp={1}
                       fs={ati.persistent ? 'normal' : 'italic'}
                       fw={600}
