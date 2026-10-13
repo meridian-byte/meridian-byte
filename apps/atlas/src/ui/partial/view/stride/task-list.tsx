@@ -74,9 +74,7 @@ export default function TaskList() {
   const sortedTasks = sortArray(tasks || [], (i) => i.createdAt, Order.DESCENDING);
   const { subViewValue } = useSubView();
 
-  if (subViewValue === undefined || subViewValue === null) return <>loading</>;
-
-  const taskListId = extractUuidFromParam(subViewValue);
+  const taskListId = extractUuidFromParam(subViewValue || '');
 
   const taskList = taskLists?.find((tli) => tli.id == taskListId);
 
@@ -144,7 +142,7 @@ export default function TaskList() {
           <div>
             {!taskList ? (
               <Title order={1} fz={'xl'}>
-                {capitalizeWords(subViewValue)}
+                {capitalizeWords(subViewValue || '')}
               </Title>
             ) : (
               <InputTextEditorTitle
