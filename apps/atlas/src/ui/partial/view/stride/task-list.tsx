@@ -142,48 +142,50 @@ export default function TaskList() {
   return (
     <LayoutSection id={'task-list'} containerized>
       <Box py={SECTION_SPACING}>
-        {tasks === undefined || !filteredTasks?.length ? (
-          <div>
-            <PartialEmpty loading={tasks === undefined} label="No tasks found" />
-            <AddTask />
-          </div>
-        ) : (
-          <Stack gap={SECTION_SPACING}>
-            <Stack>
-              <Group>
-                <Title order={1} fz={'xl'}>
-                  {capitalizeWords(title)}
-                </Title>
-              </Group>
+        <Stack>
+          <Group>
+            <Title order={1} fz={'xl'}>
+              {capitalizeWords(title)}
+            </Title>
+          </Group>
 
-              <div>
-                {filteredTasks?.map((fti, i) => (
-                  <div key={fti.id}>
-                    {i > 0 && (
-                      <Box px={SECTION_SPACING - 8}>
-                        <Divider />
-                      </Box>
-                    )}
-                    <TaskCard props={fti} />
-                  </div>
-                ))}
+          {tasks === undefined || !filteredTasks?.length ? (
+            <div>
+              <PartialEmpty loading={tasks === undefined} label="No tasks found" />
+              <AddTask />
+            </div>
+          ) : (
+            <div>
+              {filteredTasks?.map((fti, i) => (
+                <div key={fti.id}>
+                  {i > 0 && (
+                    <Box px={SECTION_SPACING - 8}>
+                      <Divider />
+                    </Box>
+                  )}
+                  <TaskCard props={fti} />
+                </div>
+              ))}
 
-                <AddTask />
-              </div>
-            </Stack>
-          </Stack>
-        )}
+              <AddTask />
+            </div>
+          )}
+        </Stack>
 
         {tasks === undefined || !completeTasks?.length ? null : (
-          <Stack
-            mt={SECTION_SPACING}
-            display={completeTasks && completeTasks.length > 0 ? undefined : 'none'}
-          >
-            <Group>
-              <Title order={1} fz={'xl'}>
-                Complete
-              </Title>
-            </Group>
+          <Box display={completeTasks && completeTasks.length > 0 ? undefined : 'none'}>
+            <Divider
+              my={'xl'}
+              label={'Complete'}
+              // labelPosition="left"
+              styles={{
+                label: {
+                  fontSize: 'var(--mantine-font-size-md)',
+                  fontWeight: 600,
+                  lineHeight: 0,
+                },
+              }}
+            />
 
             <div>
               {completeTasks?.map((cti, i) => (
@@ -197,7 +199,7 @@ export default function TaskList() {
                 </div>
               ))}
             </div>
-          </Stack>
+          </Box>
         )}
       </Box>
     </LayoutSection>
