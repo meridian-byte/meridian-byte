@@ -62,11 +62,6 @@ export default function Pave() {
 
   const calendars = useStoreCalendar((s) => s.calendars);
   const calendarsWithoutFolder = calendars?.filter((ci) => !ci.folderId);
-  const sortedCalendars = sortArray(
-    calendarsWithoutFolder || [],
-    (i) => i.createdAt,
-    Order.DESCENDING,
-  );
 
   const navLinks = [
     {
@@ -175,7 +170,7 @@ export default function Pave() {
 
           {paveFolders === undefined || !paveFolders.length
             ? null
-            : paveFolders.map((fi) => (
+            : sortArray(paveFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
                 <div key={fi.id}>
                   <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.PAVE} />
                 </div>
@@ -184,11 +179,13 @@ export default function Pave() {
           {calendars === undefined || !calendars?.length ? (
             <PartialEmpty loading={calendars === undefined} label={`No calendars.`} />
           ) : (
-            sortedCalendars.map((ci) => (
-              <div key={ci.id}>
-                <NavlinkCalendar props={ci} />
-              </div>
-            ))
+            sortArray(calendarsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map(
+              (ci) => (
+                <div key={ci.id}>
+                  <NavlinkCalendar props={ci} />
+                </div>
+              ),
+            )
           )}
         </div>
       </div>

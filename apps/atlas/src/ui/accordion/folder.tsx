@@ -34,12 +34,13 @@ import {
   useTaskListActions,
   useViewNavbar,
 } from '@repo/store';
-import { generateUUID } from '@repo/utils';
+import { generateUUID, sortArray } from '@repo/utils';
 import NavlinkCalendar from '../navlink/calendar';
 import NavlinkNote from '../navlink/note';
 import NavlinkTaskList from '../navlink/task-list';
 import MenuFolder from '../menu/folder';
 import LayoutPartialNavbar from '../layout/partial/navbar';
+import { Order } from '@repo/types';
 
 export default function Folder({ folderId, location }: { folderId: string; location: string }) {
   const { subViewValue } = useSubView();
@@ -238,22 +239,26 @@ export default function Folder({ folderId, location }: { folderId: string; locat
             ) : (
               <>
                 {/* 2. Render nested child folders recursively */}
-                {childFolders?.map((childFolder, i) => (
-                  <div key={childFolder.id}>
-                    {/* {i > 0 && <Divider mb={4} />} */}
+                {sortArray(childFolders || [], (i) => i.createdAt, Order.DESCENDING).map(
+                  (childFolder, i) => (
+                    <div key={childFolder.id}>
+                      {/* {i > 0 && <Divider mb={4} />} */}
 
-                    <Folder folderId={childFolder.id} location={location} />
-                  </div>
-                ))}
+                      <Folder folderId={childFolder.id} location={location} />
+                    </div>
+                  ),
+                )}
 
                 {/* 3. Render items in current folder level */}
-                {locationProps.navLinkItems.map((nli: any, i) => (
-                  <div key={nli.id}>
-                    {/* {i > 0 && <Divider />} */}
+                {sortArray(locationProps.navLinkItems, (i) => i.createdAt, Order.DESCENDING).map(
+                  (nli: any, i) => (
+                    <div key={nli.id}>
+                      {/* {i > 0 && <Divider />} */}
 
-                    <locationProps.component props={nli} />
-                  </div>
-                ))}
+                      <locationProps.component props={nli} />
+                    </div>
+                  ),
+                )}
               </>
             )}
           </LayoutPartialNavbar>

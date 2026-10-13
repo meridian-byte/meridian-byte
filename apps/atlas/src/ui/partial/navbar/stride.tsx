@@ -57,7 +57,6 @@ export default function Stride() {
 
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const taskListsWithoutFolder = taskLists?.filter((ci) => !ci.folderId);
-  const sortedNotes = sortArray(taskListsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING);
 
   const navLinks = [
     {
@@ -176,7 +175,7 @@ export default function Stride() {
         <div>
           <Divider mb={4} />
 
-          {strideFolders?.map((fi) => (
+          {sortArray(strideFolders || [], (i) => i.createdAt, Order.DESCENDING)?.map((fi) => (
             <div key={fi.id}>
               <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
             </div>
@@ -185,11 +184,13 @@ export default function Stride() {
           {taskLists === undefined || !taskLists?.length ? (
             <PartialEmpty loading={taskLists === undefined} label={`No task lists.`} />
           ) : (
-            sortedNotes.map((tli) => (
-              <div key={tli.id}>
-                <NavlinkTaskList props={tli} />
-              </div>
-            ))
+            sortArray(taskListsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map(
+              (tli) => (
+                <div key={tli.id}>
+                  <NavlinkTaskList props={tli} />
+                </div>
+              ),
+            )
           )}
         </div>
       </div>

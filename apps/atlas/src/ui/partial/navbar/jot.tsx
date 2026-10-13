@@ -63,7 +63,6 @@ export default function Jot() {
 
   const notes = useStoreNote((s) => s.notes);
   const notesWithoutFolder = notes?.filter((ci) => !ci.folderId);
-  const sortedNotes = sortArray(notesWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING);
 
   const navLinks: any[] = [
     // {
@@ -157,7 +156,7 @@ export default function Jot() {
 
           {jotFolders === undefined || !jotFolders.length
             ? null
-            : jotFolders.map((fi) => (
+            : sortArray(jotFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
                 <div key={fi.id}>
                   <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
                 </div>
@@ -166,7 +165,7 @@ export default function Jot() {
           {notes === undefined || !notes?.length ? (
             <PartialEmpty loading={notes === undefined} label={`No notes.`} />
           ) : (
-            sortedNotes.map((ni) => (
+            sortArray(notesWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map((ni) => (
               <div key={ni.id}>
                 <NavlinkNote props={ni} />
               </div>
