@@ -61,19 +61,21 @@ export default function Note() {
     if (currentIndex === -1) return;
 
     const newActiveTabs = (tabsJotView || []).filter((ati) => ati.tab !== tabToClose);
-    setTabsJotViewValue(newActiveTabs);
 
-    // 2. Only switch active view if we closed the currently active tab
+    // 2. If we are closing the currently active tab, switch views FIRST
     if (tabToClose === noteId) {
       if (newActiveTabs.length === 0) {
-        // Handle empty state (e.g., clear subview or route back to list)
+        // Handle empty state
         showSubViewJot('');
       } else {
-        // Focus adjacent tab (previous item, or 0 if index was 0)
+        // Focus adjacent tab index
         const newIndex = Math.max(0, currentIndex - 1);
         showSubViewJot(`note: ${newActiveTabs[newIndex].tab}`);
       }
     }
+
+    // 3. Update the tabs collection after initiating the view change
+    setTabsJotViewValue(newActiveTabs);
   };
 
   const handleMakePersistent = (targetTab: string) => {
