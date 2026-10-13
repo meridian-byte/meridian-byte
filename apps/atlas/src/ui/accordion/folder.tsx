@@ -146,87 +146,89 @@ export default function Folder({ folderId, location }: { folderId: string; locat
         value={currentFolder.id}
         className="group/accordionFolder"
       >
-        <AccordionControl
-          icon={
-            <ThemeIcon size={30} variant="transparent" color={'gray'}>
-              <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-            </ThemeIcon>
-          }
-        >
-          <Group justify="space-between">
-            <Text
-              component="span"
-              inherit
-              c={isActive ? 'var(--mantine-color-pri-6)' : 'var(--mantine-color-text)'}
-              fw={600}
-            >
-              {currentFolder.name}
-            </Text>
+        <MenuFolder defaultValues={currentFolder} options={{ context: true }}>
+          <AccordionControl
+            icon={
+              <ThemeIcon size={30} variant="transparent" color={'gray'}>
+                <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              </ThemeIcon>
+            }
+          >
+            <Group justify="space-between">
+              <Text
+                component="span"
+                inherit
+                c={isActive ? 'var(--mantine-color-pri-6)' : 'var(--mantine-color-text)'}
+                fw={600}
+              >
+                {currentFolder.name}
+              </Text>
 
-            <Group
-              component={'span'}
-              justify="end"
-              gap={0}
-              className="opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto"
-              mih={30}
-              pr={4}
-            >
-              <Tooltip label={`Add item in ${currentFolder.name}`}>
-                <ActionIcon
-                  component="span"
-                  size={30 - 6}
-                  color="gray"
-                  variant="subtle"
-                  onClick={(e) => {
-                    e.stopPropagation();
+              <Group
+                component={'span'}
+                justify="end"
+                gap={0}
+                className="opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto"
+                mih={30}
+                pr={4}
+              >
+                <Tooltip label={`Add item in ${currentFolder.name}`}>
+                  <ActionIcon
+                    component="span"
+                    size={30 - 6}
+                    color="gray"
+                    variant="subtle"
+                    onClick={(e) => {
+                      e.stopPropagation();
 
-                    // add item
-                    locationProps.onAdd();
+                      // add item
+                      locationProps.onAdd();
 
-                    // Check if current folder is already expanded, if not, add it
-                    const currentOpened = navbarViewValue || '';
-                    if (!currentOpened.includes(folderId)) {
-                      setNavbarViewValue([...currentOpened, folderId]);
-                    }
-                  }}
-                >
-                  <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-
-              <Tooltip label={`Add sub-folder in ${currentFolder.name}`}>
-                <ActionIcon
-                  component="span"
-                  size={30 - 6}
-                  color="gray"
-                  variant="subtle"
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    // create folder
-                    folderCreate({ id: generateUUID(), location, folderId });
-
-                    // Check if current folder is already expanded, if not, add it
-                    const currentOpened = navbarViewValue || '';
-                    if (!currentOpened.includes(folderId)) {
-                      setNavbarViewValue([...currentOpened, folderId]);
-                    }
-                  }}
-                >
-                  <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                </ActionIcon>
-              </Tooltip>
-
-              <Tooltip label={`Edit ${currentFolder.name}`}>
-                <MenuFolder defaultValues={currentFolder}>
-                  <ActionIcon component="span" size={30 - 6} color="gray" variant="subtle">
-                    <IconDots size={ICON_SIZE - 4} />
+                      // Check if current folder is already expanded, if not, add it
+                      const currentOpened = navbarViewValue || '';
+                      if (!currentOpened.includes(folderId)) {
+                        setNavbarViewValue([...currentOpened, folderId]);
+                      }
+                    }}
+                  >
+                    <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                   </ActionIcon>
-                </MenuFolder>
-              </Tooltip>
+                </Tooltip>
+
+                <Tooltip label={`Add sub-folder in ${currentFolder.name}`}>
+                  <ActionIcon
+                    component="span"
+                    size={30 - 6}
+                    color="gray"
+                    variant="subtle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      // create folder
+                      folderCreate({ id: generateUUID(), location, folderId });
+
+                      // Check if current folder is already expanded, if not, add it
+                      const currentOpened = navbarViewValue || '';
+                      if (!currentOpened.includes(folderId)) {
+                        setNavbarViewValue([...currentOpened, folderId]);
+                      }
+                    }}
+                  >
+                    <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  </ActionIcon>
+                </Tooltip>
+
+                <Tooltip label={`Edit ${currentFolder.name}`}>
+                  <MenuFolder defaultValues={currentFolder}>
+                    <ActionIcon component="span" size={30 - 6} color="gray" variant="subtle">
+                      <IconDots size={ICON_SIZE - 4} />
+                    </ActionIcon>
+                  </MenuFolder>
+                </Tooltip>
+              </Group>
             </Group>
-          </Group>
-        </AccordionControl>
+          </AccordionControl>
+        </MenuFolder>
 
         <AccordionPanel>
           {/* <Divider my={4} /> */}

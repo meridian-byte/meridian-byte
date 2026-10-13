@@ -11,6 +11,7 @@ import {
   Text,
   MenuDivider,
   Tooltip,
+  MenuContextMenu,
 } from '@mantine/core';
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { TaskListGet } from '@repo/types';
@@ -18,10 +19,17 @@ import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
 
 export default function TaskList({
   defaultValues,
+  options,
   children,
   ...restProps
-}: { defaultValues: TaskListGet; children: React.ReactNode } & MenuProps) {
+}: {
+  defaultValues: TaskListGet;
+  options?: { context?: boolean };
+  children: React.ReactNode;
+} & MenuProps) {
   const { showModalViewTaskListCrud } = useViewModal();
+
+  const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
 
   return (
     <Menu
@@ -43,9 +51,9 @@ export default function TaskList({
       }}
       {...restProps}
     >
-      <MenuTarget>
-        <div>{children}</div>
-      </MenuTarget>
+      <componentProps.renderOption>
+        <span>{children}</span>
+      </componentProps.renderOption>
 
       <MenuDropdown>
         <MenuLabel>

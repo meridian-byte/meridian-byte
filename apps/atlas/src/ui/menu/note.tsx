@@ -11,6 +11,7 @@ import {
   Text,
   MenuDivider,
   Tooltip,
+  MenuContextMenu,
 } from '@mantine/core';
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { NoteGet } from '@repo/types';
@@ -18,11 +19,18 @@ import { IconCopy, IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-
 
 export default function Note({
   defaultValues,
+  options,
   children,
   ...restProps
-}: { defaultValues: NoteGet; children: React.ReactNode } & MenuProps) {
+}: {
+  defaultValues: NoteGet;
+  options?: { context?: boolean };
+  children: React.ReactNode;
+} & MenuProps) {
   const { showModalViewNoteCrud } = useViewModal();
   const { noteCopy } = useNoteActions();
+
+  const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
 
   return (
     <Menu
@@ -44,9 +52,9 @@ export default function Note({
       }}
       {...restProps}
     >
-      <MenuTarget>
-        <div>{children}</div>
-      </MenuTarget>
+      <componentProps.renderOption>
+        <span>{children}</span>
+      </componentProps.renderOption>
 
       <MenuDropdown>
         <MenuLabel>

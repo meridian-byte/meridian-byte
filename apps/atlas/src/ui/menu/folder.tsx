@@ -11,6 +11,7 @@ import {
   Text,
   MenuDivider,
   Tooltip,
+  MenuContextMenu,
 } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { FolderGet } from '@repo/types';
@@ -18,10 +19,17 @@ import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
 
 export default function Folder({
   defaultValues,
+  options,
   children,
   ...restProps
-}: { defaultValues: FolderGet; children: React.ReactNode } & MenuProps) {
+}: {
+  defaultValues: FolderGet;
+  options?: { context?: boolean };
+  children: React.ReactNode;
+} & MenuProps) {
   const { showModalViewFolderCrud } = useViewModal();
+
+  const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
 
   return (
     <Menu
@@ -43,15 +51,15 @@ export default function Folder({
       }}
       {...restProps}
     >
-      <MenuTarget>
-        <div
+      <componentProps.renderOption>
+        <span
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
           {children}
-        </div>
-      </MenuTarget>
+        </span>
+      </componentProps.renderOption>
 
       <MenuDropdown>
         <MenuLabel>
