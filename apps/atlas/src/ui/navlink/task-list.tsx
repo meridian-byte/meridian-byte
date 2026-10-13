@@ -51,7 +51,6 @@ export default function TaskList({ props }: { props: TaskListGet }) {
               </MenuTaskList>
             </Group>
           }
-          style={{ borderRadius: 'var(--mantine-radius-md)' }}
           styles={{
             section: { marginInlineEnd: 0 },
             label: {

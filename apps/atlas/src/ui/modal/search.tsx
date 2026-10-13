@@ -327,7 +327,6 @@ function PartialResultsCalendars({
                 <IconCircleFilled size={6} />
               </ThemeIcon>
             }
-            style={{ borderRadius: 'var(--mantine-radius-md)' }}
             styles={{
               section: { marginInlineEnd: 0 },
             }}
@@ -407,7 +406,6 @@ function PartialResultsNotes({
                   <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                 </ThemeIcon>
               }
-              style={{ borderRadius: 'var(--mantine-radius-md)' }}
               styles={{
                 section: { marginInlineEnd: 0 },
               }}
@@ -453,7 +451,6 @@ function PartialResultsTasks({
               color="gray"
               p={0}
               fw={600}
-              style={{ borderRadius: 'var(--mantine-radius-md)' }}
               styles={{
                 section: { marginInlineEnd: 0 },
               }}
@@ -538,7 +535,6 @@ function PartialResultsTaskLists({
                   <IconCircleFilled size={6} />
                 </ThemeIcon>
               }
-              style={{ borderRadius: 'var(--mantine-radius-md)' }}
               styles={{
                 section: { marginInlineEnd: 0 },
               }}

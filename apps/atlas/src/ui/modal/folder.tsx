@@ -209,7 +209,6 @@ function NavLinkFolderSelect({
           <IconFolder size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
         </ThemeIcon>
       }
-      style={{ borderRadius: 'var(--mantine-radius-md)' }}
       styles={{
         section: { marginInlineEnd: 0 },
       }}

@@ -124,6 +124,7 @@ export default function Note() {
         tab: {
           borderRadius: 'var(--mantine-radius-md)',
           borderBottomColor: 'transparent',
+          transition: '.25s all ease',
         },
         tabLabel: { lineHeight: 1.3 },
       }}

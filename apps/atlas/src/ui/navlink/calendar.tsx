@@ -51,7 +51,6 @@ export default function Calendar({ props }: { props: CalendarGet }) {
               </MenuCalendar>
             </Group>
           }
-          style={{ borderRadius: 'var(--mantine-radius-md)' }}
           styles={{
             section: { marginInlineEnd: 0 },
             label: {

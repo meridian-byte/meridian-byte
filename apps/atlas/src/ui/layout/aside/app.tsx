@@ -246,7 +246,6 @@ export default function App() {
                       color="gray"
                       p={0}
                       fw={500}
-                      style={{ borderRadius: 'var(--mantine-radius-md)' }}
                       styles={{
                         section: { marginInlineEnd: 0 },
                         label: { fontSize: 'var(--mantine-font-size-xs)' },

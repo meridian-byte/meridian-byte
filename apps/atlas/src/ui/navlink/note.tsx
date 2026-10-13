@@ -51,7 +51,6 @@ export default function Note({ props }: { props: NoteGet }) {
               </MenuNote>
             </Group>
           }
-          style={{ borderRadius: 'var(--mantine-radius-md)' }}
           styles={{
             section: { marginInlineEnd: 0 },
             label: {

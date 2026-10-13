@@ -101,7 +101,6 @@ export default function Pave() {
                 color="gray"
                 p={0}
                 fw={600}
-                style={{ borderRadius: 'var(--mantine-radius-md)' }}
                 styles={{
                   section: { marginInlineEnd: 0 },
                   body: { marginBottom: 4 },

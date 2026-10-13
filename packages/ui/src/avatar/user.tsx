@@ -36,7 +36,6 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
             color="gray"
             p={0}
             fw={600}
-            style={{ borderRadius: 'var(--mantine-radius-md)' }}
             styles={{
               section: { marginInlineEnd: 0 },
               body: { marginBottom: 4 },
@@ -57,7 +56,6 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
           color="gray"
           p={0}
           fw={600}
-          style={{ borderRadius: 'var(--mantine-radius-md)' }}
           styles={{
             section: { marginInlineEnd: 0 },
             body: { marginBottom: 4 },

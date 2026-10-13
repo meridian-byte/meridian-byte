@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ActionIcon,
   Anchor,
   Checkbox,
   Container,
@@ -12,6 +13,7 @@ import {
   MantineThemeOverride,
   Menu,
   Modal,
+  NavLink,
   Notification,
   NumberFormatter,
   PasswordInput,
@@ -108,6 +110,23 @@ export const getAppTheme = (params?: AppThemeProps) => {
         defaultProps: {
           type: 'dots',
           size: 'xs',
+        },
+      }),
+
+      NavLink: NavLink.extend({
+        defaultProps: {
+          style: {
+            borderRadius: 'var(--mantine-radius-md)',
+            transition: '.25s all ease',
+          },
+        },
+      }),
+
+      ActionIcon: ActionIcon.extend({
+        defaultProps: {
+          style: {
+            transition: '.25s all ease',
+          },
         },
       }),
 

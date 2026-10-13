@@ -134,6 +134,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
           padding: 0,
           paddingLeft: 0,
           borderRadius: 'var(--mantine-radius-md)',
+          transition: '.25s all ease',
         },
         label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: '500', padding: '0' },
         content: { padding: 0 },
