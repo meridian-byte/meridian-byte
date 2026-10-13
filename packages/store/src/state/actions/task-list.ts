@@ -5,6 +5,7 @@ import { SyncStatus } from '@repo/types';
 import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { getUniqueColor } from '@repo/constants';
+import { useStoreTask } from '../task';
 
 export const useTaskListActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -13,6 +14,8 @@ export const useTaskListActions = () => {
   const updateTaskList = useStoreTaskList((s) => s.updateTaskList);
   const deleteTaskList = useStoreTaskList((s) => s.deleteTaskList);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
+  const tasks = useStoreTask((s) => s.tasks);
+  const setTasks = useStoreTask((s) => s.setTasks);
 
   const taskListCreate = (params?: Partial<TaskListGet>) => {
     if (!session) return;
@@ -62,10 +65,29 @@ export const useTaskListActions = () => {
 
   const taskListDelete = (params: TaskListGet) => {
     if (!session) return;
-    if (!taskLists) return;
     if (!activeWorkspace) return;
+    if (taskLists === undefined) return;
+    if (taskLists === null) return;
+    if (tasks === undefined) return;
+    if (tasks === null) return;
 
     const now = new Date();
+
+    // unlink tasks from this task list
+    const needsUnlink = tasks.some((ti) => ti.taskListId == params.id);
+    if (needsUnlink) {
+      setTasks(
+        tasks.map((ti) => {
+          if (ti.taskListId != params.id) return ti;
+          return {
+            ...ti,
+            taskListId: null,
+            syncStatus: SyncStatus.PENDING,
+            updatedAt: new Date(now).toISOString() as any,
+          };
+        }),
+      );
+    }
 
     deleteTaskList({
       ...params,

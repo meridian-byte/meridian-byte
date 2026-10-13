@@ -5,6 +5,7 @@ import { SyncStatus } from '@repo/types';
 import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
 import { getUniqueColor } from '@repo/constants';
+import { useStoreEvent } from '../event';
 
 export const useCalendarActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -13,6 +14,8 @@ export const useCalendarActions = () => {
   const updateCalendar = useStoreCalendar((s) => s.updateCalendar);
   const deleteCalendar = useStoreCalendar((s) => s.deleteCalendar);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
+  const events = useStoreEvent((s) => s.events);
+  const setEvents = useStoreEvent((s) => s.setEvents);
 
   const calendarCreate = (params?: Partial<CalendarGet>) => {
     if (!session) return;
@@ -62,10 +65,29 @@ export const useCalendarActions = () => {
 
   const calendarDelete = (params: CalendarGet) => {
     if (!session) return;
-    if (!calendars) return;
     if (!activeWorkspace) return;
+    if (calendars === undefined) return;
+    if (calendars === null) return;
+    if (events === undefined) return;
+    if (events === null) return;
 
     const now = new Date();
+
+    // unlink events from this calendar
+    const needsUnlink = events.some((ei) => ei.calendarId == params.id);
+    if (needsUnlink) {
+      setEvents(
+        events.map((ei) => {
+          if (ei.calendarId != params.id) return ei;
+          return {
+            ...ei,
+            calendarId: null,
+            syncStatus: SyncStatus.PENDING,
+            updatedAt: new Date(now).toISOString() as any,
+          };
+        }),
+      );
+    }
 
     deleteCalendar({
       ...params,

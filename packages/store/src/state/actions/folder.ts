@@ -105,21 +105,24 @@ export const useFolderActions = () => {
         break;
     }
 
+    const now = new Date();
+
     const needsUnlink = locationProps.relatedItems.some((ri) => ri.folderId == params.id);
 
     // unlink relevant items from folder
     if (needsUnlink) {
-      console.log('[INFO] linked folder items found. Unlinking');
-
       locationProps.updateFunction(
         locationProps.relatedItems.map((ri) => {
           if (ri.folderId != params.id) return ri;
-          return { ...ri, folderId: null };
+          return {
+            ...ri,
+            folderId: null,
+            syncStatus: SyncStatus.PENDING,
+            updatedAt: new Date(now).toISOString() as any,
+          };
         }),
       );
     }
-
-    const now = new Date();
 
     deleteFolder({
       ...params,
