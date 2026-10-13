@@ -12,6 +12,8 @@ export * from './layout/modal';
 
 export * from './loader/main';
 
+export * from './modal/confirm';
+
 export * from './parser/html';
 
 export * from './partial/error/404';

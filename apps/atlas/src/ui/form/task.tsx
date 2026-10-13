@@ -22,7 +22,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useAppshellChild, useFormTask } from '@repo/hooks';
-import { Frequency, Order, Priority, TaskGet } from '@repo/types';
+import { Alert, Frequency, Order, Priority, TaskGet } from '@repo/types';
 import {
   useRecurringRuleActions,
   useReminderActions,
@@ -63,6 +63,7 @@ import {
   sortArray,
 } from '@repo/utils';
 import dayjs from 'dayjs';
+import { ModalConfirm } from '@repo/ui';
 
 export default function Task({
   defaultValues,
@@ -463,6 +464,8 @@ export default function Task({
   }
 
   function TaskProperties() {
+    const { taskDelete } = useTaskActions();
+
     return (
       <Stack h={sharedHeight} gap={0}>
         <ScrollArea flex={1}>
@@ -618,16 +621,27 @@ export default function Task({
                 <Divider orientation="vertical" h={16} my={'auto'} />
 
                 {
-                  <Tooltip label={'Delete task'}>
-                    <ActionIcon
-                      size={ICON_WRAPPER_SIZE}
-                      color="red"
-                      variant="light"
-                      onClick={() => {}}
-                    >
-                      <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                    </ActionIcon>
-                  </Tooltip>
+                  <ModalConfirm
+                    props={{
+                      variant: Alert.DANGER,
+                      title: 'Delete Task',
+                      desc: 'Are you sure? This action is irreversible.',
+                      onConfirm: () => {
+                        if (defaultValues?.updatedAt) taskDelete(defaultValues as TaskGet);
+                      },
+                    }}
+                  >
+                    <Tooltip label={'Delete task'}>
+                      <ActionIcon
+                        size={ICON_WRAPPER_SIZE}
+                        color="red"
+                        variant="light"
+                        onClick={() => {}}
+                      >
+                        <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </ModalConfirm>
                 }
               </>
             )}

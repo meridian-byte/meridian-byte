@@ -624,6 +624,9 @@ importers:
       '@repo/handlers':
         specifier: workspace:*
         version: link:../handlers
+      '@repo/hooks':
+        specifier: workspace:*
+        version: link:../hooks
       '@repo/store':
         specifier: workspace:*
         version: link:../store

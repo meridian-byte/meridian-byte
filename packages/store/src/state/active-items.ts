@@ -7,12 +7,16 @@ export type ActiveItemsValue =
   | {
       workspace?: ActiveWorkspaceValue;
       account?: ActiveAccountValue;
+      confirm?: any;
     }
   | null
   | undefined;
 
 interface ActiveItemsState {
   activeItems: ActiveItemsValue;
+
+  addActiveConfirm: (data: any) => void;
+  removeActiveConfirm: () => void;
 
   addActiveWorkspace: (data: WorkspaceGet) => void;
   removeActiveWorkspace: () => void;
@@ -26,6 +30,24 @@ interface ActiveItemsState {
 
 export const useStoreActiveItems = create<ActiveItemsState>((set) => ({
   activeItems: undefined,
+
+  addActiveConfirm: (data) => {
+    set((state) => ({
+      activeItems: {
+        ...state.activeItems,
+        confirm: data,
+      },
+    }));
+  },
+
+  removeActiveConfirm: () => {
+    set((state) => ({
+      activeItems: {
+        ...state.activeItems,
+        confirm: null,
+      },
+    }));
+  },
 
   addActiveWorkspace: (data) =>
     set((state) => ({
