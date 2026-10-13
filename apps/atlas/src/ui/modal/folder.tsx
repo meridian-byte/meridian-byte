@@ -202,20 +202,17 @@ function NavLinkFolderSelect({
         </Tooltip>
       }
       color="gray"
-      px={5}
-      py={3}
-      fw={500}
+      p={0}
+      fw={600}
       leftSection={
-        <ThemeIcon size={ICON_WRAPPER_SIZE} variant="transparent" c={'gray'}>
-          <IconFolder size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <ThemeIcon size={30} variant="transparent" c={'gray'} mt={2}>
+          <IconFolder size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
         </ThemeIcon>
       }
-      // styles={{
-      //   label: {
-      //     fontSize: 'var(--mantine-font-size-xs)',
-      //     color: !calendarActive ? undefined : 'var(--mantine-color-pri-6)',
-      //   },
-      // }}
+      style={{ borderRadius: 'var(--mantine-radius-md)' }}
+      styles={{
+        section: { marginInlineEnd: 0 },
+      }}
       onClick={() => {
         onClick({ ...item, folderId: props?.id || null });
         closeModalView();
