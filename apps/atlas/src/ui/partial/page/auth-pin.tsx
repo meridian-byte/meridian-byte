@@ -43,11 +43,13 @@ export default function AuthPin({
       return (
         <Stack mih={'100vh'} justify="center">
           <Group justify="center">
-            <PinInput value={pin} onChange={setPin} />
+            <PinInput mask type="number" value={pin} onChange={setPin} />
           </Group>
 
           <Group justify="center">
-            <Button onClick={handleSave}>Verify</Button>
+            <Button onClick={handleSave} disabled={pin.length != 4}>
+              Verify
+            </Button>
           </Group>
         </Stack>
       );
