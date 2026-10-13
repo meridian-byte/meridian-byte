@@ -307,7 +307,13 @@ function PartialResultsCalendars({
       {calendarsWithinParameter?.map((item) => (
         <div key={item.id}>
           <NavLink
-            label={item.title}
+            label={
+              <Tooltip label={item.title} multiline maw={320} position="top-start" arrowOffset={16}>
+                <Text component="span" inherit lineClamp={1} lh={2}>
+                  {item.title}
+                </Text>
+              </Tooltip>
+            }
             onClick={() => handleSelect(item.id)}
             color="gray"
             p={0}
@@ -379,7 +385,19 @@ function PartialResultsNotes({
         notesWithinParameter?.map((item) => (
           <div key={item.id}>
             <NavLink
-              label={item.title}
+              label={
+                <Tooltip
+                  label={item.title}
+                  multiline
+                  maw={320}
+                  position="top-start"
+                  arrowOffset={16}
+                >
+                  <Text component="span" inherit lineClamp={1} lh={2}>
+                    {item.title}
+                  </Text>
+                </Tooltip>
+              }
               onClick={() => handleSelect(item.id)}
               color="gray"
               p={0}
@@ -494,7 +512,19 @@ function PartialResultsTaskLists({
         taskListsWithinParameter?.map((item) => (
           <div key={item.id}>
             <NavLink
-              label={item.title}
+              label={
+                <Tooltip
+                  label={item.title}
+                  multiline
+                  maw={320}
+                  position="top-start"
+                  arrowOffset={16}
+                >
+                  <Text component="span" inherit lineClamp={1} lh={2}>
+                    {item.title}
+                  </Text>
+                </Tooltip>
+              }
               onClick={() => handleSelect(item.id)}
               color="gray"
               p={0}
