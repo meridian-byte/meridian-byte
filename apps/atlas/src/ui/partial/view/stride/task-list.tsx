@@ -7,6 +7,7 @@ import {
   useStoreReminder,
   useStoreTask,
   useStoreTaskList,
+  useStoreView,
   useSubView,
   useViewModal,
 } from '@repo/store';
@@ -64,6 +65,8 @@ import FormTask from '@atlas/ui/form/task';
 import { useFormTask } from '@repo/hooks';
 import PartialEmpty from '../../empty';
 import { playNotificationSound } from '@repo/notifications';
+import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
+import { useTaskListTitle } from '@atlas/hooks/input';
 
 export default function TaskList() {
   const taskLists = useStoreTaskList((s) => s.taskLists);
@@ -73,16 +76,11 @@ export default function TaskList() {
 
   if (subViewValue === undefined || subViewValue === null) return <>loading</>;
 
-  // handle title
-
-  let title = subViewValue;
-
   const taskListId = extractUuidFromParam(subViewValue);
 
-  if (taskListId) {
-    const taskList = taskLists?.find((tli) => tli.id == taskListId);
-    if (taskList) title = taskList.title;
-  }
+  const taskList = taskLists?.find((tli) => tli.id == taskListId);
+
+  const { field, inputRef, handleBlur, handleKeyDown } = useTaskListTitle(taskList?.id || '');
 
   // handle task filtering
   let completeTasks: TasksValue = undefined;
@@ -92,10 +90,10 @@ export default function TaskList() {
 
   if (isTaskList) {
     filteredTasks = sortedTasks?.filter(
-      (ti) => !ti.complete && ti.taskListId && ti.taskListId == taskListId,
+      (ti) => !ti.complete && ti.taskListId && ti.taskListId == taskList?.id,
     );
     completeTasks = sortedTasks?.filter(
-      (ti) => ti.complete && ti.taskListId && ti.taskListId == taskListId,
+      (ti) => ti.complete && ti.taskListId && ti.taskListId == taskList?.id,
     );
   } else {
     switch (subViewValue) {
@@ -143,11 +141,18 @@ export default function TaskList() {
     <LayoutSection id={'task-list'} containerized>
       <Box py={SECTION_SPACING}>
         <Stack>
-          <Group>
-            <Title order={1} fz={'xl'}>
-              {capitalizeWords(title)}
-            </Title>
-          </Group>
+          <div>
+            {/* <Title order={1} fz={'xl'}>
+              {capitalizeWords(taskList?.title)}
+            </Title> */}
+
+            <InputTextEditorTitle
+              inputProps={field.getInputProps()}
+              inputRef={inputRef}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
 
           {tasks === undefined || !filteredTasks?.length ? (
             <div>

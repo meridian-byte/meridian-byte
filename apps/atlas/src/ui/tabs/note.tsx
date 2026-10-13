@@ -21,6 +21,7 @@ import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
 import EditorMain from '@atlas/ui/editor/main';
 import { SHELL_VALUES } from '@atlas/constants';
 import { ScrollContext } from '@repo/hooks';
+import { useNoteTitle } from '@atlas/hooks/input';
 
 export default function Note() {
   const tabsJotView = useStoreView((s) => s.view?.tabsJotView);
@@ -29,6 +30,8 @@ export default function Note() {
   const { subViewValue, showSubViewJot } = useSubView();
   const notes = useStoreNote((s) => s.notes);
   const noteId = extractUuidFromParam(subViewValue || '');
+
+  const { field, inputRef, handleBlur, handleKeyDown } = useNoteTitle(noteId || '');
 
   useEffect(() => {
     if (tabsJotView === undefined) return;
@@ -214,7 +217,12 @@ export default function Note() {
                 viewportRef={contextValue}
               >
                 <Box pt={SECTION_SPACING / 2}>
-                  <InputTextEditorTitle noteId={ati.tab} />
+                  <InputTextEditorTitle
+                    inputProps={field.getInputProps()}
+                    inputRef={inputRef}
+                    onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
+                  />
                   <EditorMain noteId={ati.tab} />
                 </Box>
               </ScrollArea>
