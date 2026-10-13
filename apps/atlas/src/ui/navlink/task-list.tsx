@@ -41,7 +41,7 @@ export default function TaskList({ props }: { props: TaskListGet }) {
                 e.stopPropagation();
               }}
               className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-250"
-              miw={30}
+              mih={30}
               pr={4}
             >
               <MenuTaskList defaultValues={props}>
