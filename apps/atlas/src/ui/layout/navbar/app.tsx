@@ -161,7 +161,7 @@ function NavbarHeader() {
 
 function NavbarMain() {
   return (
-    <ScrollArea w={SHELL_VALUES.NAVBAR.WIDTH} scrollbars={'x'} px={5}>
+    <ScrollArea w={SHELL_VALUES.NAVBAR.WIDTH} scrollbars={'x'} px={5} pb={5}>
       <AccordionNavbar />
     </ScrollArea>
   );
