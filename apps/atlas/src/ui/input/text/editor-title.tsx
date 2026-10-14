@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { TextInput } from '@mantine/core';
+import { TextInput, TextInputProps } from '@mantine/core';
 import classes from './editor-title.module.css';
-import { LayoutSection } from '@repo/ui';
 
 interface EditorTitleProps {
   inputProps: any;
@@ -12,25 +11,30 @@ interface EditorTitleProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export default function EditorTitle({ inputProps, inputRef, onBlur, onKeyDown }: EditorTitleProps) {
+export default function EditorTitle({
+  inputProps,
+  inputRef,
+  onBlur,
+  onKeyDown,
+  ...restProps
+}: EditorTitleProps & TextInputProps) {
   return (
-    <LayoutSection id="note-details" containerized="md">
-      <TextInput
-        {...inputProps}
-        onBlur={onBlur}
-        onKeyDown={onKeyDown}
-        classNames={classes}
-        placeholder="Title"
-        variant="unstyled"
-        size="md"
-        ref={inputRef}
-        id="note-title-input"
-        styles={{
-          input: {
-            backgroundColor: 'transparent',
-          },
-        }}
-      />
-    </LayoutSection>
+    <TextInput
+      {...inputProps}
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      classNames={classes}
+      placeholder="Title"
+      variant="unstyled"
+      size="md"
+      ref={inputRef}
+      id="note-title-input"
+      styles={{
+        input: {
+          backgroundColor: 'transparent',
+        },
+      }}
+      {...restProps}
+    />
   );
 }

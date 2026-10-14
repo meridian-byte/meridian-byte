@@ -33,8 +33,11 @@ import BadgeNoteStatus from '@atlas/ui/badge/note-status';
 import { useStoreNote, useStoreUserStates, useSubView } from '@repo/store';
 import MenuNote from '@atlas/ui/menu/note';
 import { extractUuidFromParam } from '@repo/utils';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Note() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { subViewValue } = useSubView();
   const noteId = extractUuidFromParam(subViewValue || '');
   const note = useStoreNote((s) => s.notes?.find((n) => n.id == noteId));
@@ -51,11 +54,11 @@ export default function Note() {
       top={0}
       style={{ zIndex: 1 }}
       display={!noteId ? 'none' : undefined}
-      visibleFrom="xs"
+      // visibleFrom="xs"
     >
       <LayoutSection id={`note-details-header`} containerized={false}>
         <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-          <Group justify="space-between" wrap="nowrap" mih={30} p={5}>
+          <Group justify="space-between" wrap="nowrap" mih={30} py={5} px={'xs'}>
             <Group gap={5} wrap="nowrap">
               {/* <BreadcrumbAppNote props={{ noteId: note?.id }} /> */}
             </Group>
@@ -73,8 +76,15 @@ export default function Note() {
                     <MenuNote defaultValues={note}>
                       <Group>
                         <Tooltip label={'More options'}>
-                          <ActionIcon size={30 - 6} variant={'subtle'} color="gray">
-                            <IconDotsVertical size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                          <ActionIcon
+                            size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                            variant={'subtle'}
+                            color="gray"
+                          >
+                            <IconDotsVertical
+                              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                              stroke={ICON_STROKE_WIDTH}
+                            />
                           </ActionIcon>
                         </Tooltip>
                       </Group>
@@ -87,9 +97,10 @@ export default function Note() {
         </WrapperUnderlayGlass>
       </LayoutSection>
 
-      <Box style={{ ...styles, transition: '0.25s all ease' }}>
+      {/* <Box style={{ ...styles, transition: '0.25s all ease' }}>
         <Divider />
-      </Box>
+      </Box> */}
+      <Divider />
     </Box>
   );
 }

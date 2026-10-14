@@ -22,8 +22,13 @@ import EditorMain from '@atlas/ui/editor/main';
 import { SHELL_VALUES } from '@atlas/constants';
 import { ScrollContext } from '@repo/hooks';
 import { useNoteTitle } from '@atlas/hooks/input';
+import { useMediaQuery } from '@mantine/hooks';
+import { LayoutSection } from '@repo/ui';
 
 export default function Note() {
+  const mobile = useMediaQuery('(max-width: 36em)');
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const tabsJotView = useStoreView((s) => s.view?.tabsJotView);
   const setTabsJotViewValue = useStoreView((s) => s.setTabsJotViewValue);
 
@@ -129,7 +134,7 @@ export default function Note() {
         tabLabel: { lineHeight: 1.3 },
       }}
     >
-      <TabsList px={4}>
+      <TabsList px={5}>
         <ScrollArea w={'100%'} scrollbars={'x'} scrollbarSize={0}>
           <Group wrap="nowrap" gap={4}>
             {(tabsJotView || []).map((ati, i) => {
@@ -215,16 +220,27 @@ export default function Note() {
           >
             <ScrollContext.Provider value={contextValue}>
               <ScrollArea
-                h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT.DESKTOP + 30 + 34 + 11.6 + 1}px)`}
+                h={`calc(100vh - ${(desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + 38 + 1 + 41.6}px)`}
                 viewportRef={contextValue}
               >
                 <Box pt={SECTION_SPACING / 2}>
-                  <InputTextEditorTitle
-                    inputProps={field.getInputProps()}
-                    inputRef={inputRef}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                  />
+                  <LayoutSection id="note-details" containerized={mobile ? false : 'md'}>
+                    <Box px={{ base: 'xs', xs: 0 }}>
+                      <InputTextEditorTitle
+                        inputProps={field.getInputProps()}
+                        inputRef={inputRef}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        styles={{
+                          input: {
+                            fontSize: 'var(--mantine-h2-font-size)',
+                            backgroundColor: 'transparent',
+                          },
+                        }}
+                      />
+                    </Box>
+                  </LayoutSection>
+
                   <EditorMain noteId={ati.tab} />
                 </Box>
               </ScrollArea>

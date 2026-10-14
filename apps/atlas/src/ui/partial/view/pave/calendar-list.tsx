@@ -8,13 +8,16 @@ import dayjs from 'dayjs';
 import { useStoreCalendar, useStoreEvent } from '@repo/store';
 import PartialLoading from '../../loading';
 import PartialEmpty from '../../empty';
-import { ActionIcon, Button, Divider, Group, Modal, Stack, Text } from '@mantine/core';
+import { ActionIcon, Button, Divider, Group, Modal, Stack, Text, Tooltip } from '@mantine/core';
 import { useEventCrud } from '@atlas/hooks/schedule';
 import FormEvent from '@atlas/ui/form/event';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
+import { IconChevronLeft, IconChevronRight, IconPlus } from '@tabler/icons-react';
+import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function CalendarList() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { subViewValue } = useSubView();
   const calendarId = extractUuidFromParam(subViewValue || '');
 
@@ -62,29 +65,32 @@ export default function CalendarList() {
     <>
       <Group justify="space-between">
         <Group gap="xs">
-          <ActionIcon size={32} variant="default" onClick={goToPreviousMonth}>
+          <ActionIcon size={desktop ? 32 : 28} variant="default" onClick={goToPreviousMonth}>
             <IconChevronLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>
 
-          <Button size="sm" h={32} variant="default">
-            {currentDate.format('MMMM YYYY')}
+          <Button size="sm" h={desktop ? 32 : 28} variant="default">
+            {currentDate.format(desktop ? 'MMMM YYYY' : 'MMM YY')}
           </Button>
 
-          <ActionIcon size={32} variant="default" onClick={goToNextMonth}>
+          <ActionIcon size={desktop ? 32 : 28} variant="default" onClick={goToNextMonth}>
             <IconChevronRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>
 
-          <Button size="sm" h={32} variant="default" onClick={goToToday}>
+          <Button size="sm" h={desktop ? 32 : 28} variant="default" onClick={goToToday}>
             Today
           </Button>
 
-          <Button
-            size="sm"
-            h={32}
-            onClick={() => eventCrud.handleCreateEvent({ calendarId: calendar?.id })}
-          >
-            Add Event
-          </Button>
+          <Tooltip label={'Add event'}>
+            <ActionIcon
+              size={desktop ? 32 : 28}
+              variant="light"
+              color="gray"
+              onClick={() => eventCrud.handleCreateEvent({ calendarId: calendar?.id })}
+            >
+              <IconPlus size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Tooltip>
         </Group>
 
         <div></div>

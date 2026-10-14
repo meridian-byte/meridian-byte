@@ -67,8 +67,11 @@ import PartialEmpty from '../../empty';
 import { playNotificationSound } from '@repo/notifications';
 import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
 import { useTaskListTitle } from '@atlas/hooks/input';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function TaskList() {
+  const mobile = useMediaQuery('(max-width: 36em)');
+
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const tasks = useStoreTask((s) => s.tasks);
   const sortedTasks = sortArray(tasks || [], (i) => i.createdAt, Order.DESCENDING);
@@ -136,20 +139,32 @@ export default function TaskList() {
   }
 
   return (
-    <LayoutSection id={'task-list'} containerized>
-      <Box py={SECTION_SPACING}>
+    <LayoutSection
+      id={'task-list'}
+      // containerized
+      containerized={mobile ? false : 'md'}
+    >
+      <Box py={{ base: 0, xs: SECTION_SPACING }}>
         <Stack>
           <div>
             {!taskList ? (
-              <Title order={1} fz={'xl'}>
-                {capitalizeWords(subViewValue || '')}
-              </Title>
+              <Group mih={42}>
+                <Title order={1} fz={'xl'}>
+                  {capitalizeWords(subViewValue || '')}
+                </Title>
+              </Group>
             ) : (
               <InputTextEditorTitle
                 inputProps={field.getInputProps()}
                 inputRef={inputRef}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
+                styles={{
+                  input: {
+                    fontSize: 'var(--mantine-font-size-xl)',
+                    backgroundColor: 'transparent',
+                  },
+                }}
               />
             )}
           </div>
@@ -164,7 +179,7 @@ export default function TaskList() {
               {filteredTasks?.map((fti, i) => (
                 <div key={fti.id}>
                   {i > 0 && (
-                    <Box px={SECTION_SPACING - 8}>
+                    <Box px={{ md: SECTION_SPACING - 8 }}>
                       <Divider />
                     </Box>
                   )}
@@ -196,7 +211,7 @@ export default function TaskList() {
               {completeTasks?.map((cti, i) => (
                 <div key={cti.id}>
                   {i > 0 && (
-                    <Box px={SECTION_SPACING - 8}>
+                    <Box px={{ md: SECTION_SPACING - 8 }}>
                       <Divider />
                     </Box>
                   )}
@@ -242,8 +257,8 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
     >
       <Card withBorder={false} bg={'transparent'} radius={0} padding={0}>
         <Grid gap={0}>
-          <GridCol span={0.5}>
-            <Box mt={3} py={'md'} pl={'md'}>
+          <GridCol span={{ base: 1.5, xs: 0.5 }}>
+            <Box mt={3} py={'md'} pl={{ base: 'md' }}>
               {options?.add ? (
                 <ThemeIcon color={'pri'} variant="light" radius={99} size={20}>
                   <IconPlus size={18} stroke={ICON_STROKE_WIDTH} />
@@ -261,7 +276,7 @@ function TaskCard({ props, options }: { props?: TaskGet; options?: { add?: boole
             </Box>
           </GridCol>
 
-          <GridCol span={11.5}>
+          <GridCol span={{ base: 10.5, xs: 11.5 }}>
             <Box
               py={'md'}
               pl={'md'}
@@ -374,7 +389,7 @@ export function AddTask({ options }: { options?: { adding?: boolean } }) {
 
   return (
     <Box>
-      <Box px={SECTION_SPACING - 8} display={!adding ? undefined : 'none'}>
+      <Box px={{ md: SECTION_SPACING - 8 }} display={!adding ? undefined : 'none'}>
         <Divider variant="dashed" />
       </Box>
 

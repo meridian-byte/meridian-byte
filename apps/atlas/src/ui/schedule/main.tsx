@@ -197,6 +197,12 @@ export default function Main() {
                     </ActionIcon>
                   </Group>
                 ),
+
+                styles: {
+                  mobileMonthViewHeader: { paddingLeft: 0, paddingRight: 0 },
+                  mobileMonthViewCalendar: { paddingLeft: 0, paddingRight: 0 },
+                  mobileMonthViewEventsList: { paddingLeft: 0, paddingRight: 0 },
+                },
               }}
 
               monthViewProps={

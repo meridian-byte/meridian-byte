@@ -14,7 +14,7 @@ export default function Main() {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
 
   return (
-    <Group h={'100%'} px={5} justify="space-between">
+    <Group h={'100%'} px={'xs'} justify="space-between">
       <Group>
         <ButtonAppshellNavbar />
       </Group>
