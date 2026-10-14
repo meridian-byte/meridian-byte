@@ -41,8 +41,11 @@ import NavlinkTaskList from '../navlink/task-list';
 import MenuFolder from '../menu/folder';
 import LayoutPartialNavbar from '../layout/partial/navbar';
 import { Order } from '@repo/types';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Folder({ folderId, location }: { folderId: string; location: string }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { subViewValue } = useSubView();
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
 
@@ -169,7 +172,11 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                 component={'span'}
                 justify="end"
                 gap={0}
-                className="opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto"
+                className={
+                  desktop
+                    ? 'opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto'
+                    : undefined
+                }
                 mih={30}
                 pr={4}
               >

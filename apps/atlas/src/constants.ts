@@ -1,5 +1,8 @@
+import { ICON_WRAPPER_SIZE } from '@repo/constants';
+
 export const SHELL_VALUES = {
+  HEADER: { HEIGHT: { DESKTOP: ICON_WRAPPER_SIZE + 10, MOBILE: ICON_WRAPPER_SIZE + 10 } },
   NAVBAR: { WIDTH: 300 },
   ASIDE: { WIDTH: 300 },
-  FOOTER: { HEIGHT: 34 },
+  FOOTER: { HEIGHT: { DESKTOP: 34, MOBILE: ICON_WRAPPER_SIZE * 1.25 + 20 } },
 };

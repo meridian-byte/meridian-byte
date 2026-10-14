@@ -79,7 +79,7 @@ function LayoutMain({
 
 function Loading() {
   return (
-    <Center mih={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT}px)`}>
+    <Center mih={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT.DESKTOP}px)`}>
       <Loader />
     </Center>
   );

@@ -13,10 +13,10 @@ import IndicatorNetworkStatus from '@atlas/ui/indicator/network-status';
 import { useStoreSyncStatus } from '@repo/store';
 import { Box } from '@mantine/core';
 
-export default function App() {
+export default function Main() {
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
 
-  const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
+  const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT.DESKTOP - 10;
 
   return (
     <Group justify={'space-between'}>

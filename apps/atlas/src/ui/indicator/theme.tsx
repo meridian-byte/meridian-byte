@@ -16,8 +16,11 @@ import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants
 import { IconDeviceDesktop, IconMoon, IconSun } from '@tabler/icons-react';
 import { capitalizeWord, capitalizeWords } from '@repo/utils';
 import { SHELL_VALUES } from '@atlas/constants';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Theme() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const [mounted, setMounted] = useState(false);
 
   // Ensure this only runs on the client
@@ -45,7 +48,7 @@ export default function Theme() {
   };
 
   if (!mounted) {
-    return <Skeleton maw={`${100 / 6}%`} h={sharedHeight} />;
+    return <Skeleton maw={`${100 / 6}%`} h={!desktop ? ICON_SIZE : sharedHeight} />;
   }
 
   return (
@@ -59,7 +62,7 @@ export default function Theme() {
     >
       <ActionIcon
         variant={'subtle'}
-        size={sharedHeight}
+        size={!desktop ? ICON_WRAPPER_SIZE : sharedHeight}
         color="gray"
         onClick={() => {
           startTransition(() => {
@@ -67,10 +70,13 @@ export default function Theme() {
           });
         }}
       >
-        <buttonProps.icon size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
+        <buttonProps.icon
+          size={!desktop ? ICON_SIZE : sharedHeight - 8}
+          stroke={ICON_STROKE_WIDTH}
+        />
       </ActionIcon>
     </Tooltip>
   );
 }
 
-const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT.DESKTOP - 10;

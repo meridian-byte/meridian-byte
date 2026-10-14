@@ -39,6 +39,7 @@ import {
 import {
   useFolderActions,
   useNoteActions,
+  useStoreAppShell,
   useStoreFolder,
   useStoreNote,
   useSubView,
@@ -51,8 +52,14 @@ import { Order } from '@repo/types';
 import PartialEmpty from '../empty';
 import NavlinkNote from '@atlas/ui/navlink/note';
 import AccordionFolder from '@atlas/ui/accordion/folder';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Jot() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   const { subViewValue, showSubViewJot } = useSubView();
   const { noteCreate } = useNoteActions();
   // const { showAsideViewJot } = useViewAside();
@@ -93,7 +100,13 @@ export default function Jot() {
                     body: { marginBottom: 4 },
                     label: { fontSize: 'var(--mantine-font-size-xs)' },
                   }}
-                  onClick={nl.action}
+                  onClick={() => {
+                    if (!desktop) {
+                      if (navbarActive) toggleNavbarChild();
+                    }
+
+                    nl.action();
+                  }}
                   leftSection={
                     <ThemeIcon
                       size={30}
@@ -119,7 +132,11 @@ export default function Jot() {
           <Group
             justify="end"
             gap={0}
-            className="opacity-0 group-hover/jotNotes:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/jotNotes:pointer-events-auto"
+            className={
+              desktop
+                ? 'opacity-0 group-hover/jotNotes:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/jotNotes:pointer-events-auto'
+                : undefined
+            }
             mih={30}
             pr={4}
           >

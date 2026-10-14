@@ -42,7 +42,13 @@ import {
   IconLayoutList,
   IconPlus,
 } from '@tabler/icons-react';
-import { useFolderActions, useStoreFolder, useSubView, useViewAside } from '@repo/store';
+import {
+  useFolderActions,
+  useStoreAppShell,
+  useStoreFolder,
+  useSubView,
+  useViewAside,
+} from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreCalendar } from '@repo/store';
@@ -51,8 +57,14 @@ import { CalendarGet, Order } from '@repo/types';
 import PartialEmpty from '../empty';
 import AccordionFolder from '@atlas/ui/accordion/folder';
 import NavlinkCalendar from '@atlas/ui/navlink/calendar';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Pave() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   const { subViewValue, showSubViewPave } = useSubView();
   const { showAsideViewPave } = useViewAside();
 
@@ -109,7 +121,13 @@ export default function Pave() {
                     color: active ? 'var(--mantine-color-pri-6)' : undefined,
                   },
                 }}
-                onClick={nl.action}
+                onClick={() => {
+                  if (!desktop) {
+                    if (navbarActive) toggleNavbarChild();
+                  }
+
+                  nl.action();
+                }}
                 leftSection={
                   <ThemeIcon
                     size={30}
@@ -134,7 +152,11 @@ export default function Pave() {
           <Group
             justify="end"
             gap={0}
-            className="opacity-0 group-hover/paveCalendars:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/paveCalendars:pointer-events-auto"
+            className={
+              desktop
+                ? 'opacity-0 group-hover/paveCalendars:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/paveCalendars:pointer-events-auto'
+                : undefined
+            }
             mih={30}
             pr={4}
           >

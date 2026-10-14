@@ -128,7 +128,9 @@ export default function Main() {
                 intervalMinutes: 15,
                 // slotHeight: 80,
                 startScrollTime: '09:00:00',
-                scrollAreaProps: { mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 60}px)` },
+                scrollAreaProps: {
+                  mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT.DESKTOP + 60}px)`,
+                },
                 withSubHourGridLines: false,
 
                 renderEvent: (event, props) => (
@@ -150,7 +152,9 @@ export default function Main() {
                 intervalMinutes: 30,
                 // slotHeight: 80,
                 startScrollTime: '09:00:00',
-                scrollAreaProps: { mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 62}px)` },
+                scrollAreaProps: {
+                  mah: `calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT.DESKTOP + 62}px)`,
+                },
                 weekdayFormat: 'dd',
                 highlightToday: true,
                 withWeekendDays: true,

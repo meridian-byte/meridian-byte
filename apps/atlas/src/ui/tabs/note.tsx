@@ -215,7 +215,7 @@ export default function Note() {
           >
             <ScrollContext.Provider value={contextValue}>
               <ScrollArea
-                h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT + 30 + 34 + 11.6 + 1}px)`}
+                h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT.DESKTOP + 30 + 34 + 11.6 + 1}px)`}
                 viewportRef={contextValue}
               >
                 <Box pt={SECTION_SPACING / 2}>
