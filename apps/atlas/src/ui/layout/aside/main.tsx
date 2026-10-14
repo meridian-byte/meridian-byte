@@ -23,7 +23,7 @@ import FormTaskList from '@atlas/ui/form/task-list';
 import { useAppshellChild } from '@repo/hooks';
 import { AddTask } from '@atlas/ui/partial/view/stride/task-list';
 
-export default function App() {
+export default function Main() {
   const { asideViewValue, showAsideViewPave, showAsideViewJot, showAsideViewStride } =
     useViewAside();
 

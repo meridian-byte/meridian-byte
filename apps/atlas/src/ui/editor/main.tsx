@@ -35,6 +35,8 @@ import { ParserHtml } from '@repo/ui';
 import { LayoutSection } from '@repo/ui';
 
 export default function Main({ noteId }: { noteId: string }) {
+  const mobile = useMediaQuery('(max-width: 36em)');
+
   const notes = useStoreNote((s) => s.notes);
   const note = notes?.find((ni) => ni.id == noteId);
 
@@ -104,8 +106,11 @@ export default function Main({ noteId }: { noteId: string }) {
           }}
         >
           <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-            <LayoutSection id={`note-editor-toolbar`} containerized={!note ? false : 'md'}>
-              <Box style={{ ...styles, transition: '0.25s all ease' }} hiddenFrom="xs">
+            <LayoutSection
+              id={`note-editor-toolbar`}
+              containerized={mobile ? false : !note ? false : 'md'}
+            >
+              {/* <Box style={{ ...styles, transition: '0.25s all ease' }} hiddenFrom="xs">
                 <Group py={'xs'}>
                   <Title order={2} fz={'sm'} fw={500} lineClamp={1}>
                     {note?.title}
@@ -113,12 +118,18 @@ export default function Main({ noteId }: { noteId: string }) {
                 </Group>
 
                 <Divider />
-              </Box>
+              </Box> */}
 
               <Box>
-                <Divider style={{ ...styles, transition: '0.25s all ease' }} />
+                {/* <Divider style={{ ...styles, transition: '0.25s all ease' }} /> */}
 
-                <ScrollArea bg={'transparent'} w={'100%'} scrollbars={'x'} type="auto">
+                <ScrollArea
+                  bg={'transparent'}
+                  w={'100%'}
+                  scrollbars={'x'}
+                  type="auto"
+                  px={{ base: 'xs', xs: 0 }}
+                >
                   <RichTextEditor.Toolbar
                     style={{
                       flexWrap: 'nowrap',
@@ -176,17 +187,24 @@ export default function Main({ noteId }: { noteId: string }) {
         </Box>
 
         <Box display={userStateEditing == true ? 'none' : undefined} mt={'xs'}>
-          <LayoutSection id={`note-editor-parser`} containerized={!note ? false : 'md'}>
-            <ParserHtml props={{ html: editorContent }} />
+          <LayoutSection
+            id={`note-editor-parser`}
+            containerized={mobile ? false : !note ? false : 'md'}
+          >
+            <Box px={{ base: 'xs', xs: 0 }}>
+              <ParserHtml props={{ html: editorContent }} />
+            </Box>
           </LayoutSection>
         </Box>
 
         <LayoutSection
           id={`note-editor-content`}
-          containerized={!note ? false : 'md'}
+          containerized={mobile ? false : !note ? false : 'md'}
           display={userStateEditing == true ? undefined : 'none'}
         >
-          <RichTextEditor.Content p={0} mt={'xs'} data-autofocus={true} />
+          <Box px={{ base: 'xs', xs: 0 }}>
+            <RichTextEditor.Content p={0} mt={'xs'} data-autofocus={true} />
+          </Box>
         </LayoutSection>
       </RichTextEditor>
 

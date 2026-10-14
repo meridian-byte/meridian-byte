@@ -6,6 +6,14 @@ export const useView = () => {
   const view = useStoreView((s) => s.view);
   const setView = useStoreView((s) => s.setView);
 
+  const showViewHome = () => {
+    if (!view) return;
+
+    if (viewValue != null) {
+      setView({ ...view, subView: null, view: null });
+    }
+  };
+
   const showViewPave = () => {
     if (!view) return;
 
@@ -48,6 +56,7 @@ export const useView = () => {
 
   return {
     viewValue,
+    showViewHome,
     showViewPave,
     showViewJot,
     showViewStride,

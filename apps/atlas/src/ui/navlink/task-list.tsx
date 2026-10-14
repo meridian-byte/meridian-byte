@@ -2,20 +2,26 @@
 
 import { ActionIcon, Group, NavLink, Text, ThemeIcon, Tooltip } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { useSubView } from '@repo/store';
+import { useStoreAppShell, useSubView } from '@repo/store';
 import { CalendarGet, NoteGet, TaskListGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
 import { IconCircleFilled, IconDots, IconNote } from '@tabler/icons-react';
 import MenuTaskList from '../menu/task-list';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function TaskList({ props }: { props: TaskListGet }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   const { subViewValue, showSubViewStride } = useSubView();
 
   const taskListActive =
     subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == props.id;
 
   return (
-    <div className="group/list">
+    <div className="group/list" style={{ overflow: 'hidden' }}>
       <MenuTaskList defaultValues={props} options={{ context: true }}>
         <NavLink
           label={
@@ -58,7 +64,13 @@ export default function TaskList({ props }: { props: TaskListGet }) {
               color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
             },
           }}
-          onClick={() => showSubViewStride(`list: ${props.id}`)}
+          onClick={() => {
+            if (!desktop) {
+              if (navbarActive) toggleNavbarChild();
+            }
+
+            showSubViewStride(`list: ${props.id}`);
+          }}
         />
       </MenuTaskList>
 

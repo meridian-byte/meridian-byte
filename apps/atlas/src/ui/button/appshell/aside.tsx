@@ -21,7 +21,7 @@ export default function Aside({
   const label = `${asideChild ? 'Collapse' : 'Expand'} Aside`;
 
   if (asideChild === undefined) {
-    return <Skeleton w={47.43} h={SHELL_VALUES.FOOTER.HEIGHT - 1} radius={0} />;
+    return <Skeleton w={47.43} h={SHELL_VALUES.FOOTER.HEIGHT.DESKTOP - 1} radius={0} />;
   }
 
   return (
@@ -41,4 +41,4 @@ export default function Aside({
   );
 }
 
-const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT.DESKTOP - 10;

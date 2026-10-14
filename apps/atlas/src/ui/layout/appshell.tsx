@@ -5,23 +5,27 @@ import {
   AppShell,
   AppShellAside,
   AppShellFooter,
+  AppShellHeader,
   AppShellMain,
   AppShellNavbar,
   ScrollArea,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import LayoutNavbarApp from './navbar/app';
-import LayoutFooterApp from './footer/app';
-import LayoutAsideApp from './aside/app';
+import LayoutNavbarMain from './navbar/main';
+import LayoutHeaderMain from './header/main';
+import LayoutAsideMain from './aside/main';
+import LayoutFooterMain from './footer/main';
+import LayoutFooterMobile from './footer/mobile';
 import { SHELL_VALUES } from '@atlas/constants';
 import { useStoreAppShell } from '@repo/store';
 import { ScrollContext } from '@repo/hooks';
 
 export default function Shell({ children }: { children: React.ReactNode }) {
+  // const mobile = useMediaQuery('(max-width: 36em)');
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
-  // const mobile = useMediaQuery('(max-width: 36em)');
-  // const desktop = useMediaQuery('(min-width: 62em)');
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const contextValue = useMemo(() => viewportRef, []);
@@ -29,27 +33,46 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       padding={0}
+      header={
+        desktop
+          ? undefined
+          : {
+              height: SHELL_VALUES.HEADER.HEIGHT.MOBILE,
+              collapsed: false,
+            }
+      }
       navbar={{
         width: SHELL_VALUES.NAVBAR.WIDTH,
-        breakpoint: 'sm',
-        collapsed: { mobile: true, desktop: !navbarActive },
+        breakpoint: 'md',
+        collapsed: { mobile: !navbarActive, desktop: !navbarActive },
       }}
       aside={{
         width: SHELL_VALUES.ASIDE.WIDTH,
-        breakpoint: 'sm',
+        breakpoint: 'md',
         collapsed: { mobile: true, desktop: !asideActive },
       }}
-      footer={{ height: SHELL_VALUES.FOOTER.HEIGHT }}
+      footer={{
+        height: desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE,
+      }}
     >
-      <AppShellNavbar style={{ borderColor: 'var(--mantine-color-default-border)' }}>
-        <LayoutNavbarApp />
+      {!desktop && (
+        <AppShellHeader>
+          <LayoutHeaderMain />
+        </AppShellHeader>
+      )}
+
+      <AppShellNavbar
+        style={{ borderColor: 'var(--mantine-color-default-border)' }}
+        maw={SHELL_VALUES.NAVBAR.WIDTH}
+      >
+        <LayoutNavbarMain />
       </AppShellNavbar>
 
       <AppShellMain>
         <ScrollContext.Provider value={contextValue}>
           <ScrollArea
             scrollbars={'y'}
-            h={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT}px)`}
+            h={`calc(100vh - ${desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.HEADER.HEIGHT.MOBILE + SHELL_VALUES.FOOTER.HEIGHT.MOBILE}px)`}
             viewportRef={contextValue}
           >
             {children}
@@ -58,15 +81,24 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       </AppShellMain>
 
       <AppShellAside style={{ borderColor: 'var(--mantine-color-default-border)' }}>
-        <LayoutAsideApp />
+        <LayoutAsideMain />
       </AppShellAside>
 
-      <AppShellFooter
-        style={{ borderColor: 'var(--mantine-color-default-border)' }}
-        h={SHELL_VALUES.FOOTER.HEIGHT}
-      >
-        <LayoutFooterApp />
-      </AppShellFooter>
+      {desktop ? (
+        <AppShellFooter
+          style={{ borderColor: 'var(--mantine-color-default-border)' }}
+          h={SHELL_VALUES.FOOTER.HEIGHT.DESKTOP}
+        >
+          <LayoutFooterMain />
+        </AppShellFooter>
+      ) : (
+        <AppShellFooter
+          style={{ borderColor: 'var(--mantine-color-default-border)' }}
+          h={SHELL_VALUES.FOOTER.HEIGHT.MOBILE}
+        >
+          <LayoutFooterMobile />
+        </AppShellFooter>
+      )}
     </AppShell>
   );
 }

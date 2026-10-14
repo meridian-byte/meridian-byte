@@ -33,15 +33,17 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import AccordionNavbar from '@atlas/ui/accordion/navbar';
-import { config, useStoreSession, useStoreView } from '@repo/store';
+import { config, useStoreAppShell, useStoreSession, useStoreView } from '@repo/store';
 import MenuNew from '@atlas/ui/menu/new';
 import { AuthAction } from '@repo/types';
 import Link from 'next/link';
 import { AvatarUser } from '@repo/ui';
 import { useViewModal } from '@repo/store';
 import ModalUser from '@atlas/ui/modal/user';
+import ButtonAppshellNavbar from '@atlas/ui/button/appshell/navbar';
+import { useMediaQuery } from '@mantine/hooks';
 
-export default function App() {
+export default function Main() {
   return (
     <>
       <AppShellSection>
@@ -55,7 +57,7 @@ export default function App() {
         grow
         component={ScrollArea}
         scrollbars={'y'}
-        // h={`calc(100vh - ${28.4 + 1 + 28.4 + 1 + SHELL_VALUES.FOOTER.HEIGHT}px)`}
+        // h={`calc(100vh - ${28.4 + 1 + 28.4 + 1 + SHELL_VALUES.FOOTER.HEIGHT.DESKTOP}px)`}
       >
         <NavbarMain />
       </AppShellSection>
@@ -74,11 +76,24 @@ function NavbarHeader() {
   const setView = useStoreView((s) => s.setView);
   const { showModalViewSearch } = useViewModal();
 
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   return (
     <Stack gap={0} px={5} pt={5}>
-      <ModalUser>
-        <AvatarUser />
-      </ModalUser>
+      <Box
+        onClick={() => {
+          if (!desktop) {
+            if (navbarActive) toggleNavbarChild();
+          }
+        }}
+      >
+        <ModalUser>
+          <AvatarUser />
+        </ModalUser>
+      </Box>
 
       <Divider my={4} />
 
@@ -103,6 +118,10 @@ function NavbarHeader() {
           if (view === undefined) return;
           if (view === null) return;
 
+          if (!desktop) {
+            if (navbarActive) toggleNavbarChild();
+          }
+
           if (!!view.view) {
             setView({ ...view, view: null, subView: null });
           }
@@ -126,7 +145,13 @@ function NavbarHeader() {
             <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
-        onClick={() => showModalViewSearch()}
+        onClick={() => {
+          if (!desktop) {
+            if (navbarActive) toggleNavbarChild();
+          }
+
+          showModalViewSearch();
+        }}
       />
 
       <NavLink
@@ -154,14 +179,17 @@ function NavbarHeader() {
             setView({ ...view, asideView: ASIDE_VIEW_NAMES.NEW.ITEM });
           }
         }}
+        visibleFrom="md"
       />
     </Stack>
   );
 }
 
 function NavbarMain() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   return (
-    <ScrollArea w={SHELL_VALUES.NAVBAR.WIDTH} scrollbars={'x'} px={5} pb={5}>
+    <ScrollArea w={desktop ? SHELL_VALUES.NAVBAR.WIDTH : '100%'} scrollbars={'x'} px={5} pb={5}>
       <AccordionNavbar />
     </ScrollArea>
   );

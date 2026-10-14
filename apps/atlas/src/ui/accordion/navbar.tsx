@@ -27,12 +27,16 @@ import PartialNavbarPave from '../partial/navbar/pave';
 import PartialNavbarStride from '../partial/navbar/stride';
 import PartialNavbarJot from '../partial/navbar/jot';
 import LayoutPartialNavbar from '../layout/partial/navbar';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Navbar() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
 
   const { showAsideViewPave, showAsideViewJot, showAsideViewStride } = useViewAside();
-  const { showViewPave, showViewJot, showViewStride, showViewPrime, showViewTally } = useView();
+  const { viewValue, showViewPave, showViewJot, showViewStride, showViewPrime, showViewTally } =
+    useView();
   const { showModalViewSearch } = useViewModal();
 
   const data = [
@@ -78,7 +82,12 @@ export default function Navbar() {
     // },
   ];
 
-  const items = data.map((item, i) => {
+  const filteredData = data.filter((di) => {
+    if (desktop) return di;
+    return di.value == viewValue;
+  });
+
+  const items = filteredData.map((item, i) => {
     const props = {
       icon: (navbarViewValue || []).includes(item.value) ? IconChevronDown : IconChevronRight,
     };
@@ -99,6 +108,7 @@ export default function Navbar() {
                 <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
               </ThemeIcon>
             }
+            display={desktop ? undefined : 'none'}
             // mb={4}
           >
             <Group justify="space-between">
@@ -110,7 +120,11 @@ export default function Navbar() {
                 component={'span'}
                 justify="end"
                 gap={0}
-                className="opacity-0 group-hover/accordionNavbar:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionNavbar:pointer-events-auto"
+                className={
+                  desktop
+                    ? 'opacity-0 group-hover/accordionNavbar:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionNavbar:pointer-events-auto'
+                    : undefined
+                }
                 mih={30}
                 pr={4}
               >
@@ -175,8 +189,8 @@ export default function Navbar() {
   return (
     <Accordion
       order={3}
-      value={navbarViewValue || []}
-      onChange={(newValues) => setNavbarViewValue(newValues)}
+      value={desktop ? navbarViewValue || [] : filteredData.map((di) => di.value)}
+      onChange={desktop ? (newValues) => setNavbarViewValue(newValues) : undefined}
       chevronIconSize={ICON_SIZE}
       chevron={null}
       // keepMounted

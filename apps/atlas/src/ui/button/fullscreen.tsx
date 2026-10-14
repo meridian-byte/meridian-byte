@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useFullscreenDocument } from '@mantine/hooks';
+import { useFullscreenDocument, useMediaQuery } from '@mantine/hooks';
 import { ActionIcon, Group, Tooltip } from '@mantine/core';
 import { IconArrowsMaximize, IconArrowsMinimize } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { SHELL_VALUES } from '@atlas/constants';
 
 export default function Fullscreen() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { toggle, fullscreen } = useFullscreenDocument();
 
   const buttonProps = {
@@ -17,11 +19,19 @@ export default function Fullscreen() {
 
   return (
     <Tooltip label={buttonProps.label}>
-      <ActionIcon size={sharedHeight} onClick={toggle} variant="subtle" color="gray">
-        <buttonProps.icon size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
+      <ActionIcon
+        size={!desktop ? ICON_WRAPPER_SIZE : sharedHeight}
+        onClick={toggle}
+        variant="subtle"
+        color="gray"
+      >
+        <buttonProps.icon
+          size={!desktop ? ICON_SIZE : sharedHeight - 8}
+          stroke={ICON_STROKE_WIDTH}
+        />
       </ActionIcon>
     </Tooltip>
   );
 }
 
-const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT - 10;
+const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT.DESKTOP - 10;

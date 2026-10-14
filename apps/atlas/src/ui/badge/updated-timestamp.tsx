@@ -8,8 +8,11 @@ import { useMinuteTicker } from '@repo/hooks';
 import { usePathname } from 'next/navigation';
 import { useStoreNote, useSubView } from '@repo/store';
 import { extractUuidFromParam } from '@repo/utils';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function UpdatedTimestamp() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   useMinuteTicker(); // triggers re-render every minute
   const { subViewValue } = useSubView();
   const notes = useStoreNote((s) => s.notes);
@@ -19,7 +22,7 @@ export default function UpdatedTimestamp() {
   const updatedAt = note?.updatedAt && getRegionalDate(note.updatedAt);
 
   return notes === undefined ? (
-    <Skeleton h={30 - 6} w={80} radius={0} />
+    <Skeleton h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE} w={80} radius={0} />
   ) : !note ? null : (
     <Tooltip
       label={
@@ -36,7 +39,7 @@ export default function UpdatedTimestamp() {
         size="md"
         fz={'xs'}
         fw={'normal'}
-        h={30 - 6}
+        h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
         style={{ cursor: 'pointer' }}
       >
         <Text component="span" inherit>

@@ -13,6 +13,7 @@ import { SHELL_VALUES } from '@atlas/constants';
 import PartialViewPaveHome from '@atlas/ui/partial/view/pave/home';
 import PartialViewJotHome from '@atlas/ui/partial/view/jot/home';
 import PartialViewStrideHome from '@atlas/ui/partial/view/stride/home';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function App() {
   const viewValue = useStoreView((s) => s.view?.view);
@@ -70,8 +71,10 @@ function LayoutMain({
     withoutPadding?: boolean;
   };
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   return (
-    <Box p={!!options?.withoutPadding ? undefined : 'xs'}>
+    <Box p={!!options?.withoutPadding ? undefined : !desktop ? 'xs' : 'xs'}>
       {options?.containerized ? <Container size={'md'}>{children}</Container> : children}
     </Box>
   );
@@ -79,7 +82,7 @@ function LayoutMain({
 
 function Loading() {
   return (
-    <Center mih={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT}px)`}>
+    <Center mih={`calc(100vh - ${SHELL_VALUES.FOOTER.HEIGHT.DESKTOP}px)`}>
       <Loader />
     </Center>
   );

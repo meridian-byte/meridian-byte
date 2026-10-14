@@ -16,6 +16,10 @@ import {
   ScrollArea,
   Select,
   Stack,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
   Text,
   Textarea,
   TextInput,
@@ -37,9 +41,11 @@ import {
 } from '@repo/store';
 import { DateInput, DateTimePicker } from '@mantine/dates';
 import {
+  IconAlignJustified,
   IconBell,
   IconCalendarEvent,
   IconCategory,
+  IconChecklist,
   IconClock,
   IconFlag,
   IconRepeat,
@@ -64,6 +70,7 @@ import {
 } from '@repo/utils';
 import dayjs from 'dayjs';
 import { ModalConfirm } from '@repo/ui';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Task({
   defaultValues,
@@ -74,6 +81,8 @@ export default function Task({
   onUnmount?: React.Dispatch<React.SetStateAction<boolean>>;
   options?: { modal?: boolean; withoutCheck?: boolean };
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const [checked, setChecked] = useState(options?.withoutCheck);
   const { form, submitted, handleSubmit, views, taskListId } = useFormTask({
     options: { closeWhenDone: checked },
@@ -89,7 +98,7 @@ export default function Task({
   const creatingTask = !defaultValues?.updatedAt;
 
   const sharedPadding = 'md';
-  const sharedHeight = options?.modal ? 400 : undefined;
+  const sharedHeight = options?.modal ? (desktop ? 400 : 480) : undefined;
 
   function InputTaskList() {
     return (
@@ -106,6 +115,7 @@ export default function Task({
             // disabled={creatingTask && (views.inboxView || !!taskListId)}
             {...form.getInputProps('taskListId')}
             leftSection={<IconCategory size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+            comboboxProps={{ withinPortal: false }}
             data={(taskLists || []).map((tli) => {
               return {
                 value: tli.id,
@@ -485,6 +495,7 @@ export default function Task({
                 aria-label="Priority"
                 label={!options?.modal ? undefined : 'Priority'}
                 placeholder="Priority"
+                comboboxProps={{ withinPortal: false }}
                 size="xs"
                 // clearable
                 {...form.getInputProps('priority')}
@@ -651,6 +662,79 @@ export default function Task({
     );
   }
 
+  const leftcolumn = (
+    <ScrollArea
+      h={sharedHeight}
+      py={options?.modal ? undefined : 0}
+      p={options?.withoutCheck ? 'xs' : sharedPadding}
+    >
+      <Grid gap={0}>
+        {!options?.withoutCheck && (
+          <GridCol span={{ md: options?.modal ? 1 : 0.5 }} visibleFrom="md">
+            <Group pl={options?.modal ? 5 : 0}>
+              <Checkbox
+                aria-label={'Complete'}
+                defaultChecked={form.values.complete}
+                {...form.getInputProps('complete')}
+                size="sm"
+                disabled={creatingTask && views.completeView}
+                radius={99}
+                mt={12}
+              />
+            </Group>
+          </GridCol>
+        )}
+
+        <GridCol span={{ md: options?.modal ? 11 : options?.withoutCheck ? 12 : 11.5 }}>
+          <Stack gap={'xs'}>
+            <div>
+              <TextInput
+                required
+                aria-label={'Title'}
+                placeholder="Title"
+                variant="unstyled"
+                styles={{
+                  input: {
+                    backgroundColor: 'transparent',
+                    fontWeight: 'bold',
+                  },
+                }}
+                {...form.getInputProps('title')}
+                size="md"
+              />
+
+              <div>
+                <Textarea
+                  aria-label={'Description'}
+                  placeholder="Description"
+                  variant="unstyled"
+                  styles={{
+                    input: {
+                      backgroundColor: 'transparent',
+                      padding: 0,
+                      fontWeight: 500,
+                    },
+                  }}
+                  {...form.getInputProps('description')}
+                  size="sm"
+                  autosize
+                  minRows={1}
+                  maxRows={options?.modal ? undefined : 5}
+                />
+              </div>
+            </div>
+
+            {!options?.modal && <TaskProperties />}
+          </Stack>
+        </GridCol>
+      </Grid>
+    </ScrollArea>
+  );
+
+  const rightColumn = options?.modal && <TaskProperties />;
+
+  if (options?.modal && !desktop) return <TaskTab content={leftcolumn} properties={rightColumn} />;
+
   return (
     <Box
       component="form"
@@ -665,84 +749,61 @@ export default function Task({
           span={{ base: 12, md: options?.modal ? 8 : 12 }}
           bg={
             options?.modal
-              ? 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'
+              ? 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'
               : undefined
           }
         >
-          <ScrollArea
-            h={sharedHeight}
-            py={options?.modal ? undefined : 0}
-            p={options?.withoutCheck ? 'xs' : sharedPadding}
-          >
-            <Grid gap={0}>
-              {!options?.withoutCheck && (
-                <GridCol span={options?.modal ? 1 : 0.5}>
-                  <Group pl={options?.modal ? 5 : 0}>
-                    <Checkbox
-                      aria-label={'Complete'}
-                      defaultChecked={form.values.complete}
-                      {...form.getInputProps('complete')}
-                      size="sm"
-                      disabled={creatingTask && views.completeView}
-                      radius={99}
-                      mt={12}
-                    />
-                  </Group>
-                </GridCol>
-              )}
-
-              <GridCol span={options?.modal ? 11 : options?.withoutCheck ? 12 : 11.5}>
-                <Stack gap={'xs'}>
-                  <div>
-                    <TextInput
-                      required
-                      aria-label={'Title'}
-                      placeholder="Title"
-                      variant="unstyled"
-                      styles={{
-                        input: {
-                          backgroundColor: 'transparent',
-                          fontWeight: 'bold',
-                        },
-                      }}
-                      {...form.getInputProps('title')}
-                      size="md"
-                    />
-
-                    <div>
-                      <Textarea
-                        aria-label={'Description'}
-                        placeholder="Description"
-                        variant="unstyled"
-                        styles={{
-                          input: {
-                            backgroundColor: 'transparent',
-                            padding: 0,
-                            fontWeight: 500,
-                          },
-                        }}
-                        {...form.getInputProps('description')}
-                        size="sm"
-                        autosize
-                        minRows={1}
-                        maxRows={options?.modal ? undefined : 5}
-                      />
-                    </div>
-                  </div>
-
-                  {!options?.modal && <TaskProperties />}
-                </Stack>
-              </GridCol>
-            </Grid>
-          </ScrollArea>
+          {leftcolumn}
         </GridCol>
 
-        {options?.modal && (
-          <GridCol span={{ base: 12, md: 4 }}>
-            <TaskProperties />
-          </GridCol>
-        )}
+        <GridCol span={{ base: 12, md: 4 }}>{rightColumn}</GridCol>
       </Grid>
+    </Box>
+  );
+}
+
+function TaskTab({
+  content,
+  properties,
+}: {
+  content?: React.ReactNode;
+  properties?: React.ReactNode;
+}) {
+  return (
+    <Box>
+      <Tabs
+        defaultValue="content"
+        styles={{
+          // tab: { padding: '10px 10px' },
+          tabLabel: { fontWeight: 600 },
+        }}
+        keepMounted
+      >
+        <TabsList justify="center" grow>
+          <TabsTab
+            value="content"
+            leftSection={<IconAlignJustified size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+          >
+            Content
+          </TabsTab>
+
+          <TabsTab
+            value="properties"
+            leftSection={<IconChecklist size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+          >
+            Properties
+          </TabsTab>
+        </TabsList>
+
+        <TabsPanel
+          value="content"
+          bg={'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'}
+        >
+          {content}
+        </TabsPanel>
+
+        <TabsPanel value="properties">{properties}</TabsPanel>
+      </Tabs>
     </Box>
   );
 }

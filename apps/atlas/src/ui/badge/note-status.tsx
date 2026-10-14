@@ -20,8 +20,11 @@ import { IconBook, IconLock, IconLockOpen, IconWriting } from '@tabler/icons-rea
 import { usePathname } from 'next/navigation';
 import { useStoreNote } from '@repo/store';
 import { extractUuidFromParam } from '@repo/utils';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function NoteStatus({ props }: { props?: { options?: { hide?: boolean } } }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { subViewValue } = useSubView();
   const noteId = extractUuidFromParam(subViewValue || '');
   const notes = useStoreNote((s) => s.notes);
@@ -57,10 +60,13 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
               <ActionIcon
                 variant={'subtle'}
                 color={'gray'}
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
                 onClick={() => toggleUserStateEditing()}
               >
-                <buttonProps.icon size={ICON_SIZE - 2} stroke={ICON_STROKE_WIDTH} />
+                <buttonProps.icon
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Group>
           </Tooltip>

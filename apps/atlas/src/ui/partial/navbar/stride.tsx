@@ -35,7 +35,13 @@ import {
   IconPlus,
   IconTextPlus,
 } from '@tabler/icons-react';
-import { useFolderActions, useStoreFolder, useSubView, useViewAside } from '@repo/store';
+import {
+  useFolderActions,
+  useStoreAppShell,
+  useStoreFolder,
+  useSubView,
+  useViewAside,
+} from '@repo/store';
 import React from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import { useStoreTaskList } from '@repo/store';
@@ -44,8 +50,14 @@ import PartialEmpty from '../empty';
 import NavlinkTaskList from '@atlas/ui/navlink/task-list';
 import { Order } from '@repo/types';
 import AccordionFolder from '@atlas/ui/accordion/folder';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Stride() {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   const { subViewValue, showSubViewStride } = useSubView();
   const { showAsideViewStride } = useViewAside();
 
@@ -114,7 +126,13 @@ export default function Stride() {
                     color: active ? 'var(--mantine-color-pri-6)' : undefined,
                   },
                 }}
-                onClick={nl.action}
+                onClick={() => {
+                  if (!desktop) {
+                    if (navbarActive) toggleNavbarChild();
+                  }
+
+                  nl.action();
+                }}
                 leftSection={
                   <div style={{ color: active ? 'var(--mantine-color-pri-6)' : undefined }}>
                     <ThemeIcon
@@ -141,7 +159,11 @@ export default function Stride() {
           <Group
             justify="end"
             gap={0}
-            className="opacity-0 group-hover/strideLists:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/strideLists:pointer-events-auto"
+            className={
+              desktop
+                ? 'opacity-0 group-hover/strideLists:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/strideLists:pointer-events-auto'
+                : undefined
+            }
             mih={30}
             pr={4}
           >

@@ -2,20 +2,26 @@
 
 import { ActionIcon, Group, NavLink, Text, ThemeIcon, Tooltip } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { useSubView } from '@repo/store';
+import { useStoreAppShell, useSubView } from '@repo/store';
 import { CalendarGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
 import { IconCircleFilled, IconDots } from '@tabler/icons-react';
 import MenuCalendar from '../menu/calendar';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Calendar({ props }: { props: CalendarGet }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   const { subViewValue, showSubViewPave } = useSubView();
 
   const calendarActive =
     subViewValue?.includes('calendar: ') && extractUuidFromParam(subViewValue) == props.id;
 
   return (
-    <div className="group/calendar">
+    <div className="group/calendar" style={{ overflow: 'hidden' }}>
       <MenuCalendar defaultValues={props} options={{ context: true }}>
         <NavLink
           label={
@@ -58,7 +64,13 @@ export default function Calendar({ props }: { props: CalendarGet }) {
               color: !calendarActive ? undefined : 'var(--mantine-color-pri-6)',
             },
           }}
-          onClick={() => showSubViewPave(`calendar: ${props.id}`)}
+          onClick={() => {
+            if (!desktop) {
+              if (navbarActive) toggleNavbarChild();
+            }
+
+            showSubViewPave(`calendar: ${props.id}`);
+          }}
         />
       </MenuCalendar>
     </div>

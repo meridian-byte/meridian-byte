@@ -2,20 +2,26 @@
 
 import { ActionIcon, Group, NavLink, Text, ThemeIcon, Tooltip } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
-import { useSubView } from '@repo/store';
+import { useStoreAppShell, useSubView } from '@repo/store';
 import { CalendarGet, NoteGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
 import { IconCircleFilled, IconDots, IconNote } from '@tabler/icons-react';
 import MenuNote from '../menu/note';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Note({ props }: { props: NoteGet }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
+  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
   const { subViewValue, showSubViewJot } = useSubView();
 
   const noteActive =
     subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == props.id;
 
   return (
-    <div className="group/note">
+    <div className="group/note" style={{ overflow: 'hidden' }}>
       <MenuNote defaultValues={props} options={{ context: true }}>
         <NavLink
           label={
@@ -58,7 +64,13 @@ export default function Note({ props }: { props: NoteGet }) {
               color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
             },
           }}
-          onClick={() => showSubViewJot(`note: ${props.id}`)}
+          onClick={() => {
+            if (!desktop) {
+              if (navbarActive) toggleNavbarChild();
+            }
+
+            showSubViewJot(`note: ${props.id}`);
+          }}
         />
       </MenuNote>
     </div>
