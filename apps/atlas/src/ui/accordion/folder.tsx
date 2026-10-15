@@ -151,7 +151,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
         value={currentFolder.id}
         className="group/accordionFolder"
       >
-        <MenuFolder defaultValues={currentFolder} options={{ context: true }}>
+        <MenuFolder defaultValues={currentFolder} options={{ context: true }} location={location}>
           <AccordionControl>
             <NavLink
               label={
@@ -172,11 +172,10 @@ export default function Folder({ folderId, location }: { folderId: string; locat
               fw={600}
               styles={{
                 section: desktop ? { marginInlineEnd: 0 } : undefined,
-                label: desktop
-                  ? {
-                      fontSize: 'var(--mantine-font-size-xs)',
-                    }
-                  : undefined,
+                label: {
+                  fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+                  color: isActive ? 'var(--mantine-color-pri-6)' : undefined,
+                },
               }}
               leftSection={
                 <ThemeIcon
@@ -251,7 +250,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                   </Tooltip>
 
                   <Tooltip label={`Edit ${currentFolder.name}`}>
-                    <MenuFolder defaultValues={currentFolder}>
+                    <MenuFolder defaultValues={currentFolder} location={location}>
                       <ActionIcon component="span" size={30 - 6} color="gray" variant="subtle">
                         <IconDots size={ICON_SIZE - 4} />
                       </ActionIcon>

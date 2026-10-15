@@ -1,6 +1,13 @@
 'use client';
 
-import { useViewModal } from '@repo/store';
+import {
+  useCalendarActions,
+  useFolderActions,
+  useNoteActions,
+  useTaskListActions,
+  useViewModal,
+  useViewNavbar,
+} from '@repo/store';
 import {
   Menu,
   MenuTarget,
@@ -13,26 +20,89 @@ import {
   Tooltip,
   MenuContextMenu,
 } from '@mantine/core';
-import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
+import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { FolderGet } from '@repo/types';
-import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
+import {
+  IconEdit,
+  IconFolderPlus,
+  IconFolderSymlink,
+  IconPlus,
+  IconTrash,
+} from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
+import { generateUUID } from '@repo/utils';
 
 export default function Folder({
   defaultValues,
   options,
   children,
+  location,
   ...restProps
 }: {
   defaultValues: FolderGet;
   options?: { context?: boolean };
+  location: string;
   children: React.ReactNode;
 } & MenuProps) {
   const desktop = useMediaQuery('(min-width: 62em)');
 
   const { showModalViewFolderCrud } = useViewModal();
 
+  const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
+
   const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
+
+  const { folderCreate } = useFolderActions();
+  const { calendarCreate } = useCalendarActions();
+  const { noteCreate } = useNoteActions();
+  const { taskListCreate } = useTaskListActions();
+
+  let locationProps: {
+    onAddFolder: () => void;
+    onAddItem: () => void;
+  } = {
+    onAddFolder: () => {},
+    onAddItem: () => {},
+  };
+
+  switch (location) {
+    case APP_NAMES_ATLAS.PAVE:
+      locationProps = {
+        onAddFolder: () =>
+          folderCreate({
+            id: generateUUID(),
+            location,
+            folderId: defaultValues.id,
+          }),
+        onAddItem: () => calendarCreate({ id: generateUUID(), folderId: defaultValues.id }),
+      };
+      break;
+    case APP_NAMES_ATLAS.JOT:
+      locationProps = {
+        onAddFolder: () =>
+          folderCreate({
+            id: generateUUID(),
+            location,
+            folderId: defaultValues.id,
+          }),
+        onAddItem: () => noteCreate({ id: generateUUID(), folderId: defaultValues.id }),
+      };
+      break;
+    case APP_NAMES_ATLAS.STRIDE:
+      locationProps = {
+        onAddFolder: () =>
+          folderCreate({
+            id: generateUUID(),
+            location,
+            folderId: defaultValues.id,
+          }),
+        onAddItem: () => taskListCreate({ id: generateUUID(), folderId: defaultValues.id }),
+      };
+      break;
+
+    default:
+      break;
+  }
 
   return (
     <Menu
@@ -77,6 +147,68 @@ export default function Folder({
             </Text>
           </Tooltip>
         </MenuLabel>
+
+        <MenuDivider />
+
+        <MenuItem
+          leftSection={
+            <IconPlus size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+
+            // add item
+            locationProps.onAddItem();
+
+            // Check if current folder is already expanded, if not, add it
+            const currentOpened = navbarViewValue || '';
+            if (!currentOpened.includes(defaultValues.id)) {
+              setNavbarViewValue([...currentOpened, defaultValues.id]);
+            }
+          }}
+        >
+          <Tooltip
+            label={`Add item in ${defaultValues.name}`}
+            multiline
+            maw={320}
+            position="top-start"
+            arrowOffset={16}
+          >
+            <Text component="span" inherit lineClamp={1} lh={2}>
+              Add item in {defaultValues.name}
+            </Text>
+          </Tooltip>
+        </MenuItem>
+
+        <MenuItem
+          leftSection={
+            <IconFolderPlus size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+
+            // add folder
+            locationProps.onAddFolder();
+
+            // Check if current folder is already expanded, if not, add it
+            const currentOpened = navbarViewValue || '';
+            if (!currentOpened.includes(defaultValues.id)) {
+              setNavbarViewValue([...currentOpened, defaultValues.id]);
+            }
+          }}
+        >
+          <Tooltip
+            label={`Add folder in ${defaultValues.name}`}
+            multiline
+            maw={320}
+            position="top-start"
+            arrowOffset={16}
+          >
+            <Text component="span" inherit lineClamp={1} lh={2}>
+              Add folder in {defaultValues.name}
+            </Text>
+          </Tooltip>
+        </MenuItem>
 
         <MenuDivider />
 

@@ -202,7 +202,7 @@ export default function Stride() {
           </Group>
         </Group>
 
-        <div>
+        <Box mih={220}>
           <Divider mt={'xs'} mb={5} />
 
           {sortArray(strideFolders || [], (i) => i.createdAt, Order.DESCENDING)?.map((fi) => (
@@ -222,7 +222,7 @@ export default function Stride() {
               ),
             )
           )}
-        </div>
+        </Box>
       </div>
     </Stack>
   );

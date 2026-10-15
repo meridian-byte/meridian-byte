@@ -4,8 +4,9 @@ import { CalendarGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
 import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
-import { getUniqueColor } from '@repo/constants';
+import { getUniqueColor, SUBVIEW_NAMES } from '@repo/constants';
 import { useStoreEvent } from '../event';
+import { useSubView } from '../../handler/view';
 
 export const useCalendarActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -16,6 +17,8 @@ export const useCalendarActions = () => {
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const events = useStoreEvent((s) => s.events);
   const setEvents = useStoreEvent((s) => s.setEvents);
+
+  const { subViewValue, showSubViewPave } = useSubView();
 
   const calendarCreate = (params?: Partial<CalendarGet>) => {
     if (!session) return;
@@ -44,6 +47,8 @@ export const useCalendarActions = () => {
     };
 
     addCalendar(newCalendar);
+
+    showSubViewPave(`calendar: ${newCalendar.id}`);
 
     return newCalendar;
   };
@@ -87,6 +92,11 @@ export const useCalendarActions = () => {
           };
         }),
       );
+    }
+
+    // check if current calendar is in view
+    if (subViewValue?.includes(params.id)) {
+      showSubViewPave(SUBVIEW_NAMES.PAVE.HOME);
     }
 
     deleteCalendar({

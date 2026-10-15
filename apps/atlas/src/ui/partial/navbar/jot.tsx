@@ -178,7 +178,7 @@ export default function Jot() {
           </Group>
         </Group>
 
-        <div>
+        <Box mih={220}>
           <Divider mt={'xs'} mb={5} />
 
           {jotFolders === undefined || !jotFolders.length
@@ -198,7 +198,7 @@ export default function Jot() {
               </div>
             ))
           )}
-        </div>
+        </Box>
       </div>
     </Stack>
   );

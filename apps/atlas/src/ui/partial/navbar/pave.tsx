@@ -197,7 +197,7 @@ export default function Pave() {
           </Group>
         </Group>
 
-        <div>
+        <Box mih={220}>
           <Divider mt={'xs'} mb={5} />
 
           {paveFolders === undefined || !paveFolders.length
@@ -219,7 +219,7 @@ export default function Pave() {
               ),
             )
           )}
-        </div>
+        </Box>
       </div>
     </Stack>
   );

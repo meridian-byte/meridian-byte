@@ -4,8 +4,9 @@ import { TaskListGet } from '@repo/types';
 import { SyncStatus } from '@repo/types';
 import { generateCopyTitle, generateUUID } from '@repo/utils';
 import { useStoreActiveItems } from '../active-items';
-import { getUniqueColor } from '@repo/constants';
+import { getUniqueColor, SUBVIEW_NAMES } from '@repo/constants';
 import { useStoreTask } from '../task';
+import { useSubView } from '../../handler/view';
 
 export const useTaskListActions = () => {
   const session = useStoreSession((s) => s.session);
@@ -16,6 +17,8 @@ export const useTaskListActions = () => {
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const tasks = useStoreTask((s) => s.tasks);
   const setTasks = useStoreTask((s) => s.setTasks);
+
+  const { subViewValue, showSubViewStride } = useSubView();
 
   const taskListCreate = (params?: Partial<TaskListGet>) => {
     if (!session) return;
@@ -44,6 +47,8 @@ export const useTaskListActions = () => {
     };
 
     addTaskList(newTaskList);
+
+    showSubViewStride(`list: ${newTaskList.id}`);
 
     return newTaskList;
   };
@@ -87,6 +92,11 @@ export const useTaskListActions = () => {
           };
         }),
       );
+    }
+
+    // check if current task list is in view
+    if (subViewValue?.includes(params.id)) {
+      showSubViewStride(SUBVIEW_NAMES.STRIDE.HOME);
     }
 
     deleteTaskList({
