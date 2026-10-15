@@ -26,7 +26,7 @@ export async function GET() {
     display: 'standalone',
     display_override: ['window-controls-overlay', 'standalone'],
     theme_color: resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000',
-    background_color: resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000',
+    background_color: '#ac865c',
     orientation: 'portrait-primary',
     categories: ['productivity'],
     prefer_related_applications: false,

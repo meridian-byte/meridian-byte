@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { APP_DESC, APP_NAME, DEFAULT_COLOR_SCHEME } from '@repo/constants';
 import { getCookieServer, getOSTheme } from '@repo/utils';
@@ -39,6 +39,16 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  // themeColor: [
+  //   { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+  //   { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  // ],
+};
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // 1. Get the CALCULATED theme from middleware (not the 'auto' state)
   const theme = await getCookieServer(COOKIE_NAME.COLOR_SCHEME);
@@ -67,10 +77,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           name="theme-color"
           content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
         />
-        <meta
-          name="background-color"
-          content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
-        />
+        <meta name="background-color" content={'#ac865c'} />
 
         {/* Apple Web App Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 :root {
+  min-height: 100% !important;
   --background: var(--mantine-color-body);
   --foreground: var(--mantine-color-text);
 }
@@ -18,7 +19,8 @@
 
 html,
 body {
-  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
   max-width: 100vw;
   scroll-behavior: smooth;
 
