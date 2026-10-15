@@ -77,7 +77,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           name="theme-color"
           content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
         />
-        <meta name="background-color" content={'#ac865c'} />
+        <meta name="background-color" content={'#97734b'} />
 
         {/* Apple Web App Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
