@@ -21,8 +21,12 @@ export const isProduction = (): boolean => process.env.NODE_ENV === 'production'
 // Define this outside the function scope
 let darkQuery: MediaQueryList | null = null;
 
-export const getOSTheme = (colorScheme: ColorScheme): ColorScheme => {
-  if (typeof window === 'undefined') return DEFAULT_COLOR_SCHEME;
+export const getOSTheme = (
+  colorScheme: ColorScheme,
+  options?: { inServer?: boolean },
+): ColorScheme => {
+  if (typeof window === 'undefined')
+    return options?.inServer ? ColorScheme.DARK : DEFAULT_COLOR_SCHEME;
   if (colorScheme !== 'auto') return colorScheme;
 
   // Cache the query object

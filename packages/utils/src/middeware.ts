@@ -1,6 +1,8 @@
 import { COOKIE_NAME, SHARED_VERCEL_SUBSTRING } from '@repo/constants';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants';
 import { NextRequest, NextResponse } from 'next/server';
+import { getOSTheme } from './misc';
+import { ColorScheme } from '@repo/types';
 
 type DynamicRedirectMap = {
   pattern: RegExp;
@@ -180,14 +182,17 @@ export const conditionalRedirect = (
 };
 
 export const getColorScheme = (request: NextRequest, response: NextResponse) => {
-  const themeState = request.cookies.get(COOKIE_NAME.COLOR_SCHEME)?.value || DEFAULT_COLOR_SCHEME;
+  const colorScheme = request.cookies.get(COOKIE_NAME.COLOR_SCHEME)?.value || DEFAULT_COLOR_SCHEME;
+  const colorSchemeState =
+    request.cookies.get(COOKIE_NAME.COLOR_SCHEME_STATE)?.value || DEFAULT_COLOR_SCHEME;
 
   // 1. Check if we already have a calculated theme cookie
   const existingTheme = request.cookies.get(COOKIE_NAME.COLOR_SCHEME)?.value;
+  const existingThemeState = request.cookies.get(COOKIE_NAME.COLOR_SCHEME_STATE)?.value;
 
-  let themeToSet = themeState;
+  let themeToSet = colorScheme;
 
-  if (themeState === DEFAULT_COLOR_SCHEME) {
+  if (colorScheme === DEFAULT_COLOR_SCHEME) {
     const preferredScheme = request.headers.get('sec-ch-prefers-color-scheme');
 
     if (preferredScheme) {
@@ -203,12 +208,27 @@ export const getColorScheme = (request: NextRequest, response: NextResponse) => 
     }
   }
 
-  // 2. Only set the cookie if it's actually changing or missing
+  // 2. Only set the theme cookie if it's actually changing or missing
   if (existingTheme !== themeToSet) {
-    response.cookies.set(COOKIE_NAME.COLOR_SCHEME, themeToSet, {
+    response.cookies.set(
+      COOKIE_NAME.COLOR_SCHEME,
+      getOSTheme(themeToSet as ColorScheme, { inServer: true }),
+      {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: 'lax',
+      },
+    );
+  }
+
+  // 2. Only set the theme state cookie if it's actually changing or missing
+  let themStateToSet = colorSchemeState;
+
+  if (existingThemeState !== themeToSet) {
+    response.cookies.set(COOKIE_NAME.COLOR_SCHEME_STATE, themStateToSet, {
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
   }
 

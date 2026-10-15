@@ -1,6 +1,6 @@
 import { AUTH_URLS } from '@repo/constants';
 import { APP_DESC, APP_NAME } from '@repo/constants';
-import { linkify } from '@repo/utils';
+import { getOSTheme, linkify } from '@repo/utils';
 import { getCookieServer } from '@repo/utils';
 import { COOKIE_NAME } from '@repo/constants';
 import { DEFAULT_COLOR_SCHEME } from '@repo/constants';
@@ -8,11 +8,11 @@ import { ColorScheme } from '@repo/types';
 import { MantineColorScheme } from '@mantine/core';
 
 export const dynamic = 'force-dynamic';
-// export const revalidate = false;
 
 export async function GET() {
-  const theme = (await getCookieServer(COOKIE_NAME.COLOR_SCHEME)) || DEFAULT_COLOR_SCHEME;
-  const resolvedTheme = (theme || DEFAULT_COLOR_SCHEME) as MantineColorScheme;
+  const theme = await getCookieServer(COOKIE_NAME.COLOR_SCHEME);
+  const resolvedTheme = (theme ||
+    getOSTheme(DEFAULT_COLOR_SCHEME, { inServer: true })) as MantineColorScheme;
 
   const manifest = {
     id: linkify(APP_NAME.ATLAS),
@@ -25,7 +25,7 @@ export async function GET() {
     start_url: AUTH_URLS.REDIRECT.DEFAULT,
     display: 'standalone',
     display_override: ['window-controls-overlay', 'standalone'],
-    theme_color: '#000000',
+    theme_color: resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000',
     background_color: resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000',
     orientation: 'portrait-primary',
     categories: ['productivity'],

@@ -64,18 +64,18 @@ const customColorSchemeManager = (): MantineColorSchemeManager => {
 
       queueMicrotask(() => {
         // 2. THE LOGIC LEVERAGE:
-        // If we are currently in 'auto' mode AND the value Mantine is trying to set
-        // matches the system's current theme, DO NOT save it to the STATE cookie.
-        // This prevents the "Auto" preference from being overwritten by the "Result".
-        if (currentState === 'auto' && value === systemScheme) {
-          // Only update the result cookie for the middleware/server
-          setCookieClient(COOKIE_NAME.COLOR_SCHEME, value, {
-            expiryInSeconds: SECONDS_WEEK,
-            secure: isProduction(),
-            sameSite: 'Lax',
-          });
-          return;
-        }
+        // // If we are currently in 'auto' mode AND the value Mantine is trying to set
+        // // matches the system's current theme, DO NOT save it to the STATE cookie.
+        // // This prevents the "Auto" preference from being overwritten by the "Result".
+        // if (currentState === 'auto' && value === systemScheme) {
+        //   // Only update the result cookie for the middleware/server
+        //   setCookieClient(COOKIE_NAME.COLOR_SCHEME, value, {
+        //     expiryInSeconds: SECONDS_WEEK,
+        //     secure: isProduction(),
+        //     sameSite: 'Lax',
+        //   });
+        //   return;
+        // }
 
         // 3. Otherwise, this is a manual user selection. Save both.
         setCookieClient(COOKIE_NAME.COLOR_SCHEME_STATE, value, {

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { APP_DESC, APP_NAME, DEFAULT_COLOR_SCHEME } from '@repo/constants';
-import { getCookieServer } from '@repo/utils';
+import { getCookieServer, getOSTheme } from '@repo/utils';
 import { COOKIE_NAME } from '@repo/constants';
 import { ProviderMantine } from '@repo/ui';
 import { ColorSchemeScript, MantineColorScheme, mantineHtmlProps } from '@mantine/core';
@@ -41,8 +41,9 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // 1. Get the CALCULATED theme from middleware (not the 'auto' state)
-  const theme = (await getCookieServer(COOKIE_NAME.COLOR_SCHEME)) || DEFAULT_COLOR_SCHEME;
-  const resolvedTheme = (theme || DEFAULT_COLOR_SCHEME) as MantineColorScheme;
+  const theme = await getCookieServer(COOKIE_NAME.COLOR_SCHEME);
+  const resolvedTheme = (theme ||
+    getOSTheme(DEFAULT_COLOR_SCHEME, { inServer: true })) as MantineColorScheme;
 
   return (
     <html
@@ -62,7 +63,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         {/* General Web App Metadata */}
         <meta name="application-name" content={APP_NAME.ATLAS} />
-        <meta name="theme-color" content={'#000000'} />
+        <meta
+          name="theme-color"
+          content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
+        />
         <meta
           name="background-color"
           content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
@@ -85,7 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="/images/brand/icon/web-app-manifest-192x192.png"
         />
 
-        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
 
         <ColorSchemeScript defaultColorScheme={resolvedTheme} />
       </head>
