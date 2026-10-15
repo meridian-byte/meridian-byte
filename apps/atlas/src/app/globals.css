@@ -22,8 +22,8 @@ body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 
-  /* background-color: var(--mantine-color-body); */
-  background-color: #b08e67;
+  background-color: var(--mantine-color-body);
+  /* background-color: #b08e67; */
 }
 
 body {
