@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         {/* General Web App Metadata */}
         <meta name="application-name" content={APP_NAME.ATLAS} />
-        <meta name="theme-color" content={'#CBB399'} />
+        <meta name="theme-color" content={'#000000'} />
         <meta
           name="background-color"
           content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
