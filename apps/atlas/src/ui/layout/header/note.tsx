@@ -66,7 +66,7 @@ export default function Note() {
             <Group gap={5}>
               <BadgeUpdatedTimestamp />
 
-              <Group gap={0} wrap="nowrap" justify="end">
+              <Group gap={5} wrap="nowrap" justify="end">
                 <BadgeNoteStatus />
 
                 {note === undefined ? (
@@ -77,12 +77,12 @@ export default function Note() {
                       <Group>
                         <Tooltip label={'More options'}>
                           <ActionIcon
-                            size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                            size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                             variant={'subtle'}
                             color="gray"
                           >
                             <IconDotsVertical
-                              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                              size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
                               stroke={ICON_STROKE_WIDTH}
                             />
                           </ActionIcon>

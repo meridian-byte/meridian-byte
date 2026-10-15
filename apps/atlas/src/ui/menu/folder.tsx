@@ -108,7 +108,7 @@ export default function Folder({
     <Menu
       width={220}
       trigger="click"
-      position="right-start"
+      position={desktop ? 'right-start' : undefined}
       styles={{
         item: {
           padding: desktop ? 6 : 10,

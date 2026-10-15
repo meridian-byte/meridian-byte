@@ -22,7 +22,7 @@ export default function UpdatedTimestamp() {
   const updatedAt = note?.updatedAt && getRegionalDate(note.updatedAt);
 
   return notes === undefined ? (
-    <Skeleton h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE} w={80} radius={0} />
+    <Skeleton h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25} w={80} radius={0} />
   ) : !note ? null : (
     <Tooltip
       label={
@@ -37,10 +37,12 @@ export default function UpdatedTimestamp() {
         variant="light"
         color="gray"
         size="md"
-        fz={'xs'}
+        fz={{ base: 'sm', md: 'xs' }}
         fw={'normal'}
-        h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+        h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+        miw={80}
         style={{ cursor: 'pointer' }}
+        radius={'md'}
       >
         <Text component="span" inherit>
           {getRelativeTime(new Date(note.updatedAt), 'en-GB', {

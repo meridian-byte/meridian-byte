@@ -5,18 +5,20 @@ import {
   ActionIcon,
   Box,
   Group,
+  NavLink,
   ScrollArea,
   Tabs,
   TabsList,
   TabsPanel,
   TabsTab,
   Text,
+  ThemeIcon,
   Tooltip,
 } from '@mantine/core';
 import { useStoreNote, useStoreView, useSubView } from '@repo/store';
 import { extractUuidFromParam } from '@repo/utils';
-import { IconX } from '@tabler/icons-react';
-import { ICON_SIZE, ICON_STROKE_WIDTH, SECTION_SPACING } from '@repo/constants';
+import { IconNote, IconX } from '@tabler/icons-react';
+import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from '@repo/constants';
 import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
 import EditorMain from '@atlas/ui/editor/main';
 import { SHELL_VALUES } from '@atlas/constants';
@@ -131,7 +133,6 @@ export default function Note() {
           borderBottomColor: 'transparent',
           transition: '.25s all ease',
         },
-        tabLabel: { lineHeight: 1.3 },
       }}
     >
       <TabsList px={5}>
@@ -151,32 +152,12 @@ export default function Note() {
                   }}
                   onClick={() => showSubViewJot(`note: ${ati.tab}`)}
                   onDoubleClick={() => handleMakePersistent(ati.tab)}
-                  rightSection={
-                    (tabsJotView || []).length > 1 && (
-                      <Group gap={0} wrap="nowrap" mih={30} pr={4}>
-                        <ActionIcon
-                          component="span"
-                          size={30 - 6}
-                          color="gray"
-                          variant="subtle"
-                          onClick={(e) => handleCloseTab(e, ati.tab)}
-                        >
-                          <IconX size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                        </ActionIcon>
-                      </Group>
-                    )
-                  }
                   my={5}
                   styles={{
                     tab: {
-                      minHeight: 30,
-                      backgroundColor: active
-                        ? 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))'
-                        : undefined,
-                      paddingTop: 0,
-                      paddingRight: 0,
-                      paddingBottom: 0,
-                      paddingLeft: 'var(--mantine-spacing-xs)',
+                      // minHeight: 30,
+                      backgroundColor: 'transparent',
+                      padding: 0,
                       display: 'flex',
 
                       // Allows tab to grow up to 240px, but shrink down to 120px
@@ -190,18 +171,71 @@ export default function Note() {
                     },
                   }}
                 >
-                  <Tooltip label={note?.title} multiline maw={320}>
-                    <Text
-                      inherit
-                      component="span"
-                      style={{ display: 'inline-block', maxWidth: '100%', marginTop: 4 }}
-                      lineClamp={1}
-                      fs={ati.persistent ? 'normal' : 'italic'}
-                      fw={600}
-                    >
-                      {note?.title}
-                    </Text>
-                  </Tooltip>
+                  <NavLink
+                    label={
+                      <Tooltip label={note?.title} multiline maw={320}>
+                        <Text
+                          inherit
+                          component="span"
+                          style={{ display: 'inline-block', maxWidth: '100%', marginTop: 4 }}
+                          lineClamp={1}
+                          fs={ati.persistent ? 'normal' : 'italic'}
+                          fw={600}
+                        >
+                          {note?.title}
+                        </Text>
+                      </Tooltip>
+                    }
+                    color="gray"
+                    p={desktop ? 0 : undefined}
+                    fw={600}
+                    styles={{
+                      section: desktop ? { marginInlineEnd: 0 } : undefined,
+                      root: {
+                        backgroundColor: active ? 'var(--mantine-color-pri-light)' : undefined,
+                      },
+                      label: {
+                        fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+                        color: active ? 'var(--mantine-color-pri-6)' : undefined,
+                      },
+                    }}
+                    // leftSection={
+                    //   <ThemeIcon
+                    //     size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                    //     variant="transparent"
+                    //     color={'gray'}
+                    //     c={active ? 'pri' : undefined}
+                    //   >
+                    //     <IconNote
+                    //       size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                    //       stroke={ICON_STROKE_WIDTH}
+                    //     />
+                    //   </ThemeIcon>
+                    // }
+                    rightSection={
+                      (tabsJotView || []).length > 1 && (
+                        <Group
+                          gap={0}
+                          wrap="nowrap"
+                          // mih={desktop ? 30 : ICON_WRAPPER_SIZE + 6}
+                          // pr={4}
+                        >
+                          <ActionIcon
+                            component="span"
+                            size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                            color="gray"
+                            variant="light"
+                            onClick={(e) => handleCloseTab(e, ati.tab)}
+                          >
+                            <IconX
+                              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                              stroke={ICON_STROKE_WIDTH}
+                            />
+                          </ActionIcon>
+                        </Group>
+                      )
+                    }
+                  />
                 </TabsTab>
               );
             })}
@@ -220,7 +254,7 @@ export default function Note() {
           >
             <ScrollContext.Provider value={contextValue}>
               <ScrollArea
-                h={`calc(100vh - ${(desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + 38 + 1 + 41.6}px)`}
+                h={`calc(100vh - ${(desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + 45 + 1 + 55.6}px)`}
                 viewportRef={contextValue}
               >
                 <Box pt={SECTION_SPACING / 2}>
@@ -253,4 +287,4 @@ export default function Note() {
 }
 
 const MAX_TAB_WIDTH = 240;
-const MIN_TAB_WIDTH = 120;
+const MIN_TAB_WIDTH = 180;

@@ -60,11 +60,11 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
               <ActionIcon
                 variant={'subtle'}
                 color={'gray'}
-                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 onClick={() => toggleUserStateEditing()}
               >
                 <buttonProps.icon
-                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
                   stroke={ICON_STROKE_WIDTH}
                 />
               </ActionIcon>
