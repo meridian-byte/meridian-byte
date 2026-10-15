@@ -123,61 +123,57 @@ export default function Main({ noteId }: { noteId: string }) {
               <Box>
                 {/* <Divider style={{ ...styles, transition: '0.25s all ease' }} /> */}
 
-                <ScrollArea
-                  bg={'transparent'}
-                  w={'100%'}
-                  scrollbars={'x'}
-                  type="auto"
-                  px={{ base: 'xs', xs: 0 }}
-                >
-                  <RichTextEditor.Toolbar
-                    style={{
-                      flexWrap: 'nowrap',
-                      backgroundColor: 'transparent',
-                    }}
-                  >
-                    {controlGroups.basic}
-                    {divider}
-                    {controlGroups.basic2}
-                    {divider}
-                    {controlGroups.alignment}
-                    {divider}
-                    {controlGroups.headings}
-                    {divider}
-                    {controlGroups.lists}
-                    {divider}
-                    {controlGroups.tasks}
-                    {divider}
-                    {controlGroups.blocks}
-                    {divider}
-                    {controlGroups.links}
-                    {divider}
-                    {controlGroups.actions}
-                    {divider}
+                <ScrollArea bg={'transparent'} w={'100%'} scrollbars={'x'} type="hover">
+                  <Box px={{ base: 5, xs: 0 }}>
+                    <RichTextEditor.Toolbar
+                      style={{
+                        flexWrap: 'nowrap',
+                        backgroundColor: 'transparent',
+                      }}
+                    >
+                      {controlGroups.basic}
+                      {divider}
+                      {controlGroups.basic2}
+                      {divider}
+                      {controlGroups.alignment}
+                      {divider}
+                      {controlGroups.headings}
+                      {divider}
+                      {controlGroups.lists}
+                      {divider}
+                      {controlGroups.tasks}
+                      {divider}
+                      {controlGroups.blocks}
+                      {divider}
+                      {controlGroups.links}
+                      {divider}
+                      {controlGroups.actions}
+                      {divider}
 
-                    {editor && (
-                      <BubbleMenu editor={editor}>
-                        <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
-                          <RichTextEditorControlsGroup
-                            style={{
-                              border:
-                                '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))',
-                            }}
-                          >
-                            {controlGroups.basic}
-                            {divider}
-                            {controlGroups.basic2}
-                            {divider}
-                            {controlGroups.links}
-                          </RichTextEditorControlsGroup>
-                        </WrapperUnderlayGlass>
-                      </BubbleMenu>
-                    )}
+                      {editor && (
+                        <BubbleMenu editor={editor}>
+                          <WrapperUnderlayGlass props={{ blur: 4, opacity: 0.8 }}>
+                            <RichTextEditorControlsGroup
+                              style={{
+                                border:
+                                  '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7))',
+                              }}
+                            >
+                              {controlGroups.basic}
+                              {divider}
+                              {controlGroups.basic2}
+                              {divider}
+                              {controlGroups.links}
+                            </RichTextEditorControlsGroup>
+                          </WrapperUnderlayGlass>
+                        </BubbleMenu>
+                      )}
 
-                    <RichTextEditorControlsGroup>
-                      <RichTextEditor.ClearFormatting />
-                    </RichTextEditorControlsGroup>
-                  </RichTextEditor.Toolbar>
+                      <RichTextEditorControlsGroup>
+                        <RichTextEditor.ClearFormatting />
+                      </RichTextEditorControlsGroup>
+                    </RichTextEditor.Toolbar>
+                  </Box>
                 </ScrollArea>
 
                 <Divider style={{ ...styles, transition: '0.25s all ease' }} />

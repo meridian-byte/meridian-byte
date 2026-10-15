@@ -30,7 +30,7 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
     <div>
       {!mounted || session === undefined ? (
         <div>
-          <Skeleton h={size || 30} radius={'md'} />
+          <Skeleton h={size || (desktop ? 30 : 44.8)} radius={'md'} />
         </div>
       ) : !activeAccount?.email ? (
         <WrapperActionSignIn options={{ action: AuthAction.SIGN_IN }}>
@@ -80,7 +80,7 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
                 src={profilePicture || null}
                 name={fullName || 'User'}
                 color={'initials'}
-                size={ICON_SIZE}
+                size={desktop ? ICON_SIZE : ICON_WRAPPER_SIZE}
               >
                 {initialize(fullName || 'User')}
               </Avatar>
@@ -94,18 +94,21 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                miw={30}
-                pr={4}
+                miw={desktop ? 30 : ICON_WRAPPER_SIZE}
+                pr={desktop ? 4 : 0}
               >
                 <ActionIcon
-                  size={30 - 6}
-                  variant="subtle"
-                  color="red.6"
+                  size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                  variant="light"
+                  color="red"
                   onClick={() => {
                     router.push(AUTH_URLS.SIGN_OUT);
                   }}
                 >
-                  <IconLogout size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                  <IconLogout
+                    size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
                 </ActionIcon>
               </Group>
             )

@@ -135,9 +135,9 @@ export default function Note() {
         },
       }}
     >
-      <TabsList px={5}>
+      <TabsList>
         <ScrollArea w={'100%'} scrollbars={'x'} scrollbarSize={0}>
-          <Group wrap="nowrap" gap={4}>
+          <Group wrap="nowrap" gap={4} px={5}>
             {(tabsJotView || []).map((ati, i) => {
               const note = notes?.find((ni) => ni.id == ati.tab);
               const active = ati.tab == noteId;
@@ -188,6 +188,7 @@ export default function Note() {
                     }
                     color="gray"
                     p={desktop ? 0 : undefined}
+                    mih={desktop ? 30 : undefined}
                     fw={600}
                     styles={{
                       section: desktop ? { marginInlineEnd: 0 } : undefined,
@@ -199,32 +200,34 @@ export default function Note() {
                         color: active ? 'var(--mantine-color-pri-6)' : undefined,
                       },
                     }}
-                    // leftSection={
-                    //   <ThemeIcon
-                    //     size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
-                    //     variant="transparent"
-                    //     color={'gray'}
-                    //     c={active ? 'pri' : undefined}
-                    //   >
-                    //     <IconNote
-                    //       size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
-                    //       stroke={ICON_STROKE_WIDTH}
-                    //     />
-                    //   </ThemeIcon>
-                    // }
+                    leftSection={
+                      desktop ? (
+                        <ThemeIcon
+                          size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                          variant="transparent"
+                          color={'gray'}
+                          c={active ? 'pri' : undefined}
+                        >
+                          <IconNote
+                            size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                            stroke={ICON_STROKE_WIDTH}
+                          />
+                        </ThemeIcon>
+                      ) : undefined
+                    }
                     rightSection={
                       (tabsJotView || []).length > 1 && (
                         <Group
                           gap={0}
                           wrap="nowrap"
                           // mih={desktop ? 30 : ICON_WRAPPER_SIZE + 6}
-                          // pr={4}
+                          pr={desktop ? 4 : 0}
                         >
                           <ActionIcon
                             component="span"
                             size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
-                            color="gray"
-                            variant="light"
+                            color={active ? 'pri' : 'gray'}
+                            variant={desktop ? 'subtle' : 'light'}
                             onClick={(e) => handleCloseTab(e, ati.tab)}
                           >
                             <IconX
@@ -254,7 +257,7 @@ export default function Note() {
           >
             <ScrollContext.Provider value={contextValue}>
               <ScrollArea
-                h={`calc(100vh - ${(desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + 45 + 1 + 55.6}px)`}
+                h={`calc(100vh - ${(desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + (desktop ? 34 : 45) + 1 + (desktop ? 41.6 : 55.6)}px)`}
                 viewportRef={contextValue}
               >
                 <Box pt={SECTION_SPACING / 2}>

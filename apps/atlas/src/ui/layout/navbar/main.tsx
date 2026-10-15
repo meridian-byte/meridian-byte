@@ -49,7 +49,8 @@ export default function Main() {
       <AppShellSection>
         {/* <Box style={{ boxShadow: 'var(--mantine-shadow-xs)' }}> */}
         <NavbarHeader />
-        <Divider my={4} />
+
+        <Divider mt={4} />
         {/* </Box> */}
       </AppShellSection>
 
@@ -195,7 +196,7 @@ function NavbarMain() {
   const desktop = useMediaQuery('(min-width: 62em)');
 
   return (
-    <ScrollArea w={desktop ? SHELL_VALUES.NAVBAR.WIDTH : '100%'} scrollbars={'x'} px={5} pb={5}>
+    <ScrollArea w={desktop ? SHELL_VALUES.NAVBAR.WIDTH : '100%'} scrollbars={'x'} p={5}>
       <AccordionNavbar />
     </ScrollArea>
   );

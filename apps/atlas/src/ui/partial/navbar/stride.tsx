@@ -106,7 +106,7 @@ export default function Stride() {
   ];
 
   return (
-    <Stack gap={'xs'}>
+    <div>
       <div>
         {navLinks.map((nl, i) => {
           const active = nl.label.toLocaleLowerCase() == subViewValue;
@@ -154,7 +154,7 @@ export default function Stride() {
       </div>
 
       <div className="group/strideLists">
-        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5}>
+        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5} mt={5}>
           <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Task Lists
           </Title>
@@ -203,7 +203,7 @@ export default function Stride() {
         </Group>
 
         <Box mih={220}>
-          <Divider mt={'xs'} mb={5} />
+          <Divider my={5} />
 
           {sortArray(strideFolders || [], (i) => i.createdAt, Order.DESCENDING)?.map((fi) => (
             <div key={fi.id}>
@@ -224,6 +224,6 @@ export default function Stride() {
           )}
         </Box>
       </div>
-    </Stack>
+    </div>
   );
 }

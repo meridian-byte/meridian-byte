@@ -17,7 +17,7 @@ export default function Fullscreen() {
     label: `${fullscreen ? 'Exit' : 'Enter'} fullscreen mode`,
   };
 
-  return (
+  return !desktop ? null : (
     <Tooltip label={buttonProps.label}>
       <ActionIcon
         size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}

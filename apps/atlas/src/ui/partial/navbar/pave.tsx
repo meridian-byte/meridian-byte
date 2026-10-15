@@ -101,7 +101,7 @@ export default function Pave() {
   ];
 
   return (
-    <Stack gap={'xs'}>
+    <div>
       <div>
         {navLinks.map((nl, i) => {
           const active = nl.label.toLocaleLowerCase() == subViewValue;
@@ -149,7 +149,7 @@ export default function Pave() {
       </div>
 
       <div className="group/paveCalendars">
-        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5}>
+        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5} mt={5}>
           <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Calendars
           </Title>
@@ -198,7 +198,7 @@ export default function Pave() {
         </Group>
 
         <Box mih={220}>
-          <Divider mt={'xs'} mb={5} />
+          <Divider my={5} />
 
           {paveFolders === undefined || !paveFolders.length
             ? null
@@ -221,6 +221,6 @@ export default function Pave() {
           )}
         </Box>
       </div>
-    </Stack>
+    </div>
   );
 }

@@ -162,7 +162,7 @@ function PartialFolder() {
 
           {locationFolders?.map((fi, i) => (
             <div key={fi.id}>
-              {i > 0 && <Divider />}
+              {/* {i > 0 && <Divider />} */}
               <NavLinkFolderSelect
                 props={fi}
                 item={locationProps.itemToMove}

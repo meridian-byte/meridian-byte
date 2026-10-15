@@ -100,8 +100,8 @@ export default function Mobile() {
               size={ICON_WRAPPER_SIZE * multiplier}
               // variant={active ? 'light' : 'transparent'}
               variant={'transparent'}
-              color={active ? 'pri' : 'gray'}
-              c={active ? 'pri' : 'gray'}
+              color={active ? 'pri' : 'var(--mantine-color-text)'}
+              c={active ? 'pri' : 'var(--mantine-color-text)'}
             >
               <di.icon size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
             </ThemeIcon>

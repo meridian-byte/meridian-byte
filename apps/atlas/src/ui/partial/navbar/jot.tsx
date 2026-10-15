@@ -80,7 +80,7 @@ export default function Jot() {
   ];
 
   return (
-    <Stack gap={'xs'}>
+    <div>
       {!!navLinks.length && (
         <div>
           {navLinks.map((nl, i) => {
@@ -130,7 +130,7 @@ export default function Jot() {
       )}
 
       <div className="group/jotNotes">
-        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5}>
+        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5} mt={5}>
           <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Notes
           </Title>
@@ -178,8 +178,8 @@ export default function Jot() {
           </Group>
         </Group>
 
-        <Box mih={220}>
-          <Divider mt={'xs'} mb={5} />
+        <Box>
+          <Divider my={5} />
 
           {jotFolders === undefined || !jotFolders.length
             ? null
@@ -200,6 +200,6 @@ export default function Jot() {
           )}
         </Box>
       </div>
-    </Stack>
+    </div>
   );
 }

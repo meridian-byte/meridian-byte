@@ -48,7 +48,13 @@ export default function Theme() {
   };
 
   if (!mounted) {
-    return <Skeleton maw={`${100 / 6}%`} h={!desktop ? ICON_SIZE * 1.25 : sharedHeight} />;
+    return (
+      <Skeleton
+        maw={`${100 / 6}%`}
+        miw={!desktop ? ICON_WRAPPER_SIZE * 1.25 : undefined}
+        h={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
+      />
+    );
   }
 
   return (

@@ -27,13 +27,19 @@ export default function Navbar({ options }: { options?: { hideWhenOpen?: boolean
   const label = `${navbarChild ? 'Collapse' : 'Expand'} Navbar`;
 
   if (navbarChild === undefined) {
-    return <Skeleton maw={`${100 / 6}%`} h={sharedHeight} />;
+    return (
+      <Skeleton
+        maw={`${100 / 6}%`}
+        miw={desktop ? undefined : ICON_WRAPPER_SIZE * 1.25}
+        h={desktop ? sharedHeight : ICON_WRAPPER_SIZE * 1.25}
+      />
+    );
   }
 
   return (
     <Tooltip label={label}>
       <ActionIcon
-        variant={desktop ? 'subtle' : 'default'}
+        variant={desktop ? 'subtle' : 'subtle'}
         color="gray"
         aria-label={label}
         size={desktop ? sharedHeight : ICON_WRAPPER_SIZE * 1.25}
