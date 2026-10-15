@@ -48,7 +48,9 @@ import {
   IconChecklist,
   IconClock,
   IconFlag,
+  IconPencilCog,
   IconRepeat,
+  IconSettings,
   IconTrash,
   IconX,
 } from '@tabler/icons-react';
@@ -108,7 +110,7 @@ export default function Task({
             aria-label={'Task list'}
             label={!options?.modal ? undefined : 'Task list'}
             placeholder={views.inboxView ? 'Inbox' : 'Task list'}
-            size="xs"
+            size={desktop ? 'xs' : 'sm'}
             clearable
             clearSectionMode="clear"
             searchable
@@ -238,7 +240,11 @@ export default function Task({
         style={{
           transition: '.1s all ease',
           height:
-            !defaultValues?.dueDate && !form.values?.dueDate ? 0 : withReminder ? 16 + 10 + 30 : 16,
+            !defaultValues?.dueDate && !form.values?.dueDate
+              ? 0
+              : withReminder
+                ? 16 + 10 + (desktop ? 30 : 36)
+                : 16,
           overflow: 'hidden',
         }}
       >
@@ -252,7 +258,7 @@ export default function Task({
         <DateTimePicker
           aria-label={'Remind at'}
           placeholder="Remind at"
-          size="xs"
+          size={desktop ? 'xs' : 'sm'}
           clearable
           leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           value={reminderState}
@@ -419,7 +425,7 @@ export default function Task({
               w={'30%'}
               aria-label={'Int.'}
               placeholder="Int."
-              size="xs"
+              size={'xs'}
               value={intervalState}
               onChange={setIntervalState}
             />
@@ -428,7 +434,7 @@ export default function Task({
               w={'70%'}
               aria-label={'Frequency'}
               placeholder="Frequency"
-              size="xs"
+              size={'xs'}
               clearable
               value={frequencyState}
               onChange={setFrequencyState}
@@ -456,7 +462,7 @@ export default function Task({
 
             <Tooltip label={'Delete rule'}>
               <ActionIcon
-                size={ICON_WRAPPER_SIZE}
+                size={30}
                 color="red"
                 variant="light"
                 onClick={() => {
@@ -496,7 +502,7 @@ export default function Task({
                 label={!options?.modal ? undefined : 'Priority'}
                 placeholder="Priority"
                 comboboxProps={{ withinPortal: false }}
-                size="xs"
+                size={desktop ? 'xs' : 'sm'}
                 // clearable
                 {...form.getInputProps('priority')}
                 leftSection={
@@ -542,7 +548,7 @@ export default function Task({
                 aria-label={'Due date'}
                 label={!options?.modal ? undefined : 'Due date'}
                 placeholder="Due date"
-                size="xs"
+                size={desktop ? 'xs' : 'sm'}
                 clearable
                 disabled={creatingTask && views.todayView}
                 minDate={
@@ -602,7 +608,7 @@ export default function Task({
             <Button
               disabled={submitted}
               variant="default"
-              size="xs"
+              size={desktop ? 'xs' : undefined}
               onClick={() => {
                 if (onUnmount && !options?.withoutCheck) {
                   onUnmount(false);
@@ -621,7 +627,7 @@ export default function Task({
             <Button
               display={!defaultValues?.updatedAt ? undefined : 'none'}
               type="submit"
-              size="xs"
+              size={desktop ? 'xs' : undefined}
               loading={submitted}
             >
               {submitted ? 'Adding' : 'Add'}
@@ -629,7 +635,7 @@ export default function Task({
 
             {options?.modal && (
               <>
-                <Divider orientation="vertical" h={16} my={'auto'} />
+                {/* <Divider orientation="vertical" h={16} my={'auto'} /> */}
 
                 {
                   <ModalConfirm
@@ -644,12 +650,15 @@ export default function Task({
                   >
                     <Tooltip label={'Delete task'}>
                       <ActionIcon
-                        size={ICON_WRAPPER_SIZE}
+                        size={ICON_WRAPPER_SIZE * (desktop ? 1 : 1.25)}
                         color="red"
                         variant="light"
                         onClick={() => {}}
                       >
-                        <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                        <IconTrash
+                          size={ICON_SIZE * (desktop ? 1 : 1.25)}
+                          stroke={ICON_STROKE_WIDTH}
+                        />
                       </ActionIcon>
                     </Tooltip>
                   </ModalConfirm>
@@ -774,24 +783,27 @@ function TaskTab({
       <Tabs
         defaultValue="content"
         styles={{
-          // tab: { padding: '10px 10px' },
+          tab: {
+            paddingTop: 'var(--mantine-spacing-md)',
+            paddingBottom: 'var(--mantine-spacing-md)',
+          },
           tabLabel: { fontWeight: 600 },
         }}
         keepMounted
       >
         <TabsList justify="center" grow>
-          <TabsTab
-            value="content"
-            leftSection={<IconAlignJustified size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-          >
-            Content
+          <TabsTab value="content">
+            <Group justify="center">
+              <IconPencilCog size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <span>Content</span>
+            </Group>
           </TabsTab>
 
-          <TabsTab
-            value="properties"
-            leftSection={<IconChecklist size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-          >
-            Properties
+          <TabsTab value="properties">
+            <Group justify="center">
+              <IconSettings size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <span>Properties</span>
+            </Group>
           </TabsTab>
         </TabsList>
 

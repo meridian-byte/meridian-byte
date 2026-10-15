@@ -16,6 +16,10 @@ import {
   ScrollAreaAutosize,
   Select,
   Stack,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
   Text,
   Textarea,
   TextInput,
@@ -39,16 +43,20 @@ import { useAppshellChild } from '@repo/hooks';
 import {
   IconAlignJustified,
   IconBell,
+  IconCalendarCog,
   IconClock,
   IconCursorText,
   IconMapPin,
+  IconPencilCog,
   IconPin,
   IconRepeat,
+  IconSettings,
   IconTrash,
   IconX,
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from '@repo/constants';
 import { generateUUID, prependZeros } from '@repo/utils';
+import { useMediaQuery } from '@mantine/hooks';
 
 interface EventFormProps {
   modal?: boolean;
@@ -57,6 +65,8 @@ interface EventFormProps {
 }
 
 export default function Event({ modal, initialData, onClose }: EventFormProps) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const [checked, setChecked] = useState(true);
 
   const { closeModalView } = useViewModal();
@@ -128,6 +138,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
         placeholder="Select calendar"
         disabled={!calendars}
         loading={calendars === undefined}
+        size={desktop ? 'xs' : 'sm'}
         {...form.getInputProps('calendarId')}
         data={(calendars || []).map((ci) => {
           return {
@@ -263,13 +274,13 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
         <Box
           style={{
             transition: '.1s all ease',
-            height: withReminder ? 30 : 0,
+            height: withReminder ? (desktop ? 30 : 36) : 0,
             overflow: 'hidden',
           }}
         >
           <TimePicker
             aria-label={'Reminder'}
-            size="xs"
+            size={desktop ? 'xs' : 'sm'}
             clearable
             leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             format="12h"
@@ -444,7 +455,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
 
             <Tooltip label={'Delete rule'}>
               <ActionIcon
-                size={ICON_WRAPPER_SIZE}
+                size={30}
                 color="red"
                 variant="light"
                 onClick={() => {
@@ -461,6 +472,341 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
     );
   }
 
+  const leftcolumn = (
+    <ScrollAreaAutosize mah={sharedHeight}>
+      <Stack
+        gap={0}
+        p={sharedPadding}
+        py={modal ? undefined : 0}
+        mih={!modal ? undefined : sharedHeight}
+        bg={
+          !modal
+            ? undefined
+            : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
+        }
+      >
+        <TextInput
+          required
+          aria-label={'Title'}
+          placeholder="Title"
+          variant="unstyled"
+          data-autofocus
+          styles={{
+            input: { backgroundColor: 'transparent', padding: 0, fontWeight: 'bold' },
+          }}
+          {...form.getInputProps('title')}
+          size={'md'}
+        />
+
+        <Textarea
+          aria-label="Description"
+          placeholder="Description"
+          variant="unstyled"
+          styles={{
+            input: { backgroundColor: 'transparent', padding: 0, fontWeight: 500 },
+          }}
+          {...form.getInputProps('description')}
+          autosize
+          minRows={1}
+          maxRows={5}
+          size={'sm'}
+        />
+
+        {modal && (
+          <Divider
+            mt={'xs'}
+            mb={5}
+            color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))"
+          />
+        )}
+
+        <TextInput
+          aria-label="Location"
+          label={!modal ? 'Location' : undefined}
+          placeholder="Location"
+          variant="unstyled"
+          leftSection={<IconMapPin size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+          styles={{
+            input: {
+              backgroundColor: 'transparent',
+              fontWeight: 500,
+            },
+          }}
+          {...form.getInputProps('location')}
+        />
+      </Stack>
+    </ScrollAreaAutosize>
+  );
+
+  const rightColumn = (
+    <Stack h={modal ? sharedHeight : undefined} gap={0}>
+      <ScrollArea flex={1}>
+        <Stack
+          pt={modal ? undefined : 0}
+          p={sharedPadding}
+          py={modal ? undefined : 0}
+          gap={0}
+          // mih={'100vh'}
+        >
+          {modal && <InputCalendar />}
+
+          <Divider my={16} />
+
+          <Stack gap={5}>
+            <Checkbox
+              label={'All day event'}
+              checked={form.values.allDay}
+              onChange={(event) => {
+                const isChecked = event.currentTarget.checked;
+                form.setFieldValue('allDay', isChecked);
+
+                if (isChecked && form.values.start) {
+                  const newStart = dayjs(form.values.start).format('YYYY-MM-DD 00:00:00');
+                  const newEnd = dayjs(form.values.start)
+                    .add(1, 'day')
+                    .startOf('day')
+                    .format('YYYY-MM-DD HH:mm:ss');
+
+                  form.setFieldValue('start', newStart as any);
+                  form.setFieldValue('end', newEnd as any);
+                }
+              }}
+            />
+
+            <div>
+              <Box display={!form.values.allDay ? 'none' : undefined}>
+                <DateInput
+                  {...allDayProps.props}
+                  valueFormat={'DD MMM YYYY'}
+                  value={form.values.start}
+                  size={desktop ? 'xs' : 'sm'}
+                  onChange={(value) => {
+                    const newStart = value;
+                    let newEnd: any = form.values.start;
+
+                    if (newStart) {
+                      if (!form.values.allDay) {
+                        // Calculate a date 1 hour after the new start time
+                        const oneHourLater = new Date(
+                          new Date(newStart).getTime() - 60 * 60 * 1000,
+                        ).toISOString();
+
+                        newEnd = oneHourLater;
+                      } else {
+                        // Calculate 12:00 AM (start) of the following day
+                        const endOfDay = newStart
+                          ? dayjs(newStart).add(1, 'day').startOf('day').toDate().toISOString()
+                          : null;
+
+                        newEnd = endOfDay;
+                      }
+                    }
+
+                    // Force start hours to 00:00:00 local time
+                    const startOfDay = newStart
+                      ? dayjs(newStart).startOf('day').toDate().toISOString()
+                      : null;
+
+                    form.setValues({
+                      ...form.values,
+                      start: (form.values.allDay ? startOfDay : newStart) as any,
+                      end: newEnd as any,
+                    });
+                  }}
+                />
+              </Box>
+
+              <Box display={form.values.allDay ? 'none' : undefined}>
+                <DateTimePicker
+                  {...allDayProps.props}
+                  value={form.values.start}
+                  size={desktop ? 'xs' : 'sm'}
+                  onChange={(value) => {
+                    const newStart = value;
+                    let newEnd: any = form.values.end;
+
+                    if (newStart) {
+                      // If end date doesn't exist or new start is >= current end date
+                      if (!newEnd || new Date(newStart) >= new Date(newEnd)) {
+                        // Calculate a date 1 hour ahead of the new start time
+                        const oneHourLater = new Date(
+                          new Date(newStart).getTime() + 60 * 60 * 1000,
+                        );
+
+                        newEnd = oneHourLater;
+                      }
+                    }
+
+                    form.setValues({
+                      ...form.values,
+                      start: newStart as any,
+                      end: newEnd,
+                    });
+                  }}
+                  timePickerProps={{
+                    withDropdown: true,
+                    popoverProps: { withinPortal: false },
+                    format: '12h',
+                  }}
+                />
+              </Box>
+            </div>
+          </Stack>
+
+          <Box
+            style={{
+              transition: '.1s all ease',
+              height: form.values.allDay ? 0 : desktop ? 54.8 : 60.8,
+              overflow: 'hidden',
+            }}
+          >
+            <DateTimePicker
+              required
+              label="End"
+              placeholder="End"
+              value={form.values.end}
+              size={desktop ? 'xs' : 'sm'}
+              onChange={(value) => {
+                const newEnd = value;
+                let newStart: any = form.values.start;
+
+                if (newEnd) {
+                  // If start date doesn't exist or new end is <= current start date
+                  if (!newStart || new Date(newEnd) <= new Date(newStart)) {
+                    // Calculate a date 1 hour before the new end time
+                    const oneHourEarlier = new Date(new Date(newEnd).getTime() - 60 * 60 * 1000);
+
+                    newStart = oneHourEarlier;
+                  }
+                }
+
+                form.setValues({
+                  ...form.values,
+                  start: newStart,
+                  end: newEnd as any,
+                });
+              }}
+              valueFormat={allDayProps.props.valueFormat}
+              disabled={form.values.allDay}
+
+              timePickerProps={{
+                withDropdown: true,
+                popoverProps: { withinPortal: false },
+                format: '12h',
+              }}
+
+              presets={[
+                {
+                  value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                  label: 'Yesterday',
+                },
+                { value: dayjs().format('YYYY-MM-DD HH:mm:ss'), label: 'Today' },
+                {
+                  value: dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                  label: 'Tomorrow',
+                },
+                {
+                  value: dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm:ss'),
+                  label: 'Next month',
+                },
+              ]}
+            />
+          </Box>
+
+          {modal && (
+            <>
+              {initialData?.id && (
+                <>
+                  <Divider my={16} />
+                  <SectionReminder />
+                </>
+              )}
+
+              {initialData?.id && (
+                <>
+                  <Divider my={16} />
+                  <SectionRecurring />
+                </>
+              )}
+            </>
+          )}
+        </Stack>
+      </ScrollArea>
+
+      <Box px={modal ? undefined : sharedPadding}>
+        <Divider my={modal ? undefined : sharedPadding} />
+      </Box>
+
+      {modal && (
+        <>
+          <Group
+            justify={modal ? 'end' : 'space-between'}
+            gap="xs"
+            p={modal ? sharedPadding : undefined}
+          >
+            {!modal && <InputCalendar />}
+
+            <Group gap={'xs'}>
+              <Button
+                disabled={submitted}
+                variant="default"
+                size={desktop ? 'xs' : undefined}
+                onClick={() => {
+                  if (modal) {
+                    if (onClose) onClose();
+                  } else {
+                    if (!initialData) {
+                      handleToggleChildAside();
+                    } else {
+                      closeModalView();
+                    }
+                  }
+                }}
+              >
+                {'Close'}
+              </Button>
+
+              {!initialData?.id && (
+                <Button
+                  display={!initialData?.id ? undefined : 'none'}
+                  type="submit"
+                  size={desktop ? 'xs' : undefined}
+                  loading={submitted}
+                >
+                  {submitted ? 'Adding' : 'Add'}
+                </Button>
+              )}
+
+              {initialData?.id && (
+                <>
+                  {/* <Divider orientation="vertical" h={16} my={'auto'} /> */}
+
+                  <Tooltip label={'Delete event'}>
+                    <ActionIcon
+                      size={ICON_WRAPPER_SIZE * (desktop ? 1 : 1.25)}
+                      color="red"
+                      variant="light"
+                      onClick={() => {
+                        handleDelete();
+                      }}
+                    >
+                      <IconTrash
+                        size={ICON_SIZE * (desktop ? 1 : 1.25)}
+                        stroke={ICON_STROKE_WIDTH}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+                </>
+              )}
+            </Group>
+          </Group>
+        </>
+      )}
+    </Stack>
+  );
+
+  if (modal && !desktop) return <TaskTab content={leftcolumn} properties={rightColumn} />;
+
   return (
     <Box
       component="form"
@@ -471,338 +817,9 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
       noValidate
     >
       <Grid gap={0}>
-        <GridCol span={{ base: 12, md: modal ? 8 : 12 }}>
-          <ScrollAreaAutosize mah={sharedHeight}>
-            <Stack
-              gap={0}
-              p={sharedPadding}
-              py={modal ? undefined : 0}
-              mih={!modal ? undefined : sharedHeight}
-              bg={
-                !modal
-                  ? undefined
-                  : 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))'
-              }
-            >
-              <TextInput
-                required
-                aria-label={'Title'}
-                placeholder="Title"
-                variant="unstyled"
-                data-autofocus
-                styles={{
-                  input: { backgroundColor: 'transparent', padding: 0, fontWeight: 'bold' },
-                }}
-                {...form.getInputProps('title')}
-                size={'md'}
-              />
+        <GridCol span={{ base: 12, md: modal ? 8 : 12 }}>{leftcolumn}</GridCol>
 
-              <Textarea
-                aria-label="Description"
-                placeholder="Description"
-                variant="unstyled"
-                styles={{
-                  input: { backgroundColor: 'transparent', padding: 0, fontWeight: 500 },
-                }}
-                {...form.getInputProps('description')}
-                autosize
-                minRows={1}
-                maxRows={5}
-                size={'sm'}
-              />
-
-              {modal && (
-                <Divider
-                  mt={'xs'}
-                  mb={5}
-                  color="light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))"
-                />
-              )}
-
-              <TextInput
-                aria-label="Location"
-                label={!modal ? 'Location' : undefined}
-                placeholder="Location"
-                variant="unstyled"
-                leftSection={<IconMapPin size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
-                styles={{
-                  input: {
-                    backgroundColor: 'transparent',
-                    fontWeight: 500,
-                  },
-                }}
-                {...form.getInputProps('location')}
-              />
-            </Stack>
-          </ScrollAreaAutosize>
-        </GridCol>
-
-        <GridCol span={{ base: 12, md: modal ? 4 : 12 }}>
-          <Stack h={modal ? sharedHeight : undefined} gap={0}>
-            <ScrollArea flex={1}>
-              <Stack
-                pt={modal ? undefined : 0}
-                p={sharedPadding}
-                py={modal ? undefined : 0}
-                gap={0}
-                // mih={'100vh'}
-              >
-                {modal && <InputCalendar />}
-
-                <Divider my={16} />
-
-                <Stack gap={5}>
-                  <Checkbox
-                    label={'All day event'}
-                    checked={form.values.allDay}
-                    onChange={(event) => {
-                      const isChecked = event.currentTarget.checked;
-                      form.setFieldValue('allDay', isChecked);
-
-                      if (isChecked && form.values.start) {
-                        const newStart = dayjs(form.values.start).format('YYYY-MM-DD 00:00:00');
-                        const newEnd = dayjs(form.values.start)
-                          .add(1, 'day')
-                          .startOf('day')
-                          .format('YYYY-MM-DD HH:mm:ss');
-
-                        form.setFieldValue('start', newStart as any);
-                        form.setFieldValue('end', newEnd as any);
-                      }
-                    }}
-                  />
-
-                  <div>
-                    <Box display={!form.values.allDay ? 'none' : undefined}>
-                      <DateInput
-                        {...allDayProps.props}
-                        valueFormat={'DD MMM YYYY'}
-                        value={form.values.start}
-                        onChange={(value) => {
-                          const newStart = value;
-                          let newEnd: any = form.values.start;
-
-                          if (newStart) {
-                            if (!form.values.allDay) {
-                              // Calculate a date 1 hour after the new start time
-                              const oneHourLater = new Date(
-                                new Date(newStart).getTime() - 60 * 60 * 1000,
-                              ).toISOString();
-
-                              newEnd = oneHourLater;
-                            } else {
-                              // Calculate 12:00 AM (start) of the following day
-                              const endOfDay = newStart
-                                ? dayjs(newStart)
-                                    .add(1, 'day')
-                                    .startOf('day')
-                                    .toDate()
-                                    .toISOString()
-                                : null;
-
-                              newEnd = endOfDay;
-                            }
-                          }
-
-                          // Force start hours to 00:00:00 local time
-                          const startOfDay = newStart
-                            ? dayjs(newStart).startOf('day').toDate().toISOString()
-                            : null;
-
-                          form.setValues({
-                            ...form.values,
-                            start: (form.values.allDay ? startOfDay : newStart) as any,
-                            end: newEnd as any,
-                          });
-                        }}
-                      />
-                    </Box>
-
-                    <Box display={form.values.allDay ? 'none' : undefined}>
-                      <DateTimePicker
-                        {...allDayProps.props}
-                        value={form.values.start}
-                        onChange={(value) => {
-                          const newStart = value;
-                          let newEnd: any = form.values.end;
-
-                          if (newStart) {
-                            // If end date doesn't exist or new start is >= current end date
-                            if (!newEnd || new Date(newStart) >= new Date(newEnd)) {
-                              // Calculate a date 1 hour ahead of the new start time
-                              const oneHourLater = new Date(
-                                new Date(newStart).getTime() + 60 * 60 * 1000,
-                              );
-
-                              newEnd = oneHourLater;
-                            }
-                          }
-
-                          form.setValues({
-                            ...form.values,
-                            start: newStart as any,
-                            end: newEnd,
-                          });
-                        }}
-                        timePickerProps={{
-                          withDropdown: true,
-                          popoverProps: { withinPortal: false },
-                          format: '12h',
-                        }}
-                      />
-                    </Box>
-                  </div>
-                </Stack>
-
-                <Box
-                  style={{
-                    transition: '.1s all ease',
-                    height: form.values.allDay ? 0 : 54.8,
-                    overflow: 'hidden',
-                  }}
-                >
-                  <DateTimePicker
-                    required
-                    label="End"
-                    placeholder="End"
-                    value={form.values.end}
-                    onChange={(value) => {
-                      const newEnd = value;
-                      let newStart: any = form.values.start;
-
-                      if (newEnd) {
-                        // If start date doesn't exist or new end is <= current start date
-                        if (!newStart || new Date(newEnd) <= new Date(newStart)) {
-                          // Calculate a date 1 hour before the new end time
-                          const oneHourEarlier = new Date(
-                            new Date(newEnd).getTime() - 60 * 60 * 1000,
-                          );
-
-                          newStart = oneHourEarlier;
-                        }
-                      }
-
-                      form.setValues({
-                        ...form.values,
-                        start: newStart,
-                        end: newEnd as any,
-                      });
-                    }}
-                    valueFormat={allDayProps.props.valueFormat}
-                    disabled={form.values.allDay}
-
-                    timePickerProps={{
-                      withDropdown: true,
-                      popoverProps: { withinPortal: false },
-                      format: '12h',
-                    }}
-
-                    presets={[
-                      {
-                        value: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                        label: 'Yesterday',
-                      },
-                      { value: dayjs().format('YYYY-MM-DD HH:mm:ss'), label: 'Today' },
-                      {
-                        value: dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                        label: 'Tomorrow',
-                      },
-                      {
-                        value: dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm:ss'),
-                        label: 'Next month',
-                      },
-                    ]}
-                  />
-                </Box>
-
-                {modal && (
-                  <>
-                    {initialData?.id && (
-                      <>
-                        <Divider my={16} />
-                        <SectionReminder />
-                      </>
-                    )}
-
-                    {initialData?.id && (
-                      <>
-                        <Divider my={16} />
-                        <SectionRecurring />
-                      </>
-                    )}
-                  </>
-                )}
-              </Stack>
-            </ScrollArea>
-
-            <Box px={modal ? undefined : sharedPadding}>
-              <Divider my={modal ? undefined : sharedPadding} />
-            </Box>
-
-            {modal && (
-              <>
-                <Group
-                  justify={modal ? 'end' : 'space-between'}
-                  gap="xs"
-                  p={modal ? sharedPadding : undefined}
-                >
-                  {!modal && <InputCalendar />}
-
-                  <Group gap={'xs'}>
-                    <Button
-                      disabled={submitted}
-                      variant="default"
-                      size="xs"
-                      onClick={() => {
-                        if (modal) {
-                          if (onClose) onClose();
-                        } else {
-                          if (!initialData) {
-                            handleToggleChildAside();
-                          } else {
-                            closeModalView();
-                          }
-                        }
-                      }}
-                    >
-                      {'Close'}
-                    </Button>
-
-                    {!initialData?.id && (
-                      <Button
-                        display={!initialData?.id ? undefined : 'none'}
-                        type="submit"
-                        size="xs"
-                        loading={submitted}
-                      >
-                        {submitted ? 'Adding' : 'Add'}
-                      </Button>
-                    )}
-
-                    {initialData?.id && (
-                      <>
-                        <Divider orientation="vertical" h={16} my={'auto'} />
-
-                        <Tooltip label={'Delete event'}>
-                          <ActionIcon
-                            size={ICON_WRAPPER_SIZE}
-                            color="red"
-                            variant="light"
-                            onClick={() => {
-                              handleDelete();
-                            }}
-                          >
-                            <IconTrash size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-                          </ActionIcon>
-                        </Tooltip>
-                      </>
-                    )}
-                  </Group>
-                </Group>
-              </>
-            )}
-          </Stack>
-        </GridCol>
+        <GridCol span={{ base: 12, md: modal ? 4 : 12 }}>{rightColumn}</GridCol>
 
         {!modal && (
           <GridCol span={{ base: 12 }} px={sharedPadding}>
@@ -848,3 +865,52 @@ const getTimeFormat = (date: Date | string) => {
   const dateObject = new Date(date);
   return `${prependZeros(Number(dateObject.getHours()), 2)}:${prependZeros(Number(dateObject.getMinutes()), 2)}`;
 };
+
+function TaskTab({
+  content,
+  properties,
+}: {
+  content?: React.ReactNode;
+  properties?: React.ReactNode;
+}) {
+  return (
+    <Box>
+      <Tabs
+        defaultValue="content"
+        styles={{
+          tab: {
+            paddingTop: 'var(--mantine-spacing-md)',
+            paddingBottom: 'var(--mantine-spacing-md)',
+          },
+          tabLabel: { fontWeight: 600 },
+        }}
+        keepMounted
+      >
+        <TabsList justify="center" grow>
+          <TabsTab value="content">
+            <Group justify="center">
+              <IconPencilCog size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <span>Content</span>
+            </Group>
+          </TabsTab>
+
+          <TabsTab value="properties">
+            <Group justify="center">
+              <IconSettings size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <span>Properties</span>
+            </Group>
+          </TabsTab>
+        </TabsList>
+
+        <TabsPanel
+          value="content"
+          bg={'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'}
+        >
+          {content}
+        </TabsPanel>
+
+        <TabsPanel value="properties">{properties}</TabsPanel>
+      </Tabs>
+    </Box>
+  );
+}
