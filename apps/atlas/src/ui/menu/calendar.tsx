@@ -16,6 +16,7 @@ import {
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { CalendarGet } from '@repo/types';
 import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Calendar({
   defaultValues,
@@ -27,6 +28,8 @@ export default function Calendar({
   options?: { context?: boolean };
   children: React.ReactNode;
 } & MenuProps) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { showModalViewCalendarCrud } = useViewModal();
 
   const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
@@ -38,12 +41,11 @@ export default function Calendar({
       position="right-start"
       styles={{
         item: {
-          height: 28,
-          padding: 6,
+          padding: desktop ? 6 : 10,
         },
         itemLabel: {
           fontWeight: 500,
-          fontSize: 'var(--mantine-font-size-xs)',
+          fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
         },
         itemSection: {
           color: 'dark',
@@ -56,7 +58,7 @@ export default function Calendar({
       </componentProps.renderOption>
 
       <MenuDropdown>
-        <MenuLabel>
+        <MenuLabel p={desktop ? 6 : 10}>
           <Tooltip
             label={defaultValues.title}
             multiline
@@ -64,7 +66,7 @@ export default function Calendar({
             position="top-start"
             arrowOffset={16}
           >
-            <Text inherit lineClamp={1}>
+            <Text inherit lineClamp={1} fz={{ base: 'md', md: 'xs' }}>
               {defaultValues.title}
             </Text>
           </Tooltip>
@@ -73,7 +75,9 @@ export default function Calendar({
         <MenuDivider />
 
         <MenuItem
-          leftSection={<IconEdit size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconEdit size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           onClick={() =>
             showModalViewCalendarCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.PAVE.CALENDAR.UPDATE)
           }
@@ -82,7 +86,12 @@ export default function Calendar({
         </MenuItem>
 
         <MenuItem
-          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconFolderSymlink
+              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+              stroke={ICON_STROKE_WIDTH}
+            />
+          }
           onClick={() =>
             showModalViewCalendarCrud(
               defaultValues.id,
@@ -96,7 +105,9 @@ export default function Calendar({
         <MenuDivider />
 
         <MenuItem
-          leftSection={<IconTrash size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconTrash size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           color="red"
           onClick={() =>
             showModalViewCalendarCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.PAVE.CALENDAR.DELETE)

@@ -43,6 +43,7 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 import {
+  useCalendarActions,
   useFolderActions,
   useStoreAppShell,
   useStoreFolder,
@@ -68,11 +69,12 @@ export default function Pave() {
   const { subViewValue, showSubViewPave } = useSubView();
   const { showAsideViewPave } = useViewAside();
 
-  const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
+  const { folderCreate } = useFolderActions();
   const paveFolders = folders?.filter((fi) => fi.location === APP_NAMES_ATLAS.PAVE && !fi.folderId);
 
   const calendars = useStoreCalendar((s) => s.calendars);
+  const { calendarCreate } = useCalendarActions();
   const calendarsWithoutFolder = calendars?.filter((ci) => !ci.folderId);
 
   const navLinks = [
@@ -111,13 +113,13 @@ export default function Pave() {
               <NavLink
                 label={nl.label}
                 color="gray"
-                p={0}
+                p={desktop ? 0 : undefined}
                 fw={600}
                 styles={{
-                  section: { marginInlineEnd: 0 },
+                  section: desktop ? { marginInlineEnd: 0 } : undefined,
                   body: { marginBottom: 4 },
                   label: {
-                    fontSize: 'var(--mantine-font-size-xs)',
+                    fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
                     color: active ? 'var(--mantine-color-pri-6)' : undefined,
                   },
                 }}
@@ -130,11 +132,14 @@ export default function Pave() {
                 }}
                 leftSection={
                   <ThemeIcon
-                    size={30}
+                    size={desktop ? 30 : ICON_WRAPPER_SIZE}
                     variant="transparent"
                     color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
                   >
-                    <nl.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    <nl.icon
+                      size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                      stroke={ICON_STROKE_WIDTH}
+                    />
                   </ThemeIcon>
                 }
               />
@@ -144,50 +149,56 @@ export default function Pave() {
       </div>
 
       <div className="group/paveCalendars">
-        <Group justify="space-between" pl={5}>
-          <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5}>
+          <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Calendars
           </Title>
 
           <Group
             justify="end"
-            gap={0}
+            gap={desktop ? 0 : 5}
             className={
               desktop
                 ? 'opacity-0 group-hover/paveCalendars:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/paveCalendars:pointer-events-auto'
                 : undefined
             }
-            mih={30}
-            pr={4}
+            mih={desktop ? 30 : ICON_WRAPPER_SIZE * 1.25 + 6}
+            pr={5}
           >
             <Tooltip label={`Add calendar`}>
               <ActionIcon
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant="subtle"
-                onClick={() => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR)}
+                variant={desktop ? 'subtle' : 'light'}
+                onClick={() => calendarCreate()}
               >
-                <IconCalendarPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconPlus
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Tooltip>
 
             <Tooltip label={`Add calendar folder`}>
               <ActionIcon
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant="subtle"
+                variant={desktop ? 'subtle' : 'light'}
                 onClick={() => {
                   folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.PAVE });
                 }}
               >
-                <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconFolderPlus
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Tooltip>
           </Group>
         </Group>
 
         <div>
-          <Divider mb={4} />
+          <Divider mt={'xs'} mb={5} />
 
           {paveFolders === undefined || !paveFolders.length
             ? null

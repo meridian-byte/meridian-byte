@@ -33,15 +33,18 @@ export default function Navbar({ options }: { options?: { hideWhenOpen?: boolean
   return (
     <Tooltip label={label}>
       <ActionIcon
-        variant="subtle"
+        variant={desktop ? 'subtle' : 'default'}
         color="gray"
         aria-label={label}
-        size={desktop ? sharedHeight : ICON_WRAPPER_SIZE}
+        size={desktop ? sharedHeight : ICON_WRAPPER_SIZE * 1.25}
         onClick={toggleNavbarChild}
         display={!options?.hideWhenOpen ? undefined : navbarChild ? 'none' : undefined}
-        miw={desktop ? 47.43 : ICON_SIZE}
+        miw={desktop ? 47.43 : ICON_SIZE * 1.25}
       >
-        <states.iconLeft size={desktop ? sharedHeight - 8 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <states.iconLeft
+          size={desktop ? sharedHeight - 8 : ICON_SIZE * 1.25}
+          stroke={ICON_STROKE_WIDTH}
+        />
       </ActionIcon>
     </Tooltip>
   );

@@ -16,6 +16,7 @@ import {
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { TaskListGet } from '@repo/types';
 import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function TaskList({
   defaultValues,
@@ -27,6 +28,8 @@ export default function TaskList({
   options?: { context?: boolean };
   children: React.ReactNode;
 } & MenuProps) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { showModalViewTaskListCrud } = useViewModal();
 
   const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
@@ -38,12 +41,11 @@ export default function TaskList({
       position="right-start"
       styles={{
         item: {
-          height: 28,
-          padding: 6,
+          padding: desktop ? 6 : 10,
         },
         itemLabel: {
           fontWeight: 500,
-          fontSize: 'var(--mantine-font-size-xs)',
+          fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
         },
         itemSection: {
           color: 'dark',
@@ -56,7 +58,7 @@ export default function TaskList({
       </componentProps.renderOption>
 
       <MenuDropdown>
-        <MenuLabel>
+        <MenuLabel p={desktop ? 6 : 10}>
           <Tooltip
             label={defaultValues.title}
             multiline
@@ -64,7 +66,7 @@ export default function TaskList({
             position="top-start"
             arrowOffset={16}
           >
-            <Text inherit lineClamp={1}>
+            <Text inherit lineClamp={1} fz={{ base: 'md', md: 'xs' }}>
               {defaultValues.title}
             </Text>
           </Tooltip>

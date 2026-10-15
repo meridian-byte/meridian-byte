@@ -39,7 +39,7 @@ import {
 } from '@repo/constants';
 import { LayoutModal } from '@repo/ui';
 import { IconBackspace, IconCircleFilled, IconNote, IconSearch } from '@tabler/icons-react';
-import { useDebouncedCallback } from '@mantine/hooks';
+import { useDebouncedCallback, useMediaQuery } from '@mantine/hooks';
 import { capitalizeWords } from '@repo/utils';
 
 export default function Search({ children }: { children: React.ReactNode }) {
@@ -85,6 +85,8 @@ function SearchInput({
   setQuery,
   ...restProps
 }: { setQuery: React.Dispatch<React.SetStateAction<string>> } & TextInputProps) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -120,7 +122,10 @@ function SearchInput({
           backgroundColor: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
         },
       }}
-      leftSection={<IconSearch size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />}
+      size={desktop ? undefined : 'md'}
+      leftSection={
+        <IconSearch size={desktop ? ICON_SIZE : ICON_SIZE * 1.25} stroke={ICON_STROKE_WIDTH} />
+      }
       rightSection={
         loading ? (
           <Loader size={'xs'} type="oval" />
@@ -128,7 +133,7 @@ function SearchInput({
           <Tooltip label={'Clear search'} disabled={searchEmpty}>
             <ActionIcon
               color="red.6"
-              variant="subtle"
+              variant="transparent"
               size={ICON_WRAPPER_SIZE}
               onClick={handleClear}
               style={{
@@ -136,7 +141,10 @@ function SearchInput({
                 opacity: !searchEmpty ? 1 : 0,
               }}
             >
-              <IconBackspace size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <IconBackspace
+                size={desktop ? ICON_SIZE : ICON_SIZE * 1.25}
+                stroke={ICON_STROKE_WIDTH}
+              />
             </ActionIcon>
           </Tooltip>
         )
@@ -214,7 +222,7 @@ function SectionResults({
   return (
     <Box display={queryEmpty || options?.hide ? 'none' : undefined}>
       <Box px={'xs'} py={5}>
-        <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+        <Title order={2} fz={{ base: 'md', md: '.8rem' }} fw={500} c={'dimmed'}>
           {title}
         </Title>
       </Box>
@@ -234,6 +242,8 @@ function PartialResultsEvents({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const events = useStoreEvent((s) => s.events);
   const eventsWithinParameter = events?.filter((item) => {
     const matchesTitle = item.title.toLowerCase().includes(query.trim().toLowerCase());
@@ -252,7 +262,17 @@ function PartialResultsEvents({
       {eventsWithinParameter?.map((item) => (
         <div key={item.id}>
           <NavLink
-            label={item.title}
+            label={
+              <Tooltip label={item.title} multiline maw={320} position="top-start" arrowOffset={16}>
+                <Text component="span" inherit lineClamp={1} lh={2}>
+                  {item.title}
+                </Text>
+              </Tooltip>
+            }
+            // onClick={() => handleSelect(item.id)}
+            color="gray"
+            p={desktop ? 0 : undefined}
+            fw={600}
             styles={{
               root: {
                 padding: '3px var(--mantine-spacing-xs)',
@@ -272,6 +292,8 @@ function PartialResultsCalendars({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const calendars = useStoreCalendar((s) => s.calendars);
   const calendarsWithinParameter = calendars?.filter((item) => {
     const matchesTitle = item.title.toLowerCase().includes(query.trim().toLowerCase());
@@ -304,35 +326,52 @@ function PartialResultsCalendars({
       title={`Calendars (${APP_NAMES_ATLAS.PAVE})`}
       options={{ hide: !calendarsWithinParameter?.length }}
     >
-      {calendarsWithinParameter?.map((item) => (
-        <div key={item.id}>
-          <NavLink
-            label={
-              <Tooltip label={item.title} multiline maw={320} position="top-start" arrowOffset={16}>
-                <Text component="span" inherit lineClamp={1} lh={2}>
-                  {item.title}
-                </Text>
-              </Tooltip>
-            }
-            onClick={() => handleSelect(item.id)}
-            color="gray"
-            p={0}
-            fw={600}
-            leftSection={
-              <ThemeIcon
-                size={30}
-                color={item.color ? `${item.color}.6` : 'pri'}
-                variant="transparent"
-              >
-                <IconCircleFilled size={6} />
-              </ThemeIcon>
-            }
-            styles={{
-              section: { marginInlineEnd: 0 },
-            }}
-          />
-        </div>
-      ))}
+      {!calendarsWithinParameter?.length ? (
+        <Center fz={{ base: 'md', md: 'sm' }} c={'dimmed'} py={'md'}>
+          <Text inherit>No calendars found</Text>
+        </Center>
+      ) : (
+        calendarsWithinParameter?.map((item) => (
+          <div key={item.id}>
+            <NavLink
+              label={
+                <Tooltip
+                  label={item.title}
+                  multiline
+                  maw={320}
+                  position="top-start"
+                  arrowOffset={16}
+                >
+                  <Text component="span" inherit lineClamp={1} lh={2}>
+                    {item.title}
+                  </Text>
+                </Tooltip>
+              }
+              onClick={() => handleSelect(item.id)}
+              color="gray"
+              p={desktop ? 0 : undefined}
+              fw={600}
+              styles={{
+                section: desktop ? { marginInlineEnd: 0 } : undefined,
+                label: desktop
+                  ? {
+                      fontSize: 'var(--mantine-font-size-xs)',
+                    }
+                  : undefined,
+              }}
+              leftSection={
+                <ThemeIcon
+                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  color={item.color ? `${item.color}.6` : 'pri'}
+                  variant="transparent"
+                >
+                  <IconCircleFilled size={6} />
+                </ThemeIcon>
+              }
+            />
+          </div>
+        ))
+      )}
     </SectionResults>
   );
 }
@@ -344,6 +383,8 @@ function PartialResultsNotes({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const notes = useStoreNote((s) => s.notes);
   const notesWithinParameter = notes?.filter((item) => {
     const matchesTitle = item.title.toLowerCase().includes(query.trim().toLowerCase());
@@ -377,7 +418,7 @@ function PartialResultsNotes({
       options={{ hide: !notesWithinParameter?.length }}
     >
       {!notesWithinParameter?.length ? (
-        <Center fz={'sm'} c={'dimmed'} py={'md'}>
+        <Center fz={{ base: 'md', md: 'sm' }} c={'dimmed'} py={'md'}>
           <Text inherit>No notes found</Text>
         </Center>
       ) : (
@@ -399,16 +440,25 @@ function PartialResultsNotes({
               }
               onClick={() => handleSelect(item.id)}
               color="gray"
-              p={0}
+              p={desktop ? 0 : undefined}
               fw={600}
+              styles={{
+                section: desktop ? { marginInlineEnd: 0 } : undefined,
+                label: desktop
+                  ? {
+                      fontSize: 'var(--mantine-font-size-xs)',
+                    }
+                  : undefined,
+              }}
               leftSection={
-                <ThemeIcon size={30} color={'gray'} variant="transparent">
-                  <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <ThemeIcon
+                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  color={'gray'}
+                  variant="transparent"
+                >
+                  <IconNote size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
                 </ThemeIcon>
               }
-              styles={{
-                section: { marginInlineEnd: 0 },
-              }}
             />
           </div>
         ))
@@ -424,6 +474,8 @@ function PartialResultsTasks({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const tasks = useStoreTask((s) => s.tasks);
   const tasksWithinParameter = tasks?.filter((item) => {
     const matchesTitle = item.title.toLowerCase().includes(query.trim().toLowerCase());
@@ -440,7 +492,7 @@ function PartialResultsTasks({
       options={{ hide: !tasksWithinParameter?.length }}
     >
       {!tasksWithinParameter?.length ? (
-        <Center fz={'sm'} c={'dimmed'} py={'md'}>
+        <Center fz={{ base: 'md', md: 'sm' }} c={'dimmed'} py={'md'}>
           <Text inherit>No tasks found</Text>
         </Center>
       ) : (
@@ -449,10 +501,15 @@ function PartialResultsTasks({
             <NavLink
               label={item.title}
               color="gray"
-              p={0}
+              p={desktop ? 0 : undefined}
               fw={600}
               styles={{
-                section: { marginInlineEnd: 0 },
+                section: desktop ? { marginInlineEnd: 0 } : undefined,
+                label: desktop
+                  ? {
+                      fontSize: 'var(--mantine-font-size-xs)',
+                    }
+                  : undefined,
               }}
             />
           </div>
@@ -469,6 +526,8 @@ function PartialResultsTaskLists({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const taskListsWithinParameter = taskLists?.filter((item) => {
     const matchesTitle = item.title.toLowerCase().includes(query.trim().toLowerCase());
@@ -502,7 +561,7 @@ function PartialResultsTaskLists({
       options={{ hide: !taskListsWithinParameter?.length }}
     >
       {!taskListsWithinParameter?.length ? (
-        <Center fz={'sm'} c={'dimmed'} py={'md'}>
+        <Center fz={{ base: 'md', md: 'sm' }} c={'dimmed'} py={'md'}>
           <Text inherit>No task lists found</Text>
         </Center>
       ) : (
@@ -524,20 +583,25 @@ function PartialResultsTaskLists({
               }
               onClick={() => handleSelect(item.id)}
               color="gray"
-              p={0}
+              p={desktop ? 0 : undefined}
               fw={600}
+              styles={{
+                section: desktop ? { marginInlineEnd: 0 } : undefined,
+                label: desktop
+                  ? {
+                      fontSize: 'var(--mantine-font-size-xs)',
+                    }
+                  : undefined,
+              }}
               leftSection={
                 <ThemeIcon
-                  size={30}
+                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
                   variant="transparent"
                   color={item.color ? `${item.color}.6` : 'pri'}
                 >
                   <IconCircleFilled size={6} />
                 </ThemeIcon>
               }
-              styles={{
-                section: { marginInlineEnd: 0 },
-              }}
             />
           </div>
         ))

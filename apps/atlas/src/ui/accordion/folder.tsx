@@ -10,11 +10,12 @@ import {
   Center,
   Divider,
   Group,
+  NavLink,
   Text,
   ThemeIcon,
   Tooltip,
 } from '@mantine/core';
-import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
+import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import {
   IconChevronDown,
   IconChevronRight,
@@ -133,13 +134,13 @@ export default function Folder({ folderId, location }: { folderId: string; locat
       multiple
       styles={{
         control: {
-          height: 30,
+          height: desktop ? 30 : 'fit-content',
           padding: 0,
           paddingLeft: 0,
           borderRadius: 'var(--mantine-radius-md)',
           transition: '.25s all ease',
         },
-        label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: '500', padding: '0' },
+        label: { padding: 0 },
         content: { padding: 0 },
         item: { borderBottomWidth: 0 },
         icon: { marginInlineEnd: 0 },
@@ -151,97 +152,121 @@ export default function Folder({ folderId, location }: { folderId: string; locat
         className="group/accordionFolder"
       >
         <MenuFolder defaultValues={currentFolder} options={{ context: true }}>
-          <AccordionControl
-            icon={
-              <ThemeIcon size={30} variant="transparent" color={'gray'}>
-                <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-              </ThemeIcon>
-            }
-          >
-            <Group justify="space-between">
-              <Text
-                component="span"
-                inherit
-                c={isActive ? 'var(--mantine-color-pri-6)' : 'var(--mantine-color-text)'}
-                fw={600}
-              >
-                {currentFolder.name}
-              </Text>
-
-              <Group
-                component={'span'}
-                justify="end"
-                gap={0}
-                className={
-                  desktop
-                    ? 'opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto'
-                    : undefined
-                }
-                mih={30}
-                pr={4}
-              >
-                <Tooltip label={`Add item in ${currentFolder.name}`}>
-                  <ActionIcon
-                    component="span"
-                    size={30 - 6}
-                    color="gray"
-                    variant="subtle"
-                    onClick={(e) => {
-                      e.stopPropagation();
-
-                      // add item
-                      locationProps.onAdd();
-
-                      // Check if current folder is already expanded, if not, add it
-                      const currentOpened = navbarViewValue || '';
-                      if (!currentOpened.includes(folderId)) {
-                        setNavbarViewValue([...currentOpened, folderId]);
-                      }
-                    }}
-                  >
-                    <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                  </ActionIcon>
+          <AccordionControl>
+            <NavLink
+              label={
+                <Tooltip
+                  label={currentFolder.name}
+                  multiline
+                  maw={320}
+                  position="top-start"
+                  arrowOffset={16}
+                >
+                  <Text component="span" inherit lineClamp={1} lh={2}>
+                    {currentFolder.name}
+                  </Text>
                 </Tooltip>
+              }
+              color="gray"
+              p={desktop ? 0 : undefined}
+              fw={600}
+              styles={{
+                section: desktop ? { marginInlineEnd: 0 } : undefined,
+                label: desktop
+                  ? {
+                      fontSize: 'var(--mantine-font-size-xs)',
+                    }
+                  : undefined,
+              }}
+              leftSection={
+                <ThemeIcon
+                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  variant="transparent"
+                  color={'gray'}
+                >
+                  <props.icon
+                    size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
+                </ThemeIcon>
+              }
+              rightSection={
+                <Group
+                  component={'span'}
+                  justify="end"
+                  gap={0}
+                  className={
+                    desktop
+                      ? 'opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto'
+                      : undefined
+                  }
+                  mih={30}
+                  pr={4}
+                  visibleFrom="md"
+                >
+                  <Tooltip label={`Add item in ${currentFolder.name}`}>
+                    <ActionIcon
+                      component="span"
+                      size={30 - 6}
+                      color="gray"
+                      variant="subtle"
+                      onClick={(e) => {
+                        e.stopPropagation();
 
-                <Tooltip label={`Add sub-folder in ${currentFolder.name}`}>
-                  <ActionIcon
-                    component="span"
-                    size={30 - 6}
-                    color="gray"
-                    variant="subtle"
-                    onClick={(e) => {
-                      e.stopPropagation();
+                        // add item
+                        locationProps.onAdd();
 
-                      // create folder
-                      folderCreate({ id: generateUUID(), location, folderId });
-
-                      // Check if current folder is already expanded, if not, add it
-                      const currentOpened = navbarViewValue || '';
-                      if (!currentOpened.includes(folderId)) {
-                        setNavbarViewValue([...currentOpened, folderId]);
-                      }
-                    }}
-                  >
-                    <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                  </ActionIcon>
-                </Tooltip>
-
-                <Tooltip label={`Edit ${currentFolder.name}`}>
-                  <MenuFolder defaultValues={currentFolder}>
-                    <ActionIcon component="span" size={30 - 6} color="gray" variant="subtle">
-                      <IconDots size={ICON_SIZE - 4} />
+                        // Check if current folder is already expanded, if not, add it
+                        const currentOpened = navbarViewValue || '';
+                        if (!currentOpened.includes(folderId)) {
+                          setNavbarViewValue([...currentOpened, folderId]);
+                        }
+                      }}
+                    >
+                      <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
                     </ActionIcon>
-                  </MenuFolder>
-                </Tooltip>
-              </Group>
-            </Group>
+                  </Tooltip>
+
+                  <Tooltip label={`Add sub-folder in ${currentFolder.name}`}>
+                    <ActionIcon
+                      component="span"
+                      size={30 - 6}
+                      color="gray"
+                      variant="subtle"
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        // create folder
+                        folderCreate({ id: generateUUID(), location, folderId });
+
+                        // Check if current folder is already expanded, if not, add it
+                        const currentOpened = navbarViewValue || '';
+                        if (!currentOpened.includes(folderId)) {
+                          setNavbarViewValue([...currentOpened, folderId]);
+                        }
+                      }}
+                    >
+                      <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    </ActionIcon>
+                  </Tooltip>
+
+                  <Tooltip label={`Edit ${currentFolder.name}`}>
+                    <MenuFolder defaultValues={currentFolder}>
+                      <ActionIcon component="span" size={30 - 6} color="gray" variant="subtle">
+                        <IconDots size={ICON_SIZE - 4} />
+                      </ActionIcon>
+                    </MenuFolder>
+                  </Tooltip>
+                </Group>
+              }
+            />
           </AccordionControl>
         </MenuFolder>
 
         <AccordionPanel>
           {/* <Divider my={4} /> */}
 
-          <LayoutPartialNavbar>
+          <LayoutPartialNavbar options={{ folder: true }}>
             {!hasContent ? (
               <Center fz={'xs'} ta={'center'} py={'md'}>
                 <Text inherit>Folder empty</Text>

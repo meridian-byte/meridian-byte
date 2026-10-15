@@ -3,15 +3,18 @@
 import { initialize } from '@repo/utils';
 import { ActionIcon, Avatar, Button, Group, NavLink, Skeleton, ThemeIcon } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { AUTH_URLS, ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
+import { AUTH_URLS, ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { IconLogout, IconUser } from '@tabler/icons-react';
 import { WrapperActionSignIn } from '../wrapper/actions';
 import { AuthAction } from '@repo/types';
 import { useStoreActiveItems, useStoreSession } from '@repo/store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useMediaQuery } from '@mantine/hooks';
 
 export function AvatarUser({ size, options }: { size?: number; options?: { minimal?: boolean } }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
@@ -34,18 +37,24 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
           <NavLink
             label={'Sign In'}
             color="gray"
-            p={0}
+            p={desktop ? 0 : undefined}
             fw={600}
             styles={{
-              section: { marginInlineEnd: 0 },
+              section: desktop ? { marginInlineEnd: 0 } : undefined,
               body: { marginBottom: 4 },
-              label: {
-                fontSize: 'var(--mantine-font-size-xs)',
-              },
+              label: desktop
+                ? {
+                    fontSize: 'var(--mantine-font-size-xs)',
+                  }
+                : undefined,
             }}
             leftSection={
-              <ThemeIcon size={30} variant="transparent" color={'gray'}>
-                <IconUser size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+              <ThemeIcon
+                size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                variant="transparent"
+                color={'gray'}
+              >
+                <IconUser size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ThemeIcon>
             }
           />
@@ -54,17 +63,19 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
         <NavLink
           label={fullName || activeAccount.email}
           color="gray"
-          p={0}
+          p={desktop ? 0 : undefined}
           fw={600}
           styles={{
-            section: { marginInlineEnd: 0 },
+            section: desktop ? { marginInlineEnd: 0 } : undefined,
             body: { marginBottom: 4 },
-            label: {
-              fontSize: 'var(--mantine-font-size-xs)',
-            },
+            label: desktop
+              ? {
+                  fontSize: 'var(--mantine-font-size-xs)',
+                }
+              : undefined,
           }}
           leftSection={
-            <ThemeIcon size={30} variant="transparent" color="gray">
+            <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color="gray">
               <Avatar
                 src={profilePicture || null}
                 name={fullName || 'User'}

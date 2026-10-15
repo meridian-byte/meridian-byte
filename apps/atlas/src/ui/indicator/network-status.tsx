@@ -61,18 +61,21 @@ export default function NetworkStatus({
     return (
       <Tooltip label={!networkStatus.online ? 'Back online' : 'Working Offline'}>
         <ThemeIcon
-          size={!desktop ? ICON_WRAPPER_SIZE : sharedHeight}
+          size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
           variant="light"
           color={!networkStatus.online ? 'yellow' : 'green'}
           display={offline ? undefined : 'none'}
         >
           {!networkStatus.online ? (
             <IconWifiOff
-              size={!desktop ? ICON_SIZE : sharedHeight - 8}
+              size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
               stroke={ICON_STROKE_WIDTH}
             />
           ) : (
-            <IconWifi size={!desktop ? ICON_SIZE : sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
+            <IconWifi
+              size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
+              stroke={ICON_STROKE_WIDTH}
+            />
           )}
         </ThemeIcon>
       </Tooltip>
@@ -82,7 +85,7 @@ export default function NetworkStatus({
   return (
     <Tooltip label={syncStatusProps.label}>
       <ThemeIcon
-        size={!desktop ? ICON_WRAPPER_SIZE : sharedHeight}
+        size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
         variant="transparent"
         color={`${syncStatusProps.color}`}
         c={`${syncStatusProps.color}`}
@@ -110,7 +113,7 @@ const getSycnStatusProps = (params: { syncStatus: SyncStatus; mobile: boolean })
         color: 'red',
         icon: (
           <IconCloudX
-            size={params.mobile ? ICON_SIZE : sharedHeight - 8}
+            size={params.mobile ? ICON_SIZE * 1.25 : sharedHeight - 8}
             stroke={ICON_STROKE_WIDTH}
           />
         ),
@@ -127,7 +130,7 @@ const getSycnStatusProps = (params: { syncStatus: SyncStatus; mobile: boolean })
         color: 'yellow',
         icon: (
           <iconProp.icon
-            size={params.mobile ? ICON_SIZE : sharedHeight - 8}
+            size={params.mobile ? ICON_SIZE * 1.25 : sharedHeight - 8}
             stroke={ICON_STROKE_WIDTH}
           />
         ),
@@ -138,7 +141,7 @@ const getSycnStatusProps = (params: { syncStatus: SyncStatus; mobile: boolean })
         color: 'green',
         icon: (
           <IconCheck
-            size={params.mobile ? ICON_SIZE : sharedHeight - 8}
+            size={params.mobile ? ICON_SIZE * 1.25 : sharedHeight - 8}
             stroke={ICON_STROKE_WIDTH}
           />
         ),

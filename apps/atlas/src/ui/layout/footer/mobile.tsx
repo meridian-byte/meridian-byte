@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ActionIcon, Group } from '@mantine/core';
+import { ActionIcon, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { useStoreAppShell, useView } from '@repo/store';
 import {
@@ -75,7 +75,7 @@ export default function Mobile() {
     // },
   ];
 
-  const multiplier = 1.25;
+  const multiplier = 1.5;
 
   return (
     <Group justify={'space-between'} px={'xs'} h={'100%'} maw={400} mx={'auto'}>
@@ -83,29 +83,45 @@ export default function Mobile() {
         const active = viewValue == di.value;
 
         return (
-          <div key={di.value}>
-            <ActionIcon
+          <Stack
+            key={di.value}
+            gap={0}
+            align="center"
+            ta={'center'}
+            onClick={() => {
+              if (!desktop) {
+                if (navbarActive) toggleNavbarChild();
+              }
+
+              di.actions.switch();
+            }}
+          >
+            <ThemeIcon
               size={ICON_WRAPPER_SIZE * multiplier}
-              variant={active ? 'light' : 'transparent'}
+              // variant={active ? 'light' : 'transparent'}
+              variant={'transparent'}
               color={active ? 'pri' : 'gray'}
               c={active ? 'pri' : 'gray'}
-              onClick={() => {
-                if (!desktop) {
-                  if (navbarActive) toggleNavbarChild();
-                }
-
-                di.actions.switch();
-              }}
             >
               <di.icon size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
-            </ActionIcon>
-          </div>
+            </ThemeIcon>
+
+            <Text component="span" inherit fw={600} fz={'sm'} c={active ? 'pri' : undefined}>
+              {di.value || 'Home'}
+            </Text>
+          </Stack>
         );
       })}
 
-      <ActionIcon size={ICON_WRAPPER_SIZE * multiplier} variant="subtle" color="gray" disabled>
-        <IconDots size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
-      </ActionIcon>
+      <Stack gap={0} align="center" ta={'center'}>
+        <ThemeIcon size={ICON_WRAPPER_SIZE * multiplier} variant="subtle" color="gray">
+          <IconDots size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
+        </ThemeIcon>
+
+        <Text component="span" inherit fw={600} fz={'sm'}>
+          {'More'}
+        </Text>
+      </Stack>
     </Group>
   );
 }

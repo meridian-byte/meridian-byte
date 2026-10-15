@@ -40,6 +40,7 @@ import {
   useStoreAppShell,
   useStoreFolder,
   useSubView,
+  useTaskListActions,
   useViewAside,
 } from '@repo/store';
 import React from 'react';
@@ -61,13 +62,14 @@ export default function Stride() {
   const { subViewValue, showSubViewStride } = useSubView();
   const { showAsideViewStride } = useViewAside();
 
-  const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
+  const { folderCreate } = useFolderActions();
   const strideFolders = folders?.filter(
     (fi) => fi.location == APP_NAMES_ATLAS.STRIDE && !fi.folderId,
   );
 
   const taskLists = useStoreTaskList((s) => s.taskLists);
+  const { taskListCreate } = useTaskListActions();
   const taskListsWithoutFolder = taskLists?.filter((ci) => !ci.folderId);
 
   const navLinks = [
@@ -116,13 +118,13 @@ export default function Stride() {
               <NavLink
                 label={nl.label}
                 color="gray"
-                p={0}
+                p={desktop ? 0 : undefined}
                 fw={600}
                 styles={{
-                  section: { marginInlineEnd: 0 },
+                  section: desktop ? { marginInlineEnd: 0 } : undefined,
                   body: { marginBottom: 4 },
                   label: {
-                    fontSize: 'var(--mantine-font-size-xs)',
+                    fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
                     color: active ? 'var(--mantine-color-pri-6)' : undefined,
                   },
                 }}
@@ -134,15 +136,16 @@ export default function Stride() {
                   nl.action();
                 }}
                 leftSection={
-                  <div style={{ color: active ? 'var(--mantine-color-pri-6)' : undefined }}>
-                    <ThemeIcon
-                      size={30}
-                      variant="transparent"
-                      color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
-                    >
-                      <nl.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                    </ThemeIcon>
-                  </div>
+                  <ThemeIcon
+                    size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                    variant="transparent"
+                    color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
+                  >
+                    <nl.icon
+                      size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                      stroke={ICON_STROKE_WIDTH}
+                    />
+                  </ThemeIcon>
                 }
               />
             </React.Fragment>
@@ -151,50 +154,56 @@ export default function Stride() {
       </div>
 
       <div className="group/strideLists">
-        <Group justify="space-between" pl={5}>
-          <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5}>
+          <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Task Lists
           </Title>
 
           <Group
             justify="end"
-            gap={0}
+            gap={desktop ? 0 : 5}
             className={
               desktop
                 ? 'opacity-0 group-hover/strideLists:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/strideLists:pointer-events-auto'
                 : undefined
             }
-            mih={30}
-            pr={4}
+            mih={desktop ? 30 : ICON_WRAPPER_SIZE * 1.25 + 6}
+            pr={5}
           >
             <Tooltip label={`Add task list`}>
               <ActionIcon
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant="subtle"
-                onClick={() => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.TASK_LIST)}
+                variant={desktop ? 'subtle' : 'light'}
+                onClick={() => taskListCreate()}
               >
-                <IconTextPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconPlus
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Tooltip>
 
             <Tooltip label={`Add task list folder`}>
               <ActionIcon
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant="subtle"
+                variant={desktop ? 'subtle' : 'light'}
                 onClick={() => {
                   folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.STRIDE });
                 }}
               >
-                <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconFolderPlus
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Tooltip>
           </Group>
         </Group>
 
         <div>
-          <Divider mb={4} />
+          <Divider mt={'xs'} mb={5} />
 
           {sortArray(strideFolders || [], (i) => i.createdAt, Order.DESCENDING)?.map((fi) => (
             <div key={fi.id}>

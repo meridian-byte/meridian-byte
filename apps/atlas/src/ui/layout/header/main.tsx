@@ -19,17 +19,17 @@ export default function Main() {
         <ButtonAppshellNavbar />
       </Group>
 
-      <Group justify="end" gap={0}>
+      <Group justify="end" gap={5}>
         <IndicatorNetworkStatus props={{ syncStatus }} />
 
-        <ActionIcon size={ICON_WRAPPER_SIZE} color="gray" variant="subtle" disabled>
-          <IconBell size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <ActionIcon size={ICON_WRAPPER_SIZE * 1.25} color="gray" variant="subtle" disabled>
+          <IconBell size={ICON_SIZE * 1.25} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
 
         <IndicatorTheme />
 
-        <ActionIcon size={ICON_WRAPPER_SIZE} color="gray" variant="subtle" disabled>
-          <IconSettings size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <ActionIcon size={ICON_WRAPPER_SIZE * 1.25} color="gray" variant="subtle" disabled>
+          <IconSettings size={ICON_SIZE * 1.25} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
 
         <ButtonFullscreen />

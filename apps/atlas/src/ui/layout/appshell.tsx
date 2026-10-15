@@ -63,7 +63,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
       <AppShellNavbar
         style={{ borderColor: 'var(--mantine-color-default-border)' }}
-        maw={SHELL_VALUES.NAVBAR.WIDTH}
+        // maw={SHELL_VALUES.NAVBAR.WIDTH}
       >
         <LayoutNavbarMain />
       </AppShellNavbar>

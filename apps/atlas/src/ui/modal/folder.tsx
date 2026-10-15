@@ -10,6 +10,7 @@ import {
   ThemeIcon,
   Tooltip,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import {
   useCalendarActions,
@@ -184,6 +185,8 @@ function NavLinkFolderSelect({
   item: any;
   onClick: (i: any) => void;
 }) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { closeModalView } = useViewModal();
 
   return (
@@ -202,16 +205,21 @@ function NavLinkFolderSelect({
         </Tooltip>
       }
       color="gray"
-      p={0}
+      p={desktop ? 0 : undefined}
       fw={600}
+      styles={{
+        section: desktop ? { marginInlineEnd: 0 } : undefined,
+        label: desktop
+          ? {
+              fontSize: 'var(--mantine-font-size-xs)',
+            }
+          : undefined,
+      }}
       leftSection={
-        <ThemeIcon size={30} variant="transparent" c={'gray'} mt={2}>
-          <IconFolder size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+        <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" c={'gray'} mt={2}>
+          <IconFolder size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         </ThemeIcon>
       }
-      styles={{
-        section: { marginInlineEnd: 0 },
-      }}
       onClick={() => {
         onClick({ ...item, folderId: props?.id || null });
         closeModalView();

@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionIcon, Group, NavLink, Text, ThemeIcon, Tooltip } from '@mantine/core';
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
+import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { useStoreAppShell, useSubView } from '@repo/store';
 import { CalendarGet, NoteGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
@@ -32,11 +32,23 @@ export default function Note({ props }: { props: NoteGet }) {
             </Tooltip>
           }
           color="gray"
-          p={0}
+          p={desktop ? 0 : undefined}
           fw={600}
+          styles={{
+            section: desktop ? { marginInlineEnd: 0 } : undefined,
+            label: {
+              fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+              color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
+            },
+          }}
           leftSection={
-            <ThemeIcon size={30} color="gray" variant="transparent">
-              <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+            <ThemeIcon
+              size={desktop ? 30 : ICON_WRAPPER_SIZE}
+              color="gray"
+              c={noteActive ? 'pri' : 'gray'}
+              variant="transparent"
+            >
+              <IconNote size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             </ThemeIcon>
           }
           rightSection={
@@ -48,7 +60,8 @@ export default function Note({ props }: { props: NoteGet }) {
               }}
               className="opacity-0 group-hover/note:opacity-100 transition-opacity duration-250"
               mih={30}
-              pr={4}
+              pr={5}
+              visibleFrom="md"
             >
               <MenuNote defaultValues={props}>
                 <ActionIcon size={30 - 6} color="gray" variant="subtle">
@@ -57,13 +70,6 @@ export default function Note({ props }: { props: NoteGet }) {
               </MenuNote>
             </Group>
           }
-          styles={{
-            section: { marginInlineEnd: 0 },
-            label: {
-              fontSize: 'var(--mantine-font-size-xs)',
-              color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
-            },
-          }}
           onClick={() => {
             if (!desktop) {
               if (navbarActive) toggleNavbarChild();

@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionIcon, Group, NavLink, Text, ThemeIcon, Tooltip } from '@mantine/core';
-import { ICON_SIZE, ICON_STROKE_WIDTH } from '@repo/constants';
+import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { useStoreAppShell, useSubView } from '@repo/store';
 import { CalendarGet, NoteGet, TaskListGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
@@ -32,10 +32,21 @@ export default function TaskList({ props }: { props: TaskListGet }) {
             </Tooltip>
           }
           color="gray"
-          p={0}
+          p={desktop ? 0 : undefined}
           fw={600}
+          styles={{
+            section: desktop ? { marginInlineEnd: 0 } : undefined,
+            label: {
+              fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+              color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
+            },
+          }}
           leftSection={
-            <ThemeIcon size={30} variant="transparent" c={`${props.color}.6` || 'pri'}>
+            <ThemeIcon
+              size={desktop ? 30 : ICON_WRAPPER_SIZE}
+              variant="transparent"
+              c={`${props.color}.6` || 'pri'}
+            >
               <IconCircleFilled size={6} />
             </ThemeIcon>
           }
@@ -48,7 +59,8 @@ export default function TaskList({ props }: { props: TaskListGet }) {
               }}
               className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-250"
               mih={30}
-              pr={4}
+              pr={5}
+              visibleFrom="md"
             >
               <MenuTaskList defaultValues={props}>
                 <ActionIcon size={30 - 6} color="gray" variant="subtle">
@@ -57,13 +69,6 @@ export default function TaskList({ props }: { props: TaskListGet }) {
               </MenuTaskList>
             </Group>
           }
-          styles={{
-            section: { marginInlineEnd: 0 },
-            label: {
-              fontSize: 'var(--mantine-font-size-xs)',
-              color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
-            },
-          }}
           onClick={() => {
             if (!desktop) {
               if (navbarActive) toggleNavbarChild();

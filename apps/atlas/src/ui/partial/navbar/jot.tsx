@@ -61,14 +61,14 @@ export default function Jot() {
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   const { subViewValue, showSubViewJot } = useSubView();
-  const { noteCreate } = useNoteActions();
   // const { showAsideViewJot } = useViewAside();
 
-  const { folderCreate } = useFolderActions();
   const folders = useStoreFolder((s) => s.folders);
+  const { folderCreate } = useFolderActions();
   const jotFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.JOT && !fi.folderId);
 
   const notes = useStoreNote((s) => s.notes);
+  const { noteCreate } = useNoteActions();
   const notesWithoutFolder = notes?.filter((ci) => !ci.folderId);
 
   const navLinks: any[] = [
@@ -93,12 +93,15 @@ export default function Jot() {
                 <NavLink
                   label={nl.label}
                   color="gray"
-                  p={0}
+                  p={desktop ? 0 : undefined}
                   fw={600}
                   styles={{
-                    section: { marginInlineEnd: 0 },
+                    section: desktop ? { marginInlineEnd: 0 } : undefined,
                     body: { marginBottom: 4 },
-                    label: { fontSize: 'var(--mantine-font-size-xs)' },
+                    label: {
+                      fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+                      color: active ? 'var(--mantine-color-pri-6)' : undefined,
+                    },
                   }}
                   onClick={() => {
                     if (!desktop) {
@@ -109,11 +112,14 @@ export default function Jot() {
                   }}
                   leftSection={
                     <ThemeIcon
-                      size={30}
+                      size={desktop ? 30 : ICON_WRAPPER_SIZE}
                       variant="transparent"
                       color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
                     >
-                      <nl.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                      <nl.icon
+                        size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                        stroke={ICON_STROKE_WIDTH}
+                      />
                     </ThemeIcon>
                   }
                 />
@@ -124,51 +130,56 @@ export default function Jot() {
       )}
 
       <div className="group/jotNotes">
-        <Group justify="space-between" pl={5}>
-          <Title order={2} fz={'.8rem'} fw={500} c={'dimmed'}>
+        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5}>
+          <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Notes
           </Title>
 
           <Group
             justify="end"
-            gap={0}
+            gap={desktop ? 0 : 5}
             className={
               desktop
                 ? 'opacity-0 group-hover/jotNotes:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/jotNotes:pointer-events-auto'
                 : undefined
             }
-            mih={30}
-            pr={4}
+            mih={desktop ? 30 : ICON_WRAPPER_SIZE * 1.25 + 6}
+            pr={5}
           >
             <Tooltip label={`Add note`}>
               <ActionIcon
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant="subtle"
-                // onClick={() => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.NOTE)}
+                variant={desktop ? 'subtle' : 'light'}
                 onClick={() => noteCreate()}
               >
-                <IconFilePlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconPlus
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Tooltip>
 
             <Tooltip label={`Add note folder`}>
               <ActionIcon
-                size={30 - 6}
+                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant="subtle"
+                variant={desktop ? 'subtle' : 'light'}
                 onClick={() => {
                   folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.JOT });
                 }}
               >
-                <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                <IconFolderPlus
+                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  stroke={ICON_STROKE_WIDTH}
+                />
               </ActionIcon>
             </Tooltip>
           </Group>
         </Group>
 
         <div>
-          <Divider mb={4} />
+          <Divider mt={'xs'} mb={5} />
 
           {jotFolders === undefined || !jotFolders.length
             ? null

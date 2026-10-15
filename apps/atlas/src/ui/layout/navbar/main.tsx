@@ -100,18 +100,20 @@ function NavbarHeader() {
       <NavLink
         label={'Home View'}
         color="gray"
-        p={0}
+        p={desktop ? 0 : undefined}
         fw={600}
         styles={{
-          section: { marginInlineEnd: 0 },
+          section: desktop ? { marginInlineEnd: 0 } : undefined,
           body: { marginBottom: 4 },
-          label: {
-            fontSize: 'var(--mantine-font-size-xs)',
-          },
+          label: desktop
+            ? {
+                fontSize: 'var(--mantine-font-size-xs)',
+              }
+            : undefined,
         }}
         leftSection={
-          <ThemeIcon size={30} variant="transparent" color={'gray'}>
-            <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
+            <IconHome size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
         onClick={() => {
@@ -131,18 +133,20 @@ function NavbarHeader() {
       <NavLink
         label={'Global Search'}
         color="gray"
-        p={0}
+        p={desktop ? 0 : undefined}
         fw={600}
         styles={{
-          section: { marginInlineEnd: 0 },
+          section: desktop ? { marginInlineEnd: 0 } : undefined,
           body: { marginBottom: 4 },
-          label: {
-            fontSize: 'var(--mantine-font-size-xs)',
-          },
+          label: desktop
+            ? {
+                fontSize: 'var(--mantine-font-size-xs)',
+              }
+            : undefined,
         }}
         leftSection={
-          <ThemeIcon size={30} variant="transparent" color={'gray'}>
-            <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
+            <IconSearch size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
         onClick={() => {
@@ -157,18 +161,20 @@ function NavbarHeader() {
       <NavLink
         label={'Add Quick Item'}
         color="gray"
-        p={0}
+        p={desktop ? 0 : undefined}
         fw={600}
         styles={{
-          section: { marginInlineEnd: 0 },
+          section: desktop ? { marginInlineEnd: 0 } : undefined,
           body: { marginBottom: 4 },
-          label: {
-            fontSize: 'var(--mantine-font-size-xs)',
-          },
+          label: desktop
+            ? {
+                fontSize: 'var(--mantine-font-size-xs)',
+              }
+            : undefined,
         }}
         leftSection={
-          <ThemeIcon size={30} variant="transparent" color={'gray'}>
-            <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+          <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
+            <IconPlus size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
         onClick={() => {

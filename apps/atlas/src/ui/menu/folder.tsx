@@ -16,6 +16,7 @@ import {
 import { ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { FolderGet } from '@repo/types';
 import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Folder({
   defaultValues,
@@ -27,6 +28,8 @@ export default function Folder({
   options?: { context?: boolean };
   children: React.ReactNode;
 } & MenuProps) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { showModalViewFolderCrud } = useViewModal();
 
   const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
@@ -38,12 +41,11 @@ export default function Folder({
       position="right-start"
       styles={{
         item: {
-          height: 28,
-          padding: 6,
+          padding: desktop ? 6 : 10,
         },
         itemLabel: {
           fontWeight: 500,
-          fontSize: 'var(--mantine-font-size-xs)',
+          fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
         },
         itemSection: {
           color: 'dark',
@@ -62,7 +64,7 @@ export default function Folder({
       </componentProps.renderOption>
 
       <MenuDropdown>
-        <MenuLabel>
+        <MenuLabel p={desktop ? 6 : 10}>
           <Tooltip
             label={defaultValues.name}
             multiline
@@ -70,7 +72,7 @@ export default function Folder({
             position="top-start"
             arrowOffset={16}
           >
-            <Text inherit lineClamp={1}>
+            <Text inherit lineClamp={1} fz={{ base: 'md', md: 'xs' }}>
               {defaultValues.name}
             </Text>
           </Tooltip>
@@ -79,7 +81,9 @@ export default function Folder({
         <MenuDivider />
 
         <MenuItem
-          leftSection={<IconEdit size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconEdit size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           onClick={(e) => {
             e.stopPropagation();
             showModalViewFolderCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.FOLDER.UPDATE);
@@ -89,7 +93,12 @@ export default function Folder({
         </MenuItem>
 
         <MenuItem
-          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconFolderSymlink
+              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+              stroke={ICON_STROKE_WIDTH}
+            />
+          }
           onClick={(e) => {
             e.stopPropagation();
             showModalViewFolderCrud(
@@ -104,7 +113,9 @@ export default function Folder({
         <MenuDivider />
 
         <MenuItem
-          leftSection={<IconTrash size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconTrash size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           color="red"
           onClick={(e) => {
             e.stopPropagation();

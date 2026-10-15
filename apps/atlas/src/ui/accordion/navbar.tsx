@@ -202,7 +202,7 @@ export default function Navbar() {
           borderRadius: 'var(--mantine-radius-md)',
           transition: '.25s all ease',
         },
-        label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: '500', padding: '0' },
+        label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: 500, padding: 0 },
         content: { padding: 0 },
         item: { borderBottomWidth: 0 },
         icon: { marginInlineEnd: 0 },

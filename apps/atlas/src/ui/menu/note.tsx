@@ -16,6 +16,7 @@ import {
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { NoteGet } from '@repo/types';
 import { IconCopy, IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Note({
   defaultValues,
@@ -27,6 +28,8 @@ export default function Note({
   options?: { context?: boolean };
   children: React.ReactNode;
 } & MenuProps) {
+  const desktop = useMediaQuery('(min-width: 62em)');
+
   const { showModalViewNoteCrud } = useViewModal();
   const { noteCopy } = useNoteActions();
 
@@ -39,12 +42,11 @@ export default function Note({
       position="right-start"
       styles={{
         item: {
-          height: 28,
-          padding: 6,
+          padding: desktop ? 6 : 10,
         },
         itemLabel: {
           fontWeight: 500,
-          fontSize: 'var(--mantine-font-size-xs)',
+          fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
         },
         itemSection: {
           color: 'dark',
@@ -57,7 +59,7 @@ export default function Note({
       </componentProps.renderOption>
 
       <MenuDropdown>
-        <MenuLabel>
+        <MenuLabel p={desktop ? 6 : 10}>
           <Tooltip
             label={defaultValues.title}
             multiline
@@ -65,7 +67,7 @@ export default function Note({
             position="top-start"
             arrowOffset={16}
           >
-            <Text inherit lineClamp={1}>
+            <Text inherit lineClamp={1} fz={{ base: 'md', md: 'xs' }}>
               {defaultValues.title}
             </Text>
           </Tooltip>
@@ -74,7 +76,9 @@ export default function Note({
         <MenuDivider />
 
         <MenuItem
-          leftSection={<IconEdit size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconEdit size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           onClick={() =>
             showModalViewNoteCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.JOT.NOTE.UPDATE)
           }
@@ -83,14 +87,21 @@ export default function Note({
         </MenuItem>
 
         <MenuItem
-          leftSection={<IconCopy size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconCopy size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           onClick={() => noteCopy({ values: defaultValues })}
         >
           Make a copy
         </MenuItem>
 
         <MenuItem
-          leftSection={<IconFolderSymlink size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconFolderSymlink
+              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+              stroke={ICON_STROKE_WIDTH}
+            />
+          }
           onClick={() =>
             showModalViewNoteCrud(
               defaultValues.id,
@@ -104,7 +115,9 @@ export default function Note({
         <MenuDivider />
 
         <MenuItem
-          leftSection={<IconTrash size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+          leftSection={
+            <IconTrash size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          }
           color="red"
           onClick={() =>
             showModalViewNoteCrud(defaultValues.id, MODAL_VIEW_NAMES.CRUD.JOT.NOTE.DELETE)

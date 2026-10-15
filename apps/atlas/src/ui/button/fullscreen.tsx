@@ -20,13 +20,13 @@ export default function Fullscreen() {
   return (
     <Tooltip label={buttonProps.label}>
       <ActionIcon
-        size={!desktop ? ICON_WRAPPER_SIZE : sharedHeight}
+        size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
         onClick={toggle}
         variant="subtle"
         color="gray"
       >
         <buttonProps.icon
-          size={!desktop ? ICON_SIZE : sharedHeight - 8}
+          size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
           stroke={ICON_STROKE_WIDTH}
         />
       </ActionIcon>

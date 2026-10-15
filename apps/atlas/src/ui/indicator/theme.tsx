@@ -48,7 +48,7 @@ export default function Theme() {
   };
 
   if (!mounted) {
-    return <Skeleton maw={`${100 / 6}%`} h={!desktop ? ICON_SIZE : sharedHeight} />;
+    return <Skeleton maw={`${100 / 6}%`} h={!desktop ? ICON_SIZE * 1.25 : sharedHeight} />;
   }
 
   return (
@@ -62,7 +62,7 @@ export default function Theme() {
     >
       <ActionIcon
         variant={'subtle'}
-        size={!desktop ? ICON_WRAPPER_SIZE : sharedHeight}
+        size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
         color="gray"
         onClick={() => {
           startTransition(() => {
@@ -71,7 +71,7 @@ export default function Theme() {
         }}
       >
         <buttonProps.icon
-          size={!desktop ? ICON_SIZE : sharedHeight - 8}
+          size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
           stroke={ICON_STROKE_WIDTH}
         />
       </ActionIcon>
