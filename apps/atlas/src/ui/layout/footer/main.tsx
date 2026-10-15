@@ -45,9 +45,9 @@ export default function Main() {
         </ActionIcon>
       </Group>
 
-      <Group justify="end" gap={4} p={5}>
+      {/* <Group justify="end" gap={4} p={5}>
         <ButtonAppshellAside options={{ hideWhenClosed: true }} />
-      </Group>
+      </Group> */}
     </Group>
   );
 }

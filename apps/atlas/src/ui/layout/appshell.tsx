@@ -25,7 +25,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const desktop = useMediaQuery('(min-width: 62em)');
 
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
-  const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
+  // const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const contextValue = useMemo(() => viewportRef, []);
@@ -46,11 +46,11 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         breakpoint: 'md',
         collapsed: { mobile: !navbarActive, desktop: !navbarActive },
       }}
-      aside={{
-        width: SHELL_VALUES.ASIDE.WIDTH,
-        breakpoint: 'md',
-        collapsed: { mobile: true, desktop: !asideActive },
-      }}
+      // aside={{
+      //   width: SHELL_VALUES.ASIDE.WIDTH,
+      //   breakpoint: 'md',
+      //   collapsed: { mobile: true, desktop: !asideActive },
+      // }}
       footer={{
         height: desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE,
       }}
@@ -80,9 +80,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </ScrollContext.Provider>
       </AppShellMain>
 
-      <AppShellAside style={{ borderColor: 'var(--mantine-color-default-border)' }}>
+      {/* <AppShellAside style={{ borderColor: 'var(--mantine-color-default-border)' }}>
         <LayoutAsideMain />
-      </AppShellAside>
+      </AppShellAside> */}
 
       {desktop ? (
         <AppShellFooter
