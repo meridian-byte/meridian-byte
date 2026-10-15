@@ -216,27 +216,26 @@ export default function Note() {
                       ) : undefined
                     }
                     rightSection={
-                      (tabsJotView || []).length > 1 && (
-                        <Group
-                          gap={0}
-                          wrap="nowrap"
-                          // mih={desktop ? 30 : ICON_WRAPPER_SIZE + 6}
-                          pr={desktop ? 4 : 0}
+                      <Group
+                        gap={0}
+                        wrap="nowrap"
+                        mih={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                        pr={desktop ? 4 : 0}
+                      >
+                        <ActionIcon
+                          component="span"
+                          size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                          color={active ? 'pri' : 'gray'}
+                          variant={desktop ? 'subtle' : 'light'}
+                          onClick={(e) => handleCloseTab(e, ati.tab)}
+                          display={(tabsJotView || []).length > 1 ? undefined : 'none'}
                         >
-                          <ActionIcon
-                            component="span"
-                            size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
-                            color={active ? 'pri' : 'gray'}
-                            variant={desktop ? 'subtle' : 'light'}
-                            onClick={(e) => handleCloseTab(e, ati.tab)}
-                          >
-                            <IconX
-                              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
-                              stroke={ICON_STROKE_WIDTH}
-                            />
-                          </ActionIcon>
-                        </Group>
-                      )
+                          <IconX
+                            size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                            stroke={ICON_STROKE_WIDTH}
+                          />
+                        </ActionIcon>
+                      </Group>
                     }
                   />
                 </TabsTab>
