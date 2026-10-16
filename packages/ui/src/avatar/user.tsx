@@ -63,7 +63,9 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
         <NavLink
           label={fullName || activeAccount.email}
           color="gray"
-          p={desktop ? 0 : undefined}
+          p={desktop ? 0 : 0}
+          pl={desktop ? undefined : 12}
+          pr={desktop ? undefined : 5}
           fw={600}
           styles={{
             section: desktop ? { marginInlineEnd: 0 } : undefined,
@@ -94,11 +96,12 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                miw={desktop ? 30 : ICON_WRAPPER_SIZE}
+                miw={desktop ? 30 : ICON_WRAPPER_SIZE * 1.25}
                 pr={desktop ? 4 : 0}
+                justify="end"
               >
                 <ActionIcon
-                  size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                  size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                   variant="light"
                   color="red"
                   onClick={() => {

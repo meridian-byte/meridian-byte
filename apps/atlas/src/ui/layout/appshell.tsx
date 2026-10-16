@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AppShell,
   AppShellAside,
@@ -8,7 +8,10 @@ import {
   AppShellHeader,
   AppShellMain,
   AppShellNavbar,
+  Center,
   ScrollArea,
+  Stack,
+  Text,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import LayoutNavbarMain from './navbar/main';
@@ -19,8 +22,11 @@ import LayoutFooterMobile from './footer/mobile';
 import { SHELL_VALUES } from '@atlas/constants';
 import { useStoreAppShell } from '@repo/store';
 import { ScrollContext } from '@repo/hooks';
+import { SpinnerApp } from '@repo/ui';
 
 export default function Shell({ children }: { children: React.ReactNode }) {
+  const [inClient, setInClient] = useState(false);
+
   // const mobile = useMediaQuery('(max-width: 36em)');
   const desktop = useMediaQuery('(min-width: 62em)');
 
@@ -29,6 +35,18 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const contextValue = useMemo(() => viewportRef, []);
+
+  useEffect(() => {
+    setInClient(true);
+  }, []);
+
+  if (!inClient) {
+    return (
+      <Center mih={'100vh'}>
+        <SpinnerApp />
+      </Center>
+    );
+  }
 
   return (
     <AppShell
@@ -56,7 +74,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       }}
     >
       {!desktop && (
-        <AppShellHeader>
+        <AppShellHeader style={{ borderColor: 'var(--mantine-color-default-border)' }}>
           <LayoutHeaderMain />
         </AppShellHeader>
       )}

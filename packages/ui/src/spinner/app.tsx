@@ -3,6 +3,6 @@
 import { Box } from '@mantine/core';
 import classes from './app.module.css';
 
-export default function SpinnerApp({ props }: { props?: { size?: number } }) {
+export function SpinnerApp({ props }: { props?: { size?: number } }) {
   return <Box w={props?.size || 24} h={props?.size || 24} className={classes.spinner}></Box>;
 }
