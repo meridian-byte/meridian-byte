@@ -55,23 +55,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <meta charSet="UTF-8" />
 
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0"
-          viewport-fit="cover"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
         {/* General Web App Metadata */}
         <meta name="application-name" content={APP_NAME.ATLAS} />
-        <meta
+        {/* <meta
           name="theme-color"
           content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
         />
-        {/* <meta
+        <meta
           name="background-color"
           content={resolvedTheme == ColorScheme.LIGHT ? '#ffffff' : '#000000'}
         /> */}
-        {/* <meta name="theme-color" content={'#b08e67'} /> */}
+        <meta name="theme-color" content={'#b08e67'} />
         <meta name="background-color" content={'#b08e67'} />
 
         {/* Apple Web App Tags */}
