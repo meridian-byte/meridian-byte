@@ -82,12 +82,7 @@ export default function Navbar() {
     // },
   ];
 
-  const filteredData = data.filter((di) => {
-    if (desktop) return di;
-    return di.value == viewValue;
-  });
-
-  const items = filteredData.map((item, i) => {
+  const items = data.map((item, i) => {
     const props = {
       icon: (navbarViewValue || []).includes(item.value) ? IconChevronDown : IconChevronRight,
     };
@@ -97,6 +92,7 @@ export default function Navbar() {
         key={item.value}
         value={item.value}
         className="group/accordionNavbar"
+        display={desktop ? undefined : item.value == viewValue ? undefined : 'none'}
         // mb={4}
       >
         {/* {i > 0 && <Divider my={4} />} */}
@@ -189,11 +185,11 @@ export default function Navbar() {
   return (
     <Accordion
       order={3}
-      value={desktop ? navbarViewValue || [] : filteredData.map((di) => di.value)}
+      value={desktop ? navbarViewValue || [] : data.map((di) => di.value)}
       onChange={desktop ? (newValues) => setNavbarViewValue(newValues) : undefined}
       chevronIconSize={ICON_SIZE}
       chevron={null}
-      // keepMounted
+      keepMounted
       multiple
       styles={{
         control: {

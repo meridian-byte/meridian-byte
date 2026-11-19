@@ -178,27 +178,27 @@ export default function Jot() {
           </Group>
         </Group>
 
-        <Box>
-          <Divider my={5} />
+        {jotFolders === undefined ||
+        notes === undefined ||
+        (!jotFolders.length && !notes?.length) ? (
+          <PartialEmpty loading={notes === undefined} label={`Nothing here.`} />
+        ) : (
+          <Box mih={220}>
+            <Divider my={5} />
 
-          {jotFolders === undefined || !jotFolders.length
-            ? null
-            : sortArray(jotFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
-                <div key={fi.id}>
-                  <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
-                </div>
-              ))}
+            {sortArray(jotFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
+              <div key={fi.id}>
+                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
+              </div>
+            ))}
 
-          {notes === undefined || !notes?.length ? (
-            <PartialEmpty loading={notes === undefined} label={`No notes.`} />
-          ) : (
-            sortArray(notesWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map((ni) => (
+            {sortArray(notesWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map((ni) => (
               <div key={ni.id}>
                 <NavlinkNote props={ni} />
               </div>
-            ))
-          )}
-        </Box>
+            ))}
+          </Box>
+        )}
       </div>
     </div>
   );

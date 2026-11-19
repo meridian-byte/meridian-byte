@@ -197,29 +197,29 @@ export default function Pave() {
           </Group>
         </Group>
 
-        <Box mih={220}>
-          <Divider my={5} />
+        {paveFolders === undefined ||
+        calendars === undefined ||
+        (!paveFolders.length && !calendars?.length) ? (
+          <PartialEmpty loading={calendars === undefined} label={`Nothing here.`} />
+        ) : (
+          <Box mih={220}>
+            <Divider my={5} />
 
-          {paveFolders === undefined || !paveFolders.length
-            ? null
-            : sortArray(paveFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
-                <div key={fi.id}>
-                  <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.PAVE} />
-                </div>
-              ))}
+            {sortArray(paveFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
+              <div key={fi.id}>
+                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.PAVE} />
+              </div>
+            ))}
 
-          {calendars === undefined || !calendars?.length ? (
-            <PartialEmpty loading={calendars === undefined} label={`No calendars.`} />
-          ) : (
-            sortArray(calendarsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map(
+            {sortArray(calendarsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map(
               (ci) => (
                 <div key={ci.id}>
                   <NavlinkCalendar props={ci} />
                 </div>
               ),
-            )
-          )}
-        </Box>
+            )}
+          </Box>
+        )}
       </div>
     </div>
   );

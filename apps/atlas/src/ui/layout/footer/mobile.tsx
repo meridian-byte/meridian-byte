@@ -100,13 +100,19 @@ export default function Mobile() {
               size={ICON_WRAPPER_SIZE * multiplier}
               // variant={active ? 'light' : 'transparent'}
               variant={'transparent'}
-              color={active ? 'pri' : 'var(--mantine-color-text)'}
-              c={active ? 'pri' : 'var(--mantine-color-text)'}
+              color={active ? 'var(--mantine-color-body)' : 'var(--mantine-color-text)'}
+              c={active ? 'var(--mantine-color-body)' : 'var(--mantine-color-text)'}
             >
               <di.icon size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
             </ThemeIcon>
 
-            <Text component="span" inherit fw={600} fz={'sm'} c={active ? 'pri' : undefined}>
+            <Text
+              component="span"
+              inherit
+              fw={600}
+              fz={'sm'}
+              c={active ? 'var(--mantine-color-body)' : undefined}
+            >
               {di.value || 'Home'}
             </Text>
           </Stack>

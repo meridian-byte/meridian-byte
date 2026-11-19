@@ -202,27 +202,29 @@ export default function Stride() {
           </Group>
         </Group>
 
-        <Box mih={220}>
-          <Divider my={5} />
+        {strideFolders === undefined ||
+        taskLists === undefined ||
+        (!strideFolders.length && !taskLists?.length) ? (
+          <PartialEmpty loading={taskLists === undefined} label={`Nothing here.`} />
+        ) : (
+          <Box mih={220}>
+            <Divider my={5} />
 
-          {sortArray(strideFolders || [], (i) => i.createdAt, Order.DESCENDING)?.map((fi) => (
-            <div key={fi.id}>
-              <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
-            </div>
-          ))}
+            {sortArray(strideFolders || [], (i) => i.createdAt, Order.DESCENDING)?.map((fi) => (
+              <div key={fi.id}>
+                <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.STRIDE} />
+              </div>
+            ))}
 
-          {taskLists === undefined || !taskLists?.length ? (
-            <PartialEmpty loading={taskLists === undefined} label={`No task lists.`} />
-          ) : (
-            sortArray(taskListsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map(
+            {sortArray(taskListsWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map(
               (tli) => (
                 <div key={tli.id}>
                   <NavlinkTaskList props={tli} />
                 </div>
               ),
-            )
-          )}
-        </Box>
+            )}
+          </Box>
+        )}
       </div>
     </div>
   );
