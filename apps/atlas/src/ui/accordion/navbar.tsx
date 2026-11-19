@@ -29,180 +29,83 @@ import PartialNavbarJot from '../partial/navbar/jot';
 import LayoutPartialNavbar from '../layout/partial/navbar';
 
 import { useBreakpointFlags } from '@repo/hooks';
+import { memo, useCallback, useMemo } from 'react';
 
-export default function Navbar() {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const EMPTY_ARRAY: string[] = [];
+
+const Navbar = memo(function Navbar() {
+  const { ready, isDesktop } = useBreakpointFlags();
 
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
-
   const { showAsideViewPave, showAsideViewJot, showAsideViewStride } = useViewAside();
-  const { viewValue, showViewPave, showViewJot, showViewStride, showViewPrime, showViewTally } =
-    useView();
+  const { viewValue, showViewPave, showViewJot, showViewStride } = useView();
   const { showModalViewSearch } = useViewModal();
 
-  const data = [
-    {
-      value: APP_NAMES_ATLAS.PAVE,
-      actions: {
-        create: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.ITEM),
-        switch: showViewPave,
+  const sections = useMemo(
+    () => [
+      {
+        value: APP_NAMES_ATLAS.PAVE,
+        onCreate: () => showAsideViewPave(ASIDE_VIEW_NAMES.NEW.PAVE.ITEM),
+        onSwitch: showViewPave,
+        renderContent: () => <PartialNavbarPave />,
       },
-      content: <PartialNavbarPave />,
-    },
-    {
-      value: APP_NAMES_ATLAS.JOT,
-      actions: {
-        create: () => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.ITEM),
-        switch: showViewJot,
+      {
+        value: APP_NAMES_ATLAS.JOT,
+        onCreate: () => showAsideViewJot(ASIDE_VIEW_NAMES.NEW.JOT.ITEM),
+        onSwitch: showViewJot,
+        renderContent: () => <PartialNavbarJot />,
       },
-      content: <PartialNavbarJot />,
-    },
-    {
-      value: APP_NAMES_ATLAS.STRIDE,
-      actions: {
-        create: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.ITEM),
-        switch: showViewStride,
+      {
+        value: APP_NAMES_ATLAS.STRIDE,
+        onCreate: () => showAsideViewStride(ASIDE_VIEW_NAMES.NEW.STRIDE.ITEM),
+        onSwitch: showViewStride,
+        renderContent: () => <PartialNavbarStride />,
       },
-      content: <PartialNavbarStride />,
+    ],
+    [
+      showAsideViewPave,
+      showAsideViewJot,
+      showAsideViewStride,
+      showViewPave,
+      showViewJot,
+      showViewStride,
+    ],
+  );
+
+  const activeAccordionValues = useMemo(() => {
+    if (isDesktop) {
+      return navbarViewValue ?? EMPTY_ARRAY;
+    }
+    return viewValue ? [viewValue] : EMPTY_ARRAY;
+  }, [isDesktop, navbarViewValue, viewValue]);
+
+  const handleAccordionChange = useCallback(
+    (newValues: string[]) => {
+      if (isDesktop) {
+        setNavbarViewValue(newValues);
+      }
     },
-    // {
-    //   value: APP_NAMES_ATLAS.PRIME,
-    //   actions: {
-    //     create: () => {},
-    //     switch: showViewPrime,
-    //   },
-    //   content: 'Prime content',
-    // },
-    // {
-    //   value: APP_NAMES_ATLAS.TALLY,
-    //   actions: {
-    //     create: () => {},
-    //     switch: showViewTally,
-    //   },
-    //   content: 'Tally content',
-    // },
-  ];
+    [isDesktop, setNavbarViewValue],
+  );
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
-
-  const items = data.map((item, i) => {
-    const props = {
-      icon: (navbarViewValue || []).includes(item.value) ? IconChevronDown : IconChevronRight,
-    };
-
-    return (
-      <AccordionItem
-        key={item.value}
-        value={item.value}
-        className="group/accordionNavbar"
-        display={isDesktop ? undefined : item.value == viewValue ? undefined : 'none'}
-        // mb={4}
-      >
-        {/* {i > 0 && <Divider my={4} />} */}
-
-        <>
-          <AccordionControl
-            icon={
-              <ThemeIcon size={30} variant="transparent" color={'gray'}>
-                <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-              </ThemeIcon>
-            }
-            display={isDesktop ? undefined : 'none'}
-            // mb={4}
-          >
-            <Group justify="space-between">
-              <Text inherit fw={600}>
-                {item.value}
-              </Text>
-
-              <Group
-                component={'span'}
-                justify="end"
-                gap={0}
-                className={
-                  isDesktop
-                    ? 'opacity-0 group-hover/accordionNavbar:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionNavbar:pointer-events-auto'
-                    : undefined
-                }
-                mih={30}
-                pr={4}
-              >
-                <Tooltip label={`Search in ${item.value}`}>
-                  <ActionIcon
-                    component="span"
-                    size={30 - 6}
-                    color="gray"
-                    variant="subtle"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showModalViewSearch(item.value);
-                    }}
-                  >
-                    <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                  </ActionIcon>
-                </Tooltip>
-
-                <Tooltip label={`Add item in ${item.value}`}>
-                  <ActionIcon
-                    component="span"
-                    size={30 - 6}
-                    color="gray"
-                    variant="subtle"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      item.actions.create();
-                    }}
-                  >
-                    <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                  </ActionIcon>
-                </Tooltip>
-
-                <Tooltip label={`Go to ${item.value}`}>
-                  <ActionIcon
-                    component="span"
-                    size={30 - 6}
-                    color="gray"
-                    variant="subtle"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      item.actions.switch();
-                    }}
-                  >
-                    <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                  </ActionIcon>
-                </Tooltip>
-              </Group>
-            </Group>
-          </AccordionControl>
-
-          <AccordionPanel>
-            {/* <Divider my={4} /> */}
-
-            <LayoutPartialNavbar>{item.content}</LayoutPartialNavbar>
-          </AccordionPanel>
-        </>
-      </AccordionItem>
-    );
-  });
 
   return (
     <Accordion
       order={3}
-      value={isDesktop ? navbarViewValue || [] : data.map((di) => di.value)}
-      onChange={isDesktop ? (newValues) => setNavbarViewValue(newValues) : undefined}
+      value={activeAccordionValues}
+      onChange={handleAccordionChange}
       chevronIconSize={ICON_SIZE}
       chevron={null}
-      keepMounted
       multiple
       styles={{
         control: {
           padding: 0,
           paddingLeft: 0,
           borderRadius: 'var(--mantine-radius-md)',
-          transition: '.25s all ease',
+          transition: 'background-color 150ms ease, color 150ms ease',
         },
         label: { fontSize: 'var(--mantine-font-size-xs)', fontWeight: 500, padding: 0 },
         content: { padding: 0 },
@@ -210,7 +113,103 @@ export default function Navbar() {
         icon: { marginInlineEnd: 0 },
       }}
     >
-      {items}
+      {sections.map((item) => {
+        const isOpen = activeAccordionValues.includes(item.value);
+        const ChevronIcon = isOpen ? IconChevronDown : IconChevronRight;
+
+        // On mobile, only mount the active app's navbar tree instead of keeping all 3 hidden in DOM
+        const shouldRenderPanel = isDesktop ? isOpen : item.value === viewValue;
+
+        return (
+          <AccordionItem
+            key={item.value}
+            value={item.value}
+            className="group/accordionNavbar"
+            display={isDesktop || item.value === viewValue ? undefined : 'none'}
+          >
+            <AccordionControl
+              icon={
+                <ThemeIcon size={30} variant="transparent" color="gray">
+                  <ChevronIcon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                </ThemeIcon>
+              }
+              display={isDesktop ? undefined : 'none'}
+            >
+              <Group justify="space-between">
+                <Text inherit fw={600}>
+                  {item.value}
+                </Text>
+
+                <Group
+                  component="span"
+                  justify="end"
+                  gap={0}
+                  className={
+                    isDesktop
+                      ? 'opacity-0 group-hover/accordionNavbar:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/accordionNavbar:pointer-events-auto'
+                      : undefined
+                  }
+                  mih={30}
+                  pr={4}
+                >
+                  <Tooltip label={`Search in ${item.value}`}>
+                    <ActionIcon
+                      component="span"
+                      size={30 - 6}
+                      color="gray"
+                      variant="subtle"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showModalViewSearch(item.value);
+                      }}
+                    >
+                      <IconSearch size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    </ActionIcon>
+                  </Tooltip>
+
+                  <Tooltip label={`Add item in ${item.value}`}>
+                    <ActionIcon
+                      component="span"
+                      size={30 - 6}
+                      color="gray"
+                      variant="subtle"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        item.onCreate();
+                      }}
+                    >
+                      <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    </ActionIcon>
+                  </Tooltip>
+
+                  <Tooltip label={`Go to ${item.value}`}>
+                    <ActionIcon
+                      component="span"
+                      size={30 - 6}
+                      color="gray"
+                      variant="subtle"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        item.onSwitch();
+                      }}
+                    >
+                      <IconHome size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
+              </Group>
+            </AccordionControl>
+
+            <AccordionPanel>
+              {shouldRenderPanel && (
+                <LayoutPartialNavbar>{item.renderContent()}</LayoutPartialNavbar>
+              )}
+            </AccordionPanel>
+          </AccordionItem>
+        );
+      })}
     </Accordion>
   );
-}
+});
+
+export default Navbar;

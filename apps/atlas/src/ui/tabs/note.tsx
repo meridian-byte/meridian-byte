@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   ActionIcon,
   Box,
@@ -24,86 +24,262 @@ import EditorMain from '@atlas/ui/editor/main';
 import { SHELL_VALUES } from '@atlas/constants';
 import { ScrollContext, useBreakpointFlags } from '@repo/hooks';
 import { useNoteTitle } from '@atlas/hooks/input';
-
 import { LayoutSection } from '@repo/ui';
+
+const MAX_TAB_WIDTH = 240;
+const MIN_TAB_WIDTH = 180;
+
+const TABS_STYLES = {
+  tab: {
+    borderRadius: 'var(--mantine-radius-md)',
+    borderBottomColor: 'transparent',
+    transition: 'background-color 150ms ease, color 150ms ease',
+  },
+};
+
+const TITLE_INPUT_STYLES = {
+  input: {
+    fontSize: 'var(--mantine-h2-font-size)',
+    backgroundColor: 'transparent',
+  },
+};
+
+const MemoEditorMain = memo(EditorMain);
+
+interface JotTabEntry {
+  tab: string;
+  persistent: boolean;
+}
+
+const NoteTabItem = memo(function NoteTabItem({
+  entry,
+  isActive,
+  canClose,
+  isDesktop,
+  setTabRef,
+  onSelect,
+  onMakePersistent,
+  onClose,
+}: {
+  entry: JotTabEntry;
+  isActive: boolean;
+  canClose: boolean;
+  isDesktop: boolean;
+  setTabRef: (tabId: string, node: HTMLButtonElement | null) => void;
+  onSelect: (tabId: string) => void;
+  onMakePersistent: (tabId: string) => void;
+  onClose: (e: React.MouseEvent, tabId: string) => void;
+}) {
+  const noteTitle = useStoreNote((s) => s.notes?.find((ni) => ni.id === entry.tab)?.title);
+
+  const tabStyles = useMemo(
+    () => ({
+      tab: {
+        backgroundColor: 'transparent',
+        padding: 0,
+        display: 'flex',
+        flex: `1 1 ${MAX_TAB_WIDTH}px`,
+        maxWidth: MAX_TAB_WIDTH,
+        minWidth: MIN_TAB_WIDTH,
+      },
+      tabLabel: {
+        overflow: 'hidden',
+        textAlign: 'start' as const,
+      },
+    }),
+    [],
+  );
+
+  const navLinkStyles = useMemo(
+    () => ({
+      section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+      root: {
+        backgroundColor: isActive ? 'var(--mantine-color-pri-light)' : undefined,
+      },
+      label: {
+        fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
+        color: isActive ? 'var(--mantine-color-pri-6)' : undefined,
+      },
+    }),
+    [isDesktop, isActive],
+  );
+
+  const handleRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      setTabRef(entry.tab, node);
+    },
+    [setTabRef, entry.tab],
+  );
+
+  const handleClick = useCallback(() => {
+    onSelect(entry.tab);
+  }, [onSelect, entry.tab]);
+
+  const handleDoubleClick = useCallback(() => {
+    onMakePersistent(entry.tab);
+  }, [onMakePersistent, entry.tab]);
+
+  const handleCloseClick = useCallback(
+    (e: React.MouseEvent) => {
+      onClose(e, entry.tab);
+    },
+    [onClose, entry.tab],
+  );
+
+  const actionSize = isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE;
+  const actionIconSize = isDesktop ? ICON_SIZE - 4 : ICON_SIZE;
+
+  return (
+    <Tabs.Tab
+      value={entry.tab}
+      ref={handleRef}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      my={5}
+      styles={tabStyles}
+    >
+      <NavLink
+        label={
+          <Tooltip label={noteTitle} multiline maw={320}>
+            <Text
+              inherit
+              component="span"
+              style={{ display: 'inline-block', maxWidth: '100%', marginTop: 4 }}
+              lineClamp={1}
+              fs={entry.persistent ? 'normal' : 'italic'}
+              fw={600}
+            >
+              {noteTitle}
+            </Text>
+          </Tooltip>
+        }
+        color="gray"
+        p={isDesktop ? 0 : undefined}
+        mih={isDesktop ? 30 : undefined}
+        fw={600}
+        styles={navLinkStyles}
+        leftSection={
+          isDesktop ? (
+            <ThemeIcon
+              size={30}
+              variant="transparent"
+              color="gray"
+              c={isActive ? 'pri' : undefined}
+            >
+              <IconNote size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+            </ThemeIcon>
+          ) : undefined
+        }
+        rightSection={
+          <Group
+            gap={0}
+            wrap="nowrap"
+            mih={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+            pr={isDesktop ? 4 : 0}
+          >
+            <ActionIcon
+              component="span"
+              size={actionSize}
+              color={isActive ? 'pri' : 'gray'}
+              variant={isDesktop ? 'subtle' : 'light'}
+              onClick={handleCloseClick}
+              display={canClose ? undefined : 'none'}
+            >
+              <IconX size={actionIconSize} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Group>
+        }
+      />
+    </Tabs.Tab>
+  );
+});
+
+const NoteTabPanel = memo(function NoteTabPanel({
+  tabId,
+  isActive,
+  isDesktop,
+  isMobile,
+  scrollHeight,
+  onMakePersistent,
+}: {
+  tabId: string;
+  isActive: boolean;
+  isDesktop: boolean;
+  isMobile: boolean;
+  scrollHeight: string;
+  onMakePersistent: (tabId: string) => void;
+}) {
+  const { field, inputRef, handleBlur, handleKeyDown } = useNoteTitle(tabId);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+
+  const handlePanelClick = useCallback(() => {
+    onMakePersistent(tabId);
+  }, [onMakePersistent, tabId]);
+
+  const inputProps = useMemo(() => field.getInputProps(), [field]);
+
+  return (
+    <Box onClick={handlePanelClick} style={{ display: isActive ? undefined : 'none' }}>
+      <ScrollContext.Provider value={viewportRef}>
+        <ScrollArea h={scrollHeight} viewportRef={viewportRef}>
+          <Box pt={SECTION_SPACING / 2}>
+            <LayoutSection id="note-details" containerized={isMobile ? false : 'md'}>
+              <Box px={{ base: 'xs', xs: 0 }}>
+                <InputTextEditorTitle
+                  inputProps={inputProps}
+                  inputRef={inputRef}
+                  onBlur={handleBlur}
+                  onKeyDown={handleKeyDown}
+                  styles={TITLE_INPUT_STYLES}
+                />
+              </Box>
+            </LayoutSection>
+
+            <MemoEditorMain noteId={tabId} />
+          </Box>
+        </ScrollArea>
+      </ScrollContext.Provider>
+    </Box>
+  );
+});
 
 export default function Note() {
   const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
-  const tabsJotView = useStoreView((s) => s.view?.tabsJotView);
+  const tabsJotView = useStoreView((s) => s.view?.tabsJotView) as JotTabEntry[] | undefined;
   const setTabsJotViewValue = useStoreView((s) => s.setTabsJotViewValue);
 
-  const { subViewValue, showSubViewJot } = useSubView();
-  const notes = useStoreNote((s) => s.notes);
-  const noteId = extractUuidFromParam(subViewValue || '');
+  const subViewValue = useStoreView((s) => s.view?.subView);
+  const { showSubViewJot } = useSubView();
 
-  const { field, inputRef, handleBlur, handleKeyDown } = useNoteTitle(noteId || '');
+  const noteId = useMemo(
+    () => (subViewValue ? extractUuidFromParam(subViewValue) : ''),
+    [subViewValue],
+  );
 
+  // Sync active note into open tabs list
   useEffect(() => {
-    if (tabsJotView === undefined) return;
-    if (!subViewValue || !noteId) return;
-
-    let resolvedArray = [];
+    if (tabsJotView === undefined || !subViewValue || !noteId) return;
 
     if (tabsJotView.some((ati) => ati.tab === noteId)) {
-      // If already open, do nothing
-      resolvedArray = tabsJotView;
-    } else {
-      // Replace existing temporary tab if present, otherwise append
-      const hasTemporary = tabsJotView.some((ati) => !ati.persistent);
-      const filteredTabs = hasTemporary ? tabsJotView.filter((ati) => ati.persistent) : tabsJotView;
-
-      resolvedArray = [...filteredTabs, { tab: noteId, persistent: false }];
+      return;
     }
 
-    setTabsJotViewValue(resolvedArray);
-  }, [noteId, subViewValue]);
+    const hasTemporary = tabsJotView.some((ati) => !ati.persistent);
+    const filteredTabs = hasTemporary ? tabsJotView.filter((ati) => ati.persistent) : tabsJotView;
 
-  const handleCloseTab = (e: React.MouseEvent, tabToClose: string) => {
-    // 1. Prevent trigger of TabsTab onClick (which re-activates this tab)
-    e.stopPropagation();
+    setTabsJotViewValue([...filteredTabs, { tab: noteId, persistent: false }]);
+  }, [noteId, subViewValue, tabsJotView, setTabsJotViewValue]);
 
-    // Clean up ref entry
-    delete tabRefs.current[tabToClose];
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-    const currentIndex = (tabsJotView || []).findIndex((ati) => ati.tab === tabToClose);
-    if (currentIndex === -1) return;
+  const setTabRef = useCallback((tabId: string, node: HTMLButtonElement | null) => {
+    tabRefs.current[tabId] = node;
+  }, []);
 
-    const newActiveTabs = (tabsJotView || []).filter((ati) => ati.tab !== tabToClose);
-
-    // 2. If we are closing the currently active tab, switch views FIRST
-    if (tabToClose === noteId) {
-      if (newActiveTabs.length === 0) {
-        // Handle empty state
-        showSubViewJot('');
-      } else {
-        // Focus adjacent tab index
-        const newIndex = Math.max(0, currentIndex - 1);
-        showSubViewJot(`note: ${newActiveTabs[newIndex].tab}`);
-      }
-    }
-
-    // 3. Update the tabs collection after initiating the view change
-    setTabsJotViewValue(newActiveTabs);
-  };
-
-  const handleMakePersistent = (targetTab: string) => {
-    setTabsJotViewValue(
-      (tabsJotView || []).map((item) =>
-        item.tab === targetTab ? { ...item, persistent: true } : item,
-      ),
-    );
-  };
-
-  // scroll into view
-  // 1. Create a dictionary ref to store DOM node references for each tab
-  const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
-
-  // 2. Scroll active tab into view whenever `noteId` changes
   useEffect(() => {
     if (!noteId) return;
 
-    // Defer execution slightly to allow React to mount the new tab node into the DOM
     const frameId = requestAnimationFrame(() => {
       const activeTabEl = tabRefs.current[noteId];
       if (activeTabEl) {
@@ -116,181 +292,101 @@ export default function Note() {
     });
 
     return () => cancelAnimationFrame(frameId);
-  }, [noteId, tabsJotView]); // Ensure `tabsJotView` is in the dependency array
+  }, [noteId]);
 
-  // scrollarea
-  const viewportRef = useRef<HTMLDivElement | null>(null);
-  const contextValue = useMemo(() => viewportRef, []);
+  const handleSelectTab = useCallback(
+    (tabId: string) => {
+      showSubViewJot(`note: ${tabId}`);
+    },
+    [showSubViewJot],
+  );
+
+  const handleCloseTab = useCallback(
+    (e: React.MouseEvent, tabToClose: string) => {
+      e.stopPropagation();
+      delete tabRefs.current[tabToClose];
+
+      const currentTabs = tabsJotView || [];
+      const currentIndex = currentTabs.findIndex((ati) => ati.tab === tabToClose);
+      if (currentIndex === -1) return;
+
+      const nextTabs = currentTabs.filter((ati) => ati.tab !== tabToClose);
+
+      if (tabToClose === noteId) {
+        if (nextTabs.length === 0) {
+          showSubViewJot('');
+        } else {
+          const nextIndex = Math.max(0, currentIndex - 1);
+          showSubViewJot(`note: ${nextTabs[nextIndex].tab}`);
+        }
+      }
+
+      setTabsJotViewValue(nextTabs);
+    },
+    [tabsJotView, noteId, showSubViewJot, setTabsJotViewValue],
+  );
+
+  const handleMakePersistent = useCallback(
+    (targetTab: string) => {
+      const currentTabs = tabsJotView || [];
+      setTabsJotViewValue(
+        currentTabs.map((item) => (item.tab === targetTab ? { ...item, persistent: true } : item)),
+      );
+    },
+    [tabsJotView, setTabsJotViewValue],
+  );
+
+  const scrollHeight = useMemo(() => {
+    const shellOffsets = isDesktop
+      ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP
+      : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE;
+    const tabBarAndHeaderOffsets = isDesktop ? 34 : 45;
+    const footerBarOffset = isDesktop ? 41.6 : 55.6;
+    return `calc(100vh - ${shellOffsets + tabBarAndHeaderOffsets + 1 + footerBarOffset}px)`;
+  }, [isDesktop]);
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
+  const tabList = tabsJotView || [];
+  const canClose = tabList.length > 1;
+
   return (
-    <Tabs
-      value={noteId}
-      keepMounted
-      styles={{
-        tab: {
-          borderRadius: 'var(--mantine-radius-md)',
-          borderBottomColor: 'transparent',
-          transition: '.25s all ease',
-        },
-      }}
-    >
-      <TabsList>
-        <ScrollArea w={'100%'} scrollbars={'x'} scrollbarSize={0}>
+    <Tabs value={noteId} keepMounted styles={TABS_STYLES}>
+      <Tabs.List>
+        <ScrollArea w="100%" scrollbars="x" scrollbarSize={0}>
           <Group wrap="nowrap" gap={4} px={5}>
-            {(tabsJotView || []).map((ati, i) => {
-              const note = notes?.find((ni) => ni.id == ati.tab);
-              const active = ati.tab == noteId;
-
-              return (
-                <TabsTab
-                  key={ati.tab}
-                  value={ati.tab}
-                  // 3. Attach DOM node reference using tab ID
-                  ref={(node) => {
-                    tabRefs.current[ati.tab] = node;
-                  }}
-                  onClick={() => showSubViewJot(`note: ${ati.tab}`)}
-                  onDoubleClick={() => handleMakePersistent(ati.tab)}
-                  my={5}
-                  styles={{
-                    tab: {
-                      // minHeight: 30,
-                      backgroundColor: 'transparent',
-                      padding: 0,
-                      display: 'flex',
-
-                      // Allows tab to grow up to 240px, but shrink down to 120px
-                      flex: `1 1 ${MAX_TAB_WIDTH}px`,
-                      maxWidth: MAX_TAB_WIDTH,
-                      minWidth: MIN_TAB_WIDTH,
-                    },
-                    tabLabel: {
-                      overflow: 'hidden',
-                      textAlign: 'start',
-                    },
-                  }}
-                >
-                  <NavLink
-                    label={
-                      <Tooltip label={note?.title} multiline maw={320}>
-                        <Text
-                          inherit
-                          component="span"
-                          style={{ display: 'inline-block', maxWidth: '100%', marginTop: 4 }}
-                          lineClamp={1}
-                          fs={ati.persistent ? 'normal' : 'italic'}
-                          fw={600}
-                        >
-                          {note?.title}
-                        </Text>
-                      </Tooltip>
-                    }
-                    color="gray"
-                    p={isDesktop ? 0 : undefined}
-                    mih={isDesktop ? 30 : undefined}
-                    fw={600}
-                    styles={{
-                      section: isDesktop ? { marginInlineEnd: 0 } : undefined,
-                      root: {
-                        backgroundColor: active ? 'var(--mantine-color-pri-light)' : undefined,
-                      },
-                      label: {
-                        fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
-                        color: active ? 'var(--mantine-color-pri-6)' : undefined,
-                      },
-                    }}
-                    leftSection={
-                      isDesktop ? (
-                        <ThemeIcon
-                          size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
-                          variant="transparent"
-                          color={'gray'}
-                          c={active ? 'pri' : undefined}
-                        >
-                          <IconNote
-                            size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
-                            stroke={ICON_STROKE_WIDTH}
-                          />
-                        </ThemeIcon>
-                      ) : undefined
-                    }
-                    rightSection={
-                      <Group
-                        gap={0}
-                        wrap="nowrap"
-                        mih={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE}
-                        pr={isDesktop ? 4 : 0}
-                      >
-                        <ActionIcon
-                          component="span"
-                          size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE}
-                          color={active ? 'pri' : 'gray'}
-                          variant={isDesktop ? 'subtle' : 'light'}
-                          onClick={(e) => handleCloseTab(e, ati.tab)}
-                          display={(tabsJotView || []).length > 1 ? undefined : 'none'}
-                        >
-                          <IconX
-                            size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
-                            stroke={ICON_STROKE_WIDTH}
-                          />
-                        </ActionIcon>
-                      </Group>
-                    }
-                  />
-                </TabsTab>
-              );
-            })}
+            {tabList.map((entry) => (
+              <NoteTabItem
+                key={entry.tab}
+                entry={entry}
+                isActive={entry.tab === noteId}
+                canClose={canClose}
+                isDesktop={isDesktop}
+                setTabRef={setTabRef}
+                onSelect={handleSelectTab}
+                onMakePersistent={handleMakePersistent}
+                onClose={handleCloseTab}
+              />
+            ))}
           </Group>
         </ScrollArea>
-      </TabsList>
+      </Tabs.List>
 
       <Box>
-        {(tabsJotView || []).map((ati) => (
-          <Box
-            key={ati.tab}
-            onClick={() => handleMakePersistent(ati.tab)}
-            style={{
-              display: ati.tab === noteId ? undefined : 'none',
-            }}
-          >
-            <ScrollContext.Provider value={contextValue}>
-              <ScrollArea
-                h={`calc(100vh - ${(isDesktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + (isDesktop ? 34 : 45) + 1 + (isDesktop ? 41.6 : 55.6)}px)`}
-                viewportRef={contextValue}
-              >
-                <Box pt={SECTION_SPACING / 2}>
-                  <LayoutSection id="note-details" containerized={isMobile ? false : 'md'}>
-                    <Box px={{ base: 'xs', xs: 0 }}>
-                      <InputTextEditorTitle
-                        inputProps={field.getInputProps()}
-                        inputRef={inputRef}
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
-                        styles={{
-                          input: {
-                            fontSize: 'var(--mantine-h2-font-size)',
-                            backgroundColor: 'transparent',
-                          },
-                        }}
-                      />
-                    </Box>
-                  </LayoutSection>
-
-                  <EditorMain noteId={ati.tab} />
-                </Box>
-              </ScrollArea>
-            </ScrollContext.Provider>
-          </Box>
+        {tabList.map((entry) => (
+          <NoteTabPanel
+            key={entry.tab}
+            tabId={entry.tab}
+            isActive={entry.tab === noteId}
+            isDesktop={isDesktop}
+            isMobile={isMobile}
+            scrollHeight={scrollHeight}
+            onMakePersistent={handleMakePersistent}
+          />
         ))}
       </Box>
     </Tabs>
   );
 }
-
-const MAX_TAB_WIDTH = 240;
-const MIN_TAB_WIDTH = 180;

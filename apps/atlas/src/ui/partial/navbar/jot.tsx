@@ -45,7 +45,7 @@ import {
   useSubView,
   useViewAside,
 } from '@repo/store';
-import React from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import LayoutPartialNavbar from '@atlas/ui/layout/partial/navbar';
 import MenuNote from '@atlas/ui/menu/note';
 import { Order } from '@repo/types';
@@ -55,89 +55,59 @@ import AccordionFolder from '@atlas/ui/accordion/folder';
 
 import { useBreakpointFlags } from '@repo/hooks';
 
-export default function Jot() {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const EMPTY_ARRAY: any[] = [];
 
-  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+const Jot = memo(function Jot() {
+  const { ready, isDesktop } = useBreakpointFlags();
+
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
-
-  const { subViewValue, showSubViewJot } = useSubView();
-  // const { showAsideViewJot } = useViewAside();
 
   const folders = useStoreFolder((s) => s.folders);
   const { folderCreate } = useFolderActions();
-  const jotFolders = folders?.filter((fi) => fi.location == APP_NAMES_ATLAS.JOT && !fi.folderId);
 
   const notes = useStoreNote((s) => s.notes);
   const { noteCreate } = useNoteActions();
-  const notesWithoutFolder = notes?.filter((ci) => !ci.folderId);
 
-  const navLinks: any[] = [
-    // {
-    //   icon: IconHome,
-    //   label: capitalizeWords(SUBVIEW_NAMES.JOT.HOME),
-    //   action: () => showSubViewJot(SUBVIEW_NAMES.JOT.HOME),
-    // },
-  ];
+  const sortedRootFolders = useMemo(() => {
+    if (!folders) return EMPTY_ARRAY;
+    const rootJotFolders = folders.filter(
+      (fi) => fi.location === APP_NAMES_ATLAS.JOT && !fi.folderId,
+    );
+    return sortArray(rootJotFolders, (i) => i.createdAt, Order.DESCENDING);
+  }, [folders]);
+
+  const sortedRootNotes = useMemo(() => {
+    if (!notes) return EMPTY_ARRAY;
+    const ungroupedNotes = notes.filter((ni) => !ni.folderId);
+    return sortArray(ungroupedNotes, (i) => i.createdAt, Order.DESCENDING);
+  }, [notes]);
+
+  const handleCreateNote = useCallback(() => {
+    noteCreate();
+  }, [noteCreate]);
+
+  const handleCreateFolder = useCallback(() => {
+    folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.JOT });
+  }, [folderCreate]);
+
+  const handleCloseNavbarOnMobile = useCallback(() => {
+    if (!isDesktop && useStoreAppShell.getState().appshell?.child?.navbar) {
+      toggleNavbarChild();
+    }
+  }, [isDesktop, toggleNavbarChild]);
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
+  const isLoading = folders === undefined || notes === undefined;
+  const isEmpty = !isLoading && sortedRootFolders.length === 0 && sortedRootNotes.length === 0;
+
   return (
     <div>
-      {!!navLinks.length && (
-        <div>
-          {navLinks.map((nl, i) => {
-            const active = nl.label.toLocaleLowerCase() == subViewValue;
-
-            return (
-              <React.Fragment key={nl.label}>
-                {/* {i > 0 && <Divider />} */}
-
-                <NavLink
-                  label={nl.label}
-                  color="gray"
-                  p={isDesktop ? 0 : undefined}
-                  fw={600}
-                  styles={{
-                    section: isDesktop ? { marginInlineEnd: 0 } : undefined,
-                    body: { marginBottom: 4 },
-                    label: {
-                      fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
-                      color: active ? 'var(--mantine-color-pri-6)' : undefined,
-                    },
-                  }}
-                  onClick={() => {
-                    if (!isDesktop) {
-                      if (navbarActive) toggleNavbarChild();
-                    }
-
-                    nl.action();
-                  }}
-                  leftSection={
-                    <ThemeIcon
-                      size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
-                      variant="transparent"
-                      color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
-                    >
-                      <nl.icon
-                        size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
-                        stroke={ICON_STROKE_WIDTH}
-                      />
-                    </ThemeIcon>
-                  }
-                />
-              </React.Fragment>
-            );
-          })}
-        </div>
-      )}
-
       <div className="group/jotNotes">
         <Group justify="space-between" align="end" pl={isDesktop ? 5 : 12 + 5} mt={5}>
-          <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
+          <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c="dimmed">
             Notes
           </Title>
 
@@ -146,18 +116,18 @@ export default function Jot() {
             gap={isDesktop ? 0 : 5}
             className={
               isDesktop
-                ? 'opacity-0 group-hover/jotNotes:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/jotNotes:pointer-events-auto'
+                ? 'opacity-0 group-hover/jotNotes:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/jotNotes:pointer-events-auto'
                 : undefined
             }
             mih={isDesktop ? 30 : ICON_WRAPPER_SIZE * 1.25 + 6}
             pr={5}
           >
-            <Tooltip label={`Add note`}>
+            <Tooltip label="Add note">
               <ActionIcon
                 size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
                 variant={isDesktop ? 'subtle' : 'light'}
-                onClick={() => noteCreate()}
+                onClick={handleCreateNote}
               >
                 <IconPlus
                   size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
@@ -166,14 +136,12 @@ export default function Jot() {
               </ActionIcon>
             </Tooltip>
 
-            <Tooltip label={`Add note folder`}>
+            <Tooltip label="Add note folder">
               <ActionIcon
                 size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
                 variant={isDesktop ? 'subtle' : 'light'}
-                onClick={() => {
-                  folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.JOT });
-                }}
+                onClick={handleCreateFolder}
               >
                 <IconFolderPlus
                   size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
@@ -184,21 +152,19 @@ export default function Jot() {
           </Group>
         </Group>
 
-        {jotFolders === undefined ||
-        notes === undefined ||
-        (!jotFolders.length && !notes?.length) ? (
-          <PartialEmpty loading={notes === undefined} label={`Nothing here.`} />
+        {isLoading || isEmpty ? (
+          <PartialEmpty loading={notes === undefined} label="Nothing here." />
         ) : (
           <Box mih={220}>
             <Divider my={5} />
 
-            {sortArray(jotFolders, (i) => i.createdAt, Order.DESCENDING).map((fi) => (
+            {sortedRootFolders.map((fi) => (
               <div key={fi.id}>
                 <AccordionFolder folderId={fi.id} location={APP_NAMES_ATLAS.JOT} />
               </div>
             ))}
 
-            {sortArray(notesWithoutFolder || [], (i) => i.createdAt, Order.DESCENDING).map((ni) => (
+            {sortedRootNotes.map((ni) => (
               <div key={ni.id}>
                 <NavlinkNote props={ni} />
               </div>
@@ -208,4 +174,6 @@ export default function Jot() {
       </div>
     </div>
   );
-}
+});
+
+export default Jot;

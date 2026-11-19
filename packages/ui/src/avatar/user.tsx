@@ -10,7 +10,7 @@ import { AuthAction } from '@repo/types';
 import { useStoreActiveItems, useStoreSession } from '@repo/store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
+import { useMediaQuery } from '@mantine/hooks';
 import { useBreakpointFlags } from '@repo/hooks';
 
 export function AvatarUser({ size, options }: { size?: number; options?: { minimal?: boolean } }) {
@@ -70,8 +70,8 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
           label={fullName || activeAccount.email}
           color="gray"
           p={isDesktop ? 0 : 0}
-          pl={isDesktop ? undefined : 12}
-          pr={isDesktop ? undefined : 5}
+          pl={isDesktop ? 0 : 12}
+          pr={isDesktop ? 0 : 5}
           fw={600}
           styles={{
             section: isDesktop ? { marginInlineEnd: 0 } : undefined,

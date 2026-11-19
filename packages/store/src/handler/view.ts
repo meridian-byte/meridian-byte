@@ -1,5 +1,6 @@
 import { APP_NAMES_ATLAS, ASIDE_VIEW_NAMES, MODAL_VIEW_NAMES } from '@repo/constants';
 import { useStoreView } from '../state/view';
+import { useCallback } from 'react';
 
 export const useView = () => {
   const viewValue = useStoreView((s) => s.view?.view);
@@ -68,48 +69,44 @@ export const useView = () => {
 export const useSubView = () => {
   const viewValue = useStoreView((s) => s.view?.view);
   const subViewValue = useStoreView((s) => s.view?.subView);
-  const view = useStoreView((s) => s.view);
   const setView = useStoreView((s) => s.setView);
 
-  const showSubViewPave = (v: string) => {
-    if (!view) return;
+  const showSubViewForApp = useCallback(
+    (appName: string, v: string) => {
+      const currentView = useStoreView.getState().view;
+      if (!currentView) return;
 
-    if (subViewValue != v) {
-      setView({
-        ...view,
-        view: viewValue == APP_NAMES_ATLAS.PAVE ? view.view : APP_NAMES_ATLAS.PAVE,
-        subView: v,
-      });
-    }
-  };
+      if (
+        currentView.subView !== v ||
+        currentView.view !== (viewValue === appName ? currentView.view : appName)
+      ) {
+        setView({
+          ...currentView,
+          view: viewValue === appName ? currentView.view : appName,
+          subView: v,
+        });
+      }
+    },
+    [viewValue, setView],
+  );
 
-  const showSubViewJot = (v: string) => {
-    if (!view) return;
+  const showSubViewPave = useCallback(
+    (v: string) => showSubViewForApp(APP_NAMES_ATLAS.PAVE, v),
+    [showSubViewForApp],
+  );
 
-    if (subViewValue != v) {
-      setView({
-        ...view,
-        view: viewValue == APP_NAMES_ATLAS.JOT ? view.view : APP_NAMES_ATLAS.JOT,
-        subView: v,
-      });
-    }
-  };
+  const showSubViewJot = useCallback(
+    (v: string) => showSubViewForApp(APP_NAMES_ATLAS.JOT, v),
+    [showSubViewForApp],
+  );
 
-  const showSubViewStride = (v: string) => {
-    if (!view) return;
+  const showSubViewStride = useCallback(
+    (v: string) => showSubViewForApp(APP_NAMES_ATLAS.STRIDE, v),
+    [showSubViewForApp],
+  );
 
-    if (subViewValue != v) {
-      setView({
-        ...view,
-        view: viewValue == APP_NAMES_ATLAS.STRIDE ? view.view : APP_NAMES_ATLAS.STRIDE,
-        subView: v,
-      });
-    }
-  };
-
-  const showSubViewPrime = () => {};
-
-  const showSubViewTally = () => {};
+  const showSubViewPrime = useCallback(() => {}, []);
+  const showSubViewTally = useCallback(() => {}, []);
 
   return {
     viewValue,

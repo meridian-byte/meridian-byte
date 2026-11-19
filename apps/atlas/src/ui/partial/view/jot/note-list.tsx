@@ -8,7 +8,6 @@ export default function NoteList() {
   return (
     <div>
       <HeaderNote />
-
       <PartialPageNote />
     </div>
   );

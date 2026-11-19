@@ -9,20 +9,46 @@ import { IconCircleFilled, IconDots } from '@tabler/icons-react';
 import MenuCalendar from '../menu/calendar';
 
 import { useBreakpointFlags } from '@repo/hooks';
+import { memo, useCallback, useMemo } from 'react';
 
-export default function Calendar({ props }: { props: CalendarGet }) {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const Calendar = memo(function Calendar({ props }: { props: CalendarGet }) {
+  const { ready, isDesktop } = useBreakpointFlags();
 
-  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const navbarActive = useStoreAppShell.getState().appshell?.child?.navbar;
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   const { subViewValue, showSubViewPave } = useSubView();
 
-  const calendarActive =
-    subViewValue?.includes('calendar: ') && extractUuidFromParam(subViewValue) == props.id;
+  const calendarActive = useMemo(() => {
+    if (!subViewValue || !subViewValue.includes('calendar: ')) return false;
+    return extractUuidFromParam(subViewValue) === props.id;
+  }, [subViewValue, props.id]);
+
+  const navLinkStyles = useMemo(
+    () => ({
+      section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+      label: {
+        fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
+        color: calendarActive ? 'var(--mantine-color-pri-6)' : undefined,
+      },
+    }),
+    [isDesktop, calendarActive],
+  );
+
+  const iconColor = props.color ? `${props.color}.6` : 'pri';
+
+  const handleSelect = useCallback(() => {
+    if (!isDesktop && navbarActive) {
+      toggleNavbarChild();
+    }
+    showSubViewPave(`calendar: ${props.id}`);
+  }, [isDesktop, navbarActive, toggleNavbarChild, showSubViewPave, props.id]);
+
+  const handleStopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
@@ -40,18 +66,12 @@ export default function Calendar({ props }: { props: CalendarGet }) {
           color="gray"
           p={isDesktop ? 0 : undefined}
           fw={600}
-          styles={{
-            section: isDesktop ? { marginInlineEnd: 0 } : undefined,
-            label: {
-              fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
-              color: !calendarActive ? undefined : 'var(--mantine-color-pri-6)',
-            },
-          }}
+          styles={navLinkStyles}
           leftSection={
             <ThemeIcon
               size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
               variant="transparent"
-              c={`${props.color}.6` || 'pri'}
+              c={iconColor}
             >
               <IconCircleFilled size={6} />
             </ThemeIcon>
@@ -60,10 +80,8 @@ export default function Calendar({ props }: { props: CalendarGet }) {
             <Group
               gap={0}
               wrap="nowrap"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="opacity-0 group-hover/calendar:opacity-100 transition-opacity duration-250"
+              onClick={handleStopPropagation}
+              className="opacity-0 group-hover/calendar:opacity-100 transition-opacity duration-200"
               mih={30}
               pr={5}
               visibleFrom="md"
@@ -75,15 +93,11 @@ export default function Calendar({ props }: { props: CalendarGet }) {
               </MenuCalendar>
             </Group>
           }
-          onClick={() => {
-            if (!isDesktop) {
-              if (navbarActive) toggleNavbarChild();
-            }
-
-            showSubViewPave(`calendar: ${props.id}`);
-          }}
+          onClick={handleSelect}
         />
       </MenuCalendar>
     </div>
   );
-}
+});
+
+export default Calendar;

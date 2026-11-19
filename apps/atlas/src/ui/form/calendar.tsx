@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -30,13 +30,46 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
   const { asideViewValue } = useViewAside();
   const { handleToggleChildAside } = useAppshellChild();
 
+  const isEditing = Boolean(defaultValues?.updatedAt);
+  const showCloseWhenDone = !isEditing && asideViewValue === ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR;
+
+  const colorOptions = useMemo(
+    () => colors.map((ci) => ({ label: ci.label, value: ci.colorName })),
+    [],
+  );
+
+  const handleCloseWhenDoneChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.currentTarget.checked);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    if (!isEditing) {
+      handleToggleChildAside();
+    } else {
+      closeModalView();
+    }
+  }, [isEditing, handleToggleChildAside, closeModalView]);
+
+  const handleFormSubmit = useMemo(
+    () => form.onSubmit(() => handleSubmit()),
+    [form, handleSubmit],
+  );
+
+  const submitLabel = submitted
+    ? isEditing
+      ? 'Saving'
+      : 'Adding'
+    : isEditing
+      ? 'Save'
+      : 'Add';
+
   return (
-    <Box component="form" onSubmit={form.onSubmit(() => handleSubmit())} noValidate p={'xs'}>
-      <Grid gap={'xs'}>
+    <Box component="form" onSubmit={handleFormSubmit} noValidate p="xs">
+      <Grid gap="xs">
         <GridCol span={{ base: 12 }}>
           <TextInput
             required
-            label={'Title'}
+            label="Title"
             placeholder="Title"
             {...form.getInputProps('title')}
           />
@@ -44,7 +77,7 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
 
         <GridCol span={{ base: 12 }}>
           <Textarea
-            label={'Description'}
+            label="Description"
             placeholder="Description"
             {...form.getInputProps('description')}
             autosize
@@ -58,54 +91,33 @@ export default function Calendar({ defaultValues }: { defaultValues?: Partial<Ca
             label="Color"
             placeholder="Select calendar color"
             {...form.getInputProps('color')}
-            data={colors.map((ci) => {
-              return {
-                label: ci.label,
-                value: ci.colorName,
-              };
-            })}
+            data={colorOptions}
           />
         </GridCol>
 
-        {!defaultValues?.updatedAt && asideViewValue == ASIDE_VIEW_NAMES.NEW.PAVE.CALENDAR && (
+        {showCloseWhenDone && (
           <GridCol span={{ base: 12 }}>
             <Checkbox
-              label={'Close when done'}
+              label="Close when done"
               checked={checked}
-              onChange={(event) => setChecked(event.currentTarget.checked)}
-              mt={'xs'}
+              onChange={handleCloseWhenDoneChange}
+              mt="xs"
             />
           </GridCol>
         )}
 
         <GridCol span={{ base: 12 }}>
-          <Divider my={'xs'} />
+          <Divider my="xs" />
         </GridCol>
 
         <GridCol span={{ base: 12 }}>
           <Group justify="end" gap="xs">
-            <Button
-              disabled={submitted}
-              variant="default"
-              onClick={() => {
-                if (!defaultValues?.updatedAt) {
-                  handleToggleChildAside();
-                } else {
-                  closeModalView();
-                }
-              }}
-            >
-              {'Close'}
+            <Button disabled={submitted} variant="default" onClick={handleClose}>
+              Close
             </Button>
 
             <Button type="submit" loading={submitted}>
-              {submitted
-                ? defaultValues?.updatedAt
-                  ? 'Saving'
-                  : 'Adding'
-                : defaultValues?.updatedAt
-                  ? 'Save'
-                  : 'Add'}
+              {submitLabel}
             </Button>
           </Group>
         </GridCol>

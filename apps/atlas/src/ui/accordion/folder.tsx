@@ -42,99 +42,114 @@ import NavlinkTaskList from '../navlink/task-list';
 import MenuFolder from '../menu/folder';
 import LayoutPartialNavbar from '../layout/partial/navbar';
 import { Order } from '@repo/types';
-
+import { useMediaQuery } from '@mantine/hooks';
 import { useBreakpointFlags } from '@repo/hooks';
+import { memo, useCallback, useMemo } from 'react';
 
-export default function Folder({ folderId, location }: { folderId: string; location: string }) {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const EMPTY_ARRAY: any[] = [];
+
+const Folder = memo(function Folder({
+  folderId,
+  location,
+}: {
+  folderId: string;
+  location: string;
+}) {
+  const { ready, isDesktop } = useBreakpointFlags();
 
   const { subViewValue } = useSubView();
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
 
-  const folders = useStoreFolder((s) => s.folders);
+  const folders = useStoreFolder((s) => s.folders) ?? EMPTY_ARRAY;
   const { folderCreate } = useFolderActions();
-  const calendars = useStoreCalendar((s) => s.calendars);
+
+  const calendars = useStoreCalendar((s) => s.calendars) ?? EMPTY_ARRAY;
   const { calendarCreate } = useCalendarActions();
-  const notes = useStoreNote((s) => s.notes);
+
+  const notes = useStoreNote((s) => s.notes) ?? EMPTY_ARRAY;
   const { noteCreate } = useNoteActions();
-  const taskLists = useStoreTaskList((s) => s.taskLists);
+
+  const taskLists = useStoreTaskList((s) => s.taskLists) ?? EMPTY_ARRAY;
   const { taskListCreate } = useTaskListActions();
 
-  const currentFolder = folders?.find((f) => f.id === folderId);
+  const currentFolder = useMemo(() => folders.find((f) => f.id === folderId), [folders, folderId]);
 
-  if (!currentFolder) return null;
+  const currentItems = useMemo(() => {
+    switch (location) {
+      case APP_NAMES_ATLAS.PAVE:
+        return calendars;
+      case APP_NAMES_ATLAS.JOT:
+        return notes;
+      case APP_NAMES_ATLAS.STRIDE:
+        return taskLists;
+      default:
+        return EMPTY_ARRAY;
+    }
+  }, [location, calendars, notes, taskLists]);
 
-  // 1. Get child folders inside this folder
-  const childFolders = folders?.filter((f) => f.folderId === folderId);
+  const NavLinkItemComponent = useMemo(() => {
+    switch (location) {
+      case APP_NAMES_ATLAS.PAVE:
+        return NavlinkCalendar;
+      case APP_NAMES_ATLAS.JOT:
+        return NavlinkNote;
+      case APP_NAMES_ATLAS.STRIDE:
+        return NavlinkTaskList;
+      default:
+        return null;
+    }
+  }, [location]);
 
-  let locationProps: {
-    navLinkItems: any[];
-    component: any | null;
-    onAdd: () => void;
-  } = {
-    navLinkItems: [],
-    component: null,
-    onAdd: () => {},
-  };
+  const handleAddItem = useCallback(() => {
+    switch (location) {
+      case APP_NAMES_ATLAS.PAVE:
+        calendarCreate({ id: generateUUID(), folderId });
+        break;
+      case APP_NAMES_ATLAS.JOT:
+        noteCreate({ id: generateUUID(), folderId });
+        break;
+      case APP_NAMES_ATLAS.STRIDE:
+        taskListCreate({ id: generateUUID(), folderId });
+        break;
+    }
+  }, [location, folderId, calendarCreate, noteCreate, taskListCreate]);
 
-  switch (location) {
-    case APP_NAMES_ATLAS.PAVE:
-      locationProps = {
-        navLinkItems: (calendars || []).filter((ci) => ci.folderId === folderId),
-        component: NavlinkCalendar,
-        onAdd: () => calendarCreate({ id: generateUUID(), folderId }),
-      };
-      break;
-    case APP_NAMES_ATLAS.JOT:
-      locationProps = {
-        navLinkItems: (notes || []).filter((ni) => ni.folderId === folderId),
-        component: NavlinkNote,
-        onAdd: () => noteCreate({ id: generateUUID(), folderId }),
-      };
-      break;
-    case APP_NAMES_ATLAS.STRIDE:
-      locationProps = {
-        navLinkItems: (taskLists || []).filter((ni) => ni.folderId === folderId),
-        component: NavlinkTaskList,
-        onAdd: () => taskListCreate({ id: generateUUID(), folderId }),
-      };
-      break;
+  const sortedChildFolders = useMemo(() => {
+    const filtered = folders.filter((f) => f.folderId === folderId);
+    return sortArray(filtered, (i) => i.createdAt, Order.DESCENDING);
+  }, [folders, folderId]);
 
-    default:
-      break;
-  }
+  const sortedNavLinkItems = useMemo(() => {
+    const filtered = currentItems.filter((item) => item.folderId === folderId);
+    return sortArray(filtered, (i) => i.createdAt, Order.DESCENDING);
+  }, [currentItems, folderId]);
 
-  // Select items list based on current app location
-  let currentItems: any[] = [];
-  if (location === APP_NAMES_ATLAS.PAVE) currentItems = calendars || [];
-  if (location === APP_NAMES_ATLAS.JOT) currentItems = notes || [];
-  if (location === APP_NAMES_ATLAS.STRIDE) currentItems = taskLists || [];
-
-  // Determine if this folder or any nested child contains the active item
-  const isActive = isFolderOrChildrenActive(
-    currentFolder.id,
-    folders || [],
-    currentItems,
-    subViewValue || '',
+  const isActive = useMemo(
+    () => isFolderOrChildrenActive(folderId, folders, currentItems, subViewValue || ''),
+    [folderId, folders, currentItems, subViewValue],
   );
 
-  const props = {
-    icon: (navbarViewValue || []).includes(currentFolder.id) ? IconChevronDown : IconChevronRight,
-  };
+  const accordionValue = navbarViewValue ?? EMPTY_ARRAY;
+  const isExpanded = accordionValue.includes(folderId);
+  const ChevronIcon = isExpanded ? IconChevronDown : IconChevronRight;
+  const hasContent = sortedChildFolders.length > 0 || sortedNavLinkItems.length > 0;
 
-  const hasContent =
-    (childFolders && childFolders.length > 0) || locationProps.navLinkItems.length > 0;
+  const ensureFolderExpanded = useCallback(() => {
+    const currentOpened = navbarViewValue ?? [];
+    if (!currentOpened.includes(folderId)) {
+      setNavbarViewValue([...currentOpened, folderId]);
+    }
+  }, [navbarViewValue, folderId, setNavbarViewValue]);
 
-  if (!ready) {
-    // Must not render wrong layout before client knows viewport
+  if (!ready || !currentFolder) {
     return null;
   }
 
   return (
     <Accordion
       order={3}
-      value={navbarViewValue || []}
-      onChange={(newValues) => setNavbarViewValue(newValues)}
+      value={accordionValue}
+      onChange={setNavbarViewValue}
       chevronIconSize={ICON_SIZE}
       chevron={null}
       multiple
@@ -144,7 +159,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
           padding: 0,
           paddingLeft: 0,
           borderRadius: 'var(--mantine-radius-md)',
-          transition: '.25s all ease',
+          transition: 'background-color 200ms ease, color 150ms ease',
         },
         label: { padding: 0 },
         content: { padding: 0 },
@@ -187,9 +202,9 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                 <ThemeIcon
                   size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                   variant="transparent"
-                  color={'gray'}
+                  color="gray"
                 >
-                  <props.icon
+                  <ChevronIcon
                     size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
                     stroke={ICON_STROKE_WIDTH}
                   />
@@ -197,12 +212,12 @@ export default function Folder({ folderId, location }: { folderId: string; locat
               }
               rightSection={
                 <Group
-                  component={'span'}
+                  component="span"
                   justify="end"
                   gap={0}
                   className={
                     isDesktop
-                      ? 'opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto'
+                      ? 'opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/accordionFolder:pointer-events-auto'
                       : undefined
                   }
                   mih={30}
@@ -217,15 +232,8 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                       variant="subtle"
                       onClick={(e) => {
                         e.stopPropagation();
-
-                        // add item
-                        locationProps.onAdd();
-
-                        // Check if current folder is already expanded, if not, add it
-                        const currentOpened = navbarViewValue || '';
-                        if (!currentOpened.includes(folderId)) {
-                          setNavbarViewValue([...currentOpened, folderId]);
-                        }
+                        handleAddItem();
+                        ensureFolderExpanded();
                       }}
                     >
                       <IconPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
@@ -240,15 +248,8 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                       variant="subtle"
                       onClick={(e) => {
                         e.stopPropagation();
-
-                        // create folder
                         folderCreate({ id: generateUUID(), location, folderId });
-
-                        // Check if current folder is already expanded, if not, add it
-                        const currentOpened = navbarViewValue || '';
-                        if (!currentOpened.includes(folderId)) {
-                          setNavbarViewValue([...currentOpened, folderId]);
-                        }
+                        ensureFolderExpanded();
                       }}
                     >
                       <IconFolderPlus size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
@@ -269,36 +270,25 @@ export default function Folder({ folderId, location }: { folderId: string; locat
         </MenuFolder>
 
         <AccordionPanel>
-          {/* <Divider my={4} /> */}
-
           <LayoutPartialNavbar options={{ folder: true }}>
             {!hasContent ? (
-              <Center fz={'xs'} ta={'center'} py={'md'}>
+              <Center fz="xs" ta="center" py="md">
                 <Text inherit>Folder empty</Text>
               </Center>
             ) : (
               <>
-                {/* 2. Render nested child folders recursively */}
-                {sortArray(childFolders || [], (i) => i.createdAt, Order.DESCENDING).map(
-                  (childFolder, i) => (
-                    <div key={childFolder.id}>
-                      {/* {i > 0 && <Divider mb={4} />} */}
+                {sortedChildFolders.map((childFolder) => (
+                  <div key={childFolder.id}>
+                    <Folder folderId={childFolder.id} location={location} />
+                  </div>
+                ))}
 
-                      <Folder folderId={childFolder.id} location={location} />
-                    </div>
-                  ),
-                )}
-
-                {/* 3. Render items in current folder level */}
-                {sortArray(locationProps.navLinkItems, (i) => i.createdAt, Order.DESCENDING).map(
-                  (nli: any, i) => (
+                {NavLinkItemComponent &&
+                  sortedNavLinkItems.map((nli: any) => (
                     <div key={nli.id}>
-                      {/* {i > 0 && <Divider />} */}
-
-                      <locationProps.component props={nli} />
+                      <NavLinkItemComponent props={nli} />
                     </div>
-                  ),
-                )}
+                  ))}
               </>
             )}
           </LayoutPartialNavbar>
@@ -306,9 +296,11 @@ export default function Folder({ folderId, location }: { folderId: string; locat
       </AccordionItem>
     </Accordion>
   );
-}
+});
 
-// Checks if a folder or any of its sub-folders contain an active calendar item
+export default Folder;
+
+// Checks if a folder or any of its sub-folders contain an active item
 function isFolderOrChildrenActive(
   folderId: string,
   folders: any[],
@@ -317,15 +309,12 @@ function isFolderOrChildrenActive(
 ): boolean {
   if (!activeItemId) return false;
 
-  // 1. Check direct items inside this folder
   const hasActiveItem = items.some(
     (item) => item.folderId === folderId && activeItemId.includes(item.id),
   );
-
   if (hasActiveItem) return true;
 
-  // 2. Recursively check child folders
   return folders
-    .filter((f) => f.folderId == folderId)
+    .filter((f) => f.folderId === folderId)
     .some((child) => isFolderOrChildrenActive(child.id, folders, items, activeItemId));
 }

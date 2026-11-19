@@ -7,22 +7,45 @@ import { CalendarGet, NoteGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
 import { IconCircleFilled, IconDots, IconNote } from '@tabler/icons-react';
 import MenuNote from '../menu/note';
-
 import { useBreakpointFlags } from '@repo/hooks';
+import { memo, useCallback, useMemo } from 'react';
 
-export default function Note({ props }: { props: NoteGet }) {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const Note = memo(function Note({ props }: { props: NoteGet }) {
+  const { ready, isDesktop } = useBreakpointFlags();
 
-  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const navbarActive = useStoreAppShell.getState().appshell?.child?.navbar;
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   const { subViewValue, showSubViewJot } = useSubView();
 
-  const noteActive =
-    subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == props.id;
+  const noteActive = useMemo(() => {
+    if (!subViewValue || !subViewValue.includes('note: ')) return false;
+    return extractUuidFromParam(subViewValue) === props.id;
+  }, [subViewValue, props.id]);
+
+  const navLinkStyles = useMemo(
+    () => ({
+      section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+      label: {
+        fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
+        color: noteActive ? 'var(--mantine-color-pri-6)' : undefined,
+      },
+    }),
+    [isDesktop, noteActive],
+  );
+
+  const handleSelect = useCallback(() => {
+    if (!isDesktop && navbarActive) {
+      toggleNavbarChild();
+    }
+    showSubViewJot(`note: ${props.id}`);
+  }, [isDesktop, navbarActive, toggleNavbarChild, showSubViewJot, props.id]);
+
+  const handleStopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
@@ -40,17 +63,10 @@ export default function Note({ props }: { props: NoteGet }) {
           color="gray"
           p={isDesktop ? 0 : undefined}
           fw={600}
-          styles={{
-            section: isDesktop ? { marginInlineEnd: 0 } : undefined,
-            label: {
-              fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
-              color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
-            },
-          }}
+          styles={navLinkStyles}
           leftSection={
             <ThemeIcon
               size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
-              color="gray"
               c={noteActive ? 'pri' : 'gray'}
               variant="transparent"
             >
@@ -61,10 +77,8 @@ export default function Note({ props }: { props: NoteGet }) {
             <Group
               gap={0}
               wrap="nowrap"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="opacity-0 group-hover/note:opacity-100 transition-opacity duration-250"
+              onClick={handleStopPropagation}
+              className="opacity-0 group-hover/note:opacity-100 transition-opacity duration-200"
               mih={30}
               pr={5}
               visibleFrom="md"
@@ -76,15 +90,11 @@ export default function Note({ props }: { props: NoteGet }) {
               </MenuNote>
             </Group>
           }
-          onClick={() => {
-            if (!isDesktop) {
-              if (navbarActive) toggleNavbarChild();
-            }
-
-            showSubViewJot(`note: ${props.id}`);
-          }}
+          onClick={handleSelect}
         />
       </MenuNote>
     </div>
   );
-}
+});
+
+export default Note;

@@ -9,20 +9,46 @@ import { IconCircleFilled, IconDots, IconNote } from '@tabler/icons-react';
 import MenuTaskList from '../menu/task-list';
 
 import { useBreakpointFlags } from '@repo/hooks';
+import { memo, useCallback, useMemo } from 'react';
 
-export default function TaskList({ props }: { props: TaskListGet }) {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const TaskList = memo(function TaskList({ props }: { props: TaskListGet }) {
+  const { ready, isDesktop } = useBreakpointFlags();
 
-  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const navbarActive = useStoreAppShell.getState().appshell?.child?.navbar;
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   const { subViewValue, showSubViewStride } = useSubView();
 
-  const taskListActive =
-    subViewValue?.includes('list: ') && extractUuidFromParam(subViewValue) == props.id;
+  const taskListActive = useMemo(() => {
+    if (!subViewValue || !subViewValue.includes('list: ')) return false;
+    return extractUuidFromParam(subViewValue) === props.id;
+  }, [subViewValue, props.id]);
+
+  const navLinkStyles = useMemo(
+    () => ({
+      section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+      label: {
+        fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
+        color: taskListActive ? 'var(--mantine-color-pri-6)' : undefined,
+      },
+    }),
+    [isDesktop, taskListActive],
+  );
+
+  const iconColor = props.color ? `${props.color}.6` : 'pri';
+
+  const handleSelect = useCallback(() => {
+    if (!isDesktop && navbarActive) {
+      toggleNavbarChild();
+    }
+    showSubViewStride(`list: ${props.id}`);
+  }, [isDesktop, navbarActive, toggleNavbarChild, showSubViewStride, props.id]);
+
+  const handleStopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
@@ -40,18 +66,12 @@ export default function TaskList({ props }: { props: TaskListGet }) {
           color="gray"
           p={isDesktop ? 0 : undefined}
           fw={600}
-          styles={{
-            section: isDesktop ? { marginInlineEnd: 0 } : undefined,
-            label: {
-              fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
-              color: !taskListActive ? undefined : 'var(--mantine-color-pri-6)',
-            },
-          }}
+          styles={navLinkStyles}
           leftSection={
             <ThemeIcon
               size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
               variant="transparent"
-              c={`${props.color}.6` || 'pri'}
+              c={iconColor}
             >
               <IconCircleFilled size={6} />
             </ThemeIcon>
@@ -60,10 +80,8 @@ export default function TaskList({ props }: { props: TaskListGet }) {
             <Group
               gap={0}
               wrap="nowrap"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-250"
+              onClick={handleStopPropagation}
+              className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-200"
               mih={30}
               pr={5}
               visibleFrom="md"
@@ -75,23 +93,11 @@ export default function TaskList({ props }: { props: TaskListGet }) {
               </MenuTaskList>
             </Group>
           }
-          onClick={() => {
-            if (!isDesktop) {
-              if (navbarActive) toggleNavbarChild();
-            }
-
-            showSubViewStride(`list: ${props.id}`);
-          }}
+          onClick={handleSelect}
         />
       </MenuTaskList>
-
-      {/* <div className="opacity-0 group-hover/list:opacity-100 transition-opacity duration-250">
-        <MenuTaskList defaultValues={props}>
-          <ActionIcon size={30} color="gray" variant="subtle" radius={0}>
-            <IconDots size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-          </ActionIcon>
-        </MenuTaskList>
-      </div> */}
     </div>
   );
-}
+});
+
+export default TaskList;

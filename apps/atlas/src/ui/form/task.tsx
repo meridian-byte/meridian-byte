@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActionIcon,
   Box,
@@ -73,710 +73,595 @@ import {
 import dayjs from 'dayjs';
 import { ModalConfirm } from '@repo/ui';
 
-export default function Task({
-  defaultValues,
-  onUnmount,
-  options,
-}: {
-  defaultValues?: Partial<TaskGet>;
-  onUnmount?: React.Dispatch<React.SetStateAction<boolean>>;
-  options?: { modal?: boolean; withoutCheck?: boolean };
-}) {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
-
-  const [checked, setChecked] = useState(options?.withoutCheck);
-  const { form, submitted, handleSubmit, views, taskListId } = useFormTask({
-    options: { closeWhenDone: checked },
-    defaultValues,
-  });
-
-  const { closeModalView } = useViewModal();
-  const { asideViewValue } = useViewAside();
-  const { handleToggleChildAside } = useAppshellChild();
-
-  const taskLists = useStoreTaskList((s) => s.taskLists);
-
-  const creatingTask = !defaultValues?.updatedAt;
-
-  const sharedPadding = 'md';
-  const sharedHeight = options?.modal ? (isDesktop ? 400 : 480) : undefined;
-
-  function InputTaskList() {
-    return (
-      <div>
-        {
-          <Select
-            aria-label={'Task list'}
-            label={!options?.modal ? undefined : 'Task list'}
-            placeholder={views.inboxView ? 'Inbox' : 'Task list'}
-            size={isDesktop ? 'xs' : 'sm'}
-            clearable
-            clearSectionMode="clear"
-            searchable
-            // disabled={creatingTask && (views.inboxView || !!taskListId)}
-            {...form.getInputProps('taskListId')}
-            leftSection={<IconCategory size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-            comboboxProps={{ withinPortal: false }}
-            data={(taskLists || []).map((tli) => {
-              return {
-                value: tli.id,
-                label: tli.title,
-              };
-            })}
-          />
-        }
-      </div>
-    );
-  }
-
-  function SectionReminder() {
-    const tasks = useStoreTask((s) => s.tasks);
-    const task = tasks?.find((ti) => ti.id == defaultValues?.id);
-
-    const reminders = useStoreReminder((s) => s.reminders);
-    const reminder = reminders?.find((ri) => ri.taskId == defaultValues?.id);
-
-    const [withReminder, setWithReminder] = useState<boolean>(!!reminder);
-    const [reminderState, seReminderState] = useState<string | null>(
-      !reminder?.remindAt ? null : new Date(reminder?.remindAt).toISOString(),
-    );
-
-    const { reminderCreate, reminderUpdate, reminderDelete } = useReminderActions();
-
-    const currentDueDate = form.values?.dueDate || defaultValues?.dueDate;
-
-    useEffect(() => {
-      if (reminderState) return;
-      setWithReminder(false);
-    }, [reminderState]);
-
-    // Clamp or reset reminder when Due Date changes
-
-    const getDefaultReminderTime = (dueDate: Date | string) => {
-      // Always return 9:00 AM on the due date
-      return dayjs(dueDate).hour(9).minute(0).second(0).millisecond(0).toDate();
-    };
-
-    useEffect(() => {
-      // Case 1: Due date removed or checkbox unticked -> clear reminder state
-      if (!currentDueDate || !withReminder) {
-        if (reminderState !== null) {
-          seReminderState(null);
-        }
-        return;
-      }
-
-      // Case 2: Checkbox turned ON, but state is currently empty -> populate default
-      if (!reminderState) {
-        seReminderState(getDefaultReminderTime(currentDueDate).toISOString());
-        return;
-      }
-
-      // Case 3: Due date shifted earlier than active reminder -> reset/clamp time
-      const dueDateEnd = dayjs(currentDueDate).endOf('day');
-      if (dayjs(reminderState).isAfter(dueDateEnd)) {
-        seReminderState(getDefaultReminderTime(currentDueDate).toISOString());
-      }
-    }, [currentDueDate, withReminder]);
-
-    useEffect(() => {
-      if (tasks === undefined) return;
-      if (tasks === null) return;
-      if (reminders === undefined) return;
-      if (reminders === null) return;
-
-      if (!task) return;
-      if (task.dueDate) return;
-      if (!reminder) return;
-
-      // console.log('delete reminder (auto)');
-
-      reminderDelete(reminder);
-    }, [task?.dueDate]);
-
-    useEffect(() => {
-      if (reminders === undefined) return;
-      if (reminders === null) return;
-
-      const now = new Date();
-
-      if (!reminder) {
-        if (!reminderState) {
-          return;
-        } else {
-          // console.log('create reminder');
-          if (defaultValues?.updatedAt) {
-            reminderCreate({
-              id: generateUUID(),
-              remindAt: getDefaultReminderTime(
-                new Date(currentDueDate || now).toISOString(),
-              ).toISOString() as any,
-              taskId: defaultValues.id,
-            });
-          }
-        }
-      } else {
-        if (!reminderState) {
-          // console.log('delete reminder');
-          reminderDelete(reminder);
-        } else {
-          if (new Date(reminder.remindAt).toISOString() == reminderState) {
-            return;
-          } else {
-            // console.log('update reminder');
-            reminderUpdate({
-              ...reminder,
-              remindAt: reminderState as any,
-            });
-          }
-        }
-      }
-    }, [reminderState]);
-
-    return (
-      <Stack
-        gap={withReminder ? 'xs' : 0}
-        style={{
-          transition: '.1s all ease',
-          height:
-            !defaultValues?.dueDate && !form.values?.dueDate
-              ? 0
-              : withReminder
-                ? 16 + 10 + (isDesktop ? 30 : 36)
-                : 16,
-          overflow: 'hidden',
-        }}
-      >
-        <Checkbox
-          label={'Remind'}
-          checked={withReminder}
-          onChange={(event) => setWithReminder(event.currentTarget.checked)}
-          disabled={!!withReminder && !!reminderState}
-        />
-
-        <DateTimePicker
-          aria-label={'Remind at'}
-          placeholder="Remind at"
-          size={isDesktop ? 'xs' : 'sm'}
-          clearable
-          leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-          value={reminderState}
-          onChange={seReminderState}
-          maxDate={
-            defaultValues?.dueDate || form.values?.dueDate
-              ? dayjs(defaultValues?.dueDate || form.values?.dueDate)
-                  .endOf('day')
-                  .toDate()
-              : undefined
-          }
-          timePickerProps={{
-            withDropdown: true,
-            popoverProps: { withinPortal: false },
-            format: '12h',
-          }}
-        />
-      </Stack>
-    );
-  }
-
-  function SectionRecurring() {
-    const tasks = useStoreTask((s) => s.tasks);
-    const task = tasks?.find((ti) => ti.id == defaultValues?.id);
-
-    const recurringRules = useStoreRecurringRule((s) => s.recurringRules);
-    const recurringRule = recurringRules?.find((ri) => ri.id == defaultValues?.recurringRuleId);
-
-    const [withRecurringRule, setWithRecurringRule] = useState<boolean>(!!recurringRule);
-    const [frequencyState, setFrequencyState] = useState<string | null>(
-      recurringRule?.frequency || null,
-    );
-    const [intervalState, setIntervalState] = useState<number | string>(
-      recurringRule?.interval || '',
-    );
-
-    const { recurringRuleCreate, recurringRuleUpdate, recurringRuleDelete } =
-      useRecurringRuleActions();
-    const { taskUpdate } = useTaskActions();
-
-    useEffect(() => {
-      if (!withRecurringRule) return;
-      setIntervalState(recurringRule?.interval || 1);
-      setFrequencyState(recurringRule?.frequency || Frequency.WEEKLY);
-    }, [withRecurringRule]);
-
-    useEffect(() => {
-      if (intervalState) return;
-      if (frequencyState) return;
-
-      setWithRecurringRule(false);
-    }, [intervalState, frequencyState]);
-
-    useEffect(() => {
-      if (tasks === undefined) return;
-      if (tasks === null) return;
-      if (recurringRule === undefined) return;
-      if (recurringRule === null) return;
-
-      if (!task) return;
-      if (task.dueDate) return;
-      if (!recurringRule) return;
-
-      // console.log('delete recurringRule (auto)');
-
-      recurringRuleDelete(recurringRule);
-
-      if (defaultValues?.updatedAt) {
-        taskUpdate({
-          ...(defaultValues as TaskGet),
-          recurringRuleId: null,
-        });
-      }
-    }, [task?.dueDate]);
-
-    useEffect(() => {
-      if (recurringRules === undefined) return;
-      if (recurringRules === null) return;
-
-      if (!recurringRule) {
-        if (!frequencyState && !intervalState) {
-          return;
-        } else {
-          // console.log('create recurringRule');
-
-          if (defaultValues?.updatedAt) {
-            if (frequencyState && intervalState) {
-              const newRule = recurringRuleCreate({
-                id: generateUUID(),
-                frequency: frequencyState as Frequency,
-                interval: typeof intervalState == 'string' ? 1 : intervalState,
-              });
-
-              if (newRule) {
-                taskUpdate({
-                  ...(defaultValues as TaskGet),
-                  recurringRuleId: newRule.id,
-                });
-              }
-            }
-          }
-        }
-      } else {
-        if (!frequencyState && !intervalState) {
-          // console.log('delete recurringRule');
-
-          recurringRuleDelete(recurringRule);
-
-          if (defaultValues?.updatedAt) {
-            taskUpdate({
-              ...(defaultValues as TaskGet),
-              recurringRuleId: null,
-            });
-          }
-        } else {
-          if (
-            recurringRule.frequency == frequencyState &&
-            recurringRule.interval == intervalState
-          ) {
-            return;
-          } else {
-            // console.log('update recurringRule');
-
-            if (frequencyState && intervalState) {
-              recurringRuleUpdate({
-                ...recurringRule,
-                frequency: frequencyState as Frequency,
-                interval: typeof intervalState == 'string' ? 1 : intervalState,
-              });
-            }
-          }
-        }
-      }
-    }, [intervalState, frequencyState]);
-
-    return (
-      <Stack
-        gap={withRecurringRule ? 'xs' : 0}
-        style={{
-          transition: '.1s all ease',
-          height:
-            !defaultValues?.dueDate && !form.values?.dueDate
-              ? 0
-              : withRecurringRule
-                ? 16 + 10 + 18.6 + 2 + 30
-                : 16,
-          overflow: 'hidden',
-        }}
-      >
-        <Checkbox
-          label={'Repeat'}
-          checked={withRecurringRule}
-          onChange={(event) => setWithRecurringRule(event.currentTarget.checked)}
-          disabled={!!intervalState || !!frequencyState}
-        />
-
-        <Stack gap={2}>
-          <Text inherit fz={'xs'} fw={500}>
-            Every
-          </Text>
-
-          <Group gap={5} wrap="nowrap">
-            <NumberInput
-              w={'30%'}
-              aria-label={'Int.'}
-              placeholder="Int."
-              size={'xs'}
-              value={intervalState}
-              onChange={setIntervalState}
-            />
-
-            <Select
-              w={'70%'}
-              aria-label={'Frequency'}
-              placeholder="Frequency"
-              size={'xs'}
-              clearable
-              value={frequencyState}
-              onChange={setFrequencyState}
-              disabled={!intervalState}
-              leftSection={<IconRepeat size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-              data={[
-                {
-                  value: Frequency.DAILY,
-                  label: `Day${Number(intervalState) > 1 ? 's' : ''}`,
-                },
-                {
-                  value: Frequency.WEEKLY,
-                  label: `Week${Number(intervalState) > 1 ? 's' : ''}`,
-                },
-                {
-                  value: Frequency.MONTHLY,
-                  label: `Month${Number(intervalState) > 1 ? 's' : ''}`,
-                },
-                {
-                  value: Frequency.ANNUALLY,
-                  label: `Year${Number(intervalState) > 1 ? 's' : ''}`,
-                },
-              ]}
-            />
-
-            <Tooltip label={'Delete rule'}>
-              <ActionIcon
-                size={30}
-                color="red"
-                variant="light"
-                onClick={() => {
-                  setIntervalState('');
-                  setFrequencyState('');
-                }}
-              >
-                <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-        </Stack>
-      </Stack>
-    );
-  }
-
-  function TaskProperties() {
-    const { taskDelete } = useTaskActions();
-
-    return (
-      <Stack h={sharedHeight} gap={0}>
-        <ScrollArea flex={1}>
-          <Flex
-            align={options?.modal || options?.withoutCheck ? undefined : 'center'}
-            direction={options?.modal || options?.withoutCheck ? 'column' : 'row'}
-            pt={options?.modal ? sharedPadding : undefined}
-            px={options?.modal ? sharedPadding : undefined}
-            gap={options?.modal ? undefined : 5}
-            pb={options?.modal ? sharedPadding : 0}
-            // mih={'100vh'}
-          >
-            {(options?.modal || options?.withoutCheck) && <InputTaskList />}
-
-            <div>
-              <Select
-                aria-label="Priority"
-                label={!options?.modal ? undefined : 'Priority'}
-                placeholder="Priority"
-                comboboxProps={{ withinPortal: false }}
-                size={isDesktop ? 'xs' : 'sm'}
-                // clearable
-                {...form.getInputProps('priority')}
-                leftSection={
-                  <Box
-                    c={
-                      !form.values.priority
-                        ? undefined
-                        : `${getPriorityDetails(form.values.priority as Priority).color}.6`
-                    }
-                  >
-                    <IconFlag size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
-                  </Box>
-                }
-                data={sortArray(
-                  [
-                    {
-                      value: Priority.URGENT_IMPORTANT,
-                      label: getPriorityDetails(Priority.URGENT_IMPORTANT).label,
-                    },
-                    {
-                      value: Priority.URGENT_UNIMPORTANT,
-                      label: getPriorityDetails(Priority.URGENT_UNIMPORTANT).label,
-                    },
-                    {
-                      value: Priority.NOT_URGENT_IMPORTANT,
-                      label: getPriorityDetails(Priority.NOT_URGENT_IMPORTANT).label,
-                    },
-                    {
-                      value: Priority.NOT_URGENT_UNIMPORTANT,
-                      label: getPriorityDetails(Priority.NOT_URGENT_UNIMPORTANT).label,
-                    },
-                  ],
-                  (i) => i.label,
-                  Order.ASCENDING,
-                )}
-              />
-            </div>
-
-            <Divider mt={options?.modal ? 16 : 8} mb={8} />
-
-            <div>
-              <DateInput
-                aria-label={'Due date'}
-                label={!options?.modal ? undefined : 'Due date'}
-                placeholder="Due date"
-                size={isDesktop ? 'xs' : 'sm'}
-                clearable
-                disabled={creatingTask && views.todayView}
-                minDate={
-                  creatingTask && views.upcomingView
-                    ? dayjs(getTomorrow()).format('YYYY-MM-DD')
-                    : undefined
-                }
-                maxDate={
-                  creatingTask && views.overdueView
-                    ? dayjs(getYesterday()).format('YYYY-MM-DD')
-                    : undefined
-                }
-                {...form.getInputProps('dueDate')}
-                leftSection={<IconCalendarEvent size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
-              />
-            </div>
-
-            {options?.modal && (
-              <>
-                {defaultValues?.dueDate && <Divider my={16} />}
-                <SectionReminder />
-              </>
-            )}
-
-            {options?.modal && (
-              <>
-                {defaultValues?.dueDate && <Divider my={16} />}
-                <SectionRecurring />
-              </>
-            )}
-          </Flex>
-        </ScrollArea>
-
-        <Divider my={options?.modal ? undefined : sharedPadding} />
-
-        {!defaultValues?.updatedAt &&
-          asideViewValue == ASIDE_VIEW_NAMES.NEW.STRIDE.TASK &&
-          options?.withoutCheck && (
-            <div>
-              <Checkbox
-                label={'Close when done'}
-                checked={checked}
-                onChange={(event) => setChecked(event.currentTarget.checked)}
-                mb={'xs'}
-              />
-            </div>
-          )}
-
-        <Group
-          justify={options?.modal ? 'end' : 'space-between'}
-          gap="xs"
-          p={options?.modal ? sharedPadding : undefined}
-        >
-          {!(options?.modal || options?.withoutCheck) && <InputTaskList />}
-
-          <Group gap={'xs'}>
-            <Button
-              disabled={submitted}
-              variant="default"
-              size={isDesktop ? 'xs' : undefined}
-              onClick={() => {
-                if (onUnmount && !options?.withoutCheck) {
-                  onUnmount(false);
-                } else {
-                  if (!defaultValues?.updatedAt) {
-                    handleToggleChildAside();
-                  } else {
-                    closeModalView();
-                  }
-                }
-              }}
-            >
-              {'Close'}
-            </Button>
-
-            <Button
-              display={!defaultValues?.updatedAt ? undefined : 'none'}
-              type="submit"
-              size={isDesktop ? 'xs' : undefined}
-              loading={submitted}
-            >
-              {submitted ? 'Adding' : 'Add'}
-            </Button>
-
-            {options?.modal && (
-              <>
-                {/* <Divider orientation="vertical" h={16} my={'auto'} /> */}
-
-                {
-                  <ModalConfirm
-                    props={{
-                      variant: Alert.DANGER,
-                      title: 'Delete Task',
-                      desc: 'Are you sure? This action is irreversible.',
-                      onConfirm: () => {
-                        if (defaultValues?.updatedAt) taskDelete(defaultValues as TaskGet);
-                      },
-                    }}
-                  >
-                    <Tooltip label={'Delete task'}>
-                      <ActionIcon
-                        size={ICON_WRAPPER_SIZE * (isDesktop ? 1 : 1.25)}
-                        color="red"
-                        variant="light"
-                        onClick={() => {}}
-                      >
-                        <IconTrash
-                          size={ICON_SIZE * (isDesktop ? 1 : 1.25)}
-                          stroke={ICON_STROKE_WIDTH}
-                        />
-                      </ActionIcon>
-                    </Tooltip>
-                  </ModalConfirm>
-                }
-              </>
-            )}
-          </Group>
-        </Group>
-      </Stack>
-    );
-  }
-
-  const leftcolumn = (
-    <ScrollArea
-      h={sharedHeight}
-      py={options?.modal ? undefined : 0}
-      p={options?.withoutCheck ? 'xs' : sharedPadding}
-    >
-      <Grid gap={0}>
-        {!options?.withoutCheck && (
-          <GridCol span={{ md: options?.modal ? 1 : 0.5 }} visibleFrom="md">
-            <Group pl={options?.modal ? 5 : 0}>
-              <Checkbox
-                aria-label={'Complete'}
-                defaultChecked={form.values.complete}
-                {...form.getInputProps('complete')}
-                size="sm"
-                disabled={creatingTask && views.completeView}
-                radius={99}
-                mt={12}
-              />
-            </Group>
-          </GridCol>
-        )}
-
-        <GridCol span={{ md: options?.modal ? 11 : options?.withoutCheck ? 12 : 11.5 }}>
-          <Stack gap={'xs'}>
-            <div>
-              <TextInput
-                required
-                aria-label={'Title'}
-                placeholder="Title"
-                variant="unstyled"
-                styles={{
-                  input: {
-                    backgroundColor: 'transparent',
-                    fontWeight: 'bold',
-                  },
-                }}
-                {...form.getInputProps('title')}
-                size="md"
-              />
-
-              <div>
-                <Textarea
-                  aria-label={'Description'}
-                  placeholder="Description"
-                  variant="unstyled"
-                  styles={{
-                    input: {
-                      backgroundColor: 'transparent',
-                      padding: 0,
-                      fontWeight: 500,
-                    },
-                  }}
-                  {...form.getInputProps('description')}
-                  size="sm"
-                  autosize
-                  minRows={1}
-                  maxRows={options?.modal ? undefined : 5}
-                />
-              </div>
-            </div>
-
-            {!options?.modal && <TaskProperties />}
-          </Stack>
-        </GridCol>
-      </Grid>
-    </ScrollArea>
-  );
-
-  const rightColumn = options?.modal && <TaskProperties />;
-
-  if (options?.modal && !isDesktop)
-    return <TaskTab content={leftcolumn} properties={rightColumn} />;
-
-  if (!ready) {
-    // Must not render wrong layout before client knows viewport
-    return null;
-  }
-
-  return (
-    <Box
-      component="form"
-      onSubmit={form.onSubmit(() => {
-        handleSubmit();
-        if (onUnmount) onUnmount(false);
-      })}
-      noValidate
-    >
-      <Grid gap={0}>
-        <GridCol
-          span={{ base: 12, md: options?.modal ? 8 : 12 }}
-          bg={
-            options?.modal
-              ? 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'
-              : undefined
-          }
-        >
-          {leftcolumn}
-        </GridCol>
-
-        <GridCol span={{ base: 12, md: 4 }}>{rightColumn}</GridCol>
-      </Grid>
-    </Box>
-  );
+const TITLE_INPUT_STYLES = {
+  input: {
+    backgroundColor: 'transparent',
+    fontWeight: 'bold',
+  },
+};
+
+const DESCRIPTION_INPUT_STYLES = {
+  input: {
+    backgroundColor: 'transparent',
+    padding: 0,
+    fontWeight: 500,
+  },
+};
+
+const TABS_STYLES = {
+  tab: {
+    paddingTop: 'var(--mantine-spacing-md)',
+    paddingBottom: 'var(--mantine-spacing-md)',
+  },
+  tabLabel: { fontWeight: 600 },
+};
+
+const PRIORITY_OPTIONS = sortArray(
+  [
+    {
+      value: Priority.URGENT_IMPORTANT,
+      label: getPriorityDetails(Priority.URGENT_IMPORTANT).label,
+    },
+    {
+      value: Priority.URGENT_UNIMPORTANT,
+      label: getPriorityDetails(Priority.URGENT_UNIMPORTANT).label,
+    },
+    {
+      value: Priority.NOT_URGENT_IMPORTANT,
+      label: getPriorityDetails(Priority.NOT_URGENT_IMPORTANT).label,
+    },
+    {
+      value: Priority.NOT_URGENT_UNIMPORTANT,
+      label: getPriorityDetails(Priority.NOT_URGENT_UNIMPORTANT).label,
+    },
+  ],
+  (i) => i.label,
+  Order.ASCENDING,
+);
+
+function getDefaultReminderDate(dueDate: Date | string): Date {
+  return dayjs(dueDate).hour(9).minute(0).second(0).millisecond(0).toDate();
 }
 
-function TaskTab({
+const InputTaskList = memo(function InputTaskList({
+  form,
+  isModal,
+  isDesktop,
+  inboxView,
+  taskListOptions,
+}: {
+  form: ReturnType<typeof useFormTask>['form'];
+  isModal: boolean;
+  isDesktop: boolean;
+  inboxView: boolean;
+  taskListOptions: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <div>
+      <Select
+        aria-label="Task list"
+        label={isModal ? 'Task list' : undefined}
+        placeholder={inboxView ? 'Inbox' : 'Task list'}
+        size={isDesktop ? 'xs' : 'sm'}
+        clearable
+        clearSectionMode="clear"
+        searchable
+        {...form.getInputProps('taskListId')}
+        leftSection={<IconCategory size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+        comboboxProps={{ withinPortal: false }}
+        data={taskListOptions}
+      />
+    </div>
+  );
+});
+
+const SectionReminder = memo(function SectionReminder({
+  taskId,
+  currentDueDate,
+  isDesktop,
+  isPersistedTask,
+}: {
+  taskId?: string;
+  currentDueDate: Date | string | null | undefined;
+  isDesktop: boolean;
+  isPersistedTask: boolean;
+}) {
+  const taskDueDate = useStoreTask((s) => s.tasks?.find((ti) => ti.id === taskId)?.dueDate);
+  const reminder = useStoreReminder((s) => s.reminders?.find((ri) => ri.taskId === taskId));
+  const { reminderCreate, reminderUpdate, reminderDelete } = useReminderActions();
+
+  const [withReminder, setWithReminder] = useState<boolean>(Boolean(reminder));
+  const [reminderState, setReminderState] = useState<string | null>(() =>
+    reminder?.remindAt ? new Date(reminder.remindAt).toISOString() : null,
+  );
+
+  // Sync with due date changes
+  useEffect(() => {
+    if (!currentDueDate || !withReminder) {
+      if (reminderState !== null) setReminderState(null);
+      if (withReminder && !currentDueDate) setWithReminder(false);
+      return;
+    }
+
+    if (!reminderState) {
+      setReminderState(getDefaultReminderDate(currentDueDate).toISOString());
+      return;
+    }
+
+    const dueDateEnd = dayjs(currentDueDate).endOf('day');
+    if (dayjs(reminderState).isAfter(dueDateEnd)) {
+      setReminderState(getDefaultReminderDate(currentDueDate).toISOString());
+    }
+  }, [currentDueDate, withReminder, reminderState]);
+
+  // Delete reminder if persisted task loses its dueDate
+  useEffect(() => {
+    if (!isPersistedTask || !reminder || taskDueDate !== null) return;
+    reminderDelete(reminder);
+  }, [isPersistedTask, reminder, taskDueDate, reminderDelete]);
+
+  // Persist reminder state changes for existing tasks
+  useEffect(() => {
+    if (!isPersistedTask || !taskId) return;
+
+    if (!reminder) {
+      if (!reminderState) return;
+      reminderCreate({
+        id: generateUUID(),
+        remindAt: getDefaultReminderDate(currentDueDate || new Date()).toISOString() as any,
+        taskId,
+      });
+      return;
+    }
+
+    if (!reminderState) {
+      reminderDelete(reminder);
+      return;
+    }
+
+    if (new Date(reminder.remindAt).toISOString() !== reminderState) {
+      reminderUpdate({
+        ...reminder,
+        remindAt: reminderState as any,
+      });
+    }
+  }, [
+    isPersistedTask,
+    taskId,
+    reminder,
+    reminderState,
+    currentDueDate,
+    reminderCreate,
+    reminderUpdate,
+    reminderDelete,
+  ]);
+
+  const handleToggleReminder = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = event.currentTarget.checked;
+      setWithReminder(checked);
+      if (checked && currentDueDate && !reminderState) {
+        setReminderState(getDefaultReminderDate(currentDueDate).toISOString());
+      }
+    },
+    [currentDueDate, reminderState],
+  );
+
+  const maxDate = useMemo(
+    () => (currentDueDate ? dayjs(currentDueDate).endOf('day').toDate() : undefined),
+    [currentDueDate],
+  );
+
+  const stackHeight = !currentDueDate ? 0 : withReminder ? 16 + 10 + (isDesktop ? 30 : 36) : 16;
+
+  return (
+    <Stack
+      gap={withReminder ? 'xs' : 0}
+      style={{
+        transition: 'height 120ms ease',
+        height: stackHeight,
+        overflow: 'hidden',
+      }}
+    >
+      <Checkbox
+        label="Remind"
+        checked={withReminder}
+        onChange={handleToggleReminder}
+        disabled={withReminder && Boolean(reminderState)}
+      />
+
+      <DateTimePicker
+        aria-label="Remind at"
+        placeholder="Remind at"
+        size={isDesktop ? 'xs' : 'sm'}
+        clearable
+        leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+        value={reminderState}
+        onChange={setReminderState}
+        maxDate={maxDate}
+        timePickerProps={{
+          withDropdown: true,
+          popoverProps: { withinPortal: false },
+          format: '12h',
+        }}
+      />
+    </Stack>
+  );
+});
+
+const SectionRecurring = memo(function SectionRecurring({
+  defaultValues,
+  currentDueDate,
+  isPersistedTask,
+}: {
+  defaultValues?: Partial<TaskGet>;
+  currentDueDate: Date | string | null | undefined;
+  isPersistedTask: boolean;
+}) {
+  const recurringRule = useStoreRecurringRule((s) =>
+    s.recurringRules?.find((ri) => ri.id === defaultValues?.recurringRuleId),
+  );
+  const { recurringRuleCreate, recurringRuleUpdate, recurringRuleDelete } =
+    useRecurringRuleActions();
+  const { taskUpdate } = useTaskActions();
+
+  const [withRecurringRule, setWithRecurringRule] = useState<boolean>(Boolean(recurringRule));
+  const [frequencyState, setFrequencyState] = useState<string | null>(
+    recurringRule?.frequency || null,
+  );
+  const [intervalState, setIntervalState] = useState<number | string>(
+    recurringRule?.interval || '',
+  );
+
+  const handleToggleRecurring = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = event.currentTarget.checked;
+      setWithRecurringRule(checked);
+      if (checked) {
+        setIntervalState((prev) => prev || recurringRule?.interval || 1);
+        setFrequencyState((prev) => prev || recurringRule?.frequency || Frequency.WEEKLY);
+      }
+    },
+    [recurringRule],
+  );
+
+  const handleClearRule = useCallback(() => {
+    setIntervalState('');
+    setFrequencyState('');
+    setWithRecurringRule(false);
+
+    if (isPersistedTask && recurringRule) {
+      recurringRuleDelete(recurringRule);
+      taskUpdate({
+        ...(defaultValues as TaskGet),
+        recurringRuleId: null,
+      });
+    }
+  }, [isPersistedTask, recurringRule, recurringRuleDelete, taskUpdate, defaultValues]);
+
+  // Sync recurring rule updates for persisted tasks
+  useEffect(() => {
+    if (!isPersistedTask || !frequencyState || !intervalState) return;
+    const normalizedInterval = typeof intervalState === 'string' ? 1 : intervalState;
+
+    if (!recurringRule) {
+      const created = recurringRuleCreate({
+        id: generateUUID(),
+        frequency: frequencyState as Frequency,
+        interval: normalizedInterval,
+      });
+      if (created) {
+        taskUpdate({
+          ...(defaultValues as TaskGet),
+          recurringRuleId: created.id,
+        });
+      }
+      return;
+    }
+
+    if (
+      recurringRule.frequency !== frequencyState ||
+      recurringRule.interval !== normalizedInterval
+    ) {
+      recurringRuleUpdate({
+        ...recurringRule,
+        frequency: frequencyState as Frequency,
+        interval: normalizedInterval,
+      });
+    }
+  }, [
+    isPersistedTask,
+    frequencyState,
+    intervalState,
+    recurringRule,
+    recurringRuleCreate,
+    recurringRuleUpdate,
+    taskUpdate,
+    defaultValues,
+  ]);
+
+  const frequencyOptions = useMemo(() => {
+    const plural = Number(intervalState) > 1 ? 's' : '';
+    return [
+      { value: Frequency.DAILY, label: `Day${plural}` },
+      { value: Frequency.WEEKLY, label: `Week${plural}` },
+      { value: Frequency.MONTHLY, label: `Month${plural}` },
+      { value: Frequency.ANNUALLY, label: `Year${plural}` },
+    ];
+  }, [intervalState]);
+
+  const stackHeight = !currentDueDate ? 0 : withRecurringRule ? 16 + 10 + 18.6 + 2 + 30 : 16;
+
+  return (
+    <Stack
+      gap={withRecurringRule ? 'xs' : 0}
+      style={{
+        transition: 'height 120ms ease',
+        height: stackHeight,
+        overflow: 'hidden',
+      }}
+    >
+      <Checkbox
+        label="Repeat"
+        checked={withRecurringRule}
+        onChange={handleToggleRecurring}
+        disabled={Boolean(intervalState) || Boolean(frequencyState)}
+      />
+
+      <Stack gap={2}>
+        <Text inherit fz="xs" fw={500}>
+          Every
+        </Text>
+
+        <Group gap={5} wrap="nowrap">
+          <NumberInput
+            w="30%"
+            aria-label="Int."
+            placeholder="Int."
+            size="xs"
+            value={intervalState}
+            onChange={setIntervalState}
+          />
+
+          <Select
+            w="70%"
+            aria-label="Frequency"
+            placeholder="Frequency"
+            size="xs"
+            clearable
+            value={frequencyState}
+            onChange={setFrequencyState}
+            disabled={!intervalState}
+            leftSection={<IconRepeat size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+            data={frequencyOptions}
+          />
+
+          <Tooltip label="Delete rule">
+            <ActionIcon size={30} color="red" variant="light" onClick={handleClearRule}>
+              <IconX size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      </Stack>
+    </Stack>
+  );
+});
+
+const TaskProperties = memo(function TaskProperties({
+  form,
+  defaultValues,
+  options,
+  isDesktop,
+  sharedPadding,
+  sharedHeight,
+  views,
+  creatingTask,
+  isPersistedTask,
+  taskListOptions,
+  checked,
+  onCheckedChange,
+  submitted,
+  asideViewValue,
+  onClose,
+}: {
+  form: ReturnType<typeof useFormTask>['form'];
+  defaultValues?: Partial<TaskGet>;
+  options?: { modal?: boolean; withoutCheck?: boolean };
+  isDesktop: boolean;
+  sharedPadding: string;
+  sharedHeight: number | undefined;
+  views: ReturnType<typeof useFormTask>['views'];
+  creatingTask: boolean;
+  isPersistedTask: boolean;
+  taskListOptions: Array<{ value: string; label: string }>;
+  checked: boolean | undefined;
+  onCheckedChange: (checked: boolean) => void;
+  submitted: boolean;
+  asideViewValue: string | undefined;
+  onClose: () => void;
+}) {
+  const { taskDelete } = useTaskActions();
+  const isModal = Boolean(options?.modal);
+  const withoutCheck = Boolean(options?.withoutCheck);
+  const currentDueDate = form.values?.dueDate || defaultValues?.dueDate;
+
+  const priorityColor = useMemo(
+    () =>
+      !form.values.priority
+        ? undefined
+        : `${getPriorityDetails(form.values.priority as Priority).color}.6`,
+    [form.values.priority],
+  );
+
+  const minDueDate = useMemo(
+    () =>
+      creatingTask && views.upcomingView ? dayjs(getTomorrow()).format('YYYY-MM-DD') : undefined,
+    [creatingTask, views.upcomingView],
+  );
+
+  const maxDueDate = useMemo(
+    () =>
+      creatingTask && views.overdueView ? dayjs(getYesterday()).format('YYYY-MM-DD') : undefined,
+    [creatingTask, views.overdueView],
+  );
+
+  const handleDeleteTask = useCallback(() => {
+    if (isPersistedTask && defaultValues) {
+      taskDelete(defaultValues as TaskGet);
+    }
+  }, [isPersistedTask, defaultValues, taskDelete]);
+
+  return (
+    <Stack h={sharedHeight} gap={0}>
+      <ScrollArea flex={1} style={{ overflow: 'visible' }}>
+        <Flex
+          align={isModal || withoutCheck ? undefined : 'center'}
+          direction={isModal || withoutCheck ? 'column' : 'row'}
+          pt={isModal ? sharedPadding : undefined}
+          px={isModal ? sharedPadding : undefined}
+          gap={isModal ? undefined : 5}
+          pb={isModal ? sharedPadding : 0}
+        >
+          {(isModal || withoutCheck) && (
+            <InputTaskList
+              form={form}
+              isModal={isModal}
+              isDesktop={isDesktop}
+              inboxView={Boolean(views.inboxView)}
+              taskListOptions={taskListOptions}
+            />
+          )}
+
+          <div>
+            <Select
+              aria-label="Priority"
+              label={isModal ? 'Priority' : undefined}
+              placeholder="Priority"
+              comboboxProps={{ withinPortal: !isModal }}
+              size={isDesktop ? 'xs' : 'sm'}
+              {...form.getInputProps('priority')}
+              leftSection={
+                <Box c={priorityColor}>
+                  <IconFlag size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
+                </Box>
+              }
+              data={PRIORITY_OPTIONS}
+            />
+          </div>
+
+          <Divider mt={isModal ? 16 : 8} mb={8} />
+
+          <div>
+            <DateInput
+              aria-label="Due date"
+              label={isModal ? 'Due date' : undefined}
+              placeholder="Due date"
+              size={isDesktop ? 'xs' : 'sm'}
+              clearable
+              disabled={creatingTask && Boolean(views.todayView)}
+              minDate={minDueDate}
+              maxDate={maxDueDate}
+              {...form.getInputProps('dueDate')}
+              leftSection={<IconCalendarEvent size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
+            />
+          </div>
+
+          {isModal && (
+            <>
+              {defaultValues?.dueDate && <Divider my={16} />}
+              <SectionReminder
+                taskId={defaultValues?.id}
+                currentDueDate={currentDueDate}
+                isDesktop={isDesktop}
+                isPersistedTask={isPersistedTask}
+              />
+            </>
+          )}
+
+          {isModal && (
+            <>
+              {defaultValues?.dueDate && <Divider my={16} />}
+              <SectionRecurring
+                defaultValues={defaultValues}
+                currentDueDate={currentDueDate}
+                isPersistedTask={isPersistedTask}
+              />
+            </>
+          )}
+        </Flex>
+      </ScrollArea>
+
+      <Divider my={isModal ? undefined : sharedPadding} />
+
+      {!isPersistedTask && asideViewValue === ASIDE_VIEW_NAMES.NEW.STRIDE.TASK && withoutCheck && (
+        <div>
+          <Checkbox
+            label="Close when done"
+            checked={Boolean(checked)}
+            onChange={(event) => onCheckedChange(event.currentTarget.checked)}
+            mb="xs"
+          />
+        </div>
+      )}
+
+      <Group
+        justify={isModal ? 'end' : 'space-between'}
+        gap="xs"
+        p={isModal ? sharedPadding : undefined}
+      >
+        {!(isModal || withoutCheck) && (
+          <InputTaskList
+            form={form}
+            isModal={isModal}
+            isDesktop={isDesktop}
+            inboxView={Boolean(views.inboxView)}
+            taskListOptions={taskListOptions}
+          />
+        )}
+
+        <Group gap="xs">
+          <Button
+            disabled={submitted}
+            variant="default"
+            size={isDesktop ? 'xs' : undefined}
+            onClick={onClose}
+          >
+            Close
+          </Button>
+
+          {!isPersistedTask && (
+            <Button type="submit" size={isDesktop ? 'xs' : undefined} loading={submitted}>
+              {submitted ? 'Adding' : 'Add'}
+            </Button>
+          )}
+
+          {isModal && (
+            <ModalConfirm
+              props={{
+                variant: Alert.DANGER,
+                title: 'Delete Task',
+                desc: 'Are you sure? This action is irreversible.',
+                onConfirm: handleDeleteTask,
+              }}
+            >
+              <Tooltip label="Delete task">
+                <ActionIcon
+                  size={ICON_WRAPPER_SIZE * (isDesktop ? 1 : 1.25)}
+                  color="red"
+                  variant="light"
+                >
+                  <IconTrash size={ICON_SIZE * (isDesktop ? 1 : 1.25)} stroke={ICON_STROKE_WIDTH} />
+                </ActionIcon>
+              </Tooltip>
+            </ModalConfirm>
+          )}
+        </Group>
+      </Group>
+    </Stack>
+  );
+});
+
+const TaskTab = memo(function TaskTab({
   content,
   properties,
 }: {
@@ -785,17 +670,7 @@ function TaskTab({
 }) {
   return (
     <Box>
-      <Tabs
-        defaultValue="content"
-        styles={{
-          tab: {
-            paddingTop: 'var(--mantine-spacing-md)',
-            paddingBottom: 'var(--mantine-spacing-md)',
-          },
-          tabLabel: { fontWeight: 600 },
-        }}
-        keepMounted
-      >
+      <Tabs defaultValue="content" styles={TABS_STYLES} keepMounted>
         <TabsList justify="center" grow>
           <TabsTab value="content">
             <Group justify="center">
@@ -814,13 +689,173 @@ function TaskTab({
 
         <TabsPanel
           value="content"
-          bg={'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))'}
+          bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9))"
         >
           {content}
         </TabsPanel>
 
         <TabsPanel value="properties">{properties}</TabsPanel>
       </Tabs>
+    </Box>
+  );
+});
+
+export default function Task({
+  defaultValues,
+  onUnmount,
+  options,
+}: {
+  defaultValues?: Partial<TaskGet>;
+  onUnmount?: React.Dispatch<React.SetStateAction<boolean>>;
+  options?: { modal?: boolean; withoutCheck?: boolean };
+}) {
+  const { ready, isDesktop } = useBreakpointFlags();
+
+  const [checked, setChecked] = useState(options?.withoutCheck);
+  const { form, submitted, handleSubmit, views } = useFormTask({
+    options: { closeWhenDone: checked },
+    defaultValues,
+  });
+
+  const { closeModalView } = useViewModal();
+  const { asideViewValue } = useViewAside();
+  const { handleToggleChildAside } = useAppshellChild();
+  const taskLists = useStoreTaskList((s) => s.taskLists);
+
+  const isPersistedTask = Boolean(defaultValues?.updatedAt);
+  const creatingTask = !isPersistedTask;
+  const isModal = Boolean(options?.modal);
+  const withoutCheck = Boolean(options?.withoutCheck);
+  const sharedPadding = 'md';
+  const sharedHeight = isModal ? (isDesktop ? 400 : 480) : undefined;
+
+  const taskListOptions = useMemo(
+    () => (taskLists || []).map((tli) => ({ value: tli.id, label: tli.title })),
+    [taskLists],
+  );
+
+  const handleClose = useCallback(() => {
+    if (onUnmount && !withoutCheck) {
+      onUnmount(false);
+    } else if (!isPersistedTask) {
+      handleToggleChildAside();
+    } else {
+      closeModalView();
+    }
+  }, [onUnmount, withoutCheck, isPersistedTask, handleToggleChildAside, closeModalView]);
+
+  const handleFormSubmit = useMemo(
+    () =>
+      form.onSubmit(() => {
+        handleSubmit();
+        if (onUnmount) onUnmount(false);
+      }),
+    [form, handleSubmit, onUnmount],
+  );
+
+  if (!ready) {
+    return null;
+  }
+
+  const propertiesNode = (
+    <TaskProperties
+      form={form}
+      defaultValues={defaultValues}
+      options={options}
+      isDesktop={isDesktop}
+      sharedPadding={sharedPadding}
+      sharedHeight={sharedHeight}
+      views={views}
+      creatingTask={creatingTask}
+      isPersistedTask={isPersistedTask}
+      taskListOptions={taskListOptions}
+      checked={checked}
+      onCheckedChange={setChecked}
+      submitted={submitted}
+      asideViewValue={asideViewValue || ''}
+      onClose={handleClose}
+    />
+  );
+
+  const contentNode = (
+    <ScrollArea
+      h={sharedHeight}
+      py={isModal ? undefined : 0}
+      p={withoutCheck ? 'xs' : sharedPadding}
+      style={{ overflow: 'visible' }}
+    >
+      <Grid gap={0}>
+        {!withoutCheck && (
+          <GridCol span={{ md: isModal ? 1 : 0.5 }} visibleFrom="md">
+            <Group pl={isModal ? 5 : 0}>
+              <Checkbox
+                aria-label="Complete"
+                defaultChecked={Boolean(form.values.complete)}
+                {...form.getInputProps('complete')}
+                size="sm"
+                disabled={creatingTask && Boolean(views.completeView)}
+                radius={99}
+                mt={12}
+              />
+            </Group>
+          </GridCol>
+        )}
+
+        <GridCol span={{ md: isModal ? 11 : withoutCheck ? 12 : 11.5 }}>
+          <Stack gap="xs">
+            <div>
+              <TextInput
+                required
+                aria-label="Title"
+                placeholder="Title"
+                variant="unstyled"
+                styles={TITLE_INPUT_STYLES}
+                {...form.getInputProps('title')}
+                size="md"
+              />
+
+              <div>
+                <Textarea
+                  aria-label="Description"
+                  placeholder="Description"
+                  variant="unstyled"
+                  styles={DESCRIPTION_INPUT_STYLES}
+                  {...form.getInputProps('description')}
+                  size="sm"
+                  autosize
+                  minRows={1}
+                  maxRows={isModal ? undefined : 5}
+                />
+              </div>
+            </div>
+
+            {!isModal && propertiesNode}
+          </Stack>
+        </GridCol>
+      </Grid>
+    </ScrollArea>
+  );
+
+  if (isModal && !isDesktop) {
+    return <TaskTab content={contentNode} properties={propertiesNode} />;
+  }
+
+  return (
+    <Box component="form" onSubmit={handleFormSubmit} noValidate>
+      <Grid gap={0}>
+        <GridCol
+          span={{ base: 12, md: isModal ? 8 : 12 }}
+          bg={
+            isModal
+              ? 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))'
+              : undefined
+          }
+        >
+          {contentNode}
+        </GridCol>
+
+        <GridCol span={{ base: 12, md: 4 }}>{isModal ? propertiesNode : null}</GridCol>
+      </Grid>
     </Box>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { useStoreNote, useSubView } from '@repo/store';
+import React, { memo, useCallback, useMemo } from 'react';
+import { useStoreNote, useStoreView, useSubView } from '@repo/store';
 import { Button, Center, Group, Loader, Stack, Text, Title } from '@mantine/core';
 import { ICON_SIZE, ICON_STROKE_WIDTH, SECTION_SPACING, SUBVIEW_NAMES } from '@repo/constants';
 import { IconArrowLeft } from '@tabler/icons-react';
@@ -14,16 +14,25 @@ import { useStoreWorkspace } from '@repo/store';
 import { WorkspaceGet } from '@repo/types';
 import TabsNote from '@atlas/ui/tabs/note';
 
-export default function Note() {
-  const { subViewValue, showSubViewJot } = useSubView();
-  const noteId = extractUuidFromParam(subViewValue || '');
+const MemoTabsNote = memo(TabsNote);
+
+const Note = memo(function Note() {
+  const subViewValue = useStoreView((s) => s.view?.subView);
+  const { showSubViewJot } = useSubView();
+
+  const noteId = useMemo(
+    () => (subViewValue ? extractUuidFromParam(subViewValue) : ''),
+    [subViewValue],
+  );
+
   const workspaces = useStoreWorkspace((s) => s.workspaces);
   const activeWorkspace = useStoreActiveItems((s) => s.activeItems?.workspace);
   const setActiveItems = useStoreActiveItems((s) => s.setActiveItems);
-  const notes = useStoreNote((s) => s.notes);
-  const note = useStoreNote((s) => s.notes?.find((n) => n.id == noteId));
 
-  // find default workspace
+  const isNotesLoaded = useStoreNote((s) => s.notes !== undefined);
+  const note = useStoreNote((s) => s.notes?.find((n) => n.id === noteId));
+
+  // Find default (oldest) workspace
   const oldestWorkspace = useMemo(() => {
     if (!workspaces?.length) return null;
     return workspaces.reduce((oldest, current) =>
@@ -31,86 +40,98 @@ export default function Note() {
     );
   }, [workspaces]);
 
-  return notes === undefined || activeWorkspace === undefined ? (
-    <Center py={SECTION_SPACING * 2} mih={'75vh'}>
-      <Stack align="center" ta={'center'}>
-        <Loader size={'sm'} />
-      </Stack>
-    </Center>
-  ) : !note ? (
-    <Center py={SECTION_SPACING * 2} mih={'75vh'}>
-      <Stack align="center" ta={'center'} gap={'xl'}>
-        <Stack align="center" gap={'xs'}>
-          <Title order={3} fz={'md'} fw={500}>
-            Note Not Found
-          </Title>
+  const targetWorkspace = useMemo(() => {
+    if (!note) return null;
+    return workspaces?.find((wi) => wi.id === note.workspaceId) ?? oldestWorkspace ?? null;
+  }, [note, workspaces, oldestWorkspace]);
 
-          <div>
-            <Text inherit c={'dimmed'} fz={'sm'}>
-              The note has been moved or deleted.
-            </Text>
-          </div>
+  const handleBackHome = useCallback(() => {
+    showSubViewJot(SUBVIEW_NAMES.JOT.HOME);
+  }, [showSubViewJot]);
+
+  const handleSwitchWorkspace = useCallback(() => {
+    if (!targetWorkspace) return;
+    saveToSessionStorage(STORAGE_NAME.ACTIVE.WORKSPACE, targetWorkspace.id);
+    setActiveItems({ workspace: targetWorkspace });
+  }, [targetWorkspace, setActiveItems]);
+
+  if (!isNotesLoaded || activeWorkspace === undefined) {
+    return (
+      <Center py={SECTION_SPACING * 2} mih="75vh">
+        <Stack align="center" ta="center">
+          <Loader size="sm" />
         </Stack>
+      </Center>
+    );
+  }
 
-        <Group>
-          <Button size="xs" color="dark" onClick={() => showSubViewJot(SUBVIEW_NAMES.JOT.HOME)}>
-            Back to Home
-          </Button>
-        </Group>
-      </Stack>
-    </Center>
-  ) : (!note.workspaceId && activeWorkspace?.id != oldestWorkspace?.id) ||
-    (!!note.workspaceId && activeWorkspace?.id != note.workspaceId) ? (
-    <Center py={SECTION_SPACING * 2} mih={'75vh'}>
-      <Stack align="center" ta={'center'} gap={'xl'}>
-        <Stack align="center" gap={'xs'}>
-          <Title order={3} fz={'md'} fw={500}>
-            Note Not Accessible
-          </Title>
+  if (!note) {
+    return (
+      <Center py={SECTION_SPACING * 2} mih="75vh">
+        <Stack align="center" ta="center" gap="xl">
+          <Stack align="center" gap="xs">
+            <Title order={3} fz="md" fw={500}>
+              Note Not Found
+            </Title>
 
-          <div>
-            <Text inherit c={'dimmed'} fz={'sm'}>
-              The note is in another workspace.
-            </Text>
+            <div>
+              <Text inherit c="dimmed" fz="sm">
+                The note has been moved or deleted.
+              </Text>
+            </div>
+          </Stack>
 
-            <Text inherit c={'dimmed'} fz={'sm'}>
-              Switch to {activeWorkspace?.name} to access the note.
-            </Text>
-          </div>
+          <Group>
+            <Button size="xs" color="dark" onClick={handleBackHome}>
+              Back to Home
+            </Button>
+          </Group>
         </Stack>
+      </Center>
+    );
+  }
 
-        <Group>
-          <Button
-            size="xs"
-            color="dark"
-            onClick={() => {
-              const noteWorkspace = workspaces?.find((wi) => wi.id == note.workspaceId);
+  const isWrongWorkspace =
+    (!note.workspaceId && activeWorkspace?.id !== oldestWorkspace?.id) ||
+    (!!note.workspaceId && activeWorkspace?.id !== note.workspaceId);
 
-              let resolvedWorkspace: WorkspaceGet | null = null;
+  if (isWrongWorkspace) {
+    return (
+      <Center py={SECTION_SPACING * 2} mih="75vh">
+        <Stack align="center" ta="center" gap="xl">
+          <Stack align="center" gap="xs">
+            <Title order={3} fz="md" fw={500}>
+              Note Not Accessible
+            </Title>
 
-              if (!noteWorkspace) {
-                resolvedWorkspace = oldestWorkspace || null;
-              } else {
-                resolvedWorkspace = noteWorkspace;
-              }
+            <div>
+              <Text inherit c="dimmed" fz="sm">
+                The note is in another workspace.
+              </Text>
 
-              if (resolvedWorkspace) {
-                // save new active workspace to session storage
-                saveToSessionStorage(STORAGE_NAME.ACTIVE.WORKSPACE, resolvedWorkspace.id);
+              {targetWorkspace && (
+                <Text inherit c="dimmed" fz="sm">
+                  Switch to {targetWorkspace.name} to access the note.
+                </Text>
+              )}
+            </div>
+          </Stack>
 
-                // set new global active workspace state
-                setActiveItems({ workspace: resolvedWorkspace });
-              }
-            }}
-          >
-            Swich to Workspace
-          </Button>
-        </Group>
-      </Stack>
-    </Center>
-  ) : (
-    <LayoutSection id={`note-details`} containerized={false}>
-      <TabsNote />
+          <Group>
+            <Button size="xs" color="dark" onClick={handleSwitchWorkspace}>
+              Switch to Workspace
+            </Button>
+          </Group>
+        </Stack>
+      </Center>
+    );
+  }
+
+  return (
+    <LayoutSection id="note-details" containerized={false}>
+      <MemoTabsNote />
     </LayoutSection>
   );
-}
+});
+
+export default Note;

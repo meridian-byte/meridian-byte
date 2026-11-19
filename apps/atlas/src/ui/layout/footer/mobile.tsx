@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { ActionIcon, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { useStoreAppShell, useView } from '@repo/store';
@@ -15,125 +15,127 @@ import {
 
 import { useBreakpointFlags } from '@repo/hooks';
 
-export default function Mobile() {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+const MULTIPLIER = 1.5;
 
-  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+interface MobileViewItem {
+  icon: React.ComponentType<any>;
+  value: string | null;
+  label: string;
+  onSwitch: () => void;
+}
+
+const MobileNavItem = memo(function MobileNavItem({
+  item,
+  isActive,
+  onSelect,
+}: {
+  item: MobileViewItem;
+  isActive: boolean;
+  onSelect: (item: MobileViewItem) => void;
+}) {
+  const IconComponent = item.icon;
+  const activeColor = isActive ? 'pri' : 'var(--mantine-color-text)';
+
+  const handleClick = useCallback(() => {
+    onSelect(item);
+  }, [onSelect, item]);
+
+  return (
+    <Stack gap={0} align="center" ta="center" onClick={handleClick}>
+      <ThemeIcon
+        size={ICON_WRAPPER_SIZE * MULTIPLIER}
+        variant="transparent"
+        color={activeColor}
+        c={activeColor}
+      >
+        <IconComponent size={ICON_SIZE * MULTIPLIER} stroke={ICON_STROKE_WIDTH} />
+      </ThemeIcon>
+
+      <Text
+        component="span"
+        inherit
+        fw={isActive ? 700 : 500}
+        fz="sm"
+        c={isActive ? 'pri' : undefined}
+      >
+        {item.label}
+      </Text>
+    </Stack>
+  );
+});
+
+const Mobile = memo(function Mobile() {
+  const { ready, isDesktop } = useBreakpointFlags();
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
-  const {
-    viewValue,
-    showViewHome,
-    showViewPave,
-    showViewJot,
-    showViewStride,
-    showViewPrime,
-    showViewTally,
-  } = useView();
+  const { viewValue, showViewHome, showViewPave, showViewJot, showViewStride } = useView();
 
-  const data = [
-    {
-      icon: IconHome,
-      value: null,
-      actions: {
-        switch: showViewHome,
+  const items = useMemo<MobileViewItem[]>(
+    () => [
+      {
+        icon: IconHome,
+        value: null,
+        label: 'Home',
+        onSwitch: showViewHome,
       },
-    },
-    {
-      icon: IconCalendar,
-      value: APP_NAMES_ATLAS.PAVE,
-      actions: {
-        switch: showViewPave,
+      {
+        icon: IconCalendar,
+        value: APP_NAMES_ATLAS.PAVE,
+        label: APP_NAMES_ATLAS.PAVE,
+        onSwitch: showViewPave,
       },
-    },
-    {
-      icon: IconNote,
-      value: APP_NAMES_ATLAS.JOT,
-      actions: {
-        switch: showViewJot,
+      {
+        icon: IconNote,
+        value: APP_NAMES_ATLAS.JOT,
+        label: APP_NAMES_ATLAS.JOT,
+        onSwitch: showViewJot,
       },
-    },
-    {
-      icon: IconCheckbox,
-      value: APP_NAMES_ATLAS.STRIDE,
-      actions: {
-        switch: showViewStride,
+      {
+        icon: IconCheckbox,
+        value: APP_NAMES_ATLAS.STRIDE,
+        label: APP_NAMES_ATLAS.STRIDE,
+        onSwitch: showViewStride,
       },
-    },
-    // {
-    //   icon: IconCoins,
-    //   value: APP_NAMES_ATLAS.PRIME,
-    //   actions: {
-    //     switch: showViewPrime,
-    //   },
-    // },
-    // {
-    //   icon: IconCoins,
-    //   value: APP_NAMES_ATLAS.TALLY,
-    //   actions: {
-    //     switch: showViewTally,
-    //   },
-    // },
-  ];
+    ],
+    [showViewHome, showViewPave, showViewJot, showViewStride],
+  );
 
-  const multiplier = 1.5;
+  const handleSelect = useCallback(
+    (item: MobileViewItem) => {
+      if (!isDesktop && useStoreAppShell.getState().appshell?.child?.navbar) {
+        toggleNavbarChild();
+      }
+      item.onSwitch();
+    },
+    [isDesktop, toggleNavbarChild],
+  );
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
   return (
-    <Group justify={'space-between'} px={'xs'} h={'100%'} maw={400} mx={'auto'}>
-      {data.map((di) => {
-        const active = viewValue == di.value;
+    <Group justify="space-between" px="xs" h="100%" maw={400} mx="auto">
+      {items.map((item) => (
+        <MobileNavItem
+          key={item.label}
+          item={item}
+          isActive={viewValue === item.value}
+          onSelect={handleSelect}
+        />
+      ))}
 
-        return (
-          <Stack
-            key={di.value}
-            gap={0}
-            align="center"
-            ta={'center'}
-            onClick={() => {
-              if (!isDesktop) {
-                if (navbarActive) toggleNavbarChild();
-              }
-
-              di.actions.switch();
-            }}
-          >
-            <ThemeIcon
-              size={ICON_WRAPPER_SIZE * multiplier}
-              // variant={active ? 'light' : 'transparent'}
-              variant={'transparent'}
-              color={active ? 'pri' : 'var(--mantine-color-text)'}
-              c={active ? 'pri' : 'var(--mantine-color-text)'}
-            >
-              <di.icon size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
-            </ThemeIcon>
-
-            <Text
-              component="span"
-              inherit
-              fw={active ? 700 : 500}
-              fz={'sm'}
-              c={active ? 'pri' : undefined}
-            >
-              {di.value || 'Home'}
-            </Text>
-          </Stack>
-        );
-      })}
-
-      <Stack gap={0} align="center" ta={'center'}>
-        <ThemeIcon size={ICON_WRAPPER_SIZE * multiplier} variant="subtle" color="gray">
-          <IconDots size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
+      <Stack gap={0} align="center" ta="center">
+        <ThemeIcon size={ICON_WRAPPER_SIZE * MULTIPLIER} variant="subtle" color="gray">
+          <IconDots size={ICON_SIZE * MULTIPLIER} stroke={ICON_STROKE_WIDTH} />
         </ThemeIcon>
 
-        <Text component="span" inherit fw={600} fz={'sm'}>
-          {'More'}
+        <Text component="span" inherit fw={600} fz="sm">
+          More
         </Text>
       </Stack>
     </Group>
   );
-}
+});
+
+export default Mobile;

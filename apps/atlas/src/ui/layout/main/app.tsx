@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Box, Center, Container, Loader } from '@mantine/core';
 import { useStoreView } from '@repo/store';
 import { APP_NAMES_ATLAS, SUBVIEW_NAMES } from '@repo/constants';
@@ -16,40 +16,35 @@ import PartialViewStrideHome from '@atlas/ui/partial/view/stride/home';
 
 import { useBreakpointFlags } from '@repo/hooks';
 
+const MemoViewPave = memo(ViewPave);
+const MemoViewJot = memo(ViewJot);
+const MemoViewStride = memo(ViewStride);
+const MemoViewPrime = memo(ViewPrime);
+const MemoViewTally = memo(ViewTally);
+
 export default function App() {
   const viewValue = useStoreView((s) => s.view?.view);
 
   if (viewValue === undefined) return <Loading />;
 
-  return (
-    <>
-      <DisplayNoneWrapper visible={viewValue === APP_NAMES_ATLAS.PAVE}>
-        <ViewPave />
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={viewValue === APP_NAMES_ATLAS.JOT}>
-        <ViewJot />
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={viewValue === APP_NAMES_ATLAS.STRIDE}>
-        <ViewStride />
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={viewValue === APP_NAMES_ATLAS.PRIME}>
-        <ViewPrime />
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={viewValue === APP_NAMES_ATLAS.TALLY}>
-        <ViewTally />
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={!viewValue}>
+  switch (viewValue) {
+    case APP_NAMES_ATLAS.PAVE:
+      return <MemoViewPave />;
+    case APP_NAMES_ATLAS.JOT:
+      return <MemoViewJot />;
+    case APP_NAMES_ATLAS.STRIDE:
+      return <MemoViewStride />;
+    case APP_NAMES_ATLAS.PRIME:
+      return <MemoViewPrime />;
+    case APP_NAMES_ATLAS.TALLY:
+      return <MemoViewTally />;
+    default:
+      return (
         <LayoutMain>
           <div>App main</div>
         </LayoutMain>
-      </DisplayNoneWrapper>
-    </>
-  );
+      );
+  }
 }
 
 function DisplayNoneWrapper({
@@ -62,7 +57,7 @@ function DisplayNoneWrapper({
   return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>;
 }
 
-function LayoutMain({
+const LayoutMain = memo(function LayoutMain({
   children,
   options,
 }: {
@@ -72,19 +67,18 @@ function LayoutMain({
     withoutPadding?: boolean;
   };
 }) {
-  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+  const { ready } = useBreakpointFlags();
 
   if (!ready) {
-    // Must not render wrong layout before client knows viewport
     return null;
   }
 
   return (
-    <Box p={!!options?.withoutPadding ? undefined : !isDesktop ? 'xs' : 'xs'}>
-      {options?.containerized ? <Container size={'md'}>{children}</Container> : children}
+    <Box p={options?.withoutPadding ? undefined : 'xs'}>
+      {options?.containerized ? <Container size="md">{children}</Container> : children}
     </Box>
   );
-}
+});
 
 function Loading() {
   return (
@@ -94,124 +88,100 @@ function Loading() {
   );
 }
 
+const MemoScheduleMain = memo(ScheduleMain);
+const MemoPartialViewPaveCalendarList = memo(PartialViewPaveCalendarList);
+const MemoPartialViewPaveHome = memo(PartialViewPaveHome);
+
 function ViewPave() {
-  const { subViewValue } = useSubView();
+  const subViewValue = useStoreView((s) => s.view?.subView);
 
   if (subViewValue === undefined) return <Loading />;
 
-  const isCalendarList = subViewValue?.includes('calendar: ');
+  const isScheduleView =
+    subViewValue === SUBVIEW_NAMES.PAVE.DAY ||
+    subViewValue === SUBVIEW_NAMES.PAVE.WEEK ||
+    subViewValue === SUBVIEW_NAMES.PAVE.MONTH ||
+    subViewValue === SUBVIEW_NAMES.PAVE.YEAR;
+
+  if (isScheduleView) {
+    return (
+      <LayoutMain>
+        <MemoScheduleMain />
+      </LayoutMain>
+    );
+  }
+
+  if (subViewValue?.includes('calendar: ')) {
+    return (
+      <LayoutMain>
+        <MemoPartialViewPaveCalendarList />
+      </LayoutMain>
+    );
+  }
 
   return (
-    <>
-      <DisplayNoneWrapper
-        visible={
-          subViewValue === SUBVIEW_NAMES.PAVE.DAY ||
-          subViewValue === SUBVIEW_NAMES.PAVE.WEEK ||
-          subViewValue === SUBVIEW_NAMES.PAVE.MONTH ||
-          subViewValue === SUBVIEW_NAMES.PAVE.YEAR
-        }
-      >
-        <LayoutMain>
-          <ScheduleMain />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={!!isCalendarList}>
-        <LayoutMain>
-          <PartialViewPaveCalendarList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.PAVE.HOME}>
-        <LayoutMain>
-          <PartialViewPaveHome />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-    </>
+    <LayoutMain>
+      <MemoPartialViewPaveHome />
+    </LayoutMain>
   );
 }
 
+const MemoPartialViewJotNoteList = memo(PartialViewJotNoteList);
+const MemoPartialViewJotHome = memo(PartialViewJotHome);
+
 function ViewJot() {
-  const { subViewValue } = useSubView();
+  const subViewValue = useStoreView((s) => s.view?.subView);
 
   if (subViewValue === undefined) return <Loading />;
 
-  const isNoteList = subViewValue?.includes('note: ');
+  if (subViewValue?.includes('note: ')) {
+    return (
+      <LayoutMain options={{ withoutPadding: true }}>
+        <MemoPartialViewJotNoteList />
+      </LayoutMain>
+    );
+  }
 
   return (
-    <>
-      <DisplayNoneWrapper visible={!!isNoteList}>
-        <LayoutMain options={{ withoutPadding: true }}>
-          <PartialViewJotNoteList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.JOT.HOME}>
-        <LayoutMain>
-          <PartialViewJotHome />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-    </>
+    <LayoutMain>
+      <MemoPartialViewJotHome />
+    </LayoutMain>
   );
+}
+
+const MemoPartialViewStrideTaskList = memo(PartialViewStrideTaskList);
+const MemoPartialViewStrideHome = memo(PartialViewStrideHome);
+
+const TASK_LIST_SUBVIEWS = new Set<string>([
+  SUBVIEW_NAMES.STRIDE.INBOX,
+  SUBVIEW_NAMES.STRIDE.ALL,
+  SUBVIEW_NAMES.STRIDE.TODAY,
+  SUBVIEW_NAMES.STRIDE.UPCOMING,
+  SUBVIEW_NAMES.STRIDE.OVERDUE,
+  SUBVIEW_NAMES.STRIDE.COMPLETE,
+]);
+
+function isStrideTaskListView(subView: string): boolean {
+  return TASK_LIST_SUBVIEWS.has(subView) || subView.includes('list: ');
 }
 
 function ViewStride() {
-  const { subViewValue } = useSubView();
+  const subViewValue = useStoreView((s) => s.view?.subView);
 
   if (subViewValue === undefined) return <Loading />;
 
-  const isTaskList = subViewValue?.includes('list: ');
+  if (subViewValue && isStrideTaskListView(subViewValue)) {
+    return (
+      <LayoutMain>
+        <MemoPartialViewStrideTaskList />
+      </LayoutMain>
+    );
+  }
 
   return (
-    <>
-      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.INBOX}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.ALL}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.TODAY}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.UPCOMING}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.OVERDUE}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={subViewValue === SUBVIEW_NAMES.STRIDE.COMPLETE}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={!!isTaskList}>
-        <LayoutMain>
-          <PartialViewStrideTaskList />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-
-      <DisplayNoneWrapper visible={!subViewValue || subViewValue == SUBVIEW_NAMES.STRIDE.HOME}>
-        <LayoutMain>
-          <PartialViewStrideHome />
-        </LayoutMain>
-      </DisplayNoneWrapper>
-    </>
+    <LayoutMain>
+      <MemoPartialViewStrideHome />
+    </LayoutMain>
   );
 }
 

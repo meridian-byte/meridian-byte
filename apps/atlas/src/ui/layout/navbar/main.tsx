@@ -80,7 +80,7 @@ function NavbarHeader() {
 
   const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
-  const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
+  const navbarActive = useStoreAppShell.getState().appshell?.child?.navbar;
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
 
   if (!ready) {
