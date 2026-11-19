@@ -42,7 +42,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       padding={0}
-      withBorder={isDesktop}
       header={
         isDesktop
           ? undefined
