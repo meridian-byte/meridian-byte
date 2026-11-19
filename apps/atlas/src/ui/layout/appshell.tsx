@@ -61,7 +61,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       }}
     >
       {isMobile && (
-        <AppShellHeader style={{ borderColor: 'var(--mantine-color-default-border)' }} bg="#b08e67">
+        <AppShellHeader style={{ borderColor: 'var(--mantine-color-default-border)' }}>
           <LayoutHeaderMain />
         </AppShellHeader>
       )}
@@ -99,7 +99,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <AppShellFooter
           style={{ borderColor: 'var(--mantine-color-default-border)' }}
           h={SHELL_VALUES.FOOTER.HEIGHT.MOBILE}
-          bg="#b08e67"
         >
           <LayoutFooterMobile />
         </AppShellFooter>

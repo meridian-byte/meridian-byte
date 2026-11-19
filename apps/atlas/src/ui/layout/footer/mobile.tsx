@@ -106,8 +106,8 @@ export default function Mobile() {
               size={ICON_WRAPPER_SIZE * multiplier}
               // variant={active ? 'light' : 'transparent'}
               variant={'transparent'}
-              color={active ? 'var(--mantine-color-body)' : 'var(--mantine-color-text)'}
-              c={active ? 'var(--mantine-color-body)' : 'var(--mantine-color-text)'}
+              color={active ? 'pri' : 'var(--mantine-color-text)'}
+              c={active ? 'pri' : 'var(--mantine-color-text)'}
             >
               <di.icon size={ICON_SIZE * multiplier} stroke={ICON_STROKE_WIDTH} />
             </ThemeIcon>
@@ -115,9 +115,9 @@ export default function Mobile() {
             <Text
               component="span"
               inherit
-              fw={600}
+              fw={active ? 700 : 500}
               fz={'sm'}
-              c={active ? 'var(--mantine-color-body)' : undefined}
+              c={active ? 'pri' : undefined}
             >
               {di.value || 'Home'}
             </Text>

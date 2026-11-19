@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 :root {
-  /* --background: var(--mantine-color-body); */
-  --background: #b08e67;
+  --background: var(--mantine-color-body);
+  /* --background: #b08e67; */
   --foreground: var(--mantine-color-text);
   color-scheme: light;
 }
@@ -18,8 +18,8 @@ body {
   max-width: 100vw;
   scroll-behavior: smooth;
 
-  /* background-color: var(--mantine-color-body); */
-  background-color: #b08e67;
+  background-color: var(--mantine-color-body);
+  /* background-color: #b08e67; */
 }
 
 body {
