@@ -4,14 +4,13 @@ import { Badge, Skeleton, Text, Tooltip } from '@mantine/core';
 import { ICON_WRAPPER_SIZE } from '@repo/constants';
 import { getRegionalDate, getRelativeTime } from '@repo/utils';
 import React from 'react';
-import { useMinuteTicker } from '@repo/hooks';
+import { useBreakpointFlags, useMinuteTicker } from '@repo/hooks';
 import { usePathname } from 'next/navigation';
 import { useStoreNote, useSubView } from '@repo/store';
 import { extractUuidFromParam } from '@repo/utils';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function UpdatedTimestamp() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   useMinuteTicker(); // triggers re-render every minute
   const { subViewValue } = useSubView();
@@ -21,8 +20,13 @@ export default function UpdatedTimestamp() {
 
   const updatedAt = note?.updatedAt && getRegionalDate(note.updatedAt);
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return notes === undefined ? (
-    <Skeleton h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25} w={80} radius={0} />
+    <Skeleton h={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25} w={80} radius={0} />
   ) : !note ? null : (
     <Tooltip
       label={
@@ -39,7 +43,7 @@ export default function UpdatedTimestamp() {
         size="md"
         fz={{ base: 'sm', md: 'xs' }}
         fw={'normal'}
-        h={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+        h={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
         miw={80}
         style={{ cursor: 'pointer' }}
         radius={'md'}

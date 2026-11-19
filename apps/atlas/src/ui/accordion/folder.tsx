@@ -42,10 +42,11 @@ import NavlinkTaskList from '../navlink/task-list';
 import MenuFolder from '../menu/folder';
 import LayoutPartialNavbar from '../layout/partial/navbar';
 import { Order } from '@repo/types';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Folder({ folderId, location }: { folderId: string; location: string }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { subViewValue } = useSubView();
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
@@ -124,6 +125,11 @@ export default function Folder({ folderId, location }: { folderId: string; locat
   const hasContent =
     (childFolders && childFolders.length > 0) || locationProps.navLinkItems.length > 0;
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <Accordion
       order={3}
@@ -134,7 +140,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
       multiple
       styles={{
         control: {
-          height: desktop ? 30 : 'fit-content',
+          height: isDesktop ? 30 : 'fit-content',
           padding: 0,
           paddingLeft: 0,
           borderRadius: 'var(--mantine-radius-md)',
@@ -168,23 +174,23 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                 </Tooltip>
               }
               color="gray"
-              p={desktop ? 0 : undefined}
+              p={isDesktop ? 0 : undefined}
               fw={600}
               styles={{
-                section: desktop ? { marginInlineEnd: 0 } : undefined,
+                section: isDesktop ? { marginInlineEnd: 0 } : undefined,
                 label: {
-                  fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+                  fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
                   color: isActive ? 'var(--mantine-color-pri-6)' : undefined,
                 },
               }}
               leftSection={
                 <ThemeIcon
-                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                   variant="transparent"
                   color={'gray'}
                 >
                   <props.icon
-                    size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                    size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
                     stroke={ICON_STROKE_WIDTH}
                   />
                 </ThemeIcon>
@@ -195,7 +201,7 @@ export default function Folder({ folderId, location }: { folderId: string; locat
                   justify="end"
                   gap={0}
                   className={
-                    desktop
+                    isDesktop
                       ? 'opacity-0 group-hover/accordionFolder:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionFolder:pointer-events-auto'
                       : undefined
                   }

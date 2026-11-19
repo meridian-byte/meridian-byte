@@ -14,16 +14,15 @@ import {
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
 import { getRegionalDate, getRelativeTime } from '@repo/utils';
 import React, { useEffect } from 'react';
-import { useMinuteTicker } from '@repo/hooks';
+import { useBreakpointFlags, useMinuteTicker } from '@repo/hooks';
 import { useStoreUserStates, useSubView } from '@repo/store';
 import { IconBook, IconLock, IconLockOpen, IconWriting } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
 import { useStoreNote } from '@repo/store';
 import { extractUuidFromParam } from '@repo/utils';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function NoteStatus({ props }: { props?: { options?: { hide?: boolean } } }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { subViewValue } = useSubView();
   const noteId = extractUuidFromParam(subViewValue || '');
@@ -40,6 +39,11 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
     label: reading ? 'edit' : 'read',
     icon: reading ? IconWriting : IconBook,
   };
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return userStateEditing === undefined ? (
     <Skeleton h={30 - 6} w={30 - 6} />
@@ -60,11 +64,11 @@ export default function NoteStatus({ props }: { props?: { options?: { hide?: boo
               <ActionIcon
                 variant={'subtle'}
                 color={'gray'}
-                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+                size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 onClick={() => toggleUserStateEditing()}
               >
                 <buttonProps.icon
-                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
                   stroke={ICON_STROKE_WIDTH}
                 />
               </ActionIcon>

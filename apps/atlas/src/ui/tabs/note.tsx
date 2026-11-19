@@ -22,14 +22,13 @@ import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from
 import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
 import EditorMain from '@atlas/ui/editor/main';
 import { SHELL_VALUES } from '@atlas/constants';
-import { ScrollContext } from '@repo/hooks';
+import { ScrollContext, useBreakpointFlags } from '@repo/hooks';
 import { useNoteTitle } from '@atlas/hooks/input';
-import { useMediaQuery } from '@mantine/hooks';
+
 import { LayoutSection } from '@repo/ui';
 
 export default function Note() {
-  const mobile = useMediaQuery('(max-width: 36em)');
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const tabsJotView = useStoreView((s) => s.view?.tabsJotView);
   const setTabsJotViewValue = useStoreView((s) => s.setTabsJotViewValue);
@@ -123,6 +122,11 @@ export default function Note() {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const contextValue = useMemo(() => viewportRef, []);
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <Tabs
       value={noteId}
@@ -187,29 +191,29 @@ export default function Note() {
                       </Tooltip>
                     }
                     color="gray"
-                    p={desktop ? 0 : undefined}
-                    mih={desktop ? 30 : undefined}
+                    p={isDesktop ? 0 : undefined}
+                    mih={isDesktop ? 30 : undefined}
                     fw={600}
                     styles={{
-                      section: desktop ? { marginInlineEnd: 0 } : undefined,
+                      section: isDesktop ? { marginInlineEnd: 0 } : undefined,
                       root: {
                         backgroundColor: active ? 'var(--mantine-color-pri-light)' : undefined,
                       },
                       label: {
-                        fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+                        fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
                         color: active ? 'var(--mantine-color-pri-6)' : undefined,
                       },
                     }}
                     leftSection={
-                      desktop ? (
+                      isDesktop ? (
                         <ThemeIcon
-                          size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                          size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                           variant="transparent"
                           color={'gray'}
                           c={active ? 'pri' : undefined}
                         >
                           <IconNote
-                            size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                            size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
                             stroke={ICON_STROKE_WIDTH}
                           />
                         </ThemeIcon>
@@ -219,19 +223,19 @@ export default function Note() {
                       <Group
                         gap={0}
                         wrap="nowrap"
-                        mih={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
-                        pr={desktop ? 4 : 0}
+                        mih={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                        pr={isDesktop ? 4 : 0}
                       >
                         <ActionIcon
                           component="span"
-                          size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE}
+                          size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE}
                           color={active ? 'pri' : 'gray'}
-                          variant={desktop ? 'subtle' : 'light'}
+                          variant={isDesktop ? 'subtle' : 'light'}
                           onClick={(e) => handleCloseTab(e, ati.tab)}
                           display={(tabsJotView || []).length > 1 ? undefined : 'none'}
                         >
                           <IconX
-                            size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                            size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
                             stroke={ICON_STROKE_WIDTH}
                           />
                         </ActionIcon>
@@ -256,11 +260,11 @@ export default function Note() {
           >
             <ScrollContext.Provider value={contextValue}>
               <ScrollArea
-                h={`calc(100vh - ${(desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + (desktop ? 34 : 45) + 1 + (desktop ? 41.6 : 55.6)}px)`}
+                h={`calc(100vh - ${(isDesktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE + SHELL_VALUES.HEADER.HEIGHT.MOBILE) + (isDesktop ? 34 : 45) + 1 + (isDesktop ? 41.6 : 55.6)}px)`}
                 viewportRef={contextValue}
               >
                 <Box pt={SECTION_SPACING / 2}>
-                  <LayoutSection id="note-details" containerized={mobile ? false : 'md'}>
+                  <LayoutSection id="note-details" containerized={isMobile ? false : 'md'}>
                     <Box px={{ base: 'xs', xs: 0 }}>
                       <InputTextEditorTitle
                         inputProps={field.getInputProps()}

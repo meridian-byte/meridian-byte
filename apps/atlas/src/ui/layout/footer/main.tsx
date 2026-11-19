@@ -12,10 +12,11 @@ import IndicatorTheme from '@atlas/ui/indicator/theme';
 import IndicatorNetworkStatus from '@atlas/ui/indicator/network-status';
 import { useStoreSyncStatus } from '@repo/store';
 import { Box } from '@mantine/core';
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Main() {
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
   const syncStatus = useStoreSyncStatus((s) => s.syncStatus);
-
   const sharedHeight = SHELL_VALUES.FOOTER.HEIGHT.DESKTOP - 10;
 
   return (
@@ -30,7 +31,13 @@ export default function Main() {
       >
         <ButtonAppshellNavbar />
 
-        <ActionIcon size={sharedHeight} color="gray" variant="subtle" disabled>
+        <ActionIcon
+          size={sharedHeight}
+          color="gray"
+          variant="subtle"
+          disabled
+          display={ready ? undefined : 'none'}
+        >
           <IconSettings size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
 
@@ -40,7 +47,13 @@ export default function Main() {
 
         <IndicatorNetworkStatus props={{ syncStatus }} />
 
-        <ActionIcon size={sharedHeight} color="gray" variant="subtle" disabled>
+        <ActionIcon
+          size={sharedHeight}
+          color="gray"
+          variant="subtle"
+          disabled
+          display={ready ? undefined : 'none'}
+        >
           <IconBell size={sharedHeight - 8} stroke={ICON_STROKE_WIDTH} />
         </ActionIcon>
       </Group>

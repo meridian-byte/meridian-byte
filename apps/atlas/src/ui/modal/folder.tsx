@@ -10,8 +10,9 @@ import {
   ThemeIcon,
   Tooltip,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
+import { useBreakpointFlags } from '@repo/hooks';
 import {
   useCalendarActions,
   useFolderActions,
@@ -185,9 +186,14 @@ function NavLinkFolderSelect({
   item: any;
   onClick: (i: any) => void;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { closeModalView } = useViewModal();
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <NavLink
@@ -205,19 +211,24 @@ function NavLinkFolderSelect({
         </Tooltip>
       }
       color="gray"
-      p={desktop ? 0 : undefined}
+      p={isDesktop ? 0 : undefined}
       fw={600}
       styles={{
-        section: desktop ? { marginInlineEnd: 0 } : undefined,
-        label: desktop
+        section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+        label: isDesktop
           ? {
               fontSize: 'var(--mantine-font-size-xs)',
             }
           : undefined,
       }}
       leftSection={
-        <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" c={'gray'} mt={2}>
-          <IconFolder size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+        <ThemeIcon
+          size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
+          variant="transparent"
+          c={'gray'}
+          mt={2}
+        >
+          <IconFolder size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
         </ThemeIcon>
       }
       onClick={() => {

@@ -16,6 +16,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import SpinnerApp from '../spinners/app';
 import { SHELL_VALUES } from '@atlas/constants';
+import { useBreakpointFlags } from '@repo/hooks';
 
 enum Context {
   NETWORK = 'network',
@@ -27,7 +28,7 @@ export default function NetworkStatus({
 }: {
   props: { itemSyncStatus?: SyncStatus; syncStatus: SyncStatus };
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const networkStatus = useNetwork();
   const [offline, setOffline] = useState(!networkStatus.online);
@@ -52,28 +53,33 @@ export default function NetworkStatus({
     }
   }, [networkStatus.online, cancel, debouncedCallback]);
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   const syncStatusProps = getSycnStatusProps({
     syncStatus: props.syncStatus,
-    mobile: !desktop,
+    mobile: !isDesktop,
   });
 
   if (context == Context.NETWORK) {
     return (
       <Tooltip label={!networkStatus.online ? 'Back online' : 'Working Offline'}>
         <ThemeIcon
-          size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
+          size={!isDesktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
           variant="light"
           color={!networkStatus.online ? 'yellow' : 'green'}
           display={offline ? undefined : 'none'}
         >
           {!networkStatus.online ? (
             <IconWifiOff
-              size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
+              size={!isDesktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
               stroke={ICON_STROKE_WIDTH}
             />
           ) : (
             <IconWifi
-              size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
+              size={!isDesktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
               stroke={ICON_STROKE_WIDTH}
             />
           )}
@@ -85,7 +91,7 @@ export default function NetworkStatus({
   return (
     <Tooltip label={syncStatusProps.label}>
       <ThemeIcon
-        size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
+        size={!isDesktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
         variant="transparent"
         color={`${syncStatusProps.color}`}
         c={`${syncStatusProps.color}`}

@@ -25,7 +25,7 @@ import {
   TextInput,
   Tooltip,
 } from '@mantine/core';
-import { useAppshellChild, useFormTask } from '@repo/hooks';
+import { useAppshellChild, useBreakpointFlags, useFormTask } from '@repo/hooks';
 import { Alert, Frequency, Order, Priority, TaskGet } from '@repo/types';
 import {
   useRecurringRuleActions,
@@ -72,7 +72,6 @@ import {
 } from '@repo/utils';
 import dayjs from 'dayjs';
 import { ModalConfirm } from '@repo/ui';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function Task({
   defaultValues,
@@ -83,7 +82,7 @@ export default function Task({
   onUnmount?: React.Dispatch<React.SetStateAction<boolean>>;
   options?: { modal?: boolean; withoutCheck?: boolean };
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const [checked, setChecked] = useState(options?.withoutCheck);
   const { form, submitted, handleSubmit, views, taskListId } = useFormTask({
@@ -100,7 +99,7 @@ export default function Task({
   const creatingTask = !defaultValues?.updatedAt;
 
   const sharedPadding = 'md';
-  const sharedHeight = options?.modal ? (desktop ? 400 : 480) : undefined;
+  const sharedHeight = options?.modal ? (isDesktop ? 400 : 480) : undefined;
 
   function InputTaskList() {
     return (
@@ -110,7 +109,7 @@ export default function Task({
             aria-label={'Task list'}
             label={!options?.modal ? undefined : 'Task list'}
             placeholder={views.inboxView ? 'Inbox' : 'Task list'}
-            size={desktop ? 'xs' : 'sm'}
+            size={isDesktop ? 'xs' : 'sm'}
             clearable
             clearSectionMode="clear"
             searchable
@@ -243,7 +242,7 @@ export default function Task({
             !defaultValues?.dueDate && !form.values?.dueDate
               ? 0
               : withReminder
-                ? 16 + 10 + (desktop ? 30 : 36)
+                ? 16 + 10 + (isDesktop ? 30 : 36)
                 : 16,
           overflow: 'hidden',
         }}
@@ -258,7 +257,7 @@ export default function Task({
         <DateTimePicker
           aria-label={'Remind at'}
           placeholder="Remind at"
-          size={desktop ? 'xs' : 'sm'}
+          size={isDesktop ? 'xs' : 'sm'}
           clearable
           leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
           value={reminderState}
@@ -502,7 +501,7 @@ export default function Task({
                 label={!options?.modal ? undefined : 'Priority'}
                 placeholder="Priority"
                 comboboxProps={{ withinPortal: false }}
-                size={desktop ? 'xs' : 'sm'}
+                size={isDesktop ? 'xs' : 'sm'}
                 // clearable
                 {...form.getInputProps('priority')}
                 leftSection={
@@ -548,7 +547,7 @@ export default function Task({
                 aria-label={'Due date'}
                 label={!options?.modal ? undefined : 'Due date'}
                 placeholder="Due date"
-                size={desktop ? 'xs' : 'sm'}
+                size={isDesktop ? 'xs' : 'sm'}
                 clearable
                 disabled={creatingTask && views.todayView}
                 minDate={
@@ -608,7 +607,7 @@ export default function Task({
             <Button
               disabled={submitted}
               variant="default"
-              size={desktop ? 'xs' : undefined}
+              size={isDesktop ? 'xs' : undefined}
               onClick={() => {
                 if (onUnmount && !options?.withoutCheck) {
                   onUnmount(false);
@@ -627,7 +626,7 @@ export default function Task({
             <Button
               display={!defaultValues?.updatedAt ? undefined : 'none'}
               type="submit"
-              size={desktop ? 'xs' : undefined}
+              size={isDesktop ? 'xs' : undefined}
               loading={submitted}
             >
               {submitted ? 'Adding' : 'Add'}
@@ -650,13 +649,13 @@ export default function Task({
                   >
                     <Tooltip label={'Delete task'}>
                       <ActionIcon
-                        size={ICON_WRAPPER_SIZE * (desktop ? 1 : 1.25)}
+                        size={ICON_WRAPPER_SIZE * (isDesktop ? 1 : 1.25)}
                         color="red"
                         variant="light"
                         onClick={() => {}}
                       >
                         <IconTrash
-                          size={ICON_SIZE * (desktop ? 1 : 1.25)}
+                          size={ICON_SIZE * (isDesktop ? 1 : 1.25)}
                           stroke={ICON_STROKE_WIDTH}
                         />
                       </ActionIcon>
@@ -742,7 +741,13 @@ export default function Task({
 
   const rightColumn = options?.modal && <TaskProperties />;
 
-  if (options?.modal && !desktop) return <TaskTab content={leftcolumn} properties={rightColumn} />;
+  if (options?.modal && !isDesktop)
+    return <TaskTab content={leftcolumn} properties={rightColumn} />;
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <Box

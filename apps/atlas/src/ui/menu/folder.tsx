@@ -29,8 +29,9 @@ import {
   IconPlus,
   IconTrash,
 } from '@tabler/icons-react';
-import { useMediaQuery } from '@mantine/hooks';
+
 import { generateUUID } from '@repo/utils';
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Folder({
   defaultValues,
@@ -44,7 +45,7 @@ export default function Folder({
   location: string;
   children: React.ReactNode;
 } & MenuProps) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { showModalViewFolderCrud } = useViewModal();
 
@@ -104,18 +105,23 @@ export default function Folder({
       break;
   }
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <Menu
       width={220}
       trigger="click"
-      position={desktop ? 'right-start' : undefined}
+      position={isDesktop ? 'right-start' : undefined}
       styles={{
         item: {
-          padding: desktop ? 6 : 10,
+          padding: isDesktop ? 6 : 10,
         },
         itemLabel: {
           fontWeight: 500,
-          fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+          fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
         },
         itemSection: {
           color: 'dark',
@@ -134,7 +140,7 @@ export default function Folder({
       </componentProps.renderOption>
 
       <MenuDropdown>
-        <MenuLabel p={desktop ? 6 : 10}>
+        <MenuLabel p={isDesktop ? 6 : 10}>
           <Tooltip
             label={defaultValues.name}
             multiline
@@ -152,7 +158,7 @@ export default function Folder({
 
         <MenuItem
           leftSection={
-            <IconPlus size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            <IconPlus size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
           onClick={(e) => {
             e.stopPropagation();
@@ -182,7 +188,10 @@ export default function Folder({
 
         <MenuItem
           leftSection={
-            <IconFolderPlus size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            <IconFolderPlus
+              size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
+              stroke={ICON_STROKE_WIDTH}
+            />
           }
           onClick={(e) => {
             e.stopPropagation();
@@ -214,7 +223,7 @@ export default function Folder({
 
         <MenuItem
           leftSection={
-            <IconEdit size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            <IconEdit size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
           onClick={(e) => {
             e.stopPropagation();
@@ -227,7 +236,7 @@ export default function Folder({
         <MenuItem
           leftSection={
             <IconFolderSymlink
-              size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+              size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
               stroke={ICON_STROKE_WIDTH}
             />
           }
@@ -246,7 +255,7 @@ export default function Folder({
 
         <MenuItem
           leftSection={
-            <IconTrash size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+            <IconTrash size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           }
           color="red"
           onClick={(e) => {

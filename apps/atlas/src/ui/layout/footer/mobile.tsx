@@ -12,10 +12,11 @@ import {
   IconHome,
   IconNote,
 } from '@tabler/icons-react';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Mobile() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
@@ -77,6 +78,11 @@ export default function Mobile() {
 
   const multiplier = 1.5;
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <Group justify={'space-between'} px={'xs'} h={'100%'} maw={400} mx={'auto'}>
       {data.map((di) => {
@@ -89,7 +95,7 @@ export default function Mobile() {
             align="center"
             ta={'center'}
             onClick={() => {
-              if (!desktop) {
+              if (!isDesktop) {
                 if (navbarActive) toggleNavbarChild();
               }
 

@@ -27,10 +27,11 @@ import PartialNavbarPave from '../partial/navbar/pave';
 import PartialNavbarStride from '../partial/navbar/stride';
 import PartialNavbarJot from '../partial/navbar/jot';
 import LayoutPartialNavbar from '../layout/partial/navbar';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Navbar() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { navbarViewValue, setNavbarViewValue } = useViewNavbar();
 
@@ -82,6 +83,11 @@ export default function Navbar() {
     // },
   ];
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   const items = data.map((item, i) => {
     const props = {
       icon: (navbarViewValue || []).includes(item.value) ? IconChevronDown : IconChevronRight,
@@ -92,7 +98,7 @@ export default function Navbar() {
         key={item.value}
         value={item.value}
         className="group/accordionNavbar"
-        display={desktop ? undefined : item.value == viewValue ? undefined : 'none'}
+        display={isDesktop ? undefined : item.value == viewValue ? undefined : 'none'}
         // mb={4}
       >
         {/* {i > 0 && <Divider my={4} />} */}
@@ -104,7 +110,7 @@ export default function Navbar() {
                 <props.icon size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />
               </ThemeIcon>
             }
-            display={desktop ? undefined : 'none'}
+            display={isDesktop ? undefined : 'none'}
             // mb={4}
           >
             <Group justify="space-between">
@@ -117,7 +123,7 @@ export default function Navbar() {
                 justify="end"
                 gap={0}
                 className={
-                  desktop
+                  isDesktop
                     ? 'opacity-0 group-hover/accordionNavbar:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/accordionNavbar:pointer-events-auto'
                     : undefined
                 }
@@ -185,8 +191,8 @@ export default function Navbar() {
   return (
     <Accordion
       order={3}
-      value={desktop ? navbarViewValue || [] : data.map((di) => di.value)}
-      onChange={desktop ? (newValues) => setNavbarViewValue(newValues) : undefined}
+      value={isDesktop ? navbarViewValue || [] : data.map((di) => di.value)}
+      onChange={isDesktop ? (newValues) => setNavbarViewValue(newValues) : undefined}
       chevronIconSize={ICON_SIZE}
       chevron={null}
       keepMounted
