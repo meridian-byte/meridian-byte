@@ -58,10 +58,11 @@ import { CalendarGet, Order } from '@repo/types';
 import PartialEmpty from '../empty';
 import AccordionFolder from '@atlas/ui/accordion/folder';
 import NavlinkCalendar from '@atlas/ui/navlink/calendar';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Pave() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
@@ -100,6 +101,11 @@ export default function Pave() {
     },
   ];
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <div>
       <div>
@@ -113,18 +119,18 @@ export default function Pave() {
               <NavLink
                 label={nl.label}
                 color="gray"
-                p={desktop ? 0 : undefined}
+                p={isDesktop ? 0 : undefined}
                 fw={600}
                 styles={{
-                  section: desktop ? { marginInlineEnd: 0 } : undefined,
+                  section: isDesktop ? { marginInlineEnd: 0 } : undefined,
                   body: { marginBottom: 4 },
                   label: {
-                    fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+                    fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
                     color: active ? 'var(--mantine-color-pri-6)' : undefined,
                   },
                 }}
                 onClick={() => {
-                  if (!desktop) {
+                  if (!isDesktop) {
                     if (navbarActive) toggleNavbarChild();
                   }
 
@@ -132,12 +138,12 @@ export default function Pave() {
                 }}
                 leftSection={
                   <ThemeIcon
-                    size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                    size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                     variant="transparent"
                     color={active ? 'var(--mantine-color-pri-6)' : 'gray'}
                   >
                     <nl.icon
-                      size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                      size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
                       stroke={ICON_STROKE_WIDTH}
                     />
                   </ThemeIcon>
@@ -149,31 +155,31 @@ export default function Pave() {
       </div>
 
       <div className="group/paveCalendars">
-        <Group justify="space-between" align="end" pl={desktop ? 5 : 12 + 5} mt={5}>
+        <Group justify="space-between" align="end" pl={isDesktop ? 5 : 12 + 5} mt={5}>
           <Title order={2} fz={{ base: 'lg', md: '.8rem' }} fw={500} c={'dimmed'}>
             Calendars
           </Title>
 
           <Group
             justify="end"
-            gap={desktop ? 0 : 5}
+            gap={isDesktop ? 0 : 5}
             className={
-              desktop
+              isDesktop
                 ? 'opacity-0 group-hover/paveCalendars:opacity-100 transition-opacity duration-250 pointer-events-none group-hover/paveCalendars:pointer-events-auto'
                 : undefined
             }
-            mih={desktop ? 30 : ICON_WRAPPER_SIZE * 1.25 + 6}
+            mih={isDesktop ? 30 : ICON_WRAPPER_SIZE * 1.25 + 6}
             pr={5}
           >
             <Tooltip label={`Add calendar`}>
               <ActionIcon
-                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+                size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant={desktop ? 'subtle' : 'light'}
+                variant={isDesktop ? 'subtle' : 'light'}
                 onClick={() => calendarCreate()}
               >
                 <IconPlus
-                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
                   stroke={ICON_STROKE_WIDTH}
                 />
               </ActionIcon>
@@ -181,15 +187,15 @@ export default function Pave() {
 
             <Tooltip label={`Add calendar folder`}>
               <ActionIcon
-                size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+                size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                 color="gray"
-                variant={desktop ? 'subtle' : 'light'}
+                variant={isDesktop ? 'subtle' : 'light'}
                 onClick={() => {
                   folderCreate({ id: generateUUID(), location: APP_NAMES_ATLAS.PAVE });
                 }}
               >
                 <IconFolderPlus
-                  size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                  size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
                   stroke={ICON_STROKE_WIDTH}
                 />
               </ActionIcon>

@@ -1,5 +1,6 @@
 import { Box, Stack } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 import React from 'react';
 
 export default function Navbar({
@@ -9,17 +10,22 @@ export default function Navbar({
   options?: { folder?: boolean };
   children: React.ReactNode;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
-    <Box pl={desktop || options?.folder ? (desktop ? 14 : 12 + 28 / 2) : undefined}>
+    <Box pl={isDesktop || options?.folder ? (isDesktop ? 14 : 12 + 28 / 2) : undefined}>
       <Box
         style={
-          desktop || options?.folder
+          isDesktop || options?.folder
             ? { borderLeft: '1px solid var(--mantine-color-default-border)' }
             : undefined
         }
-        pl={desktop || options?.folder ? 4 : undefined}
+        pl={isDesktop || options?.folder ? 4 : undefined}
       >
         {children}
       </Box>

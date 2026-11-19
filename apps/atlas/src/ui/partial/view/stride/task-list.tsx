@@ -62,15 +62,14 @@ import {
 } from '@tabler/icons-react';
 import { Frequency, Order, Priority, TaskGet } from '@repo/types';
 import FormTask from '@atlas/ui/form/task';
-import { useFormTask } from '@repo/hooks';
+import { useBreakpointFlags, useFormTask } from '@repo/hooks';
 import PartialEmpty from '../../empty';
 import { playNotificationSound } from '@repo/notifications';
 import InputTextEditorTitle from '@atlas/ui/input/text/editor-title';
 import { useTaskListTitle } from '@atlas/hooks/input';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function TaskList() {
-  const mobile = useMediaQuery('(max-width: 36em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const tasks = useStoreTask((s) => s.tasks);
@@ -138,11 +137,16 @@ export default function TaskList() {
     }
   }
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <LayoutSection
       id={'task-list'}
       // containerized
-      containerized={mobile ? false : 'md'}
+      containerized={isMobile ? false : 'md'}
     >
       <Box py={{ base: 0, xs: SECTION_SPACING }}>
         <Stack>

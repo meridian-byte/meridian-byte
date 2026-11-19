@@ -13,10 +13,10 @@ import { useEventCrud } from '@atlas/hooks/schedule';
 import FormEvent from '@atlas/ui/form/event';
 import { IconChevronLeft, IconChevronRight, IconPlus } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants';
-import { useMediaQuery } from '@mantine/hooks';
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function CalendarList() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { subViewValue } = useSubView();
   const calendarId = extractUuidFromParam(subViewValue || '');
@@ -61,29 +61,34 @@ export default function CalendarList() {
     setCurrentDate(dayjs());
   };
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <>
       <Group justify="space-between">
         <Group gap="xs">
-          <ActionIcon size={desktop ? 32 : 28} variant="default" onClick={goToPreviousMonth}>
+          <ActionIcon size={isDesktop ? 32 : 28} variant="default" onClick={goToPreviousMonth}>
             <IconChevronLeft size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>
 
-          <Button size="sm" h={desktop ? 32 : 28} variant="default">
-            {currentDate.format(desktop ? 'MMMM YYYY' : 'MMM YY')}
+          <Button size="sm" h={isDesktop ? 32 : 28} variant="default">
+            {currentDate.format(isDesktop ? 'MMMM YYYY' : 'MMM YY')}
           </Button>
 
-          <ActionIcon size={desktop ? 32 : 28} variant="default" onClick={goToNextMonth}>
+          <ActionIcon size={isDesktop ? 32 : 28} variant="default" onClick={goToNextMonth}>
             <IconChevronRight size={ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ActionIcon>
 
-          <Button size="sm" h={desktop ? 32 : 28} variant="default" onClick={goToToday}>
+          <Button size="sm" h={isDesktop ? 32 : 28} variant="default" onClick={goToToday}>
             Today
           </Button>
 
           <Tooltip label={'Add event'}>
             <ActionIcon
-              size={desktop ? 32 : 28}
+              size={isDesktop ? 32 : 28}
               variant="light"
               color="gray"
               onClick={() => eventCrud.handleCreateEvent({ calendarId: calendar?.id })}

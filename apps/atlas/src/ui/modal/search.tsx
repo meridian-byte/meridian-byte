@@ -41,6 +41,7 @@ import { LayoutModal } from '@repo/ui';
 import { IconBackspace, IconCircleFilled, IconNote, IconSearch } from '@tabler/icons-react';
 import { useDebouncedCallback, useMediaQuery } from '@mantine/hooks';
 import { capitalizeWords } from '@repo/utils';
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Search({ children }: { children: React.ReactNode }) {
   const { modalViewValue, closeModalView } = useViewModal();
@@ -85,7 +86,7 @@ function SearchInput({
   setQuery,
   ...restProps
 }: { setQuery: React.Dispatch<React.SetStateAction<string>> } & TextInputProps) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
@@ -108,6 +109,11 @@ function SearchInput({
     setQuery('');
   };
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <TextInput
       value={search}
@@ -122,9 +128,9 @@ function SearchInput({
           backgroundColor: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
         },
       }}
-      size={desktop ? undefined : 'md'}
+      size={isDesktop ? undefined : 'md'}
       leftSection={
-        <IconSearch size={desktop ? ICON_SIZE : ICON_SIZE * 1.25} stroke={ICON_STROKE_WIDTH} />
+        <IconSearch size={isDesktop ? ICON_SIZE : ICON_SIZE * 1.25} stroke={ICON_STROKE_WIDTH} />
       }
       rightSection={
         loading ? (
@@ -142,7 +148,7 @@ function SearchInput({
               }}
             >
               <IconBackspace
-                size={desktop ? ICON_SIZE : ICON_SIZE * 1.25}
+                size={isDesktop ? ICON_SIZE : ICON_SIZE * 1.25}
                 stroke={ICON_STROKE_WIDTH}
               />
             </ActionIcon>
@@ -242,7 +248,7 @@ function PartialResultsEvents({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const events = useStoreEvent((s) => s.events);
   const eventsWithinParameter = events?.filter((item) => {
@@ -252,6 +258,11 @@ function PartialResultsEvents({
       : item.description.toLowerCase().includes(query.trim().toLowerCase());
     return matchesTitle || matchesDescription;
   });
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <SectionResults
@@ -271,7 +282,7 @@ function PartialResultsEvents({
             }
             // onClick={() => handleSelect(item.id)}
             color="gray"
-            p={desktop ? 0 : undefined}
+            p={isDesktop ? 0 : undefined}
             fw={600}
             styles={{
               root: {
@@ -292,7 +303,7 @@ function PartialResultsCalendars({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const calendars = useStoreCalendar((s) => s.calendars);
   const calendarsWithinParameter = calendars?.filter((item) => {
@@ -319,6 +330,11 @@ function PartialResultsCalendars({
       subView: `calendar: ${id}`,
     });
   };
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <SectionResults
@@ -349,11 +365,11 @@ function PartialResultsCalendars({
               }
               onClick={() => handleSelect(item.id)}
               color="gray"
-              p={desktop ? 0 : undefined}
+              p={isDesktop ? 0 : undefined}
               fw={600}
               styles={{
-                section: desktop ? { marginInlineEnd: 0 } : undefined,
-                label: desktop
+                section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+                label: isDesktop
                   ? {
                       fontSize: 'var(--mantine-font-size-xs)',
                     }
@@ -361,7 +377,7 @@ function PartialResultsCalendars({
               }}
               leftSection={
                 <ThemeIcon
-                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                   color={item.color ? `${item.color}.6` : 'pri'}
                   variant="transparent"
                 >
@@ -383,7 +399,7 @@ function PartialResultsNotes({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const notes = useStoreNote((s) => s.notes);
   const notesWithinParameter = notes?.filter((item) => {
@@ -410,6 +426,11 @@ function PartialResultsNotes({
       subView: `note: ${id}`,
     });
   };
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <SectionResults
@@ -440,11 +461,11 @@ function PartialResultsNotes({
               }
               onClick={() => handleSelect(item.id)}
               color="gray"
-              p={desktop ? 0 : undefined}
+              p={isDesktop ? 0 : undefined}
               fw={600}
               styles={{
-                section: desktop ? { marginInlineEnd: 0 } : undefined,
-                label: desktop
+                section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+                label: isDesktop
                   ? {
                       fontSize: 'var(--mantine-font-size-xs)',
                     }
@@ -452,11 +473,14 @@ function PartialResultsNotes({
               }}
               leftSection={
                 <ThemeIcon
-                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                   color={'gray'}
                   variant="transparent"
                 >
-                  <IconNote size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                  <IconNote
+                    size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
+                    stroke={ICON_STROKE_WIDTH}
+                  />
                 </ThemeIcon>
               }
             />
@@ -474,7 +498,7 @@ function PartialResultsTasks({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const tasks = useStoreTask((s) => s.tasks);
   const tasksWithinParameter = tasks?.filter((item) => {
@@ -484,6 +508,11 @@ function PartialResultsTasks({
       : item.description.toLowerCase().includes(query.trim().toLowerCase());
     return matchesTitle || matchesDescription;
   });
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <SectionResults
@@ -501,11 +530,11 @@ function PartialResultsTasks({
             <NavLink
               label={item.title}
               color="gray"
-              p={desktop ? 0 : undefined}
+              p={isDesktop ? 0 : undefined}
               fw={600}
               styles={{
-                section: desktop ? { marginInlineEnd: 0 } : undefined,
-                label: desktop
+                section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+                label: isDesktop
                   ? {
                       fontSize: 'var(--mantine-font-size-xs)',
                     }
@@ -526,7 +555,7 @@ function PartialResultsTaskLists({
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const taskLists = useStoreTaskList((s) => s.taskLists);
   const taskListsWithinParameter = taskLists?.filter((item) => {
@@ -553,6 +582,11 @@ function PartialResultsTaskLists({
       subView: `list: ${id}`,
     });
   };
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <SectionResults
@@ -583,11 +617,11 @@ function PartialResultsTaskLists({
               }
               onClick={() => handleSelect(item.id)}
               color="gray"
-              p={desktop ? 0 : undefined}
+              p={isDesktop ? 0 : undefined}
               fw={600}
               styles={{
-                section: desktop ? { marginInlineEnd: 0 } : undefined,
-                label: desktop
+                section: isDesktop ? { marginInlineEnd: 0 } : undefined,
+                label: isDesktop
                   ? {
                       fontSize: 'var(--mantine-font-size-xs)',
                     }
@@ -595,7 +629,7 @@ function PartialResultsTaskLists({
               }}
               leftSection={
                 <ThemeIcon
-                  size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                  size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                   variant="transparent"
                   color={item.color ? `${item.color}.6` : 'pri'}
                 >

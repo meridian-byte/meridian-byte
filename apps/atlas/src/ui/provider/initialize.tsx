@@ -3,7 +3,6 @@
 import React from 'react';
 import {
   useActiveItemInitialize,
-  useAppshellInitialize,
   useLoadAppData,
   useNetworkInitialize,
   useSessionInitialize,
@@ -14,6 +13,7 @@ import {
 } from '@repo/store';
 import { SessionCookie } from '@repo/types';
 import { STORE_NAME } from '@repo/constants';
+import { useAppshellInitialize } from '@repo/hooks';
 
 export default function Initialize({
   props,

@@ -7,10 +7,11 @@ import { CalendarGet, NoteGet } from '@repo/types';
 import { extractUuidFromParam } from '@repo/utils';
 import { IconCircleFilled, IconDots, IconNote } from '@tabler/icons-react';
 import MenuNote from '../menu/note';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Note({ props }: { props: NoteGet }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
@@ -19,6 +20,11 @@ export default function Note({ props }: { props: NoteGet }) {
 
   const noteActive =
     subViewValue?.includes('note: ') && extractUuidFromParam(subViewValue) == props.id;
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <div className="group/note" style={{ overflow: 'hidden' }}>
@@ -32,23 +38,23 @@ export default function Note({ props }: { props: NoteGet }) {
             </Tooltip>
           }
           color="gray"
-          p={desktop ? 0 : undefined}
+          p={isDesktop ? 0 : undefined}
           fw={600}
           styles={{
-            section: desktop ? { marginInlineEnd: 0 } : undefined,
+            section: isDesktop ? { marginInlineEnd: 0 } : undefined,
             label: {
-              fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+              fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
               color: !noteActive ? undefined : 'var(--mantine-color-pri-6)',
             },
           }}
           leftSection={
             <ThemeIcon
-              size={desktop ? 30 : ICON_WRAPPER_SIZE}
+              size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
               color="gray"
               c={noteActive ? 'pri' : 'gray'}
               variant="transparent"
             >
-              <IconNote size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+              <IconNote size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
             </ThemeIcon>
           }
           rightSection={
@@ -71,7 +77,7 @@ export default function Note({ props }: { props: NoteGet }) {
             </Group>
           }
           onClick={() => {
-            if (!desktop) {
+            if (!isDesktop) {
               if (navbarActive) toggleNavbarChild();
             }
 

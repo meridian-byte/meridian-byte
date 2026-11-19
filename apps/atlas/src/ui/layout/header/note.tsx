@@ -26,17 +26,16 @@ import {
 import { NoteGet } from '@repo/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { WrapperUnderlayGlass } from '@repo/ui';
-import { useScroll } from '@repo/hooks';
+import { useBreakpointFlags, useScroll } from '@repo/hooks';
 // import BreadcrumbAppNote from '@repo/components/common/breadcrumbs/app/note';
 import BadgeUpdatedTimestamp from '@atlas/ui/badge/updated-timestamp';
 import BadgeNoteStatus from '@atlas/ui/badge/note-status';
 import { useStoreNote, useStoreUserStates, useSubView } from '@repo/store';
 import MenuNote from '@atlas/ui/menu/note';
 import { extractUuidFromParam } from '@repo/utils';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function Note() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { subViewValue } = useSubView();
   const noteId = extractUuidFromParam(subViewValue || '');
@@ -47,6 +46,11 @@ export default function Note() {
     defaultStyles: useMemo(() => ({ opacity: 0 }), []),
     scrolledStyles: useMemo(() => ({ opacity: 1 }), []),
   });
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <Box
@@ -77,12 +81,12 @@ export default function Note() {
                       <Group>
                         <Tooltip label={'More options'}>
                           <ActionIcon
-                            size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+                            size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                             variant={'subtle'}
                             color="gray"
                           >
                             <IconDotsVertical
-                              size={desktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
+                              size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE * 1.25}
                               stroke={ICON_STROKE_WIDTH}
                             />
                           </ActionIcon>

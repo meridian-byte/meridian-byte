@@ -16,7 +16,8 @@ import {
 import { APP_NAMES_ATLAS, ICON_SIZE, ICON_STROKE_WIDTH, MODAL_VIEW_NAMES } from '@repo/constants';
 import { TaskListGet } from '@repo/types';
 import { IconEdit, IconFolderSymlink, IconTrash } from '@tabler/icons-react';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function TaskList({
   defaultValues,
@@ -28,24 +29,29 @@ export default function TaskList({
   options?: { context?: boolean };
   children: React.ReactNode;
 } & MenuProps) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const { showModalViewTaskListCrud } = useViewModal();
 
   const componentProps = { renderOption: options?.context ? MenuContextMenu : MenuTarget };
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <Menu
       width={220}
       trigger="click"
-      position={desktop ? 'right-start' : undefined}
+      position={isDesktop ? 'right-start' : undefined}
       styles={{
         item: {
-          padding: desktop ? 6 : 10,
+          padding: isDesktop ? 6 : 10,
         },
         itemLabel: {
           fontWeight: 500,
-          fontSize: desktop ? 'var(--mantine-font-size-xs)' : undefined,
+          fontSize: isDesktop ? 'var(--mantine-font-size-xs)' : undefined,
         },
         itemSection: {
           color: 'dark',
@@ -58,7 +64,7 @@ export default function TaskList({
       </componentProps.renderOption>
 
       <MenuDropdown>
-        <MenuLabel p={desktop ? 6 : 10}>
+        <MenuLabel p={isDesktop ? 6 : 10}>
           <Tooltip
             label={defaultValues.title}
             multiline

@@ -13,7 +13,8 @@ import { SHELL_VALUES } from '@atlas/constants';
 import PartialViewPaveHome from '@atlas/ui/partial/view/pave/home';
 import PartialViewJotHome from '@atlas/ui/partial/view/jot/home';
 import PartialViewStrideHome from '@atlas/ui/partial/view/stride/home';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function App() {
   const viewValue = useStoreView((s) => s.view?.view);
@@ -71,10 +72,15 @@ function LayoutMain({
     withoutPadding?: boolean;
   };
 }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
-    <Box p={!!options?.withoutPadding ? undefined : !desktop ? 'xs' : 'xs'}>
+    <Box p={!!options?.withoutPadding ? undefined : !isDesktop ? 'xs' : 'xs'}>
       {options?.containerized ? <Container size={'md'}>{children}</Container> : children}
     </Box>
   );

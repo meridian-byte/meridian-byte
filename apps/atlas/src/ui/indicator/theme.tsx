@@ -16,10 +16,11 @@ import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE } from '@repo/constants
 import { IconDeviceDesktop, IconMoon, IconSun } from '@tabler/icons-react';
 import { capitalizeWord, capitalizeWords } from '@repo/utils';
 import { SHELL_VALUES } from '@atlas/constants';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Theme() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const [mounted, setMounted] = useState(false);
 
@@ -47,12 +48,17 @@ export default function Theme() {
           : ColorScheme.LIGHT,
   };
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   if (!mounted) {
     return (
       <Skeleton
         maw={`${100 / 6}%`}
-        miw={!desktop ? ICON_WRAPPER_SIZE * 1.25 : undefined}
-        h={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
+        miw={!isDesktop ? ICON_WRAPPER_SIZE * 1.25 : undefined}
+        h={!isDesktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
       />
     );
   }
@@ -68,7 +74,7 @@ export default function Theme() {
     >
       <ActionIcon
         variant={'subtle'}
-        size={!desktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
+        size={!isDesktop ? ICON_WRAPPER_SIZE * 1.25 : sharedHeight}
         color="gray"
         onClick={() => {
           startTransition(() => {
@@ -77,7 +83,7 @@ export default function Theme() {
         }}
       >
         <buttonProps.icon
-          size={!desktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
+          size={!isDesktop ? ICON_SIZE * 1.25 : sharedHeight - 8}
           stroke={ICON_STROKE_WIDTH}
         />
       </ActionIcon>

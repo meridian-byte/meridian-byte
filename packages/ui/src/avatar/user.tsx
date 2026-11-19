@@ -10,10 +10,11 @@ import { AuthAction } from '@repo/types';
 import { useStoreActiveItems, useStoreSession } from '@repo/store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export function AvatarUser({ size, options }: { size?: number; options?: { minimal?: boolean } }) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const router = useRouter();
 
@@ -26,23 +27,28 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
   const fullName = `${session?.profile.firstName || ''} ${session?.profile.lastName || ''}`.trim();
   const profilePicture = session?.profile.avatar;
 
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
+
   return (
     <div>
       {!mounted || session === undefined ? (
         <div>
-          <Skeleton h={size || (desktop ? 30 : 44.8)} radius={'md'} />
+          <Skeleton h={size || (isDesktop ? 30 : 44.8)} radius={'md'} />
         </div>
       ) : !activeAccount?.email ? (
         <WrapperActionSignIn options={{ action: AuthAction.SIGN_IN }}>
           <NavLink
             label={'Sign In'}
             color="gray"
-            p={desktop ? 0 : undefined}
+            p={isDesktop ? 0 : undefined}
             fw={600}
             styles={{
-              section: desktop ? { marginInlineEnd: 0 } : undefined,
+              section: isDesktop ? { marginInlineEnd: 0 } : undefined,
               body: { marginBottom: 4 },
-              label: desktop
+              label: isDesktop
                 ? {
                     fontSize: 'var(--mantine-font-size-xs)',
                   }
@@ -50,11 +56,11 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
             }}
             leftSection={
               <ThemeIcon
-                size={desktop ? 30 : ICON_WRAPPER_SIZE}
+                size={isDesktop ? 30 : ICON_WRAPPER_SIZE}
                 variant="transparent"
                 color={'gray'}
               >
-                <IconUser size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+                <IconUser size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
               </ThemeIcon>
             }
           />
@@ -63,26 +69,26 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
         <NavLink
           label={fullName || activeAccount.email}
           color="gray"
-          p={desktop ? 0 : 0}
-          pl={desktop ? undefined : 12}
-          pr={desktop ? undefined : 5}
+          p={isDesktop ? 0 : 0}
+          pl={isDesktop ? undefined : 12}
+          pr={isDesktop ? undefined : 5}
           fw={600}
           styles={{
-            section: desktop ? { marginInlineEnd: 0 } : undefined,
+            section: isDesktop ? { marginInlineEnd: 0 } : undefined,
             body: { marginBottom: 4 },
-            label: desktop
+            label: isDesktop
               ? {
                   fontSize: 'var(--mantine-font-size-xs)',
                 }
               : undefined,
           }}
           leftSection={
-            <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color="gray">
+            <ThemeIcon size={isDesktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color="gray">
               <Avatar
                 src={profilePicture || null}
                 name={fullName || 'User'}
                 color={'initials'}
-                size={desktop ? ICON_SIZE : ICON_WRAPPER_SIZE}
+                size={isDesktop ? ICON_SIZE : ICON_WRAPPER_SIZE}
               >
                 {initialize(fullName || 'User')}
               </Avatar>
@@ -96,12 +102,12 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                miw={desktop ? 30 : ICON_WRAPPER_SIZE * 1.25}
-                pr={desktop ? 4 : 0}
+                miw={isDesktop ? 30 : ICON_WRAPPER_SIZE * 1.25}
+                pr={isDesktop ? 4 : 0}
                 justify="end"
               >
                 <ActionIcon
-                  size={desktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
+                  size={isDesktop ? 30 - 6 : ICON_WRAPPER_SIZE * 1.25}
                   variant="light"
                   color="red"
                   onClick={() => {
@@ -109,7 +115,7 @@ export function AvatarUser({ size, options }: { size?: number; options?: { minim
                   }}
                 >
                   <IconLogout
-                    size={desktop ? ICON_SIZE - 4 : ICON_SIZE}
+                    size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE}
                     stroke={ICON_STROKE_WIDTH}
                   />
                 </ActionIcon>

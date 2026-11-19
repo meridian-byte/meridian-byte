@@ -21,28 +21,19 @@ import LayoutFooterMain from './footer/main';
 import LayoutFooterMobile from './footer/mobile';
 import { SHELL_VALUES } from '@atlas/constants';
 import { useStoreAppShell } from '@repo/store';
-import { ScrollContext } from '@repo/hooks';
+import { ScrollContext, useBreakpointFlags } from '@repo/hooks';
 import { SpinnerApp } from '@repo/ui';
 
 export default function Shell({ children }: { children: React.ReactNode }) {
-  const [inClient, setInClient] = useState(false);
-
-  // const mobile = useMediaQuery('(max-width: 36em)');
-  const desktop = useMediaQuery('(min-width: 62em)');
-
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
-  // const asideActive = useStoreAppShell((s) => s.appshell?.child?.aside);
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const contextValue = useMemo(() => viewportRef, []);
 
-  useEffect(() => {
-    setInClient(true);
-  }, []);
-
-  if (!inClient) {
+  if (!ready) {
     return (
-      <Center mih={'100vh'}>
+      <Center mih="100vh">
         <SpinnerApp />
       </Center>
     );
@@ -51,9 +42,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       padding={0}
-      withBorder={false}
+      withBorder={isDesktop}
       header={
-        desktop
+        isDesktop
           ? undefined
           : {
               height: SHELL_VALUES.HEADER.HEIGHT.MOBILE,
@@ -65,36 +56,29 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         breakpoint: 'md',
         collapsed: { mobile: !navbarActive, desktop: !navbarActive },
       }}
-      // aside={{
-      //   width: SHELL_VALUES.ASIDE.WIDTH,
-      //   breakpoint: 'md',
-      //   collapsed: { mobile: true, desktop: !asideActive },
-      // }}
       footer={{
-        height: desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE,
+        height: isDesktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.FOOTER.HEIGHT.MOBILE,
       }}
     >
-      {!desktop && (
-        <AppShellHeader
-          style={{ borderColor: 'var(--mantine-color-default-border)' }}
-          bg={'#b08e67'}
-        >
+      {isMobile && (
+        <AppShellHeader style={{ borderColor: 'var(--mantine-color-default-border)' }} bg="#b08e67">
           <LayoutHeaderMain />
         </AppShellHeader>
       )}
 
-      <AppShellNavbar
-        style={{ borderColor: 'var(--mantine-color-default-border)' }}
-        // maw={SHELL_VALUES.NAVBAR.WIDTH}
-      >
+      <AppShellNavbar style={{ borderColor: 'var(--mantine-color-default-border)' }}>
         <LayoutNavbarMain />
       </AppShellNavbar>
 
       <AppShellMain>
         <ScrollContext.Provider value={contextValue}>
           <ScrollArea
-            scrollbars={'y'}
-            h={`calc(100vh - ${desktop ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP : SHELL_VALUES.HEADER.HEIGHT.MOBILE + SHELL_VALUES.FOOTER.HEIGHT.MOBILE}px)`}
+            scrollbars="y"
+            h={`calc(100vh - ${
+              isDesktop
+                ? SHELL_VALUES.FOOTER.HEIGHT.DESKTOP
+                : SHELL_VALUES.HEADER.HEIGHT.MOBILE + SHELL_VALUES.FOOTER.HEIGHT.MOBILE
+            }px)`}
             viewportRef={contextValue}
           >
             {children}
@@ -102,22 +86,20 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </ScrollContext.Provider>
       </AppShellMain>
 
-      {/* <AppShellAside style={{ borderColor: 'var(--mantine-color-default-border)' }}>
-        <LayoutAsideMain />
-      </AppShellAside> */}
-
-      {desktop ? (
+      {isDesktop && (
         <AppShellFooter
           style={{ borderColor: 'var(--mantine-color-default-border)' }}
           h={SHELL_VALUES.FOOTER.HEIGHT.DESKTOP}
         >
           <LayoutFooterMain />
         </AppShellFooter>
-      ) : (
+      )}
+
+      {isMobile && (
         <AppShellFooter
           style={{ borderColor: 'var(--mantine-color-default-border)' }}
           h={SHELL_VALUES.FOOTER.HEIGHT.MOBILE}
-          bg={'#b08e67'}
+          bg="#b08e67"
         >
           <LayoutFooterMobile />
         </AppShellFooter>

@@ -39,26 +39,31 @@ import Link from 'next/link';
 import { AUTH_URLS } from '@repo/constants';
 import { ColorScheme } from '@repo/types';
 import { capitalizeWords } from '@repo/utils';
-import { useFormUserProfile } from '@repo/hooks';
+import { useBreakpointFlags, useFormUserProfile } from '@repo/hooks';
 import { AvatarUser } from '@repo/ui';
-import { useMediaQuery } from '@mantine/hooks';
+
 import { useStoreActiveItems, useStoreSession } from '@repo/store';
 
 export default function User({ props }: { props?: { close?: () => void } }) {
-  const mobile = useMediaQuery('(max-width: 36em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <Tabs
       keepMounted={false}
       defaultValue={tabs[0].value}
-      orientation={mobile ? 'horizontal' : 'vertical'}
+      orientation={isMobile ? 'horizontal' : 'vertical'}
       variant="pills"
       styles={{
         panel: {
-          width: mobile ? undefined : '66%',
+          width: isMobile ? undefined : '66%',
         },
         tab: {
-          border: !mobile
+          border: !isMobile
             ? undefined
             : '1px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4))',
         },
@@ -72,7 +77,7 @@ export default function User({ props }: { props?: { close?: () => void } }) {
           backgroundColor: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8))',
           borderRight: '1px solid var(--mantine-color-default-border)',
         }}
-        w={mobile ? undefined : '33%'}
+        w={isMobile ? undefined : '33%'}
       >
         <Group px={8}>
           <ActionIcon
@@ -87,7 +92,7 @@ export default function User({ props }: { props?: { close?: () => void } }) {
         </Group>
 
         <TabsList
-          mih={mobile ? undefined : TAB_HEIGHT}
+          mih={isMobile ? undefined : TAB_HEIGHT}
           styles={{ list: { gap: 2 } }}
           // style={{ flexDirection: mobile ? 'column' : 'row' }}
         >

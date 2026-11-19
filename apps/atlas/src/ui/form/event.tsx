@@ -26,7 +26,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { DateInput, DateTimePicker, TimePicker } from '@mantine/dates';
-import { useFormEvent } from '@repo/hooks';
+import { useBreakpointFlags, useFormEvent } from '@repo/hooks';
 import dayjs from 'dayjs';
 import {
   useEventActions,
@@ -56,7 +56,6 @@ import {
 } from '@tabler/icons-react';
 import { ICON_SIZE, ICON_STROKE_WIDTH, ICON_WRAPPER_SIZE, SECTION_SPACING } from '@repo/constants';
 import { generateUUID, prependZeros } from '@repo/utils';
-import { useMediaQuery } from '@mantine/hooks';
 
 interface EventFormProps {
   modal?: boolean;
@@ -65,7 +64,7 @@ interface EventFormProps {
 }
 
 export default function Event({ modal, initialData, onClose }: EventFormProps) {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const [checked, setChecked] = useState(true);
 
@@ -138,7 +137,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
         placeholder="Select calendar"
         disabled={!calendars}
         loading={calendars === undefined}
-        size={desktop ? 'xs' : 'sm'}
+        size={isDesktop ? 'xs' : 'sm'}
         {...form.getInputProps('calendarId')}
         data={(calendars || []).map((ci) => {
           return {
@@ -262,6 +261,11 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
       }
     }, [reminderState]);
 
+    if (!ready) {
+      // Must not render wrong layout before client knows viewport
+      return null;
+    }
+
     return (
       <Stack gap={withReminder ? 'xs' : 0}>
         <Checkbox
@@ -274,13 +278,13 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
         <Box
           style={{
             transition: '.1s all ease',
-            height: withReminder ? (desktop ? 30 : 36) : 0,
+            height: withReminder ? (isDesktop ? 30 : 36) : 0,
             overflow: 'hidden',
           }}
         >
           <TimePicker
             aria-label={'Reminder'}
-            size={desktop ? 'xs' : 'sm'}
+            size={isDesktop ? 'xs' : 'sm'}
             clearable
             leftSection={<IconClock size={ICON_SIZE - 4} stroke={ICON_STROKE_WIDTH} />}
             format="12h"
@@ -579,7 +583,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                   {...allDayProps.props}
                   valueFormat={'DD MMM YYYY'}
                   value={form.values.start}
-                  size={desktop ? 'xs' : 'sm'}
+                  size={isDesktop ? 'xs' : 'sm'}
                   onChange={(value) => {
                     const newStart = value;
                     let newEnd: any = form.values.start;
@@ -620,7 +624,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                 <DateTimePicker
                   {...allDayProps.props}
                   value={form.values.start}
-                  size={desktop ? 'xs' : 'sm'}
+                  size={isDesktop ? 'xs' : 'sm'}
                   onChange={(value) => {
                     const newStart = value;
                     let newEnd: any = form.values.end;
@@ -656,7 +660,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
           <Box
             style={{
               transition: '.1s all ease',
-              height: form.values.allDay ? 0 : desktop ? 54.8 : 60.8,
+              height: form.values.allDay ? 0 : isDesktop ? 54.8 : 60.8,
               overflow: 'hidden',
             }}
           >
@@ -665,7 +669,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
               label="End"
               placeholder="End"
               value={form.values.end}
-              size={desktop ? 'xs' : 'sm'}
+              size={isDesktop ? 'xs' : 'sm'}
               onChange={(value) => {
                 const newEnd = value;
                 let newStart: any = form.values.start;
@@ -750,7 +754,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
               <Button
                 disabled={submitted}
                 variant="default"
-                size={desktop ? 'xs' : undefined}
+                size={isDesktop ? 'xs' : undefined}
                 onClick={() => {
                   if (modal) {
                     if (onClose) onClose();
@@ -770,7 +774,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                 <Button
                   display={!initialData?.id ? undefined : 'none'}
                   type="submit"
-                  size={desktop ? 'xs' : undefined}
+                  size={isDesktop ? 'xs' : undefined}
                   loading={submitted}
                 >
                   {submitted ? 'Adding' : 'Add'}
@@ -783,7 +787,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
 
                   <Tooltip label={'Delete event'}>
                     <ActionIcon
-                      size={ICON_WRAPPER_SIZE * (desktop ? 1 : 1.25)}
+                      size={ICON_WRAPPER_SIZE * (isDesktop ? 1 : 1.25)}
                       color="red"
                       variant="light"
                       onClick={() => {
@@ -791,7 +795,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
                       }}
                     >
                       <IconTrash
-                        size={ICON_SIZE * (desktop ? 1 : 1.25)}
+                        size={ICON_SIZE * (isDesktop ? 1 : 1.25)}
                         stroke={ICON_STROKE_WIDTH}
                       />
                     </ActionIcon>
@@ -805,7 +809,7 @@ export default function Event({ modal, initialData, onClose }: EventFormProps) {
     </Stack>
   );
 
-  if (modal && !desktop) return <TaskTab content={leftcolumn} properties={rightColumn} />;
+  if (modal && !isDesktop) return <TaskTab content={leftcolumn} properties={rightColumn} />;
 
   return (
     <Box

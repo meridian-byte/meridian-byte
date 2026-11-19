@@ -2,7 +2,7 @@ export * from './handler/view';
 
 export * from './state/initialize/active-item';
 export * from './state/initialize/app-data';
-export * from './state/initialize/appshell';
+// export * from './state/initialize/appshell';
 export * from './state/initialize/network';
 export * from './state/initialize/session';
 export * from './state/initialize/user-state';

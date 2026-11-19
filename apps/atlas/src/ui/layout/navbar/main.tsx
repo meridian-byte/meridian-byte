@@ -41,7 +41,8 @@ import { AvatarUser } from '@repo/ui';
 import { useViewModal } from '@repo/store';
 import ModalUser from '@atlas/ui/modal/user';
 import ButtonAppshellNavbar from '@atlas/ui/button/appshell/navbar';
-import { useMediaQuery } from '@mantine/hooks';
+
+import { useBreakpointFlags } from '@repo/hooks';
 
 export default function Main() {
   return (
@@ -77,16 +78,21 @@ function NavbarHeader() {
   const setView = useStoreView((s) => s.setView);
   const { showModalViewSearch } = useViewModal();
 
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
 
   const navbarActive = useStoreAppShell((s) => s.appshell?.child?.navbar);
   const toggleNavbarChild = useStoreAppShell((s) => s.toggleNavbarChild);
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
     <Stack gap={0} px={5} pt={5}>
       <Box
         onClick={() => {
-          if (!desktop) {
+          if (!isDesktop) {
             if (navbarActive) toggleNavbarChild();
           }
         }}
@@ -101,27 +107,27 @@ function NavbarHeader() {
       <NavLink
         label={'Home View'}
         color="gray"
-        p={desktop ? 0 : undefined}
+        p={isDesktop ? 0 : undefined}
         fw={600}
         styles={{
-          section: desktop ? { marginInlineEnd: 0 } : undefined,
+          section: isDesktop ? { marginInlineEnd: 0 } : undefined,
           body: { marginBottom: 4 },
-          label: desktop
+          label: isDesktop
             ? {
                 fontSize: 'var(--mantine-font-size-xs)',
               }
             : undefined,
         }}
         leftSection={
-          <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
-            <IconHome size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          <ThemeIcon size={isDesktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
+            <IconHome size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
         onClick={() => {
           if (view === undefined) return;
           if (view === null) return;
 
-          if (!desktop) {
+          if (!isDesktop) {
             if (navbarActive) toggleNavbarChild();
           }
 
@@ -134,24 +140,24 @@ function NavbarHeader() {
       <NavLink
         label={'Global Search'}
         color="gray"
-        p={desktop ? 0 : undefined}
+        p={isDesktop ? 0 : undefined}
         fw={600}
         styles={{
-          section: desktop ? { marginInlineEnd: 0 } : undefined,
+          section: isDesktop ? { marginInlineEnd: 0 } : undefined,
           body: { marginBottom: 4 },
-          label: desktop
+          label: isDesktop
             ? {
                 fontSize: 'var(--mantine-font-size-xs)',
               }
             : undefined,
         }}
         leftSection={
-          <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
-            <IconSearch size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          <ThemeIcon size={isDesktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
+            <IconSearch size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
         onClick={() => {
-          if (!desktop) {
+          if (!isDesktop) {
             if (navbarActive) toggleNavbarChild();
           }
 
@@ -162,20 +168,20 @@ function NavbarHeader() {
       <NavLink
         label={'Add Quick Item'}
         color="gray"
-        p={desktop ? 0 : undefined}
+        p={isDesktop ? 0 : undefined}
         fw={600}
         styles={{
-          section: desktop ? { marginInlineEnd: 0 } : undefined,
+          section: isDesktop ? { marginInlineEnd: 0 } : undefined,
           body: { marginBottom: 4 },
-          label: desktop
+          label: isDesktop
             ? {
                 fontSize: 'var(--mantine-font-size-xs)',
               }
             : undefined,
         }}
         leftSection={
-          <ThemeIcon size={desktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
-            <IconPlus size={desktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
+          <ThemeIcon size={isDesktop ? 30 : ICON_WRAPPER_SIZE} variant="transparent" color={'gray'}>
+            <IconPlus size={isDesktop ? ICON_SIZE - 4 : ICON_SIZE} stroke={ICON_STROKE_WIDTH} />
           </ThemeIcon>
         }
         onClick={() => {
@@ -193,10 +199,15 @@ function NavbarHeader() {
 }
 
 function NavbarMain() {
-  const desktop = useMediaQuery('(min-width: 62em)');
+  const { ready, isMobile, isDesktop } = useBreakpointFlags();
+
+  if (!ready) {
+    // Must not render wrong layout before client knows viewport
+    return null;
+  }
 
   return (
-    <ScrollArea w={desktop ? SHELL_VALUES.NAVBAR.WIDTH : '100%'} scrollbars={'x'} p={5}>
+    <ScrollArea w={isDesktop ? SHELL_VALUES.NAVBAR.WIDTH : '100%'} scrollbars={'x'} p={5}>
       <AccordionNavbar />
     </ScrollArea>
   );
